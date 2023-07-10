@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6D7DCBFB-77DF-4DB1-8141-221298209C70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Api", "src\Api\Spenses.Api.csproj", "{06905778-1955-4E65-B3C1-9779312B0650}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -10,5 +14,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06905778-1955-4E65-B3C1-9779312B0650}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06905778-1955-4E65-B3C1-9779312B0650}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06905778-1955-4E65-B3C1-9779312B0650}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06905778-1955-4E65-B3C1-9779312B0650}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{06905778-1955-4E65-B3C1-9779312B0650} = {6D7DCBFB-77DF-4DB1-8141-221298209C70}
 	EndGlobalSection
 EndGlobal
