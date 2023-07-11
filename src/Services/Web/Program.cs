@@ -14,6 +14,7 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizePage("/Privacy"); //TODO: Require auth for the entire app
+    options.Conventions.AuthorizePage("/Account/Logout");
 });
 
 var app = builder.Build();
