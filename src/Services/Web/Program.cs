@@ -11,19 +11,13 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
     options.Scope = "openid profile email";
 });
 
-builder.Services.AddRazorPages(options =>
-{
-    options.Conventions.AuthorizePage("/Privacy"); //TODO: Require auth for the entire app
-    options.Conventions.AuthorizePage("/Account/Logout");
-});
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -35,6 +29,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRazorPages();
+app.MapRazorPages()
+    .RequireAuthorization();
 
 app.Run();
