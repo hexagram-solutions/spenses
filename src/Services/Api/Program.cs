@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Spenses.Api;
 using Spenses.Application.Common;
 using Spenses.Application.Homes;
 using Spenses.Common.Configuration;
@@ -25,6 +26,20 @@ builder.Services.AddRouting(opts =>
     opts.LowercaseQueryStrings = true;
 });
 
+const string corsPolicyName = "AllowSpecificOrigins";
+
+builder.Services.AddCors(opts =>
+{
+    opts.AddPolicy(name: corsPolicyName,
+        policy =>
+        {
+            policy.WithOrigins(builder.Configuration.Collection(ConfigConstants.SpensesApiAllowedOrigins))
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials();
+        });
+});
+
 builder.Services.AddHealthChecks();
 
 var userCodeAssemblies = AppDomain.CurrentDomain.GetAssemblies()
@@ -37,32 +52,50 @@ builder.Services.AddAutoMapper((sp, cfg) =>
 //}, userCodeAssemblies);
 }, typeof(HomeQuery).Yield());
 
-//builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(userCodeAssemblies));;
+//builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(userCodeAssemblies));
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<HomeQuery>());
 
 builder.Services.AddDbContext<ApplicationDbContext>(opts =>
     opts.UseSqlServer(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString)));
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddAuthenticatedOpenApiDocument(
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
+
+builder.Services.AddAuth0Authentication(
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 app.UseHttpLogging();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsEnvironment(EnvironmentNames.Local) ||
+    app.Environment.IsEnvironment(EnvironmentNames.Test) ||
+    app.Environment.IsEnvironment(EnvironmentNames.Development))
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
+else
+{
+    app.UseHsts();
+    app.UseExceptionHandler("/error");
+}
+
+app.AddSwaggerUi(app.Configuration.Require(ConfigConstants.SpensesOpenIdClientId));
 
 app.UseHttpsRedirection();
 
+app.UseCors(corsPolicyName);
+
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllers()
+    .RequireAuthorization();
 
 app.MapHealthChecks("/");
 
