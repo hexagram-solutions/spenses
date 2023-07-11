@@ -5,6 +5,7 @@ public static class ConfigConstants
 
     public const string SpensesApiAllowedOrigins = "Spenses:Api:AllowedOrigins";
 
+    public const string SpensesOpenIdDomain = "Spenses:OpenId:Domain";
     public const string SpensesOpenIdAuthority = "Spenses:OpenId:Authority";
     public const string SpensesOpenIdAudience = "Spenses:OpenId:Audience";
     public const string SpensesOpenIdClientId = "Spenses:OpenId:ClientId";

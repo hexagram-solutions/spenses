@@ -1,7 +1,20 @@
+using Auth0.AspNetCore.Authentication;
+using Spenses.Application.Common;
+using Spenses.Common.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddAuth0WebAppAuthentication(options =>
+{
+    options.Domain = builder.Configuration.Require(ConfigConstants.SpensesOpenIdDomain);
+    options.ClientId = builder.Configuration.Require(ConfigConstants.SpensesOpenIdClientId);
+    options.Scope = "openid profile email";
+});
+
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizePage("/Privacy"); //TODO: Require auth for the entire app
+});
 
 var app = builder.Build();
 
@@ -18,6 +31,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
