@@ -36,7 +36,8 @@ public static class ProgramExtensions
     public static IServiceCollection AddAuthenticatedOpenApiDocument(this IServiceCollection services, string authority,
         string audience)
     {
-        services.AddEndpointsApiExplorer(); services.AddOpenApiDocument(document =>
+        services.AddEndpointsApiExplorer();
+        services.AddOpenApiDocument(document =>
         {
             document.Title = OpenApiDocumentTitle;
             document.FlattenInheritanceHierarchy = true;
