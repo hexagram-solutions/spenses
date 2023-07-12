@@ -1,0 +1,28 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Homes";
+}
+
+<div class="section">
+    <h1 class="title">Homes</h1>
+
+@*    <p>
+        <a asp-page="Create">Create New</a>
+    </p>*@
+
+    <table class="table is-fullwidth is-striped is-hoverable">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var person in Model.Homes)
+        {
+            @await Html.PartialAsync("_Row", person)
+        }
+        </tbody>
+    </table>
+</div>

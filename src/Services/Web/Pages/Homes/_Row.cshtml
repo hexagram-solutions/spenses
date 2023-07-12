@@ -1,0 +1,24 @@
+﻿@model Spenses.Domain.Models.Homes.Home
+@{
+    var id = $"home-{Model.Id}";
+}
+
+<tr id="@id">
+    <td>
+        @Model.Name
+    </td>
+    <td>
+        @Model.Description
+    </td>
+    <td class="has-text-right">
+        <button class="button is-primary"
+                hx-get="@Url.Page("Index", "Edit", new { Model.Id })"
+                hx-swap="outerHTML"
+                hx-target="closest tr">
+            <span class="icon">
+                <i class="fa fa-edit"></i>
+            </span>
+            <span>Edit</span>
+        </button>
+    </td>
+</tr>
