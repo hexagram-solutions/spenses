@@ -8,7 +8,7 @@ namespace Spenses.Web.Pages.Account;
 [AllowAnonymous]
 public class LoginModel : PageModel
 {
-    public async Task OnGet(string returnUrl = "/")
+    public async Task OnGet(string returnUrl = "/homes")
     {
         var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
             .WithRedirectUri(returnUrl)

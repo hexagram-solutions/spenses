@@ -8,10 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common\Spenses.Common.csproj" />
     <ProjectReference Include="..\Domain\Spenses.Domain.csproj" />
     <ProjectReference Include="..\Resources\Relational\Spenses.Resources.Relational.csproj" />
   </ItemGroup>

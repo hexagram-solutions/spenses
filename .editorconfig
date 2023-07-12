@@ -247,6 +247,7 @@ end_of_line = lf
 
 [*.{razor,cshtml}]
 charset = utf-8-bom
+indent_size = 2
 
 [*.{cs,vb}]
 # CA1018: Mark attributes with AttributeUsageAttribute

@@ -13,13 +13,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E6
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Api", "src\Services\Api\Spenses.Api.csproj", "{5A5B6EE8-6F4B-46E3-91A8-F1AF2E84D603}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Domain", "src\Domain\Spenses.Domain.csproj", "{00EB99A7-E1EE-4B8D-ABF0-DA77E6D645DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Domain", "src\Domain\Spenses.Domain.csproj", "{00EB99A7-E1EE-4B8D-ABF0-DA77E6D645DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Application", "src\Application\Spenses.Application.csproj", "{F6A46660-FB32-4843-A290-175538BA199C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Application", "src\Application\Spenses.Application.csproj", "{F6A46660-FB32-4843-A290-175538BA199C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Common", "src\Common\Spenses.Common.csproj", "{093EC795-EE8B-4BD1-8C0D-83BADB64D6AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Common", "src\Common\Spenses.Common.csproj", "{093EC795-EE8B-4BD1-8C0D-83BADB64D6AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Web", "src\Services\Web\Spenses.Web.csproj", "{96D0D92B-B77E-4C6E-9A77-FE3493171697}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Web", "src\Services\Web\Spenses.Web.csproj", "{96D0D92B-B77E-4C6E-9A77-FE3493171697}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
