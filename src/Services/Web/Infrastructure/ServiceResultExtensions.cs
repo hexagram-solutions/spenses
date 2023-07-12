@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc;
 using Spenses.Application.Common.Results;
 
-namespace Spenses.Api.Infrastructure;
+namespace Spenses.Web.Infrastructure;
 
 public static class ServiceResultExtensions
 {

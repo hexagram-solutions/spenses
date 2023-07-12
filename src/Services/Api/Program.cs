@@ -2,9 +2,8 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Api;
 using Spenses.Application.Common;
-using Spenses.Application.Homes;
+using Spenses.Application.Extensions;
 using Spenses.Common.Configuration;
-using Spenses.Common.Extensions;
 using Spenses.Resources.Relational;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -42,18 +41,7 @@ builder.Services.AddCors(opts =>
 
 builder.Services.AddHealthChecks();
 
-var userCodeAssemblies = AppDomain.CurrentDomain.GetAssemblies()
-    .Where(a => a.GetName().Name!.StartsWith("Spenses"))
-    .ToArray(); // todo: why doesn't Spenses.Application show up in assys?
-
-builder.Services.AddAutoMapper((sp, cfg) =>
-{
-    cfg.ConstructServicesUsing(sp.GetRequiredService);
-//}, userCodeAssemblies);
-}, typeof(HomeQuery).Yield());
-
-//builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(userCodeAssemblies));
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<HomeQuery>());
+builder.Services.AddApplicationServices();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opts =>
     opts.UseSqlServer(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString)));
