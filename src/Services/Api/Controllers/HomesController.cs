@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Homes;
-using Spenses.Domain.Models.Homes;
+using Spenses.Application.Models.Homes;
 
 namespace Spenses.Api.Controllers;
 

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Spenses.Domain.Models.Homes;
+namespace Spenses.Application.Models.Homes;
 
 public record Home : HomeProperties
 {
