@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Homes;
-using Spenses.Application.Models.Homes;
+using Spenses.Application.Models;
 using Spenses.Web.Infrastructure;
 
 namespace Spenses.Web.Pages.Homes;

@@ -2,26 +2,26 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Results;
-using Spenses.Application.Models.Members;
+using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Homes.Members;
 
-public record CreateHomeMemberCommand(Guid HomeId, MemberProperties Props) : IRequest<ServiceResult<Member>>;
+public record AddMemberToHomeCommand(Guid HomeId, MemberProperties Props) : IRequest<ServiceResult<Member>>;
 
-public class AddHomeMemberCommand : IRequestHandler<CreateHomeMemberCommand, ServiceResult<Member>>
+public class AddMemberToHomeCommandHandler : IRequestHandler<AddMemberToHomeCommand, ServiceResult<Member>>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
 
-    public AddHomeMemberCommand(ApplicationDbContext db, IMapper mapper)
+    public AddMemberToHomeCommandHandler(ApplicationDbContext db, IMapper mapper)
     {
         _db = db;
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Member>> Handle(CreateHomeMemberCommand request, CancellationToken cancellationToken)
+    public async Task<ServiceResult<Member>> Handle(AddMemberToHomeCommand request, CancellationToken cancellationToken)
     {
         var (homeId, props) = request;
 

@@ -1,7 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Spenses.Application.Common.Results;
-using Spenses.Application.Models.Homes;
+using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 

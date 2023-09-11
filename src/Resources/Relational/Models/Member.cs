@@ -7,7 +7,7 @@ public class Member : Entity
     public string Name { get; set; } = null!;
 
     [Precision(10, 2)]
-    public decimal MonthlyTakeHomeIncome { get; set; }
+    public decimal AnnualTakeHomeIncome { get; set; }
 
     public Home Home { get; set; } = null!;
 

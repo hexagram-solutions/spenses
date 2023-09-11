@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Spenses.Application.Models.Members;
+namespace Spenses.Application.Models;
 
 public record Member : MemberProperties
 {
@@ -12,6 +12,4 @@ public record MemberProperties
 {
     [Required]
     public string Name { get; set; } = null!;
-
-    public string? Description { get; set; }
 }
