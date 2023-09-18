@@ -5,7 +5,7 @@ using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 
-namespace Spenses.Application.Homes;
+namespace Spenses.Application.Features.Homes;
 
 public record CreateHomeCommand(HomeProperties Props) : IRequest<ServiceResult<Home>>;
 

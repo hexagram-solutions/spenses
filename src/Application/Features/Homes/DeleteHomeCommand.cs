@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Results;
 using Spenses.Resources.Relational;
 
-namespace Spenses.Application.Homes;
+namespace Spenses.Application.Features.Homes;
 public record DeleteHomeCommand(Guid Id) : IRequest<ServiceResult>;
 
 public class DeleteHomeCommandHandler : IRequestHandler<DeleteHomeCommand, ServiceResult>

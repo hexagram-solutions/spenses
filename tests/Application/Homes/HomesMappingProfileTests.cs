@@ -1,5 +1,5 @@
 using AutoMapper;
-using Spenses.Application.Homes;
+using Spenses.Application.Features.Homes;
 
 namespace Spenses.Application.Tests.Homes;
 

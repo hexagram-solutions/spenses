@@ -6,7 +6,7 @@ using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 
-namespace Spenses.Application.Homes.Members;
+namespace Spenses.Application.Features.Homes.Members;
 
 public record AddMemberToHomeCommand(Guid HomeId, MemberProperties Props) : IRequest<ServiceResult<Member>>;
 

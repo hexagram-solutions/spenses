@@ -5,7 +5,7 @@ using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
-namespace Spenses.Application.Homes;
+namespace Spenses.Application.Features.Homes;
 
 public record UpdateHomeCommand(Guid Id, HomeProperties Props) : IRequest<ServiceResult<Home>>;
 

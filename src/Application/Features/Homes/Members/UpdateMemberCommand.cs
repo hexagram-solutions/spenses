@@ -5,7 +5,7 @@ using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
-namespace Spenses.Application.Homes.Members;
+namespace Spenses.Application.Features.Homes.Members;
 
 public record UpdateMemberCommand(Guid Id, MemberProperties Props) : IRequest<ServiceResult<Member>>;
 
