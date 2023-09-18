@@ -29,11 +29,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{BEA4B7C5-A3E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Api.IntegrationTests", "tests\Services\Api\IntegrationTests\Spenses.Api.IntegrationTests.csproj", "{3EEACE69-58F5-41B0-8122-4DE13CEDC4BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Client", "src\Client\Spenses.Client.csproj", "{560F7F1A-9247-44F3-9D23-527B747176E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Client", "src\Client\Spenses.Client.csproj", "{560F7F1A-9247-44F3-9D23-527B747176E0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{2CC847A1-00C7-4125-847E-C3F331E19CF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Tools.Setup", "tools\Setup\Spenses.Tools.Setup.csproj", "{EF370862-A709-457C-993B-A2610A68774E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Tools.Setup", "tools\Setup\Spenses.Tools.Setup.csproj", "{EF370862-A709-457C-993B-A2610A68774E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -153,6 +155,16 @@ Global
 		{EF370862-A709-457C-993B-A2610A68774E}.Release|x64.Build.0 = Release|Any CPU
 		{EF370862-A709-457C-993B-A2610A68774E}.Release|x86.ActiveCfg = Release|Any CPU
 		{EF370862-A709-457C-993B-A2610A68774E}.Release|x86.Build.0 = Release|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Debug|x64.Build.0 = Debug|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Debug|x86.Build.0 = Debug|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Release|x64.ActiveCfg = Release|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Release|x64.Build.0 = Release|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{9E5379F8-9641-4903-BDD5-E9B6FAB07E7D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
