@@ -1,0 +1,78 @@
+name: continuous
+
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - "README.md"
+  pull_request:
+    branches:
+      - main
+  release:
+    types:
+      - released
+      - prereleased
+  workflow_dispatch:
+
+jobs:
+  build_test:
+    name: "🚦 Build & Test (Ubuntu 🐧)"
+    runs-on: ubuntu-latest
+
+    services:
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          SA_PASSWORD: Hunter2!
+          ACCEPT_EULA: "Y"
+        ports:
+          - 1433:1433
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Cache .nuke/temp, ~/.nuget/packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            .nuke/temp
+            ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
+
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x
+
+      - name: "Build and test"
+        id: build-test
+        run: ./build.cmd test integration-test
+        env:
+          NUKE_SQL_SERVER_CONNECTION_STRING: "Server=localhost,1433;Initial Catalog=Spenses;User ID=sa;Password=Hunter2!;Encrypt=False;"
+
+      - name: "Publish test result artifact"
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: artifacts/test-results
+
+      - name: "Publish coverage report artifact"
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report.zip
+          path: artifacts/reports/coverage-report.zip
+
+  docker:
+    name: "🐋 Build docker image"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Build Docker image"
+        run: ./build.cmd build-docker-image
