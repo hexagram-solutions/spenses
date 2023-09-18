@@ -13,7 +13,7 @@ public class ErrorController : ControllerBase
         [FromServices] IWebHostEnvironment webHostEnvironment)
     {
         if (!webHostEnvironment.IsEnvironment(EnvironmentNames.Local) ||
-            webHostEnvironment.IsEnvironment(EnvironmentNames.Test))
+            webHostEnvironment.IsEnvironment(EnvironmentNames.IntegrationTest))
         {
             throw new InvalidOperationException(
                 "This shouldn't be invoked in non-local or non-test environments.");

@@ -61,7 +61,7 @@ var app = builder.Build();
 app.UseHttpLogging();
 
 if (app.Environment.IsEnvironment(EnvironmentNames.Local) ||
-    app.Environment.IsEnvironment(EnvironmentNames.Test) ||
+    app.Environment.IsEnvironment(EnvironmentNames.IntegrationTest) ||
     app.Environment.IsEnvironment(EnvironmentNames.Development))
 {
     app.UseDeveloperExceptionPage();

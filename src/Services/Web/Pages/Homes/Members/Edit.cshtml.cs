@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Spenses.Application.Common.Results;
-using Spenses.Application.Homes.Members;
+using Spenses.Application.Features.Homes.Members;
 using Spenses.Application.Models;
 using Spenses.Web.Infrastructure;
 
@@ -20,7 +20,7 @@ public class EditModel : PageModel
     [BindProperty]
     public MemberProperties Member { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(Guid id) // todo: why is id nullable?
+    public async Task<IActionResult> OnGetAsync(Guid id)
     {
         var memberResult = await _mediator.Send(new MemberQuery(id));
 
