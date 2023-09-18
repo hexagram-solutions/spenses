@@ -11,7 +11,6 @@ public class HomesIntegrationTests
 
     public HomesIntegrationTests(WebApplicationFixture<Program> fixture)
     {
-        // todo: json settings, should be able to just DI this, no? but maybe not depending on when server gets started up
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
     }
 
@@ -33,14 +32,11 @@ public class HomesIntegrationTests
     [Fact]
     public async Task Put_home_updates_home()
     {
-        // TODO: Use seed data
-        var properties = new HomeProperties { Name = "foo", Description = "bar" };
+        var home = (await _homes.GetHomes()).First();
 
-        var createdHome = await _homes.PostHome(properties);
+        var properties = new HomeProperties { Name = "sut", Description = "baz" };
 
-        properties = new HomeProperties { Name = "sut", Description = "baz" };
-
-        var updatedHome = await _homes.PutHome(createdHome.Id, properties);
+        var updatedHome = await _homes.PutHome(home.Id, properties);
         updatedHome.Should().BeEquivalentTo(properties);
 
         var retrievedHome = await _homes.GetHome(updatedHome.Id);
@@ -50,34 +46,30 @@ public class HomesIntegrationTests
     [Fact]
     public async Task Post_home_member_creates_member()
     {
-        // TODO: Use seed data
-        var createdHome = await _homes.PostHome(new HomeProperties { Name = "foo", Description = "bar" });
+        var home = (await _homes.GetHomes()).First(x => x.Members.Any());
 
         var properties = new MemberProperties { Name = "Bob", AnnualTakeHomeIncome = 80_000.00m };
 
-        var createdMember = await _homes.PostHomeMember(createdHome.Id, properties);
+        var createdMember = await _homes.PostHomeMember(home.Id, properties);
         createdMember.Should().BeEquivalentTo(properties);
 
-        var retrievedHome = await _homes.GetHome(createdHome.Id);
+        var retrievedHome = await _homes.GetHome(home.Id);
         retrievedHome.Members.Should().ContainEquivalentOf(createdMember);
     }
 
     [Fact]
     public async Task Put_home_member_updates_member()
     {
-        // TODO: Use seed data
-        var createdHome = await _homes.PostHome(new HomeProperties { Name = "foo", Description = "bar" });
+        var home = (await _homes.GetHomes()).First(x => x.Members.Any());
 
-        var properties = new MemberProperties { Name = "Bob", AnnualTakeHomeIncome = 80_000.00m };
+        var member = home.Members.First();
 
-        var createdMember = await _homes.PostHomeMember(createdHome.Id, properties);
+        var properties = new MemberProperties { Name = "Grunky Peep", AnnualTakeHomeIncome = 1m };
 
-        properties = new MemberProperties { Name = "Alice", AnnualTakeHomeIncome = 1m };
-
-        var updatedMember = await _homes.PutHomeMember(createdHome.Id, createdMember.Id, properties);
+        var updatedMember = await _homes.PutHomeMember(home.Id, member.Id, properties);
         updatedMember.Should().BeEquivalentTo(properties);
 
-        var retrievedMember = await _homes.GetHomeMember(createdHome.Id, updatedMember.Id);
+        var retrievedMember = await _homes.GetHomeMember(home.Id, member.Id);
         retrievedMember.Should().BeEquivalentTo(updatedMember);
     }
 }

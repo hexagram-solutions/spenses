@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Spenses.Application.Common.Results;
-using Spenses.Application.Homes.Members;
+using Spenses.Application.Features.Homes.Members;
 using Spenses.Application.Models;
 using Spenses.Web.Infrastructure;
 

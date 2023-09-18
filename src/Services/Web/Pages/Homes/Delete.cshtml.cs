@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Spenses.Application.Common.Results;
-using Spenses.Application.Homes;
+using Spenses.Application.Features.Homes;
 using Spenses.Application.Models;
 using Spenses.Web.Infrastructure;
 
@@ -32,9 +32,9 @@ public class DeleteModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(Guid? id) // todo: why is id nullable? because it's a query param. how to make into path
+    public async Task<IActionResult> OnPostAsync(Guid id)
     {
-        var result = await _mediator.Send(new DeleteHomeCommand(id.GetValueOrDefault()));
+        var result = await _mediator.Send(new DeleteHomeCommand(id));
 
         if (!result.IsSuccess)
             (result as ErrorResult)!.ToActionResult();
