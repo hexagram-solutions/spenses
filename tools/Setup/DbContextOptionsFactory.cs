@@ -1,10 +1,10 @@
 
+using Hexagrams.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Spenses.Application.Common;
-using Spenses.Common.Configuration;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Tools.Setup;

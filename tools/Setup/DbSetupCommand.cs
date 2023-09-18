@@ -1,7 +1,6 @@
 using System.CommandLine;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Spenses.Common.Extensions;
 using Spenses.Resources.Relational;
 using Spenses.Tools.Setup.SeedData;
 
@@ -71,14 +70,12 @@ public class DbSetupCommand : RootCommand
 
         _logger.LogInformation("Seeding database...");
 
-        await _seedDataTasks
-            .OrderBy(t => t.Order)
-            .ForEachAsync(t =>
-            {
-                _logger.LogInformation("Executing seed task: {TaskName}", t.GetType().Name);
+        foreach (var seedDataTask in _seedDataTasks.OrderBy(t => t.Order))
+        {
+            _logger.LogInformation("Executing seed task: {TaskName}", seedDataTask.GetType().Name);
 
-                return t.SeedData(db);
-            });
+            await seedDataTask.SeedData(db);
+        }
 
         _logger.LogInformation("Database seeded.");
     }
