@@ -9,11 +9,15 @@ public class HomesMappingProfile : Profile
     public HomesMappingProfile()
     {
         CreateMap<HomeProperties, DbModels.Home>()
-            .ForMember(dest => dest.Members, opts => opts.Ignore())
             .ForMember(dest => dest.Id, opts => opts.Ignore());
 
         CreateMap<DbModels.Home, Home>();
 
         CreateMap<DbModels.Member, Member>();
+
+        CreateMap<MemberProperties, DbModels.Member>()
+            .ForMember(dest => dest.Id, opts => opts.Ignore())
+            // TODO: Temporary
+            .ForMember(dest => dest.AnnualTakeHomeIncome, opts => opts.Ignore());
     }
 }

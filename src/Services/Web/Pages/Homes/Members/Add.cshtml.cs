@@ -17,29 +17,20 @@ public class AddModel : PageModel
         _mediator = mediator;
     }
 
-    public IActionResult OnGet(Guid homeId)
-    {
-        HomeId = homeId;
-
-        return Page();
-    }
-    
-    public Guid HomeId { get; set; }
-
     [BindProperty]
     public MemberProperties Member { get; set; } = default!;
 
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync([FromRoute] Guid homeId)
     {
         if (!ModelState.IsValid)
             return Page();
 
-        var result = await _mediator.Send(new AddMemberToHomeCommand(HomeId, Member));
+        var result = await _mediator.Send(new AddMemberToHomeCommand(homeId, Member));
 
         if (!result.IsSuccess)
             (result.Result as ErrorResult)!.ToActionResult();
 
-        return RedirectToPage("./Index");
+        return RedirectToPage("/Homes/Details", new {id = homeId });
     }
 }
