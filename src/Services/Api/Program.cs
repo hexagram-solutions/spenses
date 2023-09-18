@@ -88,3 +88,13 @@ app.MapControllers()
 app.MapHealthChecks("/");
 
 app.Run();
+
+namespace Spenses.Api
+{
+    // ReSharper disable once PartialTypeWithSinglePart
+    // This allows this class to be used in as an entry point for integration tests.
+    // See: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0#basic-tests-with-the-default-webapplicationfactory
+    public partial class Program
+    {
+    }
+}

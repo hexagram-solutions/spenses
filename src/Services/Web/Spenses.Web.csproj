@@ -18,8 +18,4 @@
     <ProjectReference Include="..\..\Common\Spenses.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <InternalsVisibleTo Include="Spenses.Application.IntegrationTests" />
-  </ItemGroup>
-
 </Project>

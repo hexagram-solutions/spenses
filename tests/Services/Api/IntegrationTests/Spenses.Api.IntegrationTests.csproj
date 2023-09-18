@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\src\Services\Web\Spenses.Web.csproj" />
+    <ProjectReference Include="..\..\..\..\src\Services\Api\Spenses.Api.csproj" />
   </ItemGroup>
 
 </Project>
