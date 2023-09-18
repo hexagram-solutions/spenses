@@ -19,7 +19,7 @@ public class DetailsModel : PageModel
 
     public Home Home { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync([FromRoute] Guid id)
+    public async Task<IActionResult> OnGetAsync(Guid id)
     {
         var homeResult = await _mediator.Send(new HomeQuery(id));
 

@@ -20,9 +20,9 @@ public class DeleteModel : PageModel
     [BindProperty]
     public Home Home { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(Guid? id) // todo: why is id nullable?
+    public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var homeResult = await _mediator.Send(new HomeQuery(id.GetValueOrDefault()));
+        var homeResult = await _mediator.Send(new HomeQuery(id));
 
         if (!homeResult.IsSuccess)
             (homeResult.Result as ErrorResult)!.ToActionResult();

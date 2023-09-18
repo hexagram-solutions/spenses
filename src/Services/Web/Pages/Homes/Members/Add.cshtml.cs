@@ -21,7 +21,7 @@ public class AddModel : PageModel
     public MemberProperties Member { get; set; } = default!;
 
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-    public async Task<IActionResult> OnPostAsync([FromRoute] Guid homeId)
+    public async Task<IActionResult> OnPostAsync(Guid homeId)
     {
         if (!ModelState.IsValid)
             return Page();
