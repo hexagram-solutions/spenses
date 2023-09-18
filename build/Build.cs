@@ -9,12 +9,11 @@ using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
+using Nuke.Common.Tools.Docker;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.EntityFramework;
 using Nuke.Common.Tools.GitVersion;
 using Serilog;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using static Nuke.Common.Tools.EntityFramework.EntityFrameworkTasks;
+using static Nuke.Common.Tools.Docker.DockerTasks;
 
 // ReSharper disable RedundantExtendsListEntry
 // ReSharper disable InconsistentNaming
@@ -70,60 +69,24 @@ partial class Build : NukeBuild,
         .DependsOn<IFormat>(x => x.VerifyFormat);
 
 
-    bool IReportCoverage.CreateCoverageHtmlReport => true;
+    Project ApiProject => Solution.GetAllProjects("Spenses.Api").Single();
 
-    IEnumerable<Project> ITest.TestProjects => Partition.GetCurrent(Solution.GetAllProjects("*.Tests"));
+    string DockerTag => IsServerBuild ? GitVersion.NuGetVersionV2 : "dev";
 
-    Target RestoreTools => _ => _
+    string DockerImageName => "spenses-api";
+
+    Target BuildDockerImage => _ => _
+        .Description("Build the docker images for the project.")
         .Executes(() =>
         {
-            DotNetToolRestore(_ => _);
+            DockerBuild(s => s
+                .SetForceRm(true)
+                .SetProcessWorkingDirectory(ApiProject.Directory)
+                .SetFile(ApiProject.Directory / "Dockerfile")
+                .SetTag(new List<string>
+                {
+                    $"{DockerImageName}:{DockerTag}"
+                })
+                .SetPath(RootDirectory));
         });
-
-    Target MigrateDatabase => _ => _
-        .DependsOn(RestoreTools)
-        .Requires(() => SqlServerConnectionString)
-        .Executes(() =>
-        {
-            var dbContextProject = Solution.GetAllProjects("Spenses.Resources.Relational").Single();
-
-            EntityFrameworkDatabaseUpdate(s => s
-                .SetProject(dbContextProject)
-                .SetConnection(SqlServerConnectionString));
-        });
-
-    Target IntegrationTestSetup => _ => _
-        .DependsOn(MigrateDatabase)
-        .Requires(() => SqlServerConnectionString)
-        .Executes(() =>
-        {
-            var relationalSetupTool = Solution.GetAllProjects("Spenses.Tools.Setup").Single();
-
-            DotNetRun(s => s
-                .SetProjectFile(relationalSetupTool)
-                .SetApplicationArguments($"seed --connection \"{SqlServerConnectionString}\""));
-        });
-
-    Target IntegrationTest => _ => _
-        .DependsOn<IRestore>()
-        .DependsOn(IntegrationTestSetup)
-        .DependsOn()
-        .Produces(this.FromComponent<IReportCoverage>().CoverageReportDirectory / "*.trx")
-        .Produces(this.FromComponent<IReportCoverage>().CoverageReportDirectory / "*.xml")
-        .Executes(() =>
-        {
-            var integrationTestProjects = Solution.GetAllProjects("*.IntegrationTests");
-
-            DotNetTest(_ => _
-                .Apply(this.FromComponent<ITest>().TestSettingsBase)
-                .SetVerbosity(DotNetVerbosity.Minimal)
-                .CombineWith(integrationTestProjects, (_, v) => _
-                    .Apply(this.FromComponent<ITest>().TestProjectSettingsBase, v)),
-                completeOnFailure: true);
-        });
-
-    Target IReportCoverage.ReportCoverage => _ => _
-        .Inherit<IReportCoverage>()
-        .TriggeredBy(IntegrationTest)
-        .Consumes(IntegrationTest);
 }
