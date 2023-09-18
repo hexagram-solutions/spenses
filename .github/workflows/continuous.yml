@@ -24,7 +24,7 @@ jobs:
       mssql:
         image: mcr.microsoft.com/mssql/server:2019-latest
         env:
-          SA_PASSWORD: password
+          SA_PASSWORD: Hunter2!
           ACCEPT_EULA: "Y"
         ports:
           - 1433:1433
@@ -51,7 +51,7 @@ jobs:
         id: build-test
         run: ./build.cmd test integration-test
         env:
-          NUKE_SQL_SERVER_CONNECTION_STRING: "Server=.;Database=Spenses;User ID=sa;Password=password;Encrypt=False;"
+          NUKE_SQL_SERVER_CONNECTION_STRING: "Server=localhost,1433;Initial Catalog=Spenses;User ID=sa;Password=Hunter2!;Encrypt=False;"
 
       - name: "Publish test result artifact"
         uses: actions/upload-artifact@v3
