@@ -16,8 +16,6 @@ public class HomesMappingProfile : Profile
         CreateMap<DbModels.Member, Member>();
 
         CreateMap<MemberProperties, DbModels.Member>()
-            .ForMember(dest => dest.Id, opts => opts.Ignore())
-            // TODO: Temporary
-            .ForMember(dest => dest.AnnualTakeHomeIncome, opts => opts.Ignore());
+            .ForMember(dest => dest.Id, opts => opts.Ignore());
     }
 }
