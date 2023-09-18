@@ -1,4 +1,4 @@
-﻿@page "homes/{id:guid}"
+﻿@page "/homes/{id:guid}"
 @model DetailsModel
 
 @{
@@ -47,8 +47,7 @@
           @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-          <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-          <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+          <a asp-page="./Members/Edit" asp-route-homeId="@Model.Home.Id" asp-route-id="@item.Id">Edit</a>
         </td>
       </tr>
     }
