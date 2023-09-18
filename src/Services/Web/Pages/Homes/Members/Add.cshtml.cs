@@ -31,6 +31,6 @@ public class AddModel : PageModel
         if (!result.IsSuccess)
             (result.Result as ErrorResult)!.ToActionResult();
 
-        return RedirectToPage("/Homes/Details", new {id = homeId });
+        return RedirectToPage("/Homes/Details", new { id = homeId });
     }
 }

@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
+using Hexagrams.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Api;
 using Spenses.Application.Common;
 using Spenses.Application.Extensions;
-using Spenses.Common.Configuration;
 using Spenses.Resources.Relational;
 
 var builder = WebApplication.CreateBuilder(args);

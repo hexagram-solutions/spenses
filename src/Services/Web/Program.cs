@@ -1,8 +1,8 @@
 using Auth0.AspNetCore.Authentication;
+using Hexagrams.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common;
 using Spenses.Application.Extensions;
-using Spenses.Common.Configuration;
 using Spenses.Resources.Relational;
 using Spenses.Web.Services;
 

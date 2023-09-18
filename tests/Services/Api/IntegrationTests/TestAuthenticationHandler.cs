@@ -18,7 +18,7 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
 
     private readonly string _defaultUserId;
 
-    public TestAuthenticationHandler( IOptionsMonitor<TestAuthenticationHandlerOptions> options, ILoggerFactory logger,
+    public TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationHandlerOptions> options, ILoggerFactory logger,
         UrlEncoder encoder, ISystemClock clock)
         : base(options, logger, encoder, clock)
     {

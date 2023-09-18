@@ -1,6 +1,6 @@
+using Hexagrams.Extensions.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Application.Features.Homes;
-using Spenses.Common.Extensions;
 
 namespace Spenses.Application.Extensions;
 
