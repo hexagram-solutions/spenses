@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hexagrams.Nuke.Components;
+using NuGet.Configuration;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
@@ -49,7 +50,7 @@ partial class Build
     Target IntegrationTest => _ => _
         .DependsOn<IRestore>()
         .DependsOn(IntegrationTestSetup)
-        .DependsOn()
+        .Requires(() => SqlServerConnectionString)
         .Produces(this.FromComponent<IReportCoverage>().CoverageReportDirectory / "*.trx")
         .Produces(this.FromComponent<IReportCoverage>().CoverageReportDirectory / "*.xml")
         .Executes(() =>
@@ -59,6 +60,7 @@ partial class Build
             DotNetTest(_ => _
                 .Apply(this.FromComponent<ITest>().TestSettingsBase)
                 .SetVerbosity(DotNetVerbosity.Minimal)
+                .SetProcessEnvironmentVariable("Spenses:SqlServer:ConnectionString", SqlServerConnectionString)
                 .CombineWith(integrationTestProjects, (_, v) => _
                     .Apply(this.FromComponent<ITest>().TestProjectSettingsBase, v)),
                 completeOnFailure: true);
