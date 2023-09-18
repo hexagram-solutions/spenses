@@ -14,7 +14,7 @@ public interface IHomesApi
     [Get("/homes/{homeId}")]
     Task<Home> GetHome(Guid homeId);
 
-    [Get("/homes/{homeId}")]
+    [Put("/homes/{homeId}")]
     Task<Home> PutHome(Guid homeId, HomeProperties props);
 
     [Post("/homes/{homeId}/members")]
