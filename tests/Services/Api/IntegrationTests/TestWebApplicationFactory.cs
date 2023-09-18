@@ -9,6 +9,6 @@ public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEnt
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment(EnvironmentNames.Test);
+        builder.UseEnvironment(EnvironmentNames.IntegrationTest);
     }
 }
