@@ -2,7 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Results;
-using Spenses.Domain.Models.Homes;
+using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Homes;

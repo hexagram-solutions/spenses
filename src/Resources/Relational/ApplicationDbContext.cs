@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Resources.Relational;
@@ -24,6 +25,10 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Home> Homes => Set<Home>();
 
+    public DbSet<Member> Members => Set<Member>();
+
+    public DbSet<Expense> Expenses => Set<Expense>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -36,5 +41,21 @@ public class ApplicationDbContext : DbContext
 
             mutableEntityType.SetTableName(mutableEntityType.ClrType.Name);
         }
+
+        modelBuilder.Entity<Expense>()
+            .HasOne(x => x.Member)
+            .WithMany(x => x.Expenses)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<DateOnly>()
+            .HaveConversion<DateOnlyConverter>()
+            .HaveColumnType("date");
+
+        configurationBuilder.Properties<DateOnly?>()
+            .HaveConversion<NullableDateOnlyConverter>()
+            .HaveColumnType("date");
     }
 }

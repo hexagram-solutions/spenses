@@ -9,14 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.19.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
+    <PackageReference Include="NSwag.AspNetCore" Version="13.20.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Application\Spenses.Application.csproj" />
     <ProjectReference Include="..\..\Common\Spenses.Common.csproj" />
-    <ProjectReference Include="..\..\Domain\Spenses.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Spenses.Application.IntegrationTests" />
   </ItemGroup>
 
 </Project>

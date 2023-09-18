@@ -23,7 +23,7 @@ public static class ServiceCollectionExtensions
             cfg.ConstructServicesUsing(sp.GetRequiredService);
             //}, userCodeAssemblies);
         }, typeof(HomeQuery).Yield());
-        
+
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<HomeQuery>());
 
         return services;

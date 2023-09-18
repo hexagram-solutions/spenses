@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Spenses.Application.Homes;
-using Spenses.Domain.Models.Homes;
+using Spenses.Application.Models;
 
 namespace Spenses.Web.Pages.Homes;
 

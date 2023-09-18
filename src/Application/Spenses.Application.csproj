@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Spenses.Common.csproj" />
-    <ProjectReference Include="..\Domain\Spenses.Domain.csproj" />
     <ProjectReference Include="..\Resources\Relational\Spenses.Resources.Relational.csproj" />
   </ItemGroup>
 

@@ -1,8 +1,8 @@
-﻿@page
-@model Spenses.Web.Pages.Homes.DetailsModel
+﻿@page "/homes/{id:guid}"
+@model DetailsModel
 
 @{
-  ViewData["Title"] = "Details";
+  ViewData["Title"] = "Home Details";
 }
 
 <h1>Details</h1>
@@ -24,8 +24,38 @@
       @Html.DisplayFor(model => model.Home.Description)
     </dd>
   </dl>
+
+  <h5>Members</h5>
+  <hr/>
+  <p>
+    <a asp-page="./Members/Add" asp-route-homeId="@Model.Home.Id">Add</a>
+  </p>
+  <table class="table">
+    <thead>
+    <tr>
+      <th>
+        <label asp-for="Home.Members[0].Name" class="is-hidden">Name</label>
+      </th>
+      <th/>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Home.Members)
+    {
+      <tr>
+        <td>
+          @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+          <a asp-page="./Members/Edit" asp-route-homeId="@Model.Home.Id" asp-route-id="@item.Id">Edit</a>
+        </td>
+      </tr>
+    }
+    </tbody>
+  </table>
+
 </div>
 <div>
-  <a asp-page="./Edit" asp-route-id="@Model.Home?.Id">Edit</a> |
+  <a asp-page="./Edit" asp-route-id="@Model.Home.Id">Edit</a> |
   <a asp-page="./Index">Back to List</a>
 </div>

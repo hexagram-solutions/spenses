@@ -1,7 +1,6 @@
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
-using Spenses.Common.Extensions;
 using Spenses.Common.Extensions.Serialization;
 
 namespace Spenses.Common.Extensions;

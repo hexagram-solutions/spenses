@@ -1,5 +1,5 @@
 using AutoMapper;
-using Spenses.Domain.Models.Homes;
+using Spenses.Application.Models;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Homes;
@@ -12,5 +12,10 @@ public class HomesMappingProfile : Profile
             .ForMember(dest => dest.Id, opts => opts.Ignore());
 
         CreateMap<DbModels.Home, Home>();
+
+        CreateMap<DbModels.Member, Member>();
+
+        CreateMap<MemberProperties, DbModels.Member>()
+            .ForMember(dest => dest.Id, opts => opts.Ignore());
     }
 }
