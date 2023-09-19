@@ -1,7 +1,7 @@
 using Refit;
 using Spenses.Application.Models;
 
-namespace Spenses.Client;
+namespace Spenses.Client.Http;
 
 public interface IHomesApi
 {
