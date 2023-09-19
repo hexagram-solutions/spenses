@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Spenses.Application.Models
 @using Spenses.Client.Http
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 <PageTitle>Index</PageTitle>
 
@@ -31,7 +32,14 @@ else
 
   protected override async Task OnInitializedAsync()
   {
-    _homes = (await Homes.GetHomes())!.AsQueryable();
+    try
+    {
+      _homes = (await Homes.GetHomes()).AsQueryable();
+    }
+    catch (AccessTokenNotAvailableException exception)
+    {
+      exception.Redirect();
+    }
   }
 
 }

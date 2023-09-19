@@ -1,9 +1,9 @@
 using Hexagrams.Extensions.Configuration;
-using Spenses.Client.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Fast.Components.FluentUI;
 using Spenses.Application.Common;
+using Spenses.Client.Web;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -16,6 +16,9 @@ builder.Services.AddAuth0Authentication(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdClientId),
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
+
+builder.Services.AddOptions();
+builder.Services.AddAuthorizationCore();
 
 builder.Services.AddApiClients(builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl),
     new[] { "openid", "profile", "email" });

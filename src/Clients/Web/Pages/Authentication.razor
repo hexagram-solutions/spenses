@@ -6,6 +6,8 @@
 @inject NavigationManager Navigation
 @inject IConfiguration Configuration
 
+@attribute [AllowAnonymous]
+
 <RemoteAuthenticatorView Action="@Action">
   <LogOut>
     @{
