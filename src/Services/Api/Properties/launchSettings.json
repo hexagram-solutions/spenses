@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "https": {
+    "Spenses.Api": {
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {

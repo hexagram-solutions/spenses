@@ -33,9 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.cspr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Clients", "Clients", "{A06738BE-E6E4-4C55-B36F-5D5A17EBAC85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Client.Http", "src\Clients\Http\Spenses.Client.Http.csproj", "{5354A2BC-DD5D-4EB0-A6E4-19DBD616D3BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Client.Http", "src\Clients\Http\Spenses.Client.Http.csproj", "{5354A2BC-DD5D-4EB0-A6E4-19DBD616D3BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Client.Web", "src\Clients\Web\Spenses.Client.Web.csproj", "{A595C732-557A-4C36-8294-F3EB85D03A55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Client.Web", "src\Clients\Web\Spenses.Client.Web.csproj", "{A595C732-557A-4C36-8294-F3EB85D03A55}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
