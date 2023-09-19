@@ -4,6 +4,7 @@ public static class ConfigConstants
     public const string SqlServerConnectionString = "Spenses:SqlServer:ConnectionString";
 
     public const string SpensesApiAllowedOrigins = "Spenses:Api:AllowedOrigins";
+    public const string SpensesApiBaseUrl = "Spenses:Api:BaseUrl";
 
     public const string SpensesOpenIdDomain = "Spenses:OpenId:Domain";
     public const string SpensesOpenIdAuthority = "Spenses:OpenId:Authority";

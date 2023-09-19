@@ -1,0 +1,27 @@
+﻿@page "/authentication/{action}"
+@using Hexagrams.Extensions.Configuration
+@using Spenses.Application.Common
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject IConfiguration Configuration
+
+@attribute [AllowAnonymous]
+
+<RemoteAuthenticatorView Action="@Action">
+  <LogOut>
+    @{
+      var authority = Configuration.Require(ConfigConstants.SpensesOpenIdAuthority);
+      var clientId = Configuration.Require(ConfigConstants.SpensesOpenIdClientId);
+
+      Navigation.NavigateTo($"{authority}/v2/logout?client_id={clientId}");
+    }
+  </LogOut>
+</RemoteAuthenticatorView>
+
+@code{
+
+  [Parameter]
+  public string Action { get; set; }
+
+}
