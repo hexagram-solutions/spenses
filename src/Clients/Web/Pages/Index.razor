@@ -1,15 +1,43 @@
 ﻿@page "/"
+@using Spenses.Application.Models
+@using Spenses.Client.Http
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+@inject IHomesApi Homes
 
-<p style="margin-bottom: 1rem;">
-    Welcome to your new app.
-</p>
+<PageTitle>Homes</PageTitle>
+
+<h1>Homes</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (_homes is null)
+{
+  <p>
+    <em>Loading...</em>
+  </p>
+}
+else
+{
+  <FluentDataGrid Id="manualGrid" Items=@_homes GridTemplateColumns="1fr 1fr 1fr 2fr" TGridItem=Home>
+    <PropertyColumn Title="Name" Property="@(c => c!.Name)" Sortable="true" Align=Align.Start/>
+    <PropertyColumn Title="Description" Property="@(c => c!.Description)" Sortable="true" Align=Align.Center/>
+  </FluentDataGrid>
+}
+
+@code {
+  private IQueryable<Home>? _homes;
+
+  protected override async Task OnInitializedAsync()
+  {
+    _homes = (await Homes.GetHomes())!.AsQueryable();
+  }
+
+}
 
 <FluentDesignSystemProvider FillColor="#D6D6D6">
-    <FluentCard neutral-palette-source="#CABA8C">
-        <SurveyPrompt Title="How is Blazor working for you?" />
-    </FluentCard>
+  <FluentCard neutral-palette-source="#CABA8C">
+    <SurveyPrompt Title="How is Blazor working for you?"/>
+  </FluentCard>
 </FluentDesignSystemProvider>

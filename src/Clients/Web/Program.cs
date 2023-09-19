@@ -12,12 +12,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-builder.Services.AddOidcAuthentication(options =>
-{
-    options.ProviderOptions.Authority = builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority);
-    options.ProviderOptions.ClientId = builder.Configuration.Require(ConfigConstants.SpensesOpenIdClientId);
-    options.ProviderOptions.ResponseType = "code";
-});
+builder.Services.AddAuth0Authentication(
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdClientId),
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
+
+builder.Services.AddApiClients(builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl),
+    new[] { "openid", "profile", "email" });
 
 builder.Services.AddFluentUIComponents();
 
