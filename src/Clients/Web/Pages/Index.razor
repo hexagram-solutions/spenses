@@ -1,4 +1,6 @@
 ﻿@page "/"
+@page "/homes"
+
 @using Spenses.Application.Models
 @using Spenses.Client.Http
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -43,9 +45,3 @@ else
   }
 
 }
-
-<FluentDesignSystemProvider FillColor="#D6D6D6">
-  <FluentCard neutral-palette-source="#CABA8C">
-    <SurveyPrompt Title="How is Blazor working for you?"/>
-  </FluentCard>
-</FluentDesignSystemProvider>
