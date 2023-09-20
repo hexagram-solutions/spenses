@@ -1,34 +1,32 @@
-﻿@inject NavigationManager navigationmanager
+﻿@inject NavigationManager NavigationManager
 
 <h1 class="head">FluentUI Web Components</h1>
 <ul>
-    <li>
-        <FluentAnchor Href="counter" Appearance=@SetAppearance("Counter")>Counter</FluentAnchor>
-    </li>
-    <li>
-        <FluentAnchor Href="fetchdata" Appearance=@SetAppearance("FetchData")>Fetch Data</FluentAnchor>
-    </li>
+  <li>
+    <FluentAnchor Href="homes" Appearance=@SetAppearance("Homes")>Homes</FluentAnchor>
+  </li>
+  <li>
+  </li>
 </ul>
 
 @code {
-    private string? target;
+  private string? _target;
 
-    protected override void OnInitialized()
-    {
-        navigationmanager.LocationChanged += LocationChanged;
-        base.OnInitialized();
-    }
+  protected override void OnInitialized()
+  {
+    NavigationManager.LocationChanged += LocationChanged;
+    base.OnInitialized();
+  }
 
-    private void LocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        Uri uri = new Uri(e.Location);
-        if (uri.Segments.Count() > 1)
-            target = uri.Segments[1];
-        else
-            target = "";
-        StateHasChanged();
-    }
+  private void LocationChanged(object? sender, LocationChangedEventArgs e)
+  {
+    var uri = new Uri(e.Location);
+    _target = uri.Segments.Length > 1 ? uri.Segments[1] : "";
+    StateHasChanged();
+  }
 
-    private Appearance SetAppearance(string location) => (string.Equals(location, target, StringComparison.OrdinalIgnoreCase)) ? Appearance.Neutral : Appearance.Stealth;
-
+  private Appearance SetAppearance(string location)
+  {
+    return string.Equals(location, _target, StringComparison.OrdinalIgnoreCase) ? Appearance.Neutral : Appearance.Stealth;
+  }
 }
