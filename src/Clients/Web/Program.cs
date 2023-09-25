@@ -23,6 +23,9 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddApiClients(builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl),
     new[] { "openid", "profile", "email" });
 
-builder.Services.AddFluentUIComponents();
+builder.Services.AddFluentUIComponents(options =>
+{
+    options.HostingModel = BlazorHostingModel.WebAssembly;
+});
 
 await builder.Build().RunAsync();
