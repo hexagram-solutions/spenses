@@ -1,14 +1,37 @@
-﻿@using Spenses.Application.Models
+﻿@page "/homes/{homeId:guid}"
+@page "/homes/{homeId:guid}/dashboard"
 
-@if (_currentHome is null)
+@using Spenses.Application.Models
+@using Spenses.Client.Web.Features.Homes
+
+@inherits BlazorState.BlazorStateComponent
+
+@if (HomeState.HomeRequesting)
 {
-  <h1>No home selected!</h1>
+  <h1>Loading...</h1>
 }
 else
 {
-  <h1>@_currentHome.Name</h1>
+  <h1>@CurrentHome?.Name</h1>
+
+  <FluentDataGrid Id="manualGrid" Items=@CurrentHome?.Members.AsQueryable() GridTemplateColumns="1fr 1fr 1fr 2fr" TGridItem=Member>
+    <PropertyColumn Title="Name" Property="@(c => c!.Name)" Sortable="true" Align=Align.Start/>
+    <PropertyColumn Title="Annual take-home income" Property="@(c => c!.AnnualTakeHomeIncome)" Sortable="true" Align=Align.End/>
+  </FluentDataGrid>
 }
 
 @code {
-  Home? _currentHome;
+
+  [Parameter]
+  public Guid HomeId { get; set; }
+
+  Home? CurrentHome => HomeState.CurrentHome;
+
+  HomeState HomeState => GetState<HomeState>();
+
+  protected override async Task OnParametersSetAsync()
+  {
+    await Mediator.Send(new HomeState.HomeSelected(HomeId));
+  }
+
 }

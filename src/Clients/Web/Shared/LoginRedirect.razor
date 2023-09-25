@@ -8,9 +8,8 @@
   protected override void OnInitialized()
   {
     var basePath = HttpUtility.UrlEncode(NavigationManager.ToBaseRelativePath(NavigationManager.Uri));
-
-    // NavigationManager.NavigateTo($"/authentication/login?returnUrl={basePath}", true);
-    NavigationManager.NavigateTo($"/authentication/login", true);
+    
+    NavigationManager.NavigateTo("/authentication/login", true);
   }
 
 }

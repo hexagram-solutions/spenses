@@ -52,9 +52,15 @@ public static class ProgramExtensions
         return services;
     }
 
-    public static IServiceCollection AddStateManagement(this IServiceCollection services)
+    public static IServiceCollection AddStateManagement(this IServiceCollection services, bool useDevTools)
     {
-        services.AddBlazorState(options => options.Assemblies = new[] { typeof(Program).GetTypeInfo().Assembly });
+        services.AddBlazorState(options =>
+        {
+            if (useDevTools)
+                options.UseReduxDevTools();
+
+            options.Assemblies = new[] { typeof(Program).GetTypeInfo().Assembly };
+        });
 
         return services;
     }

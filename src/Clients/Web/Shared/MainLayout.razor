@@ -1,45 +1,28 @@
 ﻿@using Spenses.Client.Web.Components
-@using System.Runtime.InteropServices
+
 @inherits LayoutComponentBase
 
 <PageTitle>Spenses.Client.Web</PageTitle>
 
-<div class="container">
-  <header>
-    <AppHeader />
-  </header>
-  <main>
-    <FluentMainLayout NavMenuTitle="Nav" HeaderHeight="0">
-      <NavMenuContent>
-        <FluentNavMenuLink Href="/" Text="Home"/>
-      </NavMenuContent>
-      <Body>
-      <FluentBodyContent>
-        <ErrorBoundary>
-          <ChildContent>
-            @Body
-          </ChildContent>
-          <ErrorContent Context="ex">
-            <p class="error">@ex.Message</p>
-          </ErrorContent>
-        </ErrorBoundary>
-      </FluentBodyContent>
-      </Body>
-    </FluentMainLayout>
-  </main>
-  <footer>
-    <FluentFooter>
-      <div class="version">
-        <small>
-          @* Version: @_version *@
-          Version: 0.0.0
-          &nbsp;-&nbsp;
-          <a href="https://dotnet.microsoft.com/en-us/learn/aspnet/what-is-aspnet-core">Powered by @RuntimeInformation.FrameworkDescription</a>
-        </small>
-      </div>
-      <div class="copy">
-        <small>Hexagram Solutions © @DateTime.Now.Year. All rights reserved.</small>
-      </div>
-    </FluentFooter>
-  </footer>
-</div>
+<main>
+  <FluentMainLayout NavMenuTitle="Nav">
+    <Header>
+      <AppHeader/>
+    </Header>
+    <NavMenuContent>
+      <FluentNavMenuLink Href="/" Text="Dashboard"/>
+    </NavMenuContent>
+    <Body>
+    <FluentBodyContent>
+      <ErrorBoundary>
+        <ChildContent>
+          @Body
+        </ChildContent>
+        <ErrorContent Context="ex">
+          <p class="error">@ex.Message</p>
+        </ErrorContent>
+      </ErrorBoundary>
+    </FluentBodyContent>
+    </Body>
+  </FluentMainLayout>
+</main>

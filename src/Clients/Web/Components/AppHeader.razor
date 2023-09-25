@@ -9,29 +9,7 @@
   <FluentEmoji Emoji="Emojis.Symbols.Flat.Default.HeavyDollarSign"/>
   Spenses
   <FluentDivider Role="DividerRole.Presentation" Orientation="Orientation.Vertical"/>
-  <FluentSelect TOption="Home"
-                Items="HomeState.Homes"
-                Id="homes-global-selection"
-                Value="HomeState.SelectedHome"
-                OptionValue="@(home => home.Id.ToString())"
-                OptionText="@(home => home.Name)"
-                Multiple="false"
-                SelectedOptionChanged="SelectHome" />
+  <HomeSelection />
   <FluentSpacer/>
   <AccessControl/>
 </FluentHeader>
-
-@code
-{
-  HomeState HomeState => GetState<HomeState>();
-
-  protected override async Task OnInitializedAsync()
-  {
-    await Mediator.Send(new HomeState.HomesRequested());
-  }
-
-  private async Task SelectHome(Home? selectedHome)
-  {
-    await Mediator.Send(new HomeState.HomeRequested { HomeId = selectedHome!.Id });
-  }
-}

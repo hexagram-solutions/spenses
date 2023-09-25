@@ -1,63 +1,8 @@
 ﻿@page "/"
 @page "/homes"
-@using Spenses.Application.Models
-@using Spenses.Client.Http
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 <PageTitle>Index</PageTitle>
 
-@inject IHomesApi Homes
-
 <PageTitle>Homes</PageTitle>
 
-<h1>Homes</h1>
-
-<FluentButton IconStart="@(new Icons.Filled.Size16.ArrowClockwise())" OnClick="RefreshHomes" Loading="_loading">
-  Refresh
-</FluentButton>
-
-@if (_loading)
-{
-  <p>
-    @* TODO: Loading skeleton *@
-    <em>Loading...</em>
-  </p>
-}
-else
-{
-  <FluentDataGrid Id="manualGrid" Items=@_homes GridTemplateColumns="1fr 1fr 1fr 2fr" TGridItem=Home>
-    <PropertyColumn Title="Name" Property="@(c => c!.Name)" Sortable="true" Align=Align.Start/>
-    <PropertyColumn Title="Description" Property="@(c => c!.Description)" Sortable="true" Align=Align.Center/>
-  </FluentDataGrid>
-}
-
-@code {
-  private bool _loading = true;
-  private IQueryable<Home>? _homes;
-
-  protected override async Task OnInitializedAsync()
-  {
-    await GetHomes();
-  }
-
-  private async Task RefreshHomes()
-  {
-    await GetHomes();
-  }
-
-  private async Task GetHomes()
-  {
-    _loading = true;
-    try
-    {
-      _homes = (await Homes.GetHomes()).AsQueryable();
-      _loading = false;
-    }
-    catch (AccessTokenNotAvailableException exception)
-    {
-      exception.Redirect();
-      _loading = false;
-    }
-  }
-
-}
+<h1>Select a home above</h1>
