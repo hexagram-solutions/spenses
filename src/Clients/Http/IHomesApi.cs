@@ -9,7 +9,7 @@ public interface IHomesApi
     Task<Home> PostHome(HomeProperties props);
 
     [Get("/homes")]
-    Task<Home[]> GetHomes();
+    Task<IEnumerable<Home>> GetHomes();
 
     [Get("/homes/{homeId}")]
     Task<Home> GetHome(Guid homeId);

@@ -1,6 +1,34 @@
-﻿<FluentHeader>
-    <FluentIcon Icon="@(Icons.Regular.Size24.Money)" Title="Icon" />
+﻿@using Spenses.Application.Models
+@using Spenses.Client.Http
+@inject IHomesApi Homes
+
+<FluentHeader>
+  <FluentEmoji Emoji="Emojis.Symbols.Flat.Default.HeavyDollarSign"/>
   Spenses
+  <FluentDivider Role="DividerRole.Presentation" Orientation="Orientation.Vertical"/>
+  <FluentSelect TOption="Home"
+                Items="_homes"
+                Id="homes-global-selection"
+                OptionValue="@(home => home.Id.ToString())"
+                OptionText="@(home => home.Name)"
+                @bind-Value="@_selectedHomeName"
+                @bind-SelectedOption="@_selectedHome"/>
   <FluentSpacer/>
   <AccessControl/>
 </FluentHeader>
+
+@code
+{
+  List<Home> _homes = new();
+  Home? _selectedHome;
+  string? _selectedHomeName;
+
+  protected override async Task OnInitializedAsync()
+  {
+    _homes = (await Homes.GetHomes()).ToList();
+
+    _selectedHome = _homes.First();
+
+    await base.OnInitializedAsync();
+  }
+}
