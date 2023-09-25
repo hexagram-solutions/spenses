@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor-State" Version="10.0.0" />
     <PackageReference Include="Hexagrams.Extensions.Authentication" Version="0.1.2" />
     <PackageReference Include="Hexagrams.Extensions.Common" Version="0.1.2" />
     <PackageReference Include="Hexagrams.Extensions.Configuration" Version="0.1.2" />

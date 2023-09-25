@@ -28,6 +28,8 @@ if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local))
 else
     builder.Services.AddApiClients(baseUrl, scopes);
 
+builder.Services.AddStateManagement();
+
 builder.Services.AddFluentUIComponents(options =>
 {
     options.HostingModel = BlazorHostingModel.WebAssembly;

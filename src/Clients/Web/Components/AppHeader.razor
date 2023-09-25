@@ -1,34 +1,37 @@
 ﻿@using Spenses.Application.Models
 @using Spenses.Client.Http
-@inject IHomesApi Homes
+@using Spenses.Client.Web.Features.Homes
+@using BlazorState
+
+@inherits BlazorStateComponent
 
 <FluentHeader>
   <FluentEmoji Emoji="Emojis.Symbols.Flat.Default.HeavyDollarSign"/>
   Spenses
   <FluentDivider Role="DividerRole.Presentation" Orientation="Orientation.Vertical"/>
   <FluentSelect TOption="Home"
-                Items="_homes"
+                Items="HomeState.Homes"
                 Id="homes-global-selection"
+                Value="HomeState.SelectedHome"
                 OptionValue="@(home => home.Id.ToString())"
                 OptionText="@(home => home.Name)"
-                @bind-Value="@_selectedHomeName"
-                @bind-SelectedOption="@_selectedHome"/>
+                Multiple="false"
+                SelectedOptionChanged="SelectHome" />
   <FluentSpacer/>
   <AccessControl/>
 </FluentHeader>
 
 @code
 {
-  List<Home> _homes = new();
-  Home? _selectedHome;
-  string? _selectedHomeName;
+  HomeState HomeState => GetState<HomeState>();
 
   protected override async Task OnInitializedAsync()
   {
-    _homes = (await Homes.GetHomes()).ToList();
+    await Mediator.Send(new HomeState.HomesRequested());
+  }
 
-    _selectedHome = _homes.First();
-
-    await base.OnInitializedAsync();
+  private async Task SelectHome(Home? selectedHome)
+  {
+    await Mediator.Send(new HomeState.HomeRequested { HomeId = selectedHome!.Id });
   }
 }

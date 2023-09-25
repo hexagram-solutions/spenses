@@ -1,0 +1,14 @@
+﻿@using Spenses.Application.Models
+
+@if (_currentHome is null)
+{
+  <h1>No home selected!</h1>
+}
+else
+{
+  <h1>@_currentHome.Name</h1>
+}
+
+@code {
+  Home? _currentHome;
+}
