@@ -20,8 +20,13 @@ builder.Services.AddAuth0Authentication(
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
-builder.Services.AddApiClients(builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl),
-    new[] { "openid", "profile", "email" });
+var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
+var scopes = new[] { "openid", "profile", "email" };
+
+if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local))
+    builder.Services.AddApiClients(baseUrl, scopes, TimeSpan.FromMilliseconds(500));
+else
+    builder.Services.AddApiClients(baseUrl, scopes);
 
 builder.Services.AddFluentUIComponents(options =>
 {
