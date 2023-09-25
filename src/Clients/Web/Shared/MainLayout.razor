@@ -1,38 +1,45 @@
-﻿@inherits LayoutComponentBase
+﻿@using Spenses.Client.Web.Components
+@using System.Runtime.InteropServices
+@inherits LayoutComponentBase
 
 <PageTitle>Spenses.Client.Web</PageTitle>
 
 <div class="container">
-  <div class="siteheader">
-    <a href="/">Home</a>
-    <a href="https://www.fluentui-blazor.net" target="_blank">Documentation and demos</a>
-    <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor" target="_blank">About Blazor</a>
-  </div>
-  <div class="main">
-    <div class="navigation">
-      <NavMenu/>
-    </div>
-
-    <div class="content">
-      <main>
-
-        <div class="top-row px-4">
-          <AccessControl/>
-          <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-
-          <ErrorBoundary>
-            <ChildContent>
-              @Body
-            </ChildContent>
-            <ErrorContent Context="ex">
-              <p class="error">@ex.Message</p>
-            </ErrorContent>
-          </ErrorBoundary>
-        </article>
-      </main>
-    </div>
-  </div>
+  <header>
+    <AppHeader />
+  </header>
+  <main>
+    <FluentMainLayout NavMenuTitle="Nav" HeaderHeight="0">
+      <NavMenuContent>
+        <FluentNavMenuLink Href="/" Text="Home"/>
+      </NavMenuContent>
+      <Body>
+      <FluentBodyContent>
+        <ErrorBoundary>
+          <ChildContent>
+            @Body
+          </ChildContent>
+          <ErrorContent Context="ex">
+            <p class="error">@ex.Message</p>
+          </ErrorContent>
+        </ErrorBoundary>
+      </FluentBodyContent>
+      </Body>
+    </FluentMainLayout>
+  </main>
+  <footer>
+    <FluentFooter>
+      <div class="version">
+        <small>
+          @* Version: @_version *@
+          Version: 0.0.0
+          &nbsp;-&nbsp;
+          <a href="https://dotnet.microsoft.com/en-us/learn/aspnet/what-is-aspnet-core">Powered by @RuntimeInformation.FrameworkDescription</a>
+        </small>
+      </div>
+      <div class="copy">
+        <small>Hexagram Solutions © @DateTime.Now.Year. All rights reserved.</small>
+      </div>
+    </FluentFooter>
+  </footer>
 </div>
