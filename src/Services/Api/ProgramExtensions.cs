@@ -12,8 +12,6 @@ public static class ProgramExtensions
     public static IServiceCollection AddAuth0Authentication(this IServiceCollection services, string authority,
         string audience)
     {
-        IdentityModelEventSource.ShowPII = true; // todo: dev only
-
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

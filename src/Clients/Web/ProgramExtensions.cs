@@ -1,4 +1,5 @@
 using Hexagrams.Extensions.Authentication.OAuth;
+using Hexagrams.Extensions.Common.Http;
 using Refit;
 using Spenses.Client.Http;
 using Spenses.Client.Web.Infrastructure;
@@ -23,7 +24,8 @@ public static class ProgramExtensions
         return services;
     }
 
-    public static IServiceCollection AddApiClients(this IServiceCollection services, string baseUrl, string[] scopes)
+    public static IServiceCollection AddApiClients(this IServiceCollection services, string baseUrl, string[] scopes,
+        TimeSpan? delay = null)
     {
         services.AddAccessTokenProvider(options =>
         {
@@ -34,10 +36,16 @@ public static class ProgramExtensions
         services.AddTransient(sp => new BearerTokenAuthenticationHandler(
             sp.GetRequiredService<IAccessTokenProvider>(), scopes));
 
-        services
+        var clientBuilder = services
             .AddRefitClient<IHomesApi>()
             .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
             .AddHttpMessageHandler<BearerTokenAuthenticationHandler>();
+
+        if (delay is not null)
+        {
+            services.AddTransient(_ => new DelayingHttpHandler(TimeSpan.FromMilliseconds(500)));
+            clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
+        }
 
         return services;
     }

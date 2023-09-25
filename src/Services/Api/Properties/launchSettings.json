@@ -4,7 +4,7 @@
       "commandName": "Project",
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Local"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:8081;http://localhost:8080"
@@ -13,7 +13,8 @@
       "commandName": "Docker",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_URLS": "https://+:443;http://+:80"
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_ENVIRONMENT": "Local"
       },
       "publishAllPorts": true,
       "useSSL": true

@@ -1,6 +1,5 @@
 ﻿@page "/"
 @page "/homes"
-
 @using Spenses.Application.Models
 @using Spenses.Client.Http
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
@@ -13,11 +12,14 @@
 
 <h1>Homes</h1>
 
-<p>This component demonstrates fetching data from a service.</p>
+<FluentButton IconStart="@(new Icons.Filled.Size16.ArrowClockwise())" OnClick="RefreshHomes" Loading="_loading">
+  Refresh
+</FluentButton>
 
-@if (_homes is null)
+@if (_loading)
 {
   <p>
+    @* TODO: Loading skeleton *@
     <em>Loading...</em>
   </p>
 }
@@ -30,17 +32,31 @@ else
 }
 
 @code {
+  private bool _loading = true;
   private IQueryable<Home>? _homes;
 
   protected override async Task OnInitializedAsync()
   {
+    await GetHomes();
+  }
+
+  private async Task RefreshHomes()
+  {
+    await GetHomes();
+  }
+
+  private async Task GetHomes()
+  {
+    _loading = true;
     try
     {
       _homes = (await Homes.GetHomes()).AsQueryable();
+      _loading = false;
     }
     catch (AccessTokenNotAvailableException exception)
     {
       exception.Redirect();
+      _loading = false;
     }
   }
 

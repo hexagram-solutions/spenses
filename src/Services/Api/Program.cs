@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
 using Spenses.Application.Common;
 using Spenses.Application.Extensions;
@@ -65,6 +66,8 @@ if (app.Environment.IsEnvironment(EnvironmentNames.Local) ||
     app.Environment.IsEnvironment(EnvironmentNames.Development))
 {
     app.UseDeveloperExceptionPage();
+
+    IdentityModelEventSource.ShowPII = true;
 }
 else
 {
