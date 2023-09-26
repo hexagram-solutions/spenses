@@ -11,7 +11,11 @@ public class Expense : Entity
     [Precision(10, 2)]
     public decimal Amount { get; set; }
 
-    public Member Member { get; set; } = null!;
+    public Guid IncurredByMemberId { get; set; }
+
+    public Member IncurredByMember { get; set; } = null!;
+
+    public Guid HomeId { get; set; }
 
     public Home Home { get; set; } = null!;
 }

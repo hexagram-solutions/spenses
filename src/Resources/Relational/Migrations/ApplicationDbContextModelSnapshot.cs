@@ -17,7 +17,7 @@ namespace Spenses.Resources.Relational.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "7.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -41,14 +41,14 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("MemberId")
+                    b.Property<Guid>("IncurredByMemberId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("HomeId");
 
-                    b.HasIndex("MemberId");
+                    b.HasIndex("IncurredByMemberId");
 
                     b.ToTable("Expense");
                 });
@@ -96,20 +96,20 @@ namespace Spenses.Resources.Relational.Migrations
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
                 {
                     b.HasOne("Spenses.Resources.Relational.Models.Home", "Home")
-                        .WithMany()
+                        .WithMany("Expenses")
                         .HasForeignKey("HomeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.Member", "Member")
+                    b.HasOne("Spenses.Resources.Relational.Models.Member", "IncurredByMember")
                         .WithMany("Expenses")
-                        .HasForeignKey("MemberId")
+                        .HasForeignKey("IncurredByMemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Home");
 
-                    b.Navigation("Member");
+                    b.Navigation("IncurredByMember");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Member", b =>
@@ -125,6 +125,8 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Home", b =>
                 {
+                    b.Navigation("Expenses");
+
                     b.Navigation("Members");
                 });
 

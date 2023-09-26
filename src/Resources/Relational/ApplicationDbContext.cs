@@ -43,7 +43,7 @@ public class ApplicationDbContext : DbContext
         }
 
         modelBuilder.Entity<Expense>()
-            .HasOne(x => x.Member)
+            .HasOne(x => x.IncurredByMember)
             .WithMany(x => x.Expenses)
             .OnDelete(DeleteBehavior.Restrict);
     }
