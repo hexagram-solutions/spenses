@@ -41,6 +41,8 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
 
         _mapper.Map(request.Props, expense);
 
+        expense.IncurredByMemberId = props.IncurredByMemberId;
+
         await _db.SaveChangesAsync(cancellationToken);
 
         return _mapper.Map<Expense>(expense);

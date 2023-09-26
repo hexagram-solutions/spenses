@@ -23,6 +23,8 @@ public class HomesMappingProfile : Profile
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())
             .ForMember(dest => dest.Expenses, opts => opts.Ignore());
 
+        CreateMap<DbModels.Expense, Expense>();
+
         CreateMap<ExpenseProperties, DbModels.Expense>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())
             .ForMember(dest => dest.Home, opts => opts.Ignore())

@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Homes.Expenses;
+using Spenses.Application.Features.Homes.Members;
 using Spenses.Application.Models;
 
 namespace Spenses.Api.Controllers;
@@ -26,7 +27,7 @@ public class HomeExpensesController : ApiControllerBase
 
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
-    public async Task<ActionResult<IEnumerable<Expense>>> GetExpenses(Guid homeId) // todo: tags, digest model
+    public async Task<ActionResult<IEnumerable<Expense>>> GetExpenses(Guid homeId)
     {
         return await GetCommandResult<IEnumerable<Expense>, ExpensesQuery>(new ExpensesQuery(homeId), Ok);
     }
@@ -44,5 +45,12 @@ public class HomeExpensesController : ApiControllerBase
     {
         return await GetCommandResult<Expense, UpdateExpenseCommand>(
             new UpdateExpenseCommand(homeId, expenseId, props), Ok);
+    }
+
+    [HttpDelete("{expenseId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
+    public Task<ActionResult> DeleteMember(Guid homeId, Guid expenseId)
+    {
+        return GetCommandResult(new DeleteExpenseCommand(homeId, expenseId), NoContent);
     }
 }

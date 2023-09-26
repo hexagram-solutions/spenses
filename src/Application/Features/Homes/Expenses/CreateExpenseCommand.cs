@@ -40,6 +40,9 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
 
         var expense = _mapper.Map<DbModels.Expense>(props);
 
+        expense.HomeId = homeId;
+        expense.IncurredByMemberId = props.IncurredByMemberId;
+
         home.Expenses.Add(expense);
 
         await _db.SaveChangesAsync(cancellationToken);

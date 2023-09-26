@@ -44,7 +44,7 @@ public class HomeMembersIntegrationTests
         var updatedMember = await _homeMembers.PutHomeMember(home.Id, member.Id, properties);
         updatedMember.Should().BeEquivalentTo(properties);
 
-        var retrievedMember = await _homeMembers.GetHomeMember(home.Id, member.Id);
-        retrievedMember.Should().BeEquivalentTo(updatedMember);
+        var fetchedMember = await _homeMembers.GetHomeMember(home.Id, member.Id);
+        fetchedMember.Should().BeEquivalentTo(updatedMember);
     }
 }

@@ -12,6 +12,6 @@ public record MemberProperties
 {
     [Required]
     public string Name { get; set; } = null!;
-    
+
     public decimal AnnualTakeHomeIncome { get; set; }
 }
