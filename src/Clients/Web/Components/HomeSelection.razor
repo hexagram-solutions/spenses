@@ -1,0 +1,32 @@
+﻿@using Spenses.Client.Web.Features.Homes
+@using Spenses.Application.Models
+@inherits BlazorState.BlazorStateComponent
+
+@inject NavigationManager NavigationManager;
+
+<FluentSelect Id="homes-global-selection"
+              Appearance="Appearance.Stealth"
+              Multiple="false"
+              TOption="Home"
+              Items="HomeState.Homes"
+              OptionValue="@(home => home.Id.ToString())"
+              OptionText="@(home => home.Name)"
+              SelectedOption="CurrentHome"
+              SelectedOptionChanged="SelectHome"/>
+
+@code
+{
+  HomeState HomeState => GetState<HomeState>();
+
+  private Home? CurrentHome => HomeState.CurrentHome;
+
+  protected override async Task OnInitializedAsync()
+  {
+    await Mediator.Send(new HomeState.HomesRequested());
+  }
+
+  private void SelectHome(Home? selectedHome)
+  {
+    NavigationManager.NavigateTo($"homes/{selectedHome!.Id}/dashboard");
+  }
+}

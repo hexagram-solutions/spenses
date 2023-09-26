@@ -1,6 +1,15 @@
-﻿<FluentHeader>
-    <FluentIcon Icon="@(Icons.Regular.Size24.Money)" Title="Icon" />
+﻿@using Spenses.Application.Models
+@using Spenses.Client.Http
+@using Spenses.Client.Web.Features.Homes
+@using BlazorState
+
+@inherits BlazorStateComponent
+
+<FluentHeader>
+  <FluentEmoji Emoji="Emojis.Symbols.Flat.Default.HeavyDollarSign"/>
   Spenses
+  <FluentDivider Role="DividerRole.Presentation" Orientation="Orientation.Vertical"/>
+  <HomeSelection />
   <FluentSpacer/>
   <AccessControl/>
 </FluentHeader>

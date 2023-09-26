@@ -1,3 +1,5 @@
+using System.Reflection;
+using BlazorState;
 using Hexagrams.Extensions.Authentication.OAuth;
 using Hexagrams.Extensions.Common.Http;
 using Refit;
@@ -46,6 +48,19 @@ public static class ProgramExtensions
             services.AddTransient(_ => new DelayingHttpHandler(TimeSpan.FromMilliseconds(500)));
             clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
         }
+
+        return services;
+    }
+
+    public static IServiceCollection AddStateManagement(this IServiceCollection services, bool useDevTools)
+    {
+        services.AddBlazorState(options =>
+        {
+            if (useDevTools)
+                options.UseReduxDevTools();
+
+            options.Assemblies = new[] { typeof(Program).GetTypeInfo().Assembly };
+        });
 
         return services;
     }
