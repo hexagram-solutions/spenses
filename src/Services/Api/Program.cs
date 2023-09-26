@@ -3,6 +3,7 @@ using Hexagrams.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
+using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
 using Spenses.Application.Extensions;
 using Spenses.Resources.Relational;
@@ -14,7 +15,10 @@ builder.Configuration.SetKeyDelimiters(":", "_", "-", ".");
 builder.Services.AddControllers();
 
 builder.Services
-    .AddControllers()
+    .AddControllers(options =>
+    {
+        options.Filters.Add<UserSyncFilter>();
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -43,6 +47,7 @@ builder.Services.AddCors(opts =>
 builder.Services.AddHealthChecks();
 
 builder.Services.AddApplicationServices();
+builder.Services.AddUserServices();
 
 builder.Services.AddDbContext<ApplicationDbContext>(opts =>
     opts.UseSqlServer(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString)));
@@ -88,7 +93,7 @@ app.UseAuthorization();
 app.MapControllers()
     .RequireAuthorization();
 
-app.MapHealthChecks("/");
+app.MapHealthChecks("/healthz");
 
 app.Run();
 

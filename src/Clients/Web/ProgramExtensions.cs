@@ -38,16 +38,24 @@ public static class ProgramExtensions
         services.AddTransient(sp => new BearerTokenAuthenticationHandler(
             sp.GetRequiredService<IAccessTokenProvider>(), scopes));
 
-        var clientBuilder = services
-            .AddRefitClient<IHomesApi>()
-            .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
-            .AddHttpMessageHandler<BearerTokenAuthenticationHandler>();
+        if (delay.HasValue)
+            services.AddTransient(_ => new DelayingHttpHandler(delay.Value));
 
-        if (delay is not null)
+        void AddApiClient<T>()
+            where T : class
         {
-            services.AddTransient(_ => new DelayingHttpHandler(TimeSpan.FromMilliseconds(500)));
-            clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
+            var clientBuilder = services
+                .AddRefitClient<T>()
+                .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
+                .AddHttpMessageHandler<BearerTokenAuthenticationHandler>();
+
+            if (delay.HasValue)
+                clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
         }
+
+        AddApiClient<IHomesApi>();
+        AddApiClient<IHomeMembersApi>();
+        AddApiClient<IHomeExpensesApi>();
 
         return services;
     }

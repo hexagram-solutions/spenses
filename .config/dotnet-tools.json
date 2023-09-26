@@ -13,6 +13,12 @@
       "commands": [
         "nuke"
       ]
+    },
+    "xerris.oidccli": {
+      "version": "0.2.0",
+      "commands": [
+        "dotnet-oidccli"
+      ]
     }
   }
 }

@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.AspNetCore;
+using Spenses.Api.Infrastructure;
+using Spenses.Application.Services;
 
 namespace Spenses.Api;
 
@@ -66,6 +68,14 @@ public static class ProgramExtensions
                     }
                 });
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddUserServices(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
 
         return services;
     }

@@ -93,6 +93,28 @@ namespace Spenses.Resources.Relational.Migrations
                     b.ToTable("Member");
                 });
 
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Issuer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserIdentity");
+                });
+
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
                 {
                     b.HasOne("Spenses.Resources.Relational.Models.Home", "Home")

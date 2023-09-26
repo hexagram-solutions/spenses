@@ -25,6 +25,20 @@ namespace Spenses.Resources.Relational.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserIdentity",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Issuer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserIdentity", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Member",
                 columns: table => new
                 {
@@ -93,6 +107,9 @@ namespace Spenses.Resources.Relational.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Expense");
+
+            migrationBuilder.DropTable(
+                name: "UserIdentity");
 
             migrationBuilder.DropTable(
                 name: "Member");

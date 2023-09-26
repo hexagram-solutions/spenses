@@ -23,11 +23,13 @@ public class ApplicationDbContext : DbContext
         optionsBuilder.UseSqlServer("Server=.;Database=Spenses;Trusted_Connection=True;Encrypt=False;");
     }
 
+    public DbSet<Expense> Expenses => Set<Expense>();
+
     public DbSet<Home> Homes => Set<Home>();
 
     public DbSet<Member> Members => Set<Member>();
 
-    public DbSet<Expense> Expenses => Set<Expense>();
+    public DbSet<UserIdentity> Users => Set<UserIdentity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

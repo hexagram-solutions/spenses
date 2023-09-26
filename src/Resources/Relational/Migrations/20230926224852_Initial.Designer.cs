@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230926180948_Initial")]
+    [Migration("20230926224852_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -94,6 +94,28 @@ namespace Spenses.Resources.Relational.Migrations
                     b.HasIndex("HomeId");
 
                     b.ToTable("Member");
+                });
+
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Issuer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserIdentity");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
