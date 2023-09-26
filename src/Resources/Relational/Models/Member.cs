@@ -9,6 +9,8 @@ public class Member : Entity
     [Precision(10, 2)]
     public decimal AnnualTakeHomeIncome { get; set; }
 
+    public Guid HomeId { get; set; }
+
     public Home Home { get; set; } = null!;
 
     public ICollection<Expense> Expenses { get; set; } = new List<Expense>();

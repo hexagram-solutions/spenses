@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
 
 namespace Spenses.Application.Models;
 
@@ -14,6 +13,5 @@ public record MemberProperties
     [Required]
     public string Name { get; set; } = null!;
 
-    [Precision(10, 2)]
     public decimal AnnualTakeHomeIncome { get; set; }
 }

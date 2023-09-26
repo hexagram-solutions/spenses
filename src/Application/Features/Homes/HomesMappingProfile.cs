@@ -10,7 +10,8 @@ public class HomesMappingProfile : Profile
     {
         CreateMap<HomeProperties, DbModels.Home>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())
-            .ForMember(dest => dest.Members, opts => opts.Ignore());
+            .ForMember(dest => dest.Members, opts => opts.Ignore())
+            .ForMember(dest => dest.Expenses, opts => opts.Ignore());
 
         CreateMap<DbModels.Home, Home>();
 
@@ -19,6 +20,17 @@ public class HomesMappingProfile : Profile
         CreateMap<MemberProperties, DbModels.Member>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())
             .ForMember(dest => dest.Home, opts => opts.Ignore())
+            .ForMember(dest => dest.HomeId, opts => opts.Ignore())
             .ForMember(dest => dest.Expenses, opts => opts.Ignore());
+
+        CreateMap<DbModels.Expense, Expense>();
+
+        CreateMap<ExpenseProperties, DbModels.Expense>()
+            .ForMember(dest => dest.Id, opts => opts.Ignore())
+            .ForMember(dest => dest.Home, opts => opts.Ignore())
+            .ForMember(dest => dest.HomeId, opts => opts.Ignore())
+            .ForMember(dest => dest.IncurredByMemberId, opts => opts.Ignore())
+            .ForMember(dest => dest.IncurredByMember, opts => opts.Ignore());
+
     }
 }

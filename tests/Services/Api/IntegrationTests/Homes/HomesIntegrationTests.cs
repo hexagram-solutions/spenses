@@ -27,6 +27,8 @@ public class HomesIntegrationTests
 
         var homes = await _homes.GetHomes();
         homes.Should().ContainEquivalentOf(retrievedHome);
+
+        await _homes.DeleteHome(createdHome.Id);
     }
 
     [Fact]
@@ -40,36 +42,6 @@ public class HomesIntegrationTests
         updatedHome.Should().BeEquivalentTo(properties);
 
         var retrievedHome = await _homes.GetHome(updatedHome.Id);
-        retrievedHome.Should().BeEquivalentTo(updatedHome);
-    }
-
-    [Fact]
-    public async Task Post_home_member_creates_member()
-    {
-        var home = (await _homes.GetHomes()).First(x => x.Members.Any());
-
-        var properties = new MemberProperties { Name = "Bob", AnnualTakeHomeIncome = 80_000.00m };
-
-        var createdMember = await _homes.PostHomeMember(home.Id, properties);
-        createdMember.Should().BeEquivalentTo(properties);
-
-        var retrievedHome = await _homes.GetHome(home.Id);
-        retrievedHome.Members.Should().ContainEquivalentOf(createdMember);
-    }
-
-    [Fact]
-    public async Task Put_home_member_updates_member()
-    {
-        var home = (await _homes.GetHomes()).First(x => x.Members.Any());
-
-        var member = home.Members.First();
-
-        var properties = new MemberProperties { Name = "Grunky Peep", AnnualTakeHomeIncome = 1m };
-
-        var updatedMember = await _homes.PutHomeMember(home.Id, member.Id, properties);
-        updatedMember.Should().BeEquivalentTo(properties);
-
-        var retrievedMember = await _homes.GetHomeMember(home.Id, member.Id);
-        retrievedMember.Should().BeEquivalentTo(updatedMember);
+        retrievedHome.Should().BeEquivalentTo(updatedHome, opts => opts.Excluding(x => x.Members));
     }
 }

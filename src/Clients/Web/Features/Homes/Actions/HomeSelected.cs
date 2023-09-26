@@ -35,7 +35,7 @@ public partial class HomeState
 
             HomeState.HomeRequesting = false;
 
-            //_navigationManager.NavigateTo($"/homes/{home.Id}/dashboard");
+            //_navigationManager.NavigateTo($"/homes/{home.HomeId}/dashboard");
         }
     }
 }

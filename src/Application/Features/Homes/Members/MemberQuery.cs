@@ -8,7 +8,7 @@ using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Members;
 
-public record MemberQuery(Guid Id) : IRequest<ServiceResult<Member>>;
+public record MemberQuery(Guid HomeId, Guid MemberId) : IRequest<ServiceResult<Member>>;
 
 public class MemberQueryHandler : IRequestHandler<MemberQuery, ServiceResult<Member>>
 {
@@ -23,10 +23,13 @@ public class MemberQueryHandler : IRequestHandler<MemberQuery, ServiceResult<Mem
 
     public async Task<ServiceResult<Member>> Handle(MemberQuery request, CancellationToken cancellationToken)
     {
-        var member = await _db.Members
-            .ProjectTo<Member>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
+        var (homeId, memberId) = request;
 
-        return member is null ? new NotFoundErrorResult(request.Id) : member;
+        var member = await _db.Members
+            .Where(m => m.HomeId == homeId)
+            .ProjectTo<Member>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
+
+        return member is null ? new NotFoundErrorResult(request.MemberId) : member;
     }
 }
