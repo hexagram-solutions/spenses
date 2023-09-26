@@ -43,4 +43,11 @@ public class HomesController : ApiControllerBase
     {
         return GetCommandResult<Home, UpdateHomeCommand>(new UpdateHomeCommand(homeId, props), Ok);
     }
+
+    [HttpDelete("{homeId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
+    public Task<ActionResult> DeleteHome(Guid homeId)
+    {
+        return GetCommandResult(new DeleteHomeCommand(homeId), NoContent);
+    }
 }

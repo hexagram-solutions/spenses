@@ -17,24 +17,38 @@ public class HomeMembersController : ApiControllerBase
 
     [HttpPost]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
-    public async Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
+    public Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
     {
-        return await GetCommandResult<Member, AddMemberToHomeCommand>(
+        return GetCommandResult<Member, AddMemberToHomeCommand>(
             new AddMemberToHomeCommand(homeId, props),
             x => CreatedAtAction(nameof(GetMember), new { homeId, memberId = x.Id }, x));
     }
 
+    [HttpGet]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
+    public Task<ActionResult<IEnumerable<Member>>> GetMembers(Guid homeId)
+    {
+        return GetCommandResult<IEnumerable<Member>, MembersQuery>(new MembersQuery(homeId), Ok);
+    }
+
     [HttpGet("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
-    public async Task<ActionResult<Member>> GetMember(Guid homeId, Guid memberId)
+    public Task<ActionResult<Member>> GetMember(Guid homeId, Guid memberId)
     {
-        return await GetCommandResult<Member, MemberQuery>(new MemberQuery(memberId), Ok);
+        return GetCommandResult<Member, MemberQuery>(new MemberQuery(homeId, memberId), Ok);
     }
 
     [HttpPut("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
-    public async Task<ActionResult<Member>> PutMember(Guid homeId, Guid memberId, MemberProperties props)
+    public Task<ActionResult<Member>> PutMember(Guid homeId, Guid memberId, MemberProperties props)
     {
-        return await GetCommandResult<Member, UpdateMemberCommand>(new UpdateMemberCommand(memberId, props), Ok);
+        return GetCommandResult<Member, UpdateMemberCommand>(new UpdateMemberCommand(homeId, memberId, props), Ok);
+    }
+
+    [HttpDelete("{memberId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
+    public Task<ActionResult> DeleteMember(Guid homeId, Guid memberId)
+    {
+        return GetCommandResult(new DeleteMemberCommand(homeId, memberId), NoContent);
     }
 }

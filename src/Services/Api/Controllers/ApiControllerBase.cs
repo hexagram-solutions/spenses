@@ -14,6 +14,16 @@ public abstract class ApiControllerBase : ControllerBase
 
     protected readonly IMediator Mediator;
 
+    protected async Task<ActionResult> GetCommandResult<TRequest>(TRequest request, Func<ActionResult> successAction)
+        where TRequest : IRequest<ServiceResult>
+    {
+        var result = await Mediator.Send(request);
+
+        return !result.IsSuccess
+            ? (result as ErrorResult)!.ToActionResult()
+            : successAction();
+    }
+
     protected async Task<ActionResult<TResult>> GetCommandResult<TResult, TRequest>(TRequest request,
         Func<TResult, ActionResult> successAction)
         where TRequest : IRequest<ServiceResult<TResult>>

@@ -7,7 +7,7 @@ using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Members;
 
-public record UpdateMemberCommand(Guid Id, MemberProperties Props) : IRequest<ServiceResult<Member>>;
+public record UpdateMemberCommand(Guid HomeId, Guid MemberId, MemberProperties Props) : IRequest<ServiceResult<Member>>;
 
 public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, ServiceResult<Member>>
 {
@@ -22,12 +22,16 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, S
 
     public async Task<ServiceResult<Member>> Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
     {
-        var member = await _db.Members.FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
+        var (homeId, memberId, props) = request;
+
+        var member = await _db.Members
+            .Where(m => m.HomeId == homeId)
+            .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
 
         if (member is null)
-            return new NotFoundErrorResult(request.Id);
+            return new NotFoundErrorResult(memberId);
 
-        _mapper.Map(request.Props, member);
+        _mapper.Map(props, member);
 
         await _db.SaveChangesAsync(cancellationToken);
 
