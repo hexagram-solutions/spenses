@@ -6,5 +6,7 @@ public class Home : Entity
 
     public string? Description { get; set; }
 
-    public ICollection<Member> Members { get; set; } = new List<Member>();
+    public ICollection<Member> Members { get; set; } = new HashSet<Member>();
+
+    public ICollection<Expense> Expenses { get; set; } = new HashSet<Expense>();
 }
