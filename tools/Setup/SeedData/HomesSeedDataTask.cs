@@ -9,24 +9,27 @@ public class HomesSeedDataTask : ISeedDataTask
 
     public async Task SeedData(ApplicationDbContext db)
     {
-        await db.Homes.AddAsync(new Home
-        {
-            Name = "Test home",
-            Description = "Test home for integration testing",
-            Members =
+        await db.Homes.AddRangeAsync(
+            new Home
             {
-                new Member
+                Name = "Test home",
+                Description = "Test home for integration testing",
+                Members =
                 {
-                    Name = "Alice",
-                    AnnualTakeHomeIncome = 80_000m
-                },
-                new Member
-                {
-                    Name = "Bob",
-                    AnnualTakeHomeIncome = 72_000m
+                    new Member { Name = "Alice", AnnualTakeHomeIncome = 80_000m },
+                    new Member { Name = "Bob", AnnualTakeHomeIncome = 72_000m }
                 }
-            }
-        });
+            },
+            new Home
+            {
+                Name = "Test home 2",
+                Description = "Second test home",
+                Members =
+                {
+                    new Member { Name = "Charlie", AnnualTakeHomeIncome = 80_000m },
+                    new Member { Name = "Dale", AnnualTakeHomeIncome = 72_000m }
+                }
+            });
 
         await db.SaveChangesAsync();
     }
