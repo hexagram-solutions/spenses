@@ -2,6 +2,7 @@ using System.CommandLine;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Spenses.Resources.Relational;
+using Spenses.Resources.Relational.Interceptors;
 using Spenses.Tools.Setup.SeedData;
 
 namespace Spenses.Tools.Setup;
@@ -110,7 +111,8 @@ public class DbSetupCommand : RootCommand
 
     private ApplicationDbContext CreateDbContext(string? connection)
     {
-        return new ApplicationDbContext(_dbContextOptionsFactory.Create(connection));
+        return new ApplicationDbContext(_dbContextOptionsFactory.Create(connection),
+            new AuditableEntitySaveChangesInterceptor(new SystemCurrentUserService()));
     }
 
     private static bool Confirm(string prompt)
