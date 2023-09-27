@@ -192,7 +192,7 @@ namespace Spenses.Resources.Relational.Migrations
                     b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
                         .WithMany("ModifiedExpenses")
                         .HasForeignKey("ModifiedById")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CreatedBy");

@@ -43,6 +43,17 @@ public class ApplicationDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        ConfigureTableNames(modelBuilder);
+        ConfigureAuditingNavigationProperties(modelBuilder);
+
+        modelBuilder.Entity<Expense>()
+            .HasOne(x => x.IncurredByMember)
+            .WithMany(x => x.Expenses)
+            .OnDelete(DeleteBehavior.Restrict);
+    }
+
+    private static void ConfigureTableNames(ModelBuilder modelBuilder)
+    {
         //Sets table names for entities to their CLR type name, bypassing rule to use the name of the DbSet.
         foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes())
         {
@@ -51,69 +62,27 @@ public class ApplicationDbContext : DbContext
 
             mutableEntityType.SetTableName(mutableEntityType.ClrType.Name);
         }
+    }
+    private static void ConfigureAuditingNavigationProperties(ModelBuilder modelBuilder)
+    {
+        var auditableNavigationProperties = typeof(UserIdentity).GetProperties()
+            .Where(np => np.PropertyType.IsGenericType &&
+                np.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>) &&
+                np.PropertyType.GenericTypeArguments.Single().IsSubclassOf(typeof(AggregateRoot)));
 
-        //static void ConfigureUserIdentity<TEntity>(ModelBuilder modelBuilder)
-        //    where TEntity : UserIdentity
-        //{
-        //    // get model properties by reflection
-        //    var navigationProperties = typeof(UserIdentity).GetProperties()
-        //        .Where(p => p.PropertyType == typeof(ICollection<>));
-
-        //    modelBuilder.Entity<UserIdentity>(builder =>
-        //    {
-        //        foreach (var navigationProperty in navigationProperties)
-        //        {
-        //            var navigationPropertyEntity = navigationProperty.PropertyType.GetGenericArguments().Single();
-
-        //            builder.HasMany(navigationProperty.Name)
-        //                .WithOne(navigationPropertyEntity.Name)
-        //                .OnDelete(DeleteBehavior.Restrict);
-        //        }
-        //    });
-        //}
-
-        foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes().Where(et => et.ClrType.BaseType == typeof(AggregateRoot)))
+        modelBuilder.Entity<UserIdentity>(builder =>
         {
-            if (mutableEntityType.IsOwned())
-                continue;
+            foreach (var navigationProperty in auditableNavigationProperties)
+            {
+                var incomingNavigationPropertyName = navigationProperty.Name.Contains("Created")
+                    ? nameof(AggregateRoot.CreatedBy)
+                    : nameof(AggregateRoot.ModifiedBy);
 
-            mutableEntityType.SetTableName(mutableEntityType.ClrType.Name);
-        }
-
-        modelBuilder.Entity<Expense>()
-            .HasOne(x => x.IncurredByMember)
-            .WithMany(x => x.Expenses)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<UserIdentity>()
-            .HasMany(x => x.CreatedExpenses)
-            .WithOne(x => x.CreatedBy)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<UserIdentity>()
-            .HasMany(x => x.ModifiedMembers)
-            .WithOne(x => x.ModifiedBy)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<UserIdentity>()
-            .HasMany(x => x.CreatedMembers)
-            .WithOne(x => x.CreatedBy)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<UserIdentity>()
-            .HasMany(x => x.ModifiedMembers)
-            .WithOne(x => x.ModifiedBy)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<UserIdentity>()
-            .HasMany(x => x.CreatedHomes)
-            .WithOne(x => x.CreatedBy)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<UserIdentity>()
-            .HasMany(x => x.ModifiedHomes)
-            .WithOne(x => x.ModifiedBy)
-            .OnDelete(DeleteBehavior.Restrict);
+                builder.HasMany(navigationProperty.Name)
+                    .WithOne(incomingNavigationPropertyName)
+                    .OnDelete(DeleteBehavior.Restrict);
+            }
+        });
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

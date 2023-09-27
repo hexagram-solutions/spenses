@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230927152537_Initial")]
+    [Migration("20230927160554_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -195,7 +195,7 @@ namespace Spenses.Resources.Relational.Migrations
                     b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
                         .WithMany("ModifiedExpenses")
                         .HasForeignKey("ModifiedById")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CreatedBy");

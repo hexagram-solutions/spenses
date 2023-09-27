@@ -1,11 +1,10 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
-using Spenses.Application.Services;
+using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api;
 

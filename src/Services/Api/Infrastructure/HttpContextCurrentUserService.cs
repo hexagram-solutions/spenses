@@ -1,5 +1,5 @@
-using Spenses.Application.Services;
 using System.Security.Claims;
+using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api.Infrastructure;
 

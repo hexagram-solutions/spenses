@@ -131,7 +131,7 @@ namespace Spenses.Resources.Relational.Migrations
                         column: x => x.ModifiedById,
                         principalTable: "UserIdentity",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

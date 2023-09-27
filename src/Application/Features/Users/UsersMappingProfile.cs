@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using AutoMapper;
-using Spenses.Application.Common;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational.Models;
+using Spenses.Utilities.Security;
 
 namespace Spenses.Application.Features.Users;
 
