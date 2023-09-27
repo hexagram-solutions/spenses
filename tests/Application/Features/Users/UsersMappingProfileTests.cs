@@ -1,7 +1,7 @@
 using AutoMapper;
 using Spenses.Application.Features.Users;
 
-namespace Spenses.Application.Tests.Users;
+namespace Spenses.Application.Tests.Features.Users;
 
 public class UsersMappingProfileTests
 {
