@@ -62,6 +62,7 @@ namespace Spenses.Resources.Relational.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AnnualTakeHomeIncome = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
                     HomeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -88,6 +89,11 @@ namespace Spenses.Resources.Relational.Migrations
                         principalTable: "UserIdentity",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Member_UserIdentity_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserIdentity",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -178,6 +184,11 @@ namespace Spenses.Resources.Relational.Migrations
                 name: "IX_Member_ModifiedById",
                 table: "Member",
                 column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Member_UserId",
+                table: "Member",
+                column: "UserId");
         }
 
         /// <inheritdoc />

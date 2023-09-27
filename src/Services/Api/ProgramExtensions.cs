@@ -1,9 +1,14 @@
 using System.Security.Claims;
+using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
+using Spenses.Application.Common;
+using Spenses.Resources.Relational.Interceptors;
+using Spenses.Resources.Relational;
 using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api;
@@ -75,6 +80,20 @@ public static class ProgramExtensions
     {
         services.AddHttpContextAccessor();
         services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddDbContextServices(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddDbContext<ApplicationDbContext>(opts =>
+            opts.UseSqlServer(configuration.Require(ConfigConstants.SqlServerConnectionString)));
+
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+
+        services.AddHealthChecks()
+            .AddDbContextCheck<ApplicationDbContext>();
 
         return services;
     }

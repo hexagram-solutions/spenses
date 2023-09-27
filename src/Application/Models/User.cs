@@ -9,8 +9,4 @@ public record User
 
     [Required]
     public string Name { get; init; } = null!;
-
-    [Required]
-    [EmailAddress]
-    public string Email { get; init; } = null!;
 }

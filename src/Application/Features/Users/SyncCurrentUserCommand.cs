@@ -30,8 +30,7 @@ public class SyncCurrentUserCommandHandler : IRequestHandler<SyncCurrentUserComm
     {
         var currentUser = _currentUserService.CurrentUser;
         var currentUserId = currentUser.GetId();
-
-        // todo: get from cache?
+        
         var userIdentity = await _db.Users.FirstOrDefaultAsync(c => c.Id == currentUserId, cancellationToken);
 
         if (userIdentity is null)

@@ -1,10 +1,13 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Hexagrams.Extensions.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Spenses.Application.Authorization;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
+using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Application.Features.Homes;
 
@@ -14,11 +17,14 @@ public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, ServiceResult<
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
+    private readonly ICurrentUserAuthorizationService _authorizationService;
 
-    public HomeQueryCommandHandler(ApplicationDbContext db, IMapper mapper)
+    public HomeQueryCommandHandler(ApplicationDbContext db, IMapper mapper,
+        ICurrentUserAuthorizationService authorizationService)
     {
         _db = db;
         _mapper = mapper;
+        _authorizationService = authorizationService;
     }
 
     public async Task<ServiceResult<Home>> Handle(HomeQuery request, CancellationToken cancellationToken)
@@ -27,6 +33,14 @@ public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, ServiceResult<
             .ProjectTo<Home>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
 
-        return home is null ? new NotFoundErrorResult(request.Id) : home;
+        if (home is null)
+            return new NotFoundErrorResult(request.Id);
+
+        var authorizationResult = await _authorizationService.AuthorizeAsync(home, new HomeMemberRequirement().Yield());
+
+        if (!authorizationResult.Succeeded)
+            return new NotFoundErrorResult(request.Id);
+
+        return home;
     }
 }

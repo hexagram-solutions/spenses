@@ -24,6 +24,7 @@ public class MemberQueryHandler : IRequestHandler<MemberQuery, ServiceResult<Mem
     public async Task<ServiceResult<Member>> Handle(MemberQuery request, CancellationToken cancellationToken)
     {
         var (homeId, memberId) = request;
+        
 
         var member = await _db.Members
             .Where(m => m.HomeId == homeId)

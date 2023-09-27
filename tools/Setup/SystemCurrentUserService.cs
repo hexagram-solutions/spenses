@@ -6,7 +6,7 @@ namespace Spenses.Tools.Setup;
 
 public class SystemCurrentUserService : ICurrentUserService
 {
-    public static string SystemUserId = "system";
+    public const string SystemUserId = "system";
 
     public ClaimsPrincipal CurrentUser => new(new ClaimsIdentity(new[]
     {

@@ -7,6 +7,7 @@ using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
 using Spenses.Application.Extensions;
 using Spenses.Resources.Relational;
+using Spenses.Resources.Relational.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,11 +47,10 @@ builder.Services.AddCors(opts =>
 
 builder.Services.AddHealthChecks();
 
-builder.Services.AddApplicationServices();
-builder.Services.AddUserServices();
-
-builder.Services.AddDbContext<ApplicationDbContext>(opts =>
-    opts.UseSqlServer(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString)));
+builder.Services
+    .AddApplicationServices()
+    .AddUserServices()
+    .AddDbContextServices(builder.Configuration);
 
 builder.Services.AddAuthenticatedOpenApiDocument(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),

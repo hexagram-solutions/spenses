@@ -13,5 +13,9 @@ public class Member : AggregateRoot
 
     public Home Home { get; set; } = null!;
 
+    public string? UserId { get; set; }
+
+    public UserIdentity? User { get; set; }
+
     public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 }

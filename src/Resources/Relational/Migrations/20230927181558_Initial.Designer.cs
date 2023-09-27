@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230927160554_Initial")]
+    [Migration("20230927181558_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -139,6 +139,9 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
@@ -146,6 +149,8 @@ namespace Spenses.Resources.Relational.Migrations
                     b.HasIndex("HomeId");
 
                     b.HasIndex("ModifiedById");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Member");
                 });
@@ -246,11 +251,17 @@ namespace Spenses.Resources.Relational.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("CreatedBy");
 
                     b.Navigation("Home");
 
                     b.Navigation("ModifiedBy");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Home", b =>

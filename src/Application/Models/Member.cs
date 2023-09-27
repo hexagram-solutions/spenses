@@ -7,6 +7,8 @@ public record Member : MemberProperties, IAggregateRoot
     [Required]
     public Guid Id { get; set; }
 
+    public User? User { get; set; }
+
     [Required]
     public User CreatedBy { get; set; } = null!;
 

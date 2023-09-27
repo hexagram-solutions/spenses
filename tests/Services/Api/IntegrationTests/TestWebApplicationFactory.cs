@@ -9,15 +9,19 @@ namespace Spenses.Api.IntegrationTests;
 public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
-    public string DefaultUserId { get; set; } = "some.user@example.com";
-
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment(EnvironmentNames.IntegrationTest);
 
         builder.ConfigureTestServices(services =>
         {
-            services.Configure<TestAuthenticationHandlerOptions>(options => options.DefaultUserId = DefaultUserId);
+            services.Configure<TestAuthenticationHandlerOptions>(options =>
+            {
+                options.DefaultUserIdentifier = "integration-test-user";
+                options.DefaultUserEmail = "george@vandelayindustries.com";
+                options.DefaultUserName = "George Costanza";
+                options.DefaultUserIssuer = "self";
+            });
 
             services.AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
                 .AddScheme<TestAuthenticationHandlerOptions, TestAuthenticationHandler>(
