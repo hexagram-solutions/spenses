@@ -3,11 +3,11 @@ using MediatR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Results;
-using Spenses.Application.Extensions;
 using Spenses.Application.Models;
-using Spenses.Application.Services;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
+using Spenses.Utilities.Security;
+using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Application.Features.Users;
 

@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Spenses.Application.Services;
+namespace Spenses.Utilities.Security.Services;
 
 public interface ICurrentUserService
 {

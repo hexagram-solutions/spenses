@@ -15,4 +15,16 @@ public class UserIdentity
 
     [EmailAddress]
     public string Email { get; set; } = null!;
+
+    public ICollection<Expense> CreatedExpenses { get; set; } = new HashSet<Expense>();
+
+    public ICollection<Expense> ModifiedExpenses { get; set; } = new HashSet<Expense>();
+
+    public ICollection<Home> CreatedHomes { get; set; } = new HashSet<Home>();
+
+    public ICollection<Home> ModifiedHomes { get; set; } = new HashSet<Home>();
+
+    public ICollection<Member> CreatedMembers { get; set; } = new HashSet<Member>();
+
+    public ICollection<Member> ModifiedMembers { get; set; } = new HashSet<Member>();
 }

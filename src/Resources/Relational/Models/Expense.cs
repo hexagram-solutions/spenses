@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Spenses.Resources.Relational.Models;
 
-public class Expense : Entity
+public class Expense : AggregateRoot
 {
     public string Description { get; set; } = null!;
 

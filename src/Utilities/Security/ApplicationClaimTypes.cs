@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using IdentityModel;
 
-namespace Spenses.Application.Common;
+namespace Spenses.Utilities.Security;
 
 public static class ApplicationClaimTypes
 {

@@ -1,7 +1,6 @@
 using System.Security.Claims;
-using Spenses.Application.Common;
 
-namespace Spenses.Application.Extensions;
+namespace Spenses.Utilities.Security;
 
 public static class ClaimsPrincipalExtensions
 {
