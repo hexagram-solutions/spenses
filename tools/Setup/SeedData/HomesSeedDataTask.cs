@@ -20,7 +20,6 @@ public class HomesSeedDataTask : ISeedDataTask
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.NickName,
-                    AnnualTakeHomeIncome = 80_000m,
                     UserId = u.Id
                 }).ToList()
             },
@@ -31,7 +30,6 @@ public class HomesSeedDataTask : ISeedDataTask
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.NickName,
-                    AnnualTakeHomeIncome = 80_000m,
                     UserId = u.Id
                 }).ToList()
             });

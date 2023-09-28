@@ -32,11 +32,11 @@ public class HomesIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var retrievedHome = await _homes.GetHome(createdHome.Id);
+        var retrievedHome = (await _homes.GetHome(createdHome.Id)).Content;
         retrievedHome.Should().BeEquivalentTo(createdHome);
 
-        var homes = (await _homes.GetHomes()).Content!;
-        homes.Should().ContainEquivalentOf(retrievedHome);
+        var homes = await _homes.GetHomes();
+        homes.Content.Should().ContainEquivalentOf(retrievedHome);
 
         await _homes.DeleteHome(createdHome.Id);
     }
@@ -49,12 +49,13 @@ public class HomesIntegrationTests
         var properties = new HomeProperties { Name = "sut", Description = "baz" };
 
         var updatedHome = (await _homes.PutHome(home.Id, properties)).Content!;
+
         updatedHome.Should().BeEquivalentTo(properties, opts =>
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
         var fetchedHome = await _homes.GetHome(updatedHome.Id);
-        fetchedHome.Should().BeEquivalentTo(updatedHome);
+        fetchedHome.Content.Should().BeEquivalentTo(updatedHome);
     }
 
     [Fact]

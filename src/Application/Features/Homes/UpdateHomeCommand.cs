@@ -22,7 +22,10 @@ public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, Servi
 
     public async Task<ServiceResult<Home>> Handle(UpdateHomeCommand request, CancellationToken cancellationToken)
     {
-        var home = await _db.Homes.FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
+        var home = await _db.Homes
+            .Include(h => h.Members)
+            .ThenInclude(m => m.User)
+            .FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
 
         if (home is null)
             return new NotFoundErrorResult(request.Id);

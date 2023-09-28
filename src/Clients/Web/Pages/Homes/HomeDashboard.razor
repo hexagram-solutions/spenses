@@ -16,7 +16,6 @@ else
 
   <FluentDataGrid Id="manualGrid" Items=@CurrentHome?.Members.AsQueryable() GridTemplateColumns="1fr 1fr 1fr 2fr" TGridItem=Member>
     <PropertyColumn Title="Name" Property="@(c => c!.Name)" Sortable="true" Align=Align.Start/>
-    <PropertyColumn Title="Annual take-home income" Property="@(c => c!.AnnualTakeHomeIncome)" Sortable="true" Align=Align.End/>
   </FluentDataGrid>
 }
 

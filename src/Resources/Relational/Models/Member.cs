@@ -1,13 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace Spenses.Resources.Relational.Models;
 
 public class Member : AggregateRoot
 {
     public string Name { get; set; } = null!;
-
-    [Precision(10, 2)]
-    public decimal AnnualTakeHomeIncome { get; set; }
 
     public Guid HomeId { get; set; }
 

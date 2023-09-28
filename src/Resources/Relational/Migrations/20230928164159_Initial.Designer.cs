@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230928152901_Initial")]
+    [Migration("20230928164159_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -113,10 +113,6 @@ namespace Spenses.Resources.Relational.Migrations
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("AnnualTakeHomeIncome")
-                        .HasPrecision(10, 2)
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");

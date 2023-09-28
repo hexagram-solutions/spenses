@@ -21,7 +21,7 @@ public class HomeMembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First(x => x.Members.Any());
 
-        var properties = new MemberProperties { Name = "Bob", AnnualTakeHomeIncome = 80_000.00m };
+        var properties = new MemberProperties { Name = "Bob" };
 
         var createdMember = await _homeMembers.PostHomeMember(home.Id, properties);
         createdMember.Should().BeEquivalentTo(properties);
@@ -39,7 +39,7 @@ public class HomeMembersIntegrationTests
 
         var member = home.Members.First();
 
-        var properties = new MemberProperties { Name = "Grunky Peep", AnnualTakeHomeIncome = 1m };
+        var properties = new MemberProperties { Name = "Grunky Peep" };
 
         var updatedMember = await _homeMembers.PutHomeMember(home.Id, member.Id, properties);
         updatedMember.Should().BeEquivalentTo(properties);

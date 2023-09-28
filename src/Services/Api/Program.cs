@@ -46,7 +46,7 @@ builder.Services.AddHealthChecks();
 
 builder.Services
     .AddApplicationServices()
-    .AddUserServices()
+    .AddAuthorizationServices()
     .AddDbContextServices(builder.Configuration);
 
 builder.Services.AddAuthenticatedOpenApiDocument(
@@ -56,8 +56,6 @@ builder.Services.AddAuthenticatedOpenApiDocument(
 builder.Services.AddAuth0Authentication(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
