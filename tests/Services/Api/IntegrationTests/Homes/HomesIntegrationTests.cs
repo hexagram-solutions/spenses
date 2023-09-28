@@ -58,7 +58,7 @@ public class HomesIntegrationTests
     }
 
     [Fact]
-    public async Task Get_home_where_current_user_is_not_a_member_returns_not_found()
+    public async Task Get_home_where_current_user_is_not_a_member_returns_unauthorized()
     {
         async Task<Guid> SetUp()
         {
@@ -79,7 +79,7 @@ public class HomesIntegrationTests
 
             var homeResponse = await _homes.GetHome(homeId);
 
-            homeResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            homeResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
             await TearDown(homeId);
         }

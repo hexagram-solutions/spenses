@@ -1,11 +1,18 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Spenses.Application.Authorization;
 using Spenses.Application.Common.Results;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Members;
 
-public record DeleteMemberCommand(Guid HomeId, Guid MemberId) : IRequest<ServiceResult>;
+public record DeleteMemberCommand(Guid HomeId, Guid MemberId) : IAuthorizedRequest<ServiceResult>
+{
+    public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
+
+    public ServiceResult OnUnauthorized() => new UnauthorizedErrorResult();
+}
 
 public class DeleteMemberCommandHandler : IRequestHandler<DeleteMemberCommand, ServiceResult>
 {

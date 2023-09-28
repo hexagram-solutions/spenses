@@ -1,13 +1,20 @@
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Spenses.Application.Authorization;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes;
 
-public record UpdateHomeCommand(Guid Id, HomeProperties Props) : IRequest<ServiceResult<Home>>;
+public record UpdateHomeCommand(Guid HomeId, HomeProperties Props) : IAuthorizedRequest<ServiceResult<Home>>
+{
+    public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
+
+    public ServiceResult<Home> OnUnauthorized() => new UnauthorizedErrorResult();
+}
 
 public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, ServiceResult<Home>>
 {
@@ -27,10 +34,10 @@ public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, Servi
                 .ThenInclude(m => m.User)
             .Include(h => h.CreatedBy)
             .Include(h => h.ModifiedBy)
-            .FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(h => h.Id == request.HomeId, cancellationToken);
 
         if (home is null)
-            return new NotFoundErrorResult(request.Id);
+            return new NotFoundErrorResult(request.HomeId);
 
         _mapper.Map(request.Props, home);
 

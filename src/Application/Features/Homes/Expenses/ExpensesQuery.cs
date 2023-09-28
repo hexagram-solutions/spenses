@@ -1,14 +1,21 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Spenses.Application.Authorization;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Expenses;
 
-public record ExpensesQuery(Guid HomeId) : IRequest<ServiceResult<IEnumerable<Expense>>>;
+public record ExpensesQuery(Guid HomeId) : IAuthorizedRequest<ServiceResult<IEnumerable<Expense>>>
+{
+    public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
+
+    public ServiceResult<IEnumerable<Expense>> OnUnauthorized() => new UnauthorizedErrorResult();
+}
 
 public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, ServiceResult<IEnumerable<Expense>>>
 {

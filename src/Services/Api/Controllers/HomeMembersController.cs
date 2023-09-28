@@ -19,8 +19,8 @@ public class HomeMembersController : ApiControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
     {
-        return GetCommandResult<Member, AddMemberToHomeCommand>(
-            new AddMemberToHomeCommand(homeId, props),
+        return GetCommandResult<Member, CreateMemberCommand>(
+            new CreateMemberCommand(homeId, props),
             x => CreatedAtAction(nameof(GetMember), new { homeId, memberId = x.Id }, x));
     }
 

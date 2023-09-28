@@ -19,15 +19,10 @@ public class HomeMemberAuthorizationHandler : AuthorizationHandler<HomeMemberReq
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         HomeMemberRequirement requirement)
     {
-        var home = await _db.Homes
-            .Include(h => h.Members)
-            .ThenInclude(m => m.User)
-            .FirstOrDefaultAsync(h => h.Id == requirement.HomeId);
-
-        if (home is null)
-            return;
-
-        var homeMemberUserIds = home.Members.Select(m => m.User?.Id);
+        var homeMemberUserIds = await _db.Homes
+            .Where(h => h.Id == requirement.HomeId)
+            .SelectMany(h => h.Members.Select(m => m.UserId))
+            .ToListAsync();
 
         if (homeMemberUserIds.Contains(context.User.GetId()))
             context.Succeed(requirement);

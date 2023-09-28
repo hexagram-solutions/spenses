@@ -12,11 +12,9 @@ namespace Spenses.Application.Features.Homes;
 
 public record HomeQuery(Guid HomeId) : IAuthorizedRequest<ServiceResult<Home>>
 {
-    public AuthorizationPolicy Policy => new AuthorizationPolicyBuilder()
-        .AddRequirements(new HomeMemberRequirement(HomeId))
-        .Build();
+    public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 
-    public ServiceResult<Home> OnUnauthorized() => new NotFoundErrorResult(HomeId);
+    public ServiceResult<Home> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, ServiceResult<Home>>

@@ -1,7 +1,9 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Spenses.Application.Authorization;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
@@ -9,7 +11,12 @@ using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Homes.Expenses;
 
-public record CreateExpenseCommand(Guid HomeId, ExpenseProperties Props) : IRequest<ServiceResult<Expense>>;
+public record CreateExpenseCommand(Guid HomeId, ExpenseProperties Props) : IAuthorizedRequest<ServiceResult<Expense>>
+{
+    public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
+
+    public ServiceResult<Expense> OnUnauthorized() => new UnauthorizedErrorResult();
+}
 
 public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, ServiceResult<Expense>>
 {
