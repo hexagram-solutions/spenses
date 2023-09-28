@@ -1,9 +1,17 @@
 using System.Security.Claims;
+using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Logging;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.AspNetCore;
+using Spenses.Api.Infrastructure;
+using Spenses.Application.Authorization;
+using Spenses.Application.Common;
+using Spenses.Resources.Relational;
+using Spenses.Resources.Relational.Infrastructure;
+using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api;
 
@@ -66,6 +74,36 @@ public static class ProgramExtensions
                     }
                 });
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuthorizationServices(this IServiceCollection services)
+    {
+        services.AddAuthorization();
+        services.AddHttpContextAccessor();
+        services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
+        services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
+
+        services.Scan(scan => scan
+            .FromAssemblyOf<HomeMemberRequirement>() // todo: is there a better hook for this?
+            .AddClasses(classes => classes.AssignableTo<IAuthorizationHandler>())
+            .AsImplementedInterfaces()
+            .WithTransientLifetime());
+
+        return services;
+    }
+
+    public static IServiceCollection AddDbContextServices(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddDbContext<ApplicationDbContext>(opts =>
+            opts.UseSqlServer(configuration.Require(ConfigConstants.SqlServerConnectionString)));
+
+        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+
+        services.AddHealthChecks()
+            .AddDbContextCheck<ApplicationDbContext>();
 
         return services;
     }

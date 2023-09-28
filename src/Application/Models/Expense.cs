@@ -14,13 +14,24 @@ public abstract record ExpenseBase
     public decimal Amount { get; set; }
 }
 
-public record Expense : ExpenseBase
+public record Expense : ExpenseBase, IAggregateRoot
 {
-    [Required]
     public Guid Id { get; set; }
 
     [Required]
     public Member IncurredByMember { get; set; } = null!;
+
+    [Required]
+    public User CreatedBy { get; set; } = null!;
+
+    [Required]
+    public DateTime CreatedAt { get; set; }
+
+    [Required]
+    public User ModifiedBy { get; set; } = null!;
+
+    [Required]
+    public DateTime ModifiedAt { get; set; }
 }
 
 public record ExpenseProperties : ExpenseBase

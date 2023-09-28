@@ -24,7 +24,7 @@ public partial class HomeState
         {
             HomeState.HomeRequesting = true;
 
-            HomeState.Homes = await _homes.GetHomes();
+            HomeState.Homes = (await _homes.GetHomes()).Content;
 
             HomeState.HomeRequesting = false;
         }

@@ -3,6 +3,8 @@ using MediatR;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
+using Spenses.Utilities.Security;
+using Spenses.Utilities.Security.Services;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Homes;
@@ -13,16 +15,26 @@ public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, Servi
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
+    private readonly ICurrentUserService _currentUserService;
 
-    public CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper)
+    public CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, ICurrentUserService currentUserService)
     {
         _db = db;
         _mapper = mapper;
+        _currentUserService = currentUserService;
     }
 
     public async Task<ServiceResult<Home>> Handle(CreateHomeCommand request, CancellationToken cancellationToken)
     {
         var home = _mapper.Map<DbModels.Home>(request.Props);
+
+        var currentUser = _currentUserService.CurrentUser;
+
+        home.Members.Add(new DbModels.Member
+        {
+            Name = currentUser.FindFirst(ApplicationClaimTypes.NickName)!.Value,
+            UserId = currentUser.GetId()
+        });
 
         var entry = await _db.Homes.AddAsync(home, cancellationToken);
 

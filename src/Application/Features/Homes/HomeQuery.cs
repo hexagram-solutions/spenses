@@ -1,14 +1,21 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Spenses.Application.Authorization;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes;
 
-public record HomeQuery(Guid Id) : IRequest<ServiceResult<Home>>;
+public record HomeQuery(Guid HomeId) : IAuthorizedRequest<ServiceResult<Home>>
+{
+    public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
+
+    public ServiceResult<Home> OnUnauthorized() => new UnauthorizedErrorResult();
+}
 
 public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, ServiceResult<Home>>
 {
@@ -25,8 +32,11 @@ public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, ServiceResult<
     {
         var home = await _db.Homes
             .ProjectTo<Home>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(h => h.Id == request.HomeId, cancellationToken);
 
-        return home is null ? new NotFoundErrorResult(request.Id) : home;
+        if (home is null)
+            return new NotFoundErrorResult(request.HomeId);
+
+        return home;
     }
 }

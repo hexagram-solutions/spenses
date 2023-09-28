@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
 using Refit;
 using Spenses.Application.Models;
 using Spenses.Client.Http;
@@ -24,7 +20,7 @@ public class HomeExpensesIntegrationTests
     [Fact]
     public async Task Post_expense_creates_expense()
     {
-        var home = (await _homes.GetHomes()).First();
+        var home = (await _homes.GetHomes()).Content!.First();
 
         var properties = new ExpenseProperties
         {
@@ -34,13 +30,20 @@ public class HomeExpensesIntegrationTests
             IncurredByMemberId = home.Members.First().Id
         };
 
-        var createdExpense = await _homeExpenses.PostHomeExpense(home.Id, properties);
-        createdExpense.Should().BeEquivalentTo(properties, opts => opts.Excluding(x => x.IncurredByMemberId));
+        var createdExpenseResponse = await _homeExpenses.PostHomeExpense(home.Id, properties);
 
-        var fetchedExpense = await _homeExpenses.GetHomeExpense(home.Id, createdExpense.Id);
+        createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var createdExpense = createdExpenseResponse.Content;
+
+        createdExpense.Should().BeEquivalentTo(properties, opts =>
+            opts.ExcludingNestedObjects()
+                .ExcludingMissingMembers());
+
+        var fetchedExpense = (await _homeExpenses.GetHomeExpense(home.Id, createdExpense!.Id)).Content;
         fetchedExpense.Should().BeEquivalentTo(createdExpense);
 
-        var expenses = await _homeExpenses.GetHomeExpenses(home.Id);
+        var expenses = (await _homeExpenses.GetHomeExpenses(home.Id)).Content;
         expenses.Should().ContainEquivalentOf(createdExpense);
 
         await _homeExpenses.DeleteHomeExpense(home.Id, createdExpense.Id);
@@ -49,9 +52,9 @@ public class HomeExpensesIntegrationTests
     [Fact]
     public async Task Put_expense_creates_expense()
     {
-        var home = (await _homes.GetHomes()).First();
+        var home = (await _homes.GetHomes()).Content!.First();
 
-        var expense = (await _homeExpenses.GetHomeExpenses(home.Id)).First();
+        var expense = (await _homeExpenses.GetHomeExpenses(home.Id)).Content!.First();
 
         var properties = new ExpenseProperties
         {
@@ -61,10 +64,18 @@ public class HomeExpensesIntegrationTests
             IncurredByMemberId = home.Members.First().Id
         };
 
-        var updatedExpense = await _homeExpenses.PutHomeExpense(home.Id, expense.Id, properties);
-        updatedExpense.Should().BeEquivalentTo(properties, opts => opts.Excluding(x => x.IncurredByMemberId));
+        var updatedExpenseResponse = await _homeExpenses.PutHomeExpense(home.Id, expense.Id, properties);
 
-        var fetchedExpense = await _homeExpenses.GetHomeExpense(home.Id, updatedExpense.Id);
+        updatedExpenseResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedExpense = updatedExpenseResponse.Content;
+
+        updatedExpense.Should().BeEquivalentTo(properties, opts =>
+            opts.ExcludingNestedObjects()
+                .ExcludingMissingMembers());
+
+        var fetchedExpense = (await _homeExpenses.GetHomeExpense(home.Id, updatedExpense!.Id)).Content;
+
         fetchedExpense.Should().BeEquivalentTo(updatedExpense);
     }
 }

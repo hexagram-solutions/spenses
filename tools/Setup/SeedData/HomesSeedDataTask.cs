@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
 
@@ -9,24 +10,29 @@ public class HomesSeedDataTask : ISeedDataTask
 
     public async Task SeedData(ApplicationDbContext db)
     {
-        await db.Homes.AddAsync(new Home
-        {
-            Name = "Test home",
-            Description = "Test home for integration testing",
-            Members =
+        var userIdentities = await db.Users.ToListAsync();
+
+        await db.Homes.AddRangeAsync(
+            new Home
             {
-                new Member
+                Name = "Test home",
+                Description = "Test home for integration testing",
+                Members = userIdentities.Select(u => new Member
                 {
-                    Name = "Alice",
-                    AnnualTakeHomeIncome = 80_000m
-                },
-                new Member
+                    Name = u.NickName,
+                    UserId = u.Id
+                }).ToList()
+            },
+            new Home
+            {
+                Name = "Test home 2",
+                Description = "Second test home",
+                Members = userIdentities.Select(u => new Member
                 {
-                    Name = "Bob",
-                    AnnualTakeHomeIncome = 72_000m
-                }
-            }
-        });
+                    Name = u.NickName,
+                    UserId = u.Id
+                }).ToList()
+            });
 
         await db.SaveChangesAsync();
     }

@@ -1,11 +1,10 @@
 using System.Text.Json.Serialization;
 using Hexagrams.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
+using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
 using Spenses.Application.Extensions;
-using Spenses.Resources.Relational;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +13,10 @@ builder.Configuration.SetKeyDelimiters(":", "_", "-", ".");
 builder.Services.AddControllers();
 
 builder.Services
-    .AddControllers()
+    .AddControllers(options =>
+    {
+        options.Filters.Add<UserSyncFilter>();
+    })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -42,10 +44,10 @@ builder.Services.AddCors(opts =>
 
 builder.Services.AddHealthChecks();
 
-builder.Services.AddApplicationServices();
-
-builder.Services.AddDbContext<ApplicationDbContext>(opts =>
-    opts.UseSqlServer(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString)));
+builder.Services
+    .AddApplicationServices()
+    .AddAuthorizationServices()
+    .AddDbContextServices(builder.Configuration);
 
 builder.Services.AddAuthenticatedOpenApiDocument(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
@@ -54,8 +56,6 @@ builder.Services.AddAuthenticatedOpenApiDocument(
 builder.Services.AddAuth0Authentication(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
-
-builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -88,7 +88,7 @@ app.UseAuthorization();
 app.MapControllers()
     .RequireAuthorization();
 
-app.MapHealthChecks("/");
+app.MapHealthChecks("/healthz");
 
 app.Run();
 

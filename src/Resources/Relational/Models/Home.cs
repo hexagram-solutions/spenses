@@ -1,6 +1,6 @@
 namespace Spenses.Resources.Relational.Models;
 
-public class Home : Entity
+public class Home : AggregateRoot
 {
     public string Name { get; set; } = null!;
 

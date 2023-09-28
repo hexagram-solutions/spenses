@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Hexagrams.Nuke.Components;
-using NuGet.Configuration;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;

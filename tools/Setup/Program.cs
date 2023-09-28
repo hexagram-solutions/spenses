@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Spenses.Tools.Setup;
 using Spenses.Tools.Setup.SeedData;
+using Spenses.Utilities.Security.Services;
 
 var config = new ConfigurationManager()
     .AddJsonFile("appsettings.json")
@@ -17,6 +18,7 @@ await using var serviceProvider = new ServiceCollection()
     .AddTransient<IConfiguration>(_ => config)
     .AddTransient<DbSetupCommand>()
     .AddTransient<DbContextOptionsFactory>()
+    .AddTransient<ICurrentUserService, SystemCurrentUserService>()
     .Scan(scan => scan
         .FromAssemblyOf<ISeedDataTask>()
         .AddClasses(classes => classes.AssignableTo<ISeedDataTask>())

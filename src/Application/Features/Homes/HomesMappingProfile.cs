@@ -11,7 +11,13 @@ public class HomesMappingProfile : Profile
         CreateMap<HomeProperties, DbModels.Home>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())
             .ForMember(dest => dest.Members, opts => opts.Ignore())
-            .ForMember(dest => dest.Expenses, opts => opts.Ignore());
+            .ForMember(dest => dest.Expenses, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedBy, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedById, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedBy, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedAt, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedAt, opts => opts.Ignore());
 
         CreateMap<DbModels.Home, Home>();
 
@@ -21,7 +27,15 @@ public class HomesMappingProfile : Profile
             .ForMember(dest => dest.Id, opts => opts.Ignore())
             .ForMember(dest => dest.Home, opts => opts.Ignore())
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())
-            .ForMember(dest => dest.Expenses, opts => opts.Ignore());
+            .ForMember(dest => dest.User, opts => opts.Ignore())
+            .ForMember(dest => dest.UserId, opts => opts.Ignore())
+            .ForMember(dest => dest.Expenses, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedBy, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedById, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedBy, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedAt, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedAt, opts => opts.Ignore());
 
         CreateMap<DbModels.Expense, Expense>();
 
@@ -30,7 +44,12 @@ public class HomesMappingProfile : Profile
             .ForMember(dest => dest.Home, opts => opts.Ignore())
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())
             .ForMember(dest => dest.IncurredByMemberId, opts => opts.Ignore())
-            .ForMember(dest => dest.IncurredByMember, opts => opts.Ignore());
-
+            .ForMember(dest => dest.IncurredByMember, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedBy, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedById, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedBy, opts => opts.Ignore())
+            .ForMember(dest => dest.CreatedAt, opts => opts.Ignore())
+            .ForMember(dest => dest.ModifiedAt, opts => opts.Ignore());
     }
 }
