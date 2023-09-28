@@ -19,7 +19,7 @@ public class HomeMembersIntegrationTests
     [Fact]
     public async Task Post_home_member_creates_member()
     {
-        var home = (await _homes.GetHomes()).First(x => x.Members.Any());
+        var home = (await _homes.GetHomes()).Content!.First(x => x.Members.Any());
 
         var properties = new MemberProperties { Name = "Bob", AnnualTakeHomeIncome = 80_000.00m };
 
@@ -27,15 +27,15 @@ public class HomeMembersIntegrationTests
         createdMember.Should().BeEquivalentTo(properties);
 
         var members = await _homeMembers.GetHomeMembers(home.Id);
-        members.Should().ContainEquivalentOf(createdMember);
+        members.Content.Should().ContainEquivalentOf(createdMember);
 
-        await _homeMembers.DeleteHomeMember(home.Id, createdMember.Id);
+        await _homeMembers.DeleteHomeMember(home.Id, createdMember.Content!.Id);
     }
 
     [Fact]
     public async Task Put_home_member_updates_member()
     {
-        var home = (await _homes.GetHomes()).First(x => x.Members.Any());
+        var home = (await _homes.GetHomes()).Content!.First(x => x.Members.Any());
 
         var member = home.Members.First();
 

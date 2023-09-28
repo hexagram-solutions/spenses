@@ -27,13 +27,15 @@ public class HomesIntegrationTests
     {
         var properties = new HomeProperties { Name = "foo", Description = "bar" };
 
-        var createdHome = await _homes.PostHome(properties);
-        createdHome.Should().BeEquivalentTo(properties);
+        var createdHome = (await _homes.PostHome(properties)).Content!;
+        createdHome.Should().BeEquivalentTo(properties, opts =>
+            opts.ExcludingNestedObjects()
+                .ExcludingMissingMembers());
 
         var retrievedHome = await _homes.GetHome(createdHome.Id);
         retrievedHome.Should().BeEquivalentTo(createdHome);
 
-        var homes = await _homes.GetHomes();
+        var homes = (await _homes.GetHomes()).Content!;
         homes.Should().ContainEquivalentOf(retrievedHome);
 
         await _homes.DeleteHome(createdHome.Id);
@@ -42,15 +44,17 @@ public class HomesIntegrationTests
     [Fact]
     public async Task Put_home_updates_home()
     {
-        var home = (await _homes.GetHomes()).First();
+        var home = (await _homes.GetHomes()).Content!.First();
 
         var properties = new HomeProperties { Name = "sut", Description = "baz" };
 
-        var updatedHome = await _homes.PutHome(home.Id, properties);
-        updatedHome.Should().BeEquivalentTo(properties);
+        var updatedHome = (await _homes.PutHome(home.Id, properties)).Content!;
+        updatedHome.Should().BeEquivalentTo(properties, opts =>
+            opts.ExcludingNestedObjects()
+                .ExcludingMissingMembers());
 
-        var retrievedHome = await _homes.GetHome(updatedHome.Id);
-        retrievedHome.Should().BeEquivalentTo(updatedHome, opts => opts.Excluding(x => x.Members));
+        var fetchedHome = await _homes.GetHome(updatedHome.Id);
+        fetchedHome.Should().BeEquivalentTo(updatedHome);
     }
 
     [Fact]

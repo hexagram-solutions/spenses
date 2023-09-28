@@ -6,16 +6,16 @@ namespace Spenses.Client.Http;
 public interface IHomesApi
 {
     [Post("/homes")]
-    Task<Home> PostHome(HomeProperties props);
+    Task<ApiResponse<Home>> PostHome(HomeProperties props);
 
     [Get("/homes")]
-    Task<IEnumerable<Home>> GetHomes();
+    Task<ApiResponse<IEnumerable<Home>>> GetHomes();
 
     [Get("/homes/{homeId}")]
     Task<ApiResponse<Home>> GetHome(Guid homeId);
 
     [Put("/homes/{homeId}")]
-    Task<Home> PutHome(Guid homeId, HomeProperties props);
+    Task<ApiResponse<Home>> PutHome(Guid homeId, HomeProperties props);
 
     [Delete("/homes/{homeId}")]
     Task DeleteHome(Guid homeId);
