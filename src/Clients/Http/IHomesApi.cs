@@ -12,7 +12,7 @@ public interface IHomesApi
     Task<IEnumerable<Home>> GetHomes();
 
     [Get("/homes/{homeId}")]
-    Task<Home> GetHome(Guid homeId);
+    Task<ApiResponse<Home>> GetHome(Guid homeId);
 
     [Put("/homes/{homeId}")]
     Task<Home> PutHome(Guid homeId, HomeProperties props);

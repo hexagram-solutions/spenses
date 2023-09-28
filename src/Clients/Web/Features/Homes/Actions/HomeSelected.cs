@@ -31,7 +31,7 @@ public partial class HomeState
 
             var home = await _homes.GetHome(aAction.HomeId);
 
-            HomeState.CurrentHome = home;
+            HomeState.CurrentHome = home.Content;
 
             HomeState.HomeRequesting = false;
 

@@ -80,6 +80,7 @@ public static class ProgramExtensions
     {
         services.AddHttpContextAccessor();
         services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
+        services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
 
         return services;
     }

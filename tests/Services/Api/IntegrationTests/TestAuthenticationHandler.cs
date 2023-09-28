@@ -13,7 +13,7 @@ public class TestAuthenticationHandlerOptions : AuthenticationSchemeOptions
 
     public string DefaultUserEmail { get; set; } = null!;
 
-    public string DefaultUserName { get; set; } = null!;
+    public string DefaultUserNickName { get; set; } = null!;
 
     public string DefaultUserIssuer { get; set; } = null!;
 }
@@ -33,19 +33,27 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
+        var principal = GetClaimsPrincipal();
+        
+        var ticket = new AuthenticationTicket(principal, AuthenticationScheme);
+
+        var result = AuthenticateResult.Success(ticket);
+
+        return Task.FromResult(result);
+    }
+
+    public ClaimsPrincipal GetClaimsPrincipal()
+    {
         var claims = new List<Claim> {
             new (ApplicationClaimTypes.Identifier, _options.CurrentValue.DefaultUserIdentifier),
-            new(ApplicationClaimTypes.Name, _options.CurrentValue.DefaultUserName),
+            new(ApplicationClaimTypes.NickName, _options.CurrentValue.DefaultUserNickName),
             new(ApplicationClaimTypes.Issuer, _options.CurrentValue.DefaultUserIssuer),
             new(ApplicationClaimTypes.Email, _options.CurrentValue.DefaultUserEmail),
         };
 
         var identity = new ClaimsIdentity(claims, AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
-        var ticket = new AuthenticationTicket(principal, AuthenticationScheme);
 
-        var result = AuthenticateResult.Success(ticket);
-
-        return Task.FromResult(result);
+        return principal;
     }
 }

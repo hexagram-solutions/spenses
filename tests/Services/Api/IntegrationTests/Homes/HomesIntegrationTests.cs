@@ -1,16 +1,24 @@
+using System.Net;
+using FluentAssertions.Execution;
+using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Application.Models;
 using Spenses.Client.Http;
+using Spenses.Resources.Relational;
+using Spenses.Resources.Relational.Models;
+using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 
 [Collection(WebApplicationCollection.CollectionName)]
 public class HomesIntegrationTests
 {
+    private readonly WebApplicationFixture<Program> _fixture;
     private readonly IHomesApi _homes;
 
     public HomesIntegrationTests(WebApplicationFixture<Program> fixture)
     {
+        _fixture = fixture;
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
     }
 
@@ -43,5 +51,46 @@ public class HomesIntegrationTests
 
         var retrievedHome = await _homes.GetHome(updatedHome.Id);
         retrievedHome.Should().BeEquivalentTo(updatedHome, opts => opts.Excluding(x => x.Members));
+    }
+
+    [Fact]
+    public async Task Get_home_where_current_user_is_not_a_member_returns_not_found()
+    {
+        async Task<Guid> SetUp()
+        {
+            await using var scope = _fixture.WebApplicationFactory.Services.CreateAsyncScope();
+
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var homeEntry = await db.Homes.AddAsync(new DbModels.Home { Name = "foo" });
+
+            await db.SaveChangesAsync();
+
+            return homeEntry.Entity.Id;
+        }
+
+        using (new AssertionScope())
+        {
+            var homeId = await SetUp();
+
+            var homeResponse = await _homes.GetHome(homeId);
+
+            homeResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+            await TearDown(homeId);
+        }
+
+        async Task TearDown(Guid homeId)
+        {
+            await using var scope = _fixture.WebApplicationFactory.Services.CreateAsyncScope();
+
+            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var home = await db.Homes.FindAsync(homeId);
+
+            db.Homes.Remove(home!);
+
+            await db.SaveChangesAsync();
+        }
     }
 }
