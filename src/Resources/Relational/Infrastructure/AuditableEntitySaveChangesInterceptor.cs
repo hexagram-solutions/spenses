@@ -5,7 +5,7 @@ using Spenses.Resources.Relational.Models;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;
 
-namespace Spenses.Resources.Relational.Interceptors;
+namespace Spenses.Resources.Relational.Infrastructure;
 
 public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
 {
@@ -56,7 +56,7 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
     }
 }
 
-public static class Extensions
+internal static class EntityEntryExtensions
 {
     public static bool HasChangedOwnedEntities(this EntityEntry entry)
     {

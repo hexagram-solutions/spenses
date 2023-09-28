@@ -9,7 +9,7 @@ public class UserIdentity
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public string Id { get; set; } = null!;
 
-    public string Name { get; set; } = null!;
+    public string NickName { get; set; } = null!;
 
     public string Issuer { get; set; } = null!;
 

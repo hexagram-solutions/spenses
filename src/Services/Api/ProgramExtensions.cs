@@ -7,9 +7,9 @@ using NSwag;
 using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
-using Spenses.Resources.Relational.Interceptors;
 using Spenses.Resources.Relational;
 using Spenses.Utilities.Security.Services;
+using Spenses.Resources.Relational.Infrastructure;
 
 namespace Spenses.Api;
 

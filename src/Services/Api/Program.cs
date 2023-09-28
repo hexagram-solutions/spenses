@@ -1,13 +1,10 @@
 using System.Text.Json.Serialization;
 using Hexagrams.Extensions.Configuration;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
 using Spenses.Application.Extensions;
-using Spenses.Resources.Relational;
-using Spenses.Resources.Relational.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
 

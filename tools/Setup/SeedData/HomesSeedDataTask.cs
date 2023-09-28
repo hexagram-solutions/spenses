@@ -19,7 +19,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Description = "Test home for integration testing",
                 Members = userIdentities.Select(u => new Member
                 {
-                    Name = u.Name,
+                    Name = u.NickName,
                     AnnualTakeHomeIncome = 80_000m,
                     UserId = u.Id
                 }).ToList()
@@ -30,7 +30,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Description = "Second test home",
                 Members = userIdentities.Select(u => new Member
                 {
-                    Name = u.Name,
+                    Name = u.NickName,
                     AnnualTakeHomeIncome = 80_000m,
                     UserId = u.Id
                 }).ToList()

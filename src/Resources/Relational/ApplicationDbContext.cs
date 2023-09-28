@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Spenses.Resources.Relational.Infrastructure;
-using Spenses.Resources.Relational.Interceptors;
 using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Resources.Relational;

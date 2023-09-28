@@ -13,8 +13,7 @@ public class HomeMemberAuthorizationHandler : AuthorizationHandler<HomeMemberReq
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
         HomeMemberRequirement requirement, Home resource)
     {
-        var homeMemberUserIds = resource.Members
-            .Select(m => m.User?.Id);
+        var homeMemberUserIds = resource.Members.Select(m => m.User?.Id);
 
         if (homeMemberUserIds.Contains(context.User.GetId()))
             context.Succeed(requirement);

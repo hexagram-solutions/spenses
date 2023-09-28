@@ -13,7 +13,7 @@ public class UserIdentitiesSeedDataTask : ISeedDataTask
         {
             Id = SystemCurrentUserService.SystemUserId,
             Email = "system@spenses.ca",
-            Name = "System User",
+            NickName = "System User",
             Issuer = "self"
         });
 
@@ -21,14 +21,14 @@ public class UserIdentitiesSeedDataTask : ISeedDataTask
         {
             Id = "integration-test-user",
             Email = "george@vandelayindustries.com",
-            Name = "George Costanza",
+            NickName = "George Costanza",
             Issuer = "self"
         });
 
         await db.Users.AddAsync(new UserIdentity
         {
             Id = "auth0|64ad7b9ec359b5dc9d467a5b",
-            Name = "ericsondergard+spensesuser@fastmail.com",
+            NickName = "ericsondergard+spensesuser@fastmail.com",
             Issuer = "https://spenses.us.auth0.com/",
             Email = "ericsondergard+spensesuser@fastmail.com"
         });

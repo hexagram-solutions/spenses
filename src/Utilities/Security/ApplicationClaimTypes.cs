@@ -15,6 +15,8 @@ public static class ApplicationClaimTypes
 
     public const string Name = JwtClaimTypes.Name;
 
+    public const string NickName = JwtClaimTypes.NickName;
+
     public const string Permissions = "permissions";
 
     public const string Role = ClaimTypes.Role;

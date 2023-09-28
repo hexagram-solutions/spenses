@@ -2,7 +2,7 @@ using System.CommandLine;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Spenses.Resources.Relational;
-using Spenses.Resources.Relational.Interceptors;
+using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Tools.Setup.SeedData;
 
 namespace Spenses.Tools.Setup;
