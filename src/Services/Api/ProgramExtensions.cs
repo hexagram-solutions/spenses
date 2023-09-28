@@ -10,8 +10,8 @@ using Spenses.Api.Infrastructure;
 using Spenses.Application.Authorization;
 using Spenses.Application.Common;
 using Spenses.Resources.Relational;
-using Spenses.Utilities.Security.Services;
 using Spenses.Resources.Relational.Infrastructure;
+using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api;
 

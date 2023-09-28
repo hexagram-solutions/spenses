@@ -1,5 +1,6 @@
-using Hexagrams.Extensions.Common;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Spenses.Application.Authorization;
 using Spenses.Application.Features.Homes;
 
 namespace Spenses.Application.Extensions;
@@ -15,16 +16,11 @@ public static class ServiceCollectionExtensions
         services.AddAutoMapper((sp, cfg) =>
         {
             cfg.ConstructServicesUsing(sp.GetRequiredService);
-            //}, userCodeAssemblies);
-        }, typeof(HomeQuery).Yield());
-
-        services.AddAutoMapper((sp, cfg) =>
-        {
-            cfg.ConstructServicesUsing(sp.GetRequiredService);
-            //}, userCodeAssemblies);
-        }, typeof(HomeQuery).Yield());
+        }, userCodeAssemblies);
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<HomeQuery>());
+
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestAuthorizationBehavior<,>));
 
         return services;
     }

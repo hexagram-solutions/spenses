@@ -1,23 +1,35 @@
 using Microsoft.AspNetCore.Authorization;
-using Spenses.Application.Models;
+using Microsoft.EntityFrameworkCore;
+using Spenses.Resources.Relational;
 using Spenses.Utilities.Security;
 
 namespace Spenses.Application.Authorization;
 
-public class HomeMemberRequirement : IAuthorizationRequirement
-{
-}
+public record HomeMemberRequirement(Guid HomeId) : IAuthorizationRequirement;
 
-public class HomeMemberAuthorizationHandler : AuthorizationHandler<HomeMemberRequirement, Home>
+public class HomeMemberAuthorizationHandler : AuthorizationHandler<HomeMemberRequirement>
 {
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
-        HomeMemberRequirement requirement, Home resource)
+    private readonly ApplicationDbContext _db;
+
+    public HomeMemberAuthorizationHandler(ApplicationDbContext db)
     {
-        var homeMemberUserIds = resource.Members.Select(m => m.User?.Id);
+        _db = db;
+    }
+
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
+        HomeMemberRequirement requirement)
+    {
+        var home = await _db.Homes
+            .Include(h => h.Members)
+            .ThenInclude(m => m.User)
+            .FirstOrDefaultAsync(h => h.Id == requirement.HomeId);
+
+        if (home is null)
+            return;
+
+        var homeMemberUserIds = home.Members.Select(m => m.User?.Id);
 
         if (homeMemberUserIds.Contains(context.User.GetId()))
             context.Succeed(requirement);
-
-        return Task.CompletedTask;
     }
 }

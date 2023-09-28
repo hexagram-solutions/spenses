@@ -1,44 +1,43 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Authorization;
 using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
-using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Application.Features.Homes;
 
-public record HomeQuery(Guid Id) : IRequest<ServiceResult<Home>>;
+public record HomeQuery(Guid HomeId) : IAuthorizedRequest<ServiceResult<Home>>
+{
+    public AuthorizationPolicy Policy => new AuthorizationPolicyBuilder()
+        .AddRequirements(new HomeMemberRequirement(HomeId))
+        .Build();
+
+    public ServiceResult<Home> OnUnauthorized() => new NotFoundErrorResult(HomeId);
+}
 
 public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, ServiceResult<Home>>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
-    private readonly ICurrentUserAuthorizationService _authorizationService;
 
-    public HomeQueryCommandHandler(ApplicationDbContext db, IMapper mapper,
-        ICurrentUserAuthorizationService authorizationService)
+    public HomeQueryCommandHandler(ApplicationDbContext db, IMapper mapper)
     {
         _db = db;
         _mapper = mapper;
-        _authorizationService = authorizationService;
     }
 
     public async Task<ServiceResult<Home>> Handle(HomeQuery request, CancellationToken cancellationToken)
     {
         var home = await _db.Homes
             .ProjectTo<Home>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
+            .FirstOrDefaultAsync(h => h.Id == request.HomeId, cancellationToken);
 
         if (home is null)
-            return new NotFoundErrorResult(request.Id);
-
-        var authorizationResult = await _authorizationService.AuthorizeAsync(home, new HomeMemberRequirement());
-
-        if (!authorizationResult.Succeeded)
-            return new NotFoundErrorResult(request.Id);
+            return new NotFoundErrorResult(request.HomeId);
 
         return home;
     }

@@ -34,7 +34,7 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var principal = GetClaimsPrincipal();
-        
+
         var ticket = new AuthenticationTicket(principal, AuthenticationScheme);
 
         var result = AuthenticateResult.Success(ticket);
