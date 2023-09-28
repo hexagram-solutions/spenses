@@ -1,3 +1,4 @@
+using System.Net;
 using Refit;
 using Spenses.Application.Models;
 using Spenses.Client.Http;
@@ -19,32 +20,46 @@ public class HomeMembersIntegrationTests
     [Fact]
     public async Task Post_home_member_creates_member()
     {
-        var home = (await _homes.GetHomes()).Content!.First(x => x.Members.Any());
+        var home = (await _homes.GetHomes()).Content!.First();
 
         var properties = new MemberProperties { Name = "Bob" };
 
-        var createdMember = await _homeMembers.PostHomeMember(home.Id, properties);
-        createdMember.Should().BeEquivalentTo(properties);
+        var createdMemberResponse = await _homeMembers.PostHomeMember(home.Id, properties);
 
-        var members = await _homeMembers.GetHomeMembers(home.Id);
-        members.Content.Should().ContainEquivalentOf(createdMember);
+        createdMemberResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        await _homeMembers.DeleteHomeMember(home.Id, createdMember.Content!.Id);
+        var createdMember = createdMemberResponse.Content;
+
+        createdMember.Should().BeEquivalentTo(properties, opts =>
+            opts.ExcludingNestedObjects()
+                .ExcludingMissingMembers());
+
+        var members = (await _homeMembers.GetHomeMembers(home.Id)).Content;
+        members.Should().ContainEquivalentOf(createdMember);
+
+        await _homeMembers.DeleteHomeMember(home.Id, createdMember!.Id);
     }
 
     [Fact]
     public async Task Put_home_member_updates_member()
     {
-        var home = (await _homes.GetHomes()).Content!.First(x => x.Members.Any());
+        var home = (await _homes.GetHomes()).Content!.First();
 
         var member = home.Members.First();
 
         var properties = new MemberProperties { Name = "Grunky Peep" };
 
-        var updatedMember = await _homeMembers.PutHomeMember(home.Id, member.Id, properties);
-        updatedMember.Should().BeEquivalentTo(properties);
+        var updatedMemberResponse = await _homeMembers.PutHomeMember(home.Id, member.Id, properties);
 
-        var fetchedMember = await _homeMembers.GetHomeMember(home.Id, member.Id);
+        updatedMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedMember = updatedMemberResponse.Content;
+
+        updatedMember.Should().BeEquivalentTo(properties, opts =>
+            opts.ExcludingNestedObjects()
+                .ExcludingMissingMembers());
+
+        var fetchedMember = (await _homeMembers.GetHomeMember(home.Id, member.Id)).Content;
         fetchedMember.Should().BeEquivalentTo(updatedMember);
     }
 }

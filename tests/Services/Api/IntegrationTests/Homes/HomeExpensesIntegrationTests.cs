@@ -1,3 +1,4 @@
+using System.Net;
 using Refit;
 using Spenses.Application.Models;
 using Spenses.Client.Http;
@@ -29,12 +30,17 @@ public class HomeExpensesIntegrationTests
             IncurredByMemberId = home.Members.First().Id
         };
 
-        var createdExpense = (await _homeExpenses.PostHomeExpense(home.Id, properties)).Content!;
+        var createdExpenseResponse = await _homeExpenses.PostHomeExpense(home.Id, properties);
+
+        createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var createdExpense = createdExpenseResponse.Content;
+
         createdExpense.Should().BeEquivalentTo(properties, opts =>
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedExpense = await _homeExpenses.GetHomeExpense(home.Id, createdExpense.Id);
+        var fetchedExpense = (await _homeExpenses.GetHomeExpense(home.Id, createdExpense!.Id)).Content;
         fetchedExpense.Should().BeEquivalentTo(createdExpense);
 
         var expenses = (await _homeExpenses.GetHomeExpenses(home.Id)).Content;
@@ -58,13 +64,18 @@ public class HomeExpensesIntegrationTests
             IncurredByMemberId = home.Members.First().Id
         };
 
-        var updatedExpense = (await _homeExpenses.PutHomeExpense(home.Id, expense.Id, properties)).Content;
+        var updatedExpenseResponse = await _homeExpenses.PutHomeExpense(home.Id, expense.Id, properties);
+
+        updatedExpenseResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedExpense = updatedExpenseResponse.Content;
+
         updatedExpense.Should().BeEquivalentTo(properties, opts =>
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedExpense = await _homeExpenses.GetHomeExpense(home.Id, updatedExpense!.Id);
+        var fetchedExpense = (await _homeExpenses.GetHomeExpense(home.Id, updatedExpense!.Id)).Content;
 
-        fetchedExpense.Content.Should().BeEquivalentTo(updatedExpense);
+        fetchedExpense.Should().BeEquivalentTo(updatedExpense);
     }
 }

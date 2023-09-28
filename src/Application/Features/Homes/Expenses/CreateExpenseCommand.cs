@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Results;
@@ -47,8 +48,10 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
 
         await _db.SaveChangesAsync(cancellationToken);
 
-        var entity = _db.Entry(expense).Entity;
+        var createdExpense = await _db.Expenses
+            .ProjectTo<Expense>(_mapper.ConfigurationProvider)
+            .FirstAsync(e => e.Id == expense.Id, cancellationToken);
 
-        return _mapper.Map<Expense>(entity);
+        return createdExpense;
     }
 }

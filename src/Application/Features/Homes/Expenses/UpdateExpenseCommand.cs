@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Results;
@@ -26,7 +27,7 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
 
         var expense = await _db.Expenses
             .Include(e => e.Home)
-            .ThenInclude(h => h.Members)
+                .ThenInclude(h => h.Members)
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);
 
@@ -45,6 +46,10 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
 
         await _db.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<Expense>(expense);
+        var updatedExpense = await _db.Expenses
+            .ProjectTo<Expense>(_mapper.ConfigurationProvider)
+            .FirstAsync(e => e.Id == expense.Id, cancellationToken);
+
+        return updatedExpense;
     }
 }

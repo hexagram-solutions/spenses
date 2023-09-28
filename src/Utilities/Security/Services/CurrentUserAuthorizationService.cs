@@ -14,7 +14,7 @@ public class CurrentUserAuthorizationService : ICurrentUserAuthorizationService
         _currentUserService = currentUserService;
     }
 
-    public Task<AuthorizationResult> AuthorizeAsync(object? resource, IEnumerable<IAuthorizationRequirement> requirements)
+    public Task<AuthorizationResult> AuthorizeAsync(object? resource, params IAuthorizationRequirement[] requirements)
     {
         return _innerAuthorizationService.AuthorizeAsync(_currentUserService.CurrentUser, resource, requirements);
     }

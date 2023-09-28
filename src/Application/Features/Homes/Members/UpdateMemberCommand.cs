@@ -25,6 +25,9 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, S
         var (homeId, memberId, props) = request;
 
         var member = await _db.Members
+            .Include(m => m.User)
+            .Include(m => m.CreatedBy)
+            .Include(m => m.ModifiedBy)
             .Where(m => m.HomeId == homeId)
             .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
 

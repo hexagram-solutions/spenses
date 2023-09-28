@@ -24,7 +24,9 @@ public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, Servi
     {
         var home = await _db.Homes
             .Include(h => h.Members)
-            .ThenInclude(m => m.User)
+                .ThenInclude(m => m.User)
+            .Include(h => h.CreatedBy)
+            .Include(h => h.ModifiedBy)
             .FirstOrDefaultAsync(h => h.Id == request.Id, cancellationToken);
 
         if (home is null)

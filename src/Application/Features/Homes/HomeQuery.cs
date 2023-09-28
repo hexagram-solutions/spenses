@@ -1,6 +1,5 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
-using Hexagrams.Extensions.Common;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Authorization;
@@ -36,7 +35,7 @@ public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, ServiceResult<
         if (home is null)
             return new NotFoundErrorResult(request.Id);
 
-        var authorizationResult = await _authorizationService.AuthorizeAsync(home, new HomeMemberRequirement().Yield());
+        var authorizationResult = await _authorizationService.AuthorizeAsync(home, new HomeMemberRequirement());
 
         if (!authorizationResult.Succeeded)
             return new NotFoundErrorResult(request.Id);
