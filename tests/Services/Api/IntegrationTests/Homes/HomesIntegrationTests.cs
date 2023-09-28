@@ -5,7 +5,6 @@ using Refit;
 using Spenses.Application.Models;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational;
-using Spenses.Resources.Relational.Models;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Api.IntegrationTests.Homes;
