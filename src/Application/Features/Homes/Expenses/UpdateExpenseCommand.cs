@@ -44,7 +44,7 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
 
         if (expense.Home.Members.All(m => m.Id != props.IncurredByMemberId))
         {
-            return new InvalidRequestErrorResult(nameof(request.Props.IncurredByMemberId),
+            return new InvalidRequestErrorResult(nameof(ExpenseProperties.IncurredByMemberId),
                 $"Member {props.IncurredByMemberId} is not a member of home {homeId}");
         }
 

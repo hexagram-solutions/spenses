@@ -96,6 +96,49 @@ namespace Spenses.Resources.Relational.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Credit",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "date", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(10,2)", precision: 10, scale: 2, nullable: false),
+                    PaidByMemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    HomeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ModifiedById = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Credit", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Credit_Home_HomeId",
+                        column: x => x.HomeId,
+                        principalTable: "Home",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Credit_Member_PaidByMemberId",
+                        column: x => x.PaidByMemberId,
+                        principalTable: "Member",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Credit_UserIdentity_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "UserIdentity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Credit_UserIdentity_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "UserIdentity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Expense",
                 columns: table => new
                 {
@@ -138,6 +181,26 @@ namespace Spenses.Resources.Relational.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Credit_CreatedById",
+                table: "Credit",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Credit_HomeId",
+                table: "Credit",
+                column: "HomeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Credit_ModifiedById",
+                table: "Credit",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Credit_PaidByMemberId",
+                table: "Credit",
+                column: "PaidByMemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Expense_CreatedById",
@@ -193,6 +256,9 @@ namespace Spenses.Resources.Relational.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Credit");
+
             migrationBuilder.DropTable(
                 name: "Expense");
 
