@@ -8,7 +8,7 @@ using Spenses.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.SetKeyDelimiters(":", "_", "-", ".");
+builder.Configuration.BuildConfiguration();
 
 builder.Services.AddControllers();
 
@@ -41,8 +41,6 @@ builder.Services.AddCors(opts =>
                 .AllowCredentials();
         });
 });
-
-builder.Services.AddHealthChecks();
 
 builder.Services
     .AddApplicationServices()

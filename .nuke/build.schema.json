@@ -29,7 +29,14 @@
         "ContainerAppEnvironment": {
           "type": "string"
         },
+        "ContainerRegistryPassword": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
         "ContainerRegistryServer": {
+          "type": "string"
+        },
+        "ContainerRegistryUsername": {
           "type": "string"
         },
         "Continue": {

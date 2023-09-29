@@ -28,5 +28,12 @@ partial class Build
     [Parameter]
     readonly string ContainerRegistryServer = "crspensestest.azurecr.io";
 
+    [Parameter]
+    readonly string ContainerRegistryUsername = "crspensestest";
+
+    [Secret]
+    [Parameter]
+    readonly string ContainerRegistryPassword;
+
 
 }

@@ -12,8 +12,8 @@ partial class Build
         .Executes(() =>
         {
             PowerShell($"az login --service-principal " +
-                $"--username {AzureUsername} " +
-                $"--password \"{AzurePassword}\" " +
+                $"-u {AzureUsername} " +
+                $"-p {AzurePassword} " +
                 $"--tenant {AzureTenant}");
         });
 
@@ -35,17 +35,24 @@ partial class Build
     Target DeployApi => _ => _
         .Description("Deploy the API service to Azure Container Apps.")
         .DependsOn(PushDockerImage)
+        .Requires(
+            () => ContainerRegistryServer,
+            () => ContainerRegistryUsername,
+            () => ContainerRegistryPassword)
         .Executes(() =>
         {
             var containerAppImage = $"{ContainerRegistryServer}/{DockerImageName}";
+            var containerAppName = "ca-spenses-test";
 
             PowerShell("az containerapp up " +
-                "--name spenses-api " +
+                $"--name {containerAppName} " +
                 $"--resource-group {AzureResourceGroup} " +
                 $"--environment {ContainerAppEnvironment} " +
                 $"--image {containerAppImage} " +
                 "--target-port 80 " +
                 "--ingress external " +
-                $"--registry-server {ContainerRegistryServer}");
+                $"--registry-server {ContainerRegistryServer} " +
+                $"--registry-username {ContainerRegistryUsername} " +
+                $"--registry-password {ContainerRegistryPassword}");
         });
 }
