@@ -6,12 +6,31 @@
     "build": {
       "type": "object",
       "properties": {
+        "AzurePassword": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
+        "AzureResourceGroup": {
+          "type": "string"
+        },
+        "AzureTenant": {
+          "type": "string"
+        },
+        "AzureUsername": {
+          "type": "string"
+        },
         "Configuration": {
           "type": "string",
           "enum": [
             "Debug",
             "Release"
           ]
+        },
+        "ContainerAppEnvironment": {
+          "type": "string"
+        },
+        "ContainerRegistryServer": {
+          "type": "string"
         },
         "Continue": {
           "type": "boolean",
@@ -75,13 +94,16 @@
           "items": {
             "type": "string",
             "enum": [
+              "AzureLogin",
               "BuildDockerImage",
               "Clean",
               "Compile",
+              "DeployApi",
               "Format",
               "IntegrationTest",
               "IntegrationTestSetup",
               "MigrateDatabase",
+              "PushDockerImage",
               "ReportCoverage",
               "Restore",
               "RestoreTools",
@@ -104,13 +126,16 @@
           "items": {
             "type": "string",
             "enum": [
+              "AzureLogin",
               "BuildDockerImage",
               "Clean",
               "Compile",
+              "DeployApi",
               "Format",
               "IntegrationTest",
               "IntegrationTestSetup",
               "MigrateDatabase",
+              "PushDockerImage",
               "ReportCoverage",
               "Restore",
               "RestoreTools",

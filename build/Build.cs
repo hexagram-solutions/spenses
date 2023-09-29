@@ -73,7 +73,7 @@ partial class Build : NukeBuild,
 
     string DockerTag => IsServerBuild ? GitVersion.NuGetVersionV2 : "dev";
 
-    string DockerImageName => "spenses-api";
+    string DockerImageName => $"spenses-api:{DockerTag}";
 
     Target BuildDockerImage => _ => _
         .Description("Build the docker images for the project.")
