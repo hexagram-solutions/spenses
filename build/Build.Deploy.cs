@@ -1,10 +1,14 @@
 using System.Linq;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
+using Nuke.Common.Tooling;
 using static Nuke.Common.Tools.PowerShell.PowerShellTasks;
 
 partial class Build
 {
+    [PathVariable]
+    readonly Tool Az;
+
     Target AzureLogin => _ => _
         .Description("Log in with the Azure CLI.")
         .Requires(
@@ -13,7 +17,7 @@ partial class Build
             () => AzureTenant)
         .Executes(() =>
         {
-            PowerShell($"az login --service-principal " +
+            Az("login --service-principal " +
                 $"-u {AzureUsername} " +
                 $"-p {AzurePassword} " +
                 $"--tenant {AzureTenant}");
@@ -32,7 +36,7 @@ partial class Build
         {
             var dockerFilePath = ApiProject.Directory / "Dockerfile";
 
-            PowerShell("az acr build " +
+            Az("acr build " +
                 $"--registry {ContainerRegistryServer} " +
                 $"--image {DockerImageName} " +
                 $"--file {dockerFilePath} {RootDirectory}");
@@ -50,7 +54,7 @@ partial class Build
             var containerAppImage = $"{ContainerRegistryServer}/{DockerImageName}";
             var containerAppName = "ca-spenses-test";
 
-            PowerShell("az containerapp up " +
+            Az("containerapp up " +
                 $"--name {containerAppName} " +
                 $"--resource-group {AzureResourceGroup} " +
                 $"--environment {ContainerAppEnvironment} " +
