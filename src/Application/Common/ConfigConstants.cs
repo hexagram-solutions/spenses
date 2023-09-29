@@ -10,7 +10,7 @@ public static class ConfigConstants
     public const string SpensesAppConfigurationSentinel = "Spenses:AppConfiguration:Sentinel";
 
     public const string SpensesConfigurationEnvironment = "Spenses:Configuration:Environment";
-    
+
     public const string SpensesOpenIdAuthority = "Spenses:OpenId:Authority";
     public const string SpensesOpenIdAudience = "Spenses:OpenId:Audience";
     public const string SpensesOpenIdClientId = "Spenses:OpenId:ClientId";

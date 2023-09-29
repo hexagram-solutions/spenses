@@ -15,7 +15,7 @@ partial class Build
     [Secret]
     [Parameter]
     readonly string AzurePassword;
-    
+
     [Parameter]
     readonly string AzureTenant = "892b7660-6ccd-40d5-8170-fd943620a80e";
 
