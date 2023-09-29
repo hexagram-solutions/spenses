@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Azure.Identity;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +18,32 @@ namespace Spenses.Api;
 
 public static class ProgramExtensions
 {
+    public static ConfigurationManager BuildConfiguration(this ConfigurationManager configuration)
+    {
+        configuration.SetKeyDelimiters(":", "_", "-", ".");
+
+        var configurationEnvironment = configuration.Require(ConfigConstants.SpensesConfigurationEnvironment);
+
+        if (configurationEnvironment != EnvironmentNames.Local &&
+            configurationEnvironment != EnvironmentNames.IntegrationTest)
+        {
+            var appConfigurationConnectionString =
+                configuration.Require(ConfigConstants.SpensesAppConfigurationConnectionString);
+
+            configuration.AddAzureAppConfiguration(options =>
+            {
+                options.Connect(appConfigurationConnectionString)
+                    .ConfigureKeyVault(kv => { kv.SetCredential(new DefaultAzureCredential()); })
+                    .ConfigureRefresh(refresh =>
+                        refresh.Register(ConfigConstants.SpensesAppConfigurationSentinel, refreshAll: true));
+            });
+        }
+
+        configuration.SetKeyDelimiters(":", "_", "-", ".");
+
+        return configuration;
+    }
+
     public static IServiceCollection AddAuth0Authentication(this IServiceCollection services, string authority,
         string audience)
     {

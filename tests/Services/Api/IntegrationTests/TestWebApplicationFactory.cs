@@ -13,7 +13,8 @@ public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEnt
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.UseEnvironment(EnvironmentNames.IntegrationTest);
+        builder.UseEnvironment(EnvironmentNames.Local);
+        builder.UseSetting(ConfigConstants.SpensesConfigurationEnvironment, EnvironmentNames.IntegrationTest);
 
         builder.ConfigureTestServices(services =>
         {
