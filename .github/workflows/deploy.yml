@@ -37,11 +37,6 @@ jobs:
         with:
           dotnet-version: 7.0.x
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: "Deploy API"
         run: ./build.cmd deploy-api
         env:

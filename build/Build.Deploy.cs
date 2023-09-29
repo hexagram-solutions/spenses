@@ -2,7 +2,8 @@ using System.Linq;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
-using static Nuke.Common.Tools.PowerShell.PowerShellTasks;
+
+// ReSharper disable InconsistentNaming
 
 partial class Build
 {
@@ -31,7 +32,7 @@ partial class Build
 
     Target PushDockerImage => _ => _
         .Description("Push docker images to the registry.")
-        // .DependsOn(AzureLogin)
+        .DependsOn(AzureLogin)
         .Executes(() =>
         {
             var dockerFilePath = ApiProject.Directory / "Dockerfile";
