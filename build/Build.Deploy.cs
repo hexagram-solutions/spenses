@@ -1,4 +1,6 @@
+using System.Linq;
 using Nuke.Common;
+using Nuke.Common.ProjectModel;
 using static Nuke.Common.Tools.PowerShell.PowerShellTasks;
 
 partial class Build
@@ -17,17 +19,21 @@ partial class Build
                 $"--tenant {AzureTenant}");
         });
 
+    Project ApiProject => Solution.GetAllProjects("Spenses.Api").Single();
+
+    string DockerTag => IsServerBuild ? GitVersion.NuGetVersionV2 : "dev";
+
+    string DockerImageName => $"spenses-api:{DockerTag}";
+
     Target PushDockerImage => _ => _
         .Description("Push docker images to the registry.")
-        .DependsOn(AzureLogin)
+        // .DependsOn(AzureLogin)
         .Executes(() =>
         {
-            var acrName = "crspensestest";
-
             var dockerFilePath = ApiProject.Directory / "Dockerfile";
 
             PowerShell("az acr build " +
-                $"--registry {acrName} " +
+                $"--registry {ContainerRegistryServer} " +
                 $"--image {DockerImageName} " +
                 $"--file {dockerFilePath} {RootDirectory}");
         });

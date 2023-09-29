@@ -1,17 +1,18 @@
 name: deploy
 
 on:
-  push:
-    branches:
-      - "main"
-      - "release/*"
-    paths-ignore:
-      - "README.md"
-  release:
+  workflow_run:
+    workflows: [continuous]
     types:
-      - released
-      - prereleased
+      - completed
+    branches:
+      - main
+      - "release/*"
   workflow_dispatch:
+    inputs:
+      workflowRunId:
+        description: "ID of the workflow run to deploy"
+        required: true
 
 jobs:
   deploy:
@@ -35,6 +36,11 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: "Deploy API"
         run: ./build.cmd deploy-api

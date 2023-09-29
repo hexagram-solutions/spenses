@@ -8,12 +8,9 @@ using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
-using Nuke.Common.Tools.Docker;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Serilog;
-using static Nuke.Common.Tools.Docker.DockerTasks;
 
 // ReSharper disable RedundantExtendsListEntry
 // ReSharper disable InconsistentNaming
@@ -67,26 +64,4 @@ partial class Build : NukeBuild,
     Target ICompile.Compile => _ => _
         .Inherit<ICompile>()
         .DependsOn<IFormat>(x => x.VerifyFormat);
-
-
-    Project ApiProject => Solution.GetAllProjects("Spenses.Api").Single();
-
-    string DockerTag => IsServerBuild ? GitVersion.NuGetVersionV2 : "dev";
-
-    string DockerImageName => $"spenses-api:{DockerTag}";
-
-    Target BuildDockerImage => _ => _
-        .Description("Build the docker images for the project.")
-        .Executes(() =>
-        {
-            DockerBuild(s => s
-                .SetForceRm(true)
-                .SetProcessWorkingDirectory(ApiProject.Directory)
-                .SetFile(ApiProject.Directory / "Dockerfile")
-                .SetTag(new List<string>
-                {
-                    $"{DockerImageName}:{DockerTag}"
-                })
-                .SetPath(RootDirectory));
-        });
 }

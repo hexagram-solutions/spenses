@@ -102,7 +102,6 @@
             "type": "string",
             "enum": [
               "AzureLogin",
-              "BuildDockerImage",
               "Clean",
               "Compile",
               "DeployApi",
@@ -134,7 +133,6 @@
             "type": "string",
             "enum": [
               "AzureLogin",
-              "BuildDockerImage",
               "Clean",
               "Compile",
               "DeployApi",

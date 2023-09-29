@@ -64,15 +64,3 @@ jobs:
         with:
           name: coverage-report.zip
           path: artifacts/reports/coverage-report.zip
-
-  docker:
-    name: "🐋 Build docker image"
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: "Build Docker image"
-        run: ./build.cmd build-docker-image
