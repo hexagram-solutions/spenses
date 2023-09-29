@@ -30,6 +30,8 @@ public class ApplicationDbContext : DbContext
         optionsBuilder.UseSqlServer("Server=.;Database=Spenses;Trusted_Connection=True;Encrypt=False;");
     }
 
+    public DbSet<Credit> Credits => Set<Credit>();
+
     public DbSet<Expense> Expenses => Set<Expense>();
 
     public DbSet<Home> Homes => Set<Home>();
@@ -48,6 +50,11 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<Expense>()
             .HasOne(x => x.IncurredByMember)
             .WithMany(x => x.Expenses)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Credit>()
+            .HasOne(x => x.PaidByMember)
+            .WithMany(x => x.Credits)
             .OnDelete(DeleteBehavior.Restrict);
     }
 

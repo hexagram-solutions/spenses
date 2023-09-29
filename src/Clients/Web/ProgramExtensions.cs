@@ -56,6 +56,7 @@ public static class ProgramExtensions
         AddApiClient<IHomesApi>();
         AddApiClient<IHomeMembersApi>();
         AddApiClient<IHomeExpensesApi>();
+        AddApiClient<IHomeCreditsApi>();
 
         return services;
     }

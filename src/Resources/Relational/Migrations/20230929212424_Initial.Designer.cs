@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230928164159_Initial")]
+    [Migration("20230929212424_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -24,6 +24,51 @@ namespace Spenses.Resources.Relational.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.Credit", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("HomeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("PaidByMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("HomeId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("PaidByMemberId");
+
+                    b.ToTable("Credit");
+                });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
                 {
@@ -173,6 +218,41 @@ namespace Spenses.Resources.Relational.Migrations
                     b.ToTable("UserIdentity");
                 });
 
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.Credit", b =>
+                {
+                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
+                        .WithMany("CreatedCredits")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.Home", "Home")
+                        .WithMany("Credits")
+                        .HasForeignKey("HomeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
+                        .WithMany("ModifiedCredits")
+                        .HasForeignKey("ModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
+                        .WithMany("Credits")
+                        .HasForeignKey("PaidByMemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Home");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("PaidByMember");
+                });
+
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
                 {
                     b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
@@ -262,6 +342,8 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Home", b =>
                 {
+                    b.Navigation("Credits");
+
                     b.Navigation("Expenses");
 
                     b.Navigation("Members");
@@ -269,16 +351,22 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Member", b =>
                 {
+                    b.Navigation("Credits");
+
                     b.Navigation("Expenses");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>
                 {
+                    b.Navigation("CreatedCredits");
+
                     b.Navigation("CreatedExpenses");
 
                     b.Navigation("CreatedHomes");
 
                     b.Navigation("CreatedMembers");
+
+                    b.Navigation("ModifiedCredits");
 
                     b.Navigation("ModifiedExpenses");
 

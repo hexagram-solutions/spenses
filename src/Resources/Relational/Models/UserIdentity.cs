@@ -16,6 +16,10 @@ public class UserIdentity
     [EmailAddress]
     public string Email { get; set; } = null!;
 
+    public ICollection<Credit> CreatedCredits { get; set; } = new HashSet<Credit>();
+
+    public ICollection<Credit> ModifiedCredits { get; set; } = new HashSet<Credit>();
+
     public ICollection<Expense> CreatedExpenses { get; set; } = new HashSet<Expense>();
 
     public ICollection<Expense> ModifiedExpenses { get; set; } = new HashSet<Expense>();
