@@ -13,8 +13,6 @@ namespace Spenses.Application.Features.Homes.Expenses;
 public record ExpenseQuery(Guid HomeId, Guid ExpenseId) : IAuthorizedRequest<ServiceResult<Expense>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Expense> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class ExpenseQueryCommandHandler : IRequestHandler<ExpenseQuery, ServiceResult<Expense>>

@@ -93,7 +93,7 @@ public class HomesIntegrationTests
 
             var homeResponse = await _homes.GetHome(homeId);
 
-            homeResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            homeResponse.Error!.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
             await TearDown(homeId);
         }

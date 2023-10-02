@@ -8,6 +8,7 @@ public class InvalidRequestException : Exception
         : this("One or more validation failures have occurred.")
     {
     }
+
     public InvalidRequestException(string message)
         : base(message)
     {
@@ -23,4 +24,25 @@ public class InvalidRequestException : Exception
     }
 
     public IDictionary<string, string[]> Errors { get; }
+}
+
+public class ForbiddenException : Exception
+{
+}
+
+public class ResourceNotFoundException : Exception
+{
+
+    public ResourceNotFoundException(string resourceIdentifier)
+        : base($"Resource with identifier {resourceIdentifier} was not found")
+    {
+        ResourceIdentifier = resourceIdentifier;
+    }
+
+    public ResourceNotFoundException(Guid resourceIdentifier)
+        : this(resourceIdentifier.ToString())
+    {
+    }
+
+    public string ResourceIdentifier { get; }
 }

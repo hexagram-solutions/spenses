@@ -14,8 +14,6 @@ public record UpdateCreditCommand(Guid HomeId, Guid CreditId, CreditProperties P
     : IAuthorizedRequest<ServiceResult<Credit>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Credit> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class UpdateCreditCommandHandler : IRequestHandler<UpdateCreditCommand, ServiceResult<Credit>>

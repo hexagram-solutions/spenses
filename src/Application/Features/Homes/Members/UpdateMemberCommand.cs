@@ -13,8 +13,6 @@ public record UpdateMemberCommand(Guid HomeId, Guid MemberId, MemberProperties P
     : IAuthorizedRequest<ServiceResult<Member>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Member> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, ServiceResult<Member>>

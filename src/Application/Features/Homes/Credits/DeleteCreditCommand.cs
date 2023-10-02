@@ -10,8 +10,6 @@ namespace Spenses.Application.Features.Homes.Credits;
 public record DeleteCreditCommand(Guid HomeId, Guid CreditId) : IAuthorizedRequest<ServiceResult>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class DeleteCreditCommandHandler : IRequestHandler<DeleteCreditCommand, ServiceResult>

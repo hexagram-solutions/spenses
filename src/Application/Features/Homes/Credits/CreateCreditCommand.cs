@@ -14,8 +14,6 @@ namespace Spenses.Application.Features.Homes.Credits;
 public record CreateCreditCommand(Guid HomeId, CreditProperties Props) : IAuthorizedRequest<ServiceResult<Credit>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Credit> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class CreateCreditCommandHandler : IRequestHandler<CreateCreditCommand, ServiceResult<Credit>>

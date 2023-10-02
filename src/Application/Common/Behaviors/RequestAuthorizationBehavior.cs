@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Spenses.Application.Exceptions;
 using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Application.Common.Behaviors;
@@ -7,8 +8,6 @@ namespace Spenses.Application.Common.Behaviors;
 public interface IAuthorizedRequest<out TResponse> : IRequest<TResponse>
 {
     AuthorizationPolicy Policy { get; }
-
-    TResponse OnUnauthorized();
 }
 
 public class RequestAuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
@@ -42,6 +41,6 @@ public class RequestAuthorizationBehavior<TRequest, TResponse> : IPipelineBehavi
         if (authorizationResult.Succeeded)
             return await next();
 
-        return authorizedRequest.OnUnauthorized();
+        throw new ForbiddenException();
     }
 }

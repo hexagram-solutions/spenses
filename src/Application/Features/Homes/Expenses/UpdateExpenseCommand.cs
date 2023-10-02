@@ -14,8 +14,6 @@ public record UpdateExpenseCommand(Guid HomeId, Guid ExpenseId, ExpensePropertie
     : IAuthorizedRequest<ServiceResult<Expense>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Expense> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand, ServiceResult<Expense>>

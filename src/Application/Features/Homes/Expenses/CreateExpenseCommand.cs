@@ -14,8 +14,6 @@ namespace Spenses.Application.Features.Homes.Expenses;
 public record CreateExpenseCommand(Guid HomeId, ExpenseProperties Props) : IAuthorizedRequest<ServiceResult<Expense>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Expense> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, ServiceResult<Expense>>

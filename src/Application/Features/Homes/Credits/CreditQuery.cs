@@ -13,8 +13,6 @@ namespace Spenses.Application.Features.Homes.Credits;
 public record CreditQuery(Guid HomeId, Guid CreditId) : IAuthorizedRequest<ServiceResult<Credit>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Credit> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class CreditQueryCommandHandler : IRequestHandler<CreditQuery, ServiceResult<Credit>>

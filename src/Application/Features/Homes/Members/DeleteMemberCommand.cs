@@ -10,8 +10,6 @@ namespace Spenses.Application.Features.Homes.Members;
 public record DeleteMemberCommand(Guid HomeId, Guid MemberId) : IAuthorizedRequest<ServiceResult>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class DeleteMemberCommandHandler : IRequestHandler<DeleteMemberCommand, ServiceResult>

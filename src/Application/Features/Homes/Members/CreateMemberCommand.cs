@@ -13,8 +13,6 @@ namespace Spenses.Application.Features.Homes.Members;
 public record CreateMemberCommand(Guid HomeId, MemberProperties Props) : IAuthorizedRequest<ServiceResult<Member>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Member> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
 public class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, ServiceResult<Member>>

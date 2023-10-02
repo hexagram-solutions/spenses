@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -13,7 +14,9 @@ public class ApplicationExceptionFilter : IAsyncExceptionFilter
     {
         _exceptionHandlers = new()
         {
-            { typeof(InvalidRequestException), HandleValidationException }
+            { typeof(InvalidRequestException), HandleInvalidRequest },
+            { typeof(ForbiddenException), HandleForbidden },
+            { typeof(ResourceNotFoundException), HandleResourceNotFound }
         };
     }
 
@@ -26,10 +29,10 @@ public class ApplicationExceptionFilter : IAsyncExceptionFilter
 
         await handle(context);
 
-        context.ExceptionHandled = true; // todo: correct? what about other exceptions?
+        context.ExceptionHandled = true;
     }
 
-    private Task HandleValidationException(ExceptionContext context)
+    private Task HandleInvalidRequest(ExceptionContext context)
     {
         var exception = (InvalidRequestException) context.Exception;
 
@@ -59,6 +62,38 @@ public class ApplicationExceptionFilter : IAsyncExceptionFilter
         var validationProblemDetails = new ValidationProblemDetails(modelStateDictionary);
 
         context.Result = new BadRequestObjectResult(validationProblemDetails);
+
+        return Task.CompletedTask;
+    }
+
+    private Task HandleForbidden(ExceptionContext context)
+    {
+        var problemDetails = new ProblemDetails
+        {
+            Title = "Forbidden",
+            Status = StatusCodes.Status403Forbidden,
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
+        };
+
+        context.Result = new ObjectResult(problemDetails)
+        {
+            StatusCode = StatusCodes.Status403Forbidden
+        };
+
+        return Task.CompletedTask;
+    }
+
+    private Task HandleResourceNotFound(ExceptionContext context)
+    {
+        var exception = (ResourceNotFoundException) context.Exception;
+
+        context.Result = new NotFoundObjectResult(new ProblemDetails
+        {
+            Title = "The specified resource was not found.",
+            Detail = exception.ResourceIdentifier,
+            Status = StatusCodes.Status404NotFound,
+            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4"
+        });
 
         return Task.CompletedTask;
     }

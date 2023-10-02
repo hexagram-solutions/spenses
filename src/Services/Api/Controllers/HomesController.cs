@@ -33,9 +33,11 @@ public class HomesController : ApiControllerBase
 
     [HttpGet("{homeId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
-    public Task<ActionResult<Home>> GetHome(Guid homeId)
+    public async Task<ActionResult<Home>> GetHome(Guid homeId)
     {
-        return GetCommandResult<Home, HomeQuery>(new HomeQuery(homeId), Ok);
+        var home = await Mediator.Send(new HomeQuery(homeId));
+
+        return Ok(home);
     }
 
     [HttpPut("{homeId:guid}")]
