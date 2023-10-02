@@ -8,47 +8,57 @@ namespace Spenses.Api.Controllers;
 
 [ApiController]
 [Route("/homes/{homeId:guid}/members")]
-public class HomeMembersController : ApiControllerBase
+public class HomeMembersController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
     public HomeMembersController(IMediator mediator)
-        : base(mediator)
     {
+        _mediator = mediator;
     }
 
     [HttpPost]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
-    public Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
+    public async Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
     {
-        return GetCommandResult<Member, CreateMemberCommand>(
-            new CreateMemberCommand(homeId, props),
-            x => CreatedAtAction(nameof(GetMember), new { homeId, memberId = x.Id }, x));
+        var member = await _mediator.Send(new CreateMemberCommand(homeId, props));
+
+        return CreatedAtAction(nameof(GetMember), new { homeId, memberId = member.Id }, member);
     }
 
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
-    public Task<ActionResult<IEnumerable<Member>>> GetMembers(Guid homeId)
+    public async Task<ActionResult<IEnumerable<Member>>> GetMembers(Guid homeId)
     {
-        return GetCommandResult<IEnumerable<Member>, MembersQuery>(new MembersQuery(homeId), Ok);
+        var members = await _mediator.Send(new MembersQuery(homeId));
+
+        return Ok(members);
     }
 
     [HttpGet("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
-    public Task<ActionResult<Member>> GetMember(Guid homeId, Guid memberId)
+    public async Task<ActionResult<Member>> GetMember(Guid homeId, Guid memberId)
     {
-        return GetCommandResult<Member, MemberQuery>(new MemberQuery(homeId, memberId), Ok);
+        var member = await _mediator.Send(new MemberQuery(homeId, memberId));
+
+        return Ok(member);
     }
 
     [HttpPut("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
-    public Task<ActionResult<Member>> PutMember(Guid homeId, Guid memberId, MemberProperties props)
+    public async Task<ActionResult<Member>> PutMember(Guid homeId, Guid memberId, MemberProperties props)
     {
-        return GetCommandResult<Member, UpdateMemberCommand>(new UpdateMemberCommand(homeId, memberId, props), Ok);
+        var member = await _mediator.Send(new UpdateMemberCommand(homeId, memberId, props));
+
+        return Ok(member);
     }
 
     [HttpDelete("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
-    public Task<ActionResult> DeleteMember(Guid homeId, Guid memberId)
+    public async Task<ActionResult> DeleteMember(Guid homeId, Guid memberId)
     {
-        return GetCommandResult(new DeleteMemberCommand(homeId, memberId), NoContent);
+        await _mediator.Send(new DeleteMemberCommand(homeId, memberId));
+
+        return NoContent();
     }
 }

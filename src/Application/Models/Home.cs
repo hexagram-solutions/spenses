@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Spenses.Application.Models;
 
 public record Home : HomeProperties, IAggregateRoot

@@ -7,8 +7,8 @@ public class CreateHomeCommandValidator : AbstractValidator<CreateHomeCommand>
 {
     public CreateHomeCommandValidator()
     {
-        RuleFor(x => x.Props.Name)
-            .NotEmpty();
+        RuleFor(x => x.Props)
+            .SetValidator(new HomePropertiesValidator());
     }
 }
 

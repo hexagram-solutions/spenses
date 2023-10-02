@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -32,7 +31,7 @@ public class ApplicationExceptionFilter : IAsyncExceptionFilter
         context.ExceptionHandled = true;
     }
 
-    private Task HandleInvalidRequest(ExceptionContext context)
+    private static Task HandleInvalidRequest(ExceptionContext context)
     {
         var exception = (InvalidRequestException) context.Exception;
 
@@ -66,7 +65,7 @@ public class ApplicationExceptionFilter : IAsyncExceptionFilter
         return Task.CompletedTask;
     }
 
-    private Task HandleForbidden(ExceptionContext context)
+    private static Task HandleForbidden(ExceptionContext context)
     {
         var problemDetails = new ProblemDetails
         {
@@ -83,7 +82,7 @@ public class ApplicationExceptionFilter : IAsyncExceptionFilter
         return Task.CompletedTask;
     }
 
-    private Task HandleResourceNotFound(ExceptionContext context)
+    private static Task HandleResourceNotFound(ExceptionContext context)
     {
         var exception = (ResourceNotFoundException) context.Exception;
 

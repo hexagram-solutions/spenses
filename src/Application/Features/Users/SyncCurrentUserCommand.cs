@@ -2,7 +2,6 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
@@ -11,9 +10,9 @@ using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Application.Features.Users;
 
-public record SyncCurrentUserCommand : IRequest<ServiceResult<User>>;
+public record SyncCurrentUserCommand : IRequest<User>;
 
-public class SyncCurrentUserCommandHandler : IRequestHandler<SyncCurrentUserCommand, ServiceResult<User>>
+public class SyncCurrentUserCommandHandler : IRequestHandler<SyncCurrentUserCommand, User>
 {
     private readonly ApplicationDbContext _db;
     private readonly ICurrentUserService _currentUserService;
@@ -26,7 +25,7 @@ public class SyncCurrentUserCommandHandler : IRequestHandler<SyncCurrentUserComm
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<User>> Handle(SyncCurrentUserCommand request, CancellationToken cancellationToken)
+    public async Task<User> Handle(SyncCurrentUserCommand request, CancellationToken cancellationToken)
     {
         var currentUser = _currentUserService.CurrentUser;
         var currentUserId = currentUser.GetId();

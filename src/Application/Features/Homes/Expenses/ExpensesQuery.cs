@@ -4,18 +4,17 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
-using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Expenses;
 
-public record ExpensesQuery(Guid HomeId) : IAuthorizedRequest<ServiceResult<IEnumerable<Expense>>>
+public record ExpensesQuery(Guid HomeId) : IAuthorizedRequest<IEnumerable<Expense>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, ServiceResult<IEnumerable<Expense>>>
+public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, IEnumerable<Expense>>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -26,7 +25,7 @@ public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, ServiceResult
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<IEnumerable<Expense>>> Handle(ExpensesQuery request,
+    public async Task<IEnumerable<Expense>> Handle(ExpensesQuery request,
         CancellationToken cancellationToken)
     {
         var expenses = await _db.Expenses

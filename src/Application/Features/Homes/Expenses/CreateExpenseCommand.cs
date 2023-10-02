@@ -4,19 +4,19 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Homes.Expenses;
 
-public record CreateExpenseCommand(Guid HomeId, ExpenseProperties Props) : IAuthorizedRequest<ServiceResult<Expense>>
+public record CreateExpenseCommand(Guid HomeId, ExpenseProperties Props) : IAuthorizedRequest<Expense>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, ServiceResult<Expense>>
+public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, Expense>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -27,7 +27,7 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Expense>> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
+    public async Task<Expense> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
     {
         var (homeId, props) = request;
 
@@ -36,13 +36,10 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
             .FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
 
         if (home is null)
-            return new NotFoundErrorResult(homeId);
+            throw new ResourceNotFoundException(homeId);
 
         if (home.Members.All(m => m.Id != props.IncurredByMemberId))
-        {
-            return new InvalidRequestErrorResult(nameof(ExpenseProperties.IncurredByMemberId),
-                $"Member {props.IncurredByMemberId} is not a member of home {homeId}");
-        }
+            throw new InvalidRequestException($"Member {props.IncurredByMemberId} is not a member of home {homeId}");
 
         var expense = _mapper.Map<DbModels.Expense>(props);
 

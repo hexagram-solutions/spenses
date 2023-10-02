@@ -8,49 +8,57 @@ namespace Spenses.Api.Controllers;
 
 [ApiController]
 [Route("homes")]
-public class HomesController : ApiControllerBase
+public class HomesController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
     public HomesController(IMediator mediator)
-        : base(mediator)
     {
+        _mediator = mediator;
     }
 
     [HttpPost]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<Home>> PostHome(HomeProperties props)
     {
-        var home = await Mediator.Send(new CreateHomeCommand(props));
+        var home = await _mediator.Send(new CreateHomeCommand(props));
 
         return CreatedAtAction(nameof(GetHome), new { homeId = home.Id }, home);
     }
 
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
-    public Task<ActionResult<IEnumerable<Home>>> GetHomes()
+    public async Task<ActionResult<IEnumerable<Home>>> GetHomes()
     {
-        return GetCommandResult<IEnumerable<Home>, HomesQuery>(new HomesQuery(), Ok);
+        var homes = await _mediator.Send(new HomesQuery());
+
+        return Ok(homes);
     }
 
     [HttpGet("{homeId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<Home>> GetHome(Guid homeId)
     {
-        var home = await Mediator.Send(new HomeQuery(homeId));
+        var home = await _mediator.Send(new HomeQuery(homeId));
 
         return Ok(home);
     }
 
     [HttpPut("{homeId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
-    public Task<ActionResult<Home>> PutHome(Guid homeId, HomeProperties props)
+    public async Task<ActionResult<Home>> PutHome(Guid homeId, HomeProperties props)
     {
-        return GetCommandResult<Home, UpdateHomeCommand>(new UpdateHomeCommand(homeId, props), Ok);
+        var home = await _mediator.Send(new UpdateHomeCommand(homeId, props));
+
+        return Ok(home);
     }
 
     [HttpDelete("{homeId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
-    public Task<ActionResult> DeleteHome(Guid homeId)
+    public async Task<ActionResult> DeleteHome(Guid homeId)
     {
-        return GetCommandResult(new DeleteHomeCommand(homeId), NoContent);
+        await _mediator.Send(new DeleteHomeCommand(homeId));
+
+        return NoContent();
     }
 }

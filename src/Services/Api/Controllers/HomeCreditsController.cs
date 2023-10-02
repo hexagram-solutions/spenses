@@ -8,48 +8,57 @@ namespace Spenses.Api.Controllers;
 
 [ApiController]
 [Route("/homes/{homeId:guid}/credits")]
-public class HomeCreditsController : ApiControllerBase
+public class HomeCreditsController : ControllerBase
 {
+    private readonly IMediator _mediator;
+
     public HomeCreditsController(IMediator mediator)
-        : base(mediator)
     {
+        _mediator = mediator;
     }
 
     [HttpPost]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<Credit>> PostCredit(Guid homeId, CreditProperties props)
     {
-        return await GetCommandResult<Credit, CreateCreditCommand>(
-            new CreateCreditCommand(homeId, props),
-            x => CreatedAtAction(nameof(GetCredit), new { homeId, creditId = x.Id }, x));
+        var credit = await _mediator.Send(new CreateCreditCommand(homeId, props));
+
+        return CreatedAtAction(nameof(GetCredit), new { homeId, creditId = credit.Id }, credit);
     }
 
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<Credit>>> GetCredits(Guid homeId)
     {
-        return await GetCommandResult<IEnumerable<Credit>, CreditsQuery>(new CreditsQuery(homeId), Ok);
+        var credits = await _mediator.Send(new CreditsQuery(homeId));
+
+        return Ok(credits);
     }
 
     [HttpGet("{creditId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<Credit>> GetCredit(Guid homeId, Guid creditId)
     {
-        return await GetCommandResult<Credit, CreditQuery>(new CreditQuery(homeId, creditId), Ok);
+        var credit = await _mediator.Send(new CreditQuery(homeId, creditId));
+
+        return Ok(credit);
     }
 
     [HttpPut("{creditId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
     public async Task<ActionResult<Credit>> PutCredit(Guid homeId, Guid creditId, CreditProperties props)
     {
-        return await GetCommandResult<Credit, UpdateCreditCommand>(
-            new UpdateCreditCommand(homeId, creditId, props), Ok);
+        var credit = await _mediator.Send(new UpdateCreditCommand(homeId, creditId, props));
+
+        return Ok(credit);
     }
 
     [HttpDelete("{creditId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
-    public Task<ActionResult> DeleteCredit(Guid homeId, Guid creditId)
+    public async Task<ActionResult> DeleteCredit(Guid homeId, Guid creditId)
     {
-        return GetCommandResult(new DeleteCreditCommand(homeId, creditId), NoContent);
+        await _mediator.Send(new DeleteCreditCommand(homeId, creditId));
+
+        return NoContent();
     }
 }

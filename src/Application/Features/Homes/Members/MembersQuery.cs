@@ -4,18 +4,17 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
-using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Members;
 
-public record MembersQuery(Guid HomeId) : IAuthorizedRequest<ServiceResult<IEnumerable<Member>>>
+public record MembersQuery(Guid HomeId) : IAuthorizedRequest<IEnumerable<Member>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class MembersQueryHandler : IRequestHandler<MembersQuery, ServiceResult<IEnumerable<Member>>>
+public class MembersQueryHandler : IRequestHandler<MembersQuery, IEnumerable<Member>>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -26,7 +25,7 @@ public class MembersQueryHandler : IRequestHandler<MembersQuery, ServiceResult<I
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<IEnumerable<Member>>> Handle(MembersQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Member>> Handle(MembersQuery request, CancellationToken cancellationToken)
     {
         var members = await _db.Members
             .Where(m => m.HomeId == request.HomeId)

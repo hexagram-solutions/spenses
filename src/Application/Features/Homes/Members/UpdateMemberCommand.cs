@@ -3,19 +3,19 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Members;
 
 public record UpdateMemberCommand(Guid HomeId, Guid MemberId, MemberProperties Props)
-    : IAuthorizedRequest<ServiceResult<Member>>
+    : IAuthorizedRequest<Member>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, ServiceResult<Member>>
+public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, Member>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -26,7 +26,7 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, S
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Member>> Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
+    public async Task<Member> Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
     {
         var (homeId, memberId, props) = request;
 
@@ -38,7 +38,7 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, S
             .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
 
         if (member is null)
-            return new NotFoundErrorResult(memberId);
+            throw new ResourceNotFoundException(memberId);
 
         _mapper.Map(props, member);
 

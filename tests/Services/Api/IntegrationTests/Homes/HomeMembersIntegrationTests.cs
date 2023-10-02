@@ -62,4 +62,14 @@ public class HomeMembersIntegrationTests
         var fetchedMember = (await _homeMembers.GetHomeMember(home.Id, member.Id)).Content;
         fetchedMember.Should().BeEquivalentTo(updatedMember);
     }
+
+    [Fact]
+    public async Task Get_home_member_with_invalid_id_returns_not_found()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var result = await _homeMembers.GetHomeMember(home.Id, Guid.Empty);
+
+        result.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }

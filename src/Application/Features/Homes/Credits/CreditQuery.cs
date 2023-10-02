@@ -4,18 +4,18 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Credits;
 
-public record CreditQuery(Guid HomeId, Guid CreditId) : IAuthorizedRequest<ServiceResult<Credit>>
+public record CreditQuery(Guid HomeId, Guid CreditId) : IAuthorizedRequest<Credit>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class CreditQueryCommandHandler : IRequestHandler<CreditQuery, ServiceResult<Credit>>
+public class CreditQueryCommandHandler : IRequestHandler<CreditQuery, Credit>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -26,7 +26,7 @@ public class CreditQueryCommandHandler : IRequestHandler<CreditQuery, ServiceRes
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Credit>> Handle(CreditQuery request, CancellationToken cancellationToken)
+    public async Task<Credit> Handle(CreditQuery request, CancellationToken cancellationToken)
     {
         var (homeId, creditId) = request;
 
@@ -35,7 +35,7 @@ public class CreditQueryCommandHandler : IRequestHandler<CreditQuery, ServiceRes
             .ProjectTo<Credit>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == creditId, cancellationToken);
 
-        return credit is null ? new NotFoundErrorResult(creditId) : credit;
+        return credit ?? throw new ResourceNotFoundException(creditId);
     }
 }
 
