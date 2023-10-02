@@ -3,21 +3,19 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Authorization;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Expenses;
 
-public record ExpenseQuery(Guid HomeId, Guid ExpenseId) : IAuthorizedRequest<ServiceResult<Expense>>
+public record ExpenseQuery(Guid HomeId, Guid ExpenseId) : IAuthorizedRequest<Expense>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Expense> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
-public class ExpenseQueryCommandHandler : IRequestHandler<ExpenseQuery, ServiceResult<Expense>>
+public class ExpenseQueryCommandHandler : IRequestHandler<ExpenseQuery, Expense>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -28,7 +26,7 @@ public class ExpenseQueryCommandHandler : IRequestHandler<ExpenseQuery, ServiceR
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Expense>> Handle(ExpenseQuery request, CancellationToken cancellationToken)
+    public async Task<Expense> Handle(ExpenseQuery request, CancellationToken cancellationToken)
     {
         var (homeId, expenseId) = request;
 
@@ -37,7 +35,7 @@ public class ExpenseQueryCommandHandler : IRequestHandler<ExpenseQuery, ServiceR
             .ProjectTo<Expense>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == expenseId, cancellationToken);
 
-        return expense is null ? new NotFoundErrorResult(expenseId) : expense;
+        return expense ?? throw new ResourceNotFoundException(expenseId);
     }
 }
 

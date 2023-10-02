@@ -3,22 +3,20 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Authorization;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Expenses;
 
 public record UpdateExpenseCommand(Guid HomeId, Guid ExpenseId, ExpenseProperties Props)
-    : IAuthorizedRequest<ServiceResult<Expense>>
+    : IAuthorizedRequest<Expense>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Expense> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
-public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand, ServiceResult<Expense>>
+public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand, Expense>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -29,7 +27,7 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Expense>> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
+    public async Task<Expense> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
     {
         var (homeId, expenseId, props) = request;
 
@@ -40,13 +38,10 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);
 
         if (expense is null)
-            return new NotFoundErrorResult(expenseId);
+            throw new ResourceNotFoundException(expenseId);
 
         if (expense.Home.Members.All(m => m.Id != props.IncurredByMemberId))
-        {
-            return new InvalidRequestErrorResult(nameof(ExpenseProperties.IncurredByMemberId),
-                $"Member {props.IncurredByMemberId} is not a member of home {homeId}");
-        }
+            throw new InvalidRequestException($"Member {props.IncurredByMemberId} is not a member of home {homeId}");
 
         _mapper.Map(request.Props, expense);
 

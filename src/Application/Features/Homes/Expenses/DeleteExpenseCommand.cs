@@ -1,20 +1,18 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Authorization;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Exceptions;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Expenses;
 
-public record DeleteExpenseCommand(Guid HomeId, Guid ExpenseId) : IAuthorizedRequest<ServiceResult>
+public record DeleteExpenseCommand(Guid HomeId, Guid ExpenseId) : IAuthorizedRequest
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
-public class DeleteExpenseCommandHandler : IRequestHandler<DeleteExpenseCommand, ServiceResult>
+public class DeleteExpenseCommandHandler : IRequestHandler<DeleteExpenseCommand>
 {
     private readonly ApplicationDbContext _db;
 
@@ -23,7 +21,7 @@ public class DeleteExpenseCommandHandler : IRequestHandler<DeleteExpenseCommand,
         _db = db;
     }
 
-    public async Task<ServiceResult> Handle(DeleteExpenseCommand request, CancellationToken cancellationToken)
+    public async Task Handle(DeleteExpenseCommand request, CancellationToken cancellationToken)
     {
         var (homeId, expenseId) = request;
 
@@ -32,12 +30,10 @@ public class DeleteExpenseCommandHandler : IRequestHandler<DeleteExpenseCommand,
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);
 
         if (expense is null)
-            return new NotFoundErrorResult(expenseId);
+            throw new ResourceNotFoundException(expenseId);
 
         _db.Expenses.Remove(expense);
 
         await _db.SaveChangesAsync(cancellationToken);
-
-        return new SuccessResult();
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Spenses.Resources.Relational;
 using Spenses.Utilities.Security;
 
-namespace Spenses.Application.Authorization;
+namespace Spenses.Application.Features.Homes.Members;
 
 public record HomeMemberRequirement(Guid HomeId) : IAuthorizationRequirement;
 

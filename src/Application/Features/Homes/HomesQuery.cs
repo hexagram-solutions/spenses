@@ -2,7 +2,6 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using Spenses.Utilities.Security;
@@ -10,9 +9,9 @@ using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Application.Features.Homes;
 
-public record HomesQuery : IRequest<ServiceResult<IEnumerable<Home>>>;
+public record HomesQuery : IRequest<IEnumerable<Home>>;
 
-public class HomesQueryHandler : IRequestHandler<HomesQuery, ServiceResult<IEnumerable<Home>>>
+public class HomesQueryHandler : IRequestHandler<HomesQuery, IEnumerable<Home>>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -25,7 +24,7 @@ public class HomesQueryHandler : IRequestHandler<HomesQuery, ServiceResult<IEnum
         _currentUserService = currentUserService;
     }
 
-    public async Task<ServiceResult<IEnumerable<Home>>> Handle(HomesQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Home>> Handle(HomesQuery request, CancellationToken cancellationToken)
     {
         var currentUserId = _currentUserService.CurrentUser.GetId();
 

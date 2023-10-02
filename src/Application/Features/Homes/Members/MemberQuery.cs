@@ -3,21 +3,19 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Authorization;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Members;
 
-public record MemberQuery(Guid HomeId, Guid MemberId) : IAuthorizedRequest<ServiceResult<Member>>
+public record MemberQuery(Guid HomeId, Guid MemberId) : IAuthorizedRequest<Member>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Member> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
-public class MemberQueryHandler : IRequestHandler<MemberQuery, ServiceResult<Member>>
+public class MemberQueryHandler : IRequestHandler<MemberQuery, Member>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -28,7 +26,7 @@ public class MemberQueryHandler : IRequestHandler<MemberQuery, ServiceResult<Mem
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Member>> Handle(MemberQuery request, CancellationToken cancellationToken)
+    public async Task<Member> Handle(MemberQuery request, CancellationToken cancellationToken)
     {
         var (homeId, memberId) = request;
 
@@ -37,6 +35,6 @@ public class MemberQueryHandler : IRequestHandler<MemberQuery, ServiceResult<Mem
             .ProjectTo<Member>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
 
-        return member is null ? new NotFoundErrorResult(request.MemberId) : member;
+        return member ?? throw new ResourceNotFoundException(memberId);
     }
 }

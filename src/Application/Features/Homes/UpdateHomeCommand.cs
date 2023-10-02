@@ -2,21 +2,19 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Authorization;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes;
 
-public record UpdateHomeCommand(Guid HomeId, HomeProperties Props) : IAuthorizedRequest<ServiceResult<Home>>
+public record UpdateHomeCommand(Guid HomeId, HomeProperties Props) : IAuthorizedRequest<Home>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Home> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
-public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, ServiceResult<Home>>
+public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, Home>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -27,7 +25,7 @@ public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, Servi
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Home>> Handle(UpdateHomeCommand request, CancellationToken cancellationToken)
+    public async Task<Home> Handle(UpdateHomeCommand request, CancellationToken cancellationToken)
     {
         var home = await _db.Homes
             .Include(h => h.Members)
@@ -37,7 +35,7 @@ public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, Servi
             .FirstOrDefaultAsync(h => h.Id == request.HomeId, cancellationToken);
 
         if (home is null)
-            return new NotFoundErrorResult(request.HomeId);
+            throw new ResourceNotFoundException(request.HomeId);
 
         _mapper.Map(request.Props, home);
 

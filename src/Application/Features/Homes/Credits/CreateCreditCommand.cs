@@ -3,22 +3,20 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Authorization;
-using Spenses.Application.Common.Results;
+using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Homes.Credits;
 
-public record CreateCreditCommand(Guid HomeId, CreditProperties Props) : IAuthorizedRequest<ServiceResult<Credit>>
+public record CreateCreditCommand(Guid HomeId, CreditProperties Props) : IAuthorizedRequest<Credit>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
-
-    public ServiceResult<Credit> OnUnauthorized() => new UnauthorizedErrorResult();
 }
 
-public class CreateCreditCommandHandler : IRequestHandler<CreateCreditCommand, ServiceResult<Credit>>
+public class CreateCreditCommandHandler : IRequestHandler<CreateCreditCommand, Credit>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -29,7 +27,7 @@ public class CreateCreditCommandHandler : IRequestHandler<CreateCreditCommand, S
         _mapper = mapper;
     }
 
-    public async Task<ServiceResult<Credit>> Handle(CreateCreditCommand request, CancellationToken cancellationToken)
+    public async Task<Credit> Handle(CreateCreditCommand request, CancellationToken cancellationToken)
     {
         var (homeId, props) = request;
 
@@ -38,13 +36,10 @@ public class CreateCreditCommandHandler : IRequestHandler<CreateCreditCommand, S
             .FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
 
         if (home is null)
-            return new NotFoundErrorResult(homeId);
+            throw new ResourceNotFoundException(homeId);
 
         if (home.Members.All(m => m.Id != props.PaidByMemberId))
-        {
-            return new InvalidRequestErrorResult(nameof(CreditProperties.PaidByMemberId),
-                $"Member {props.PaidByMemberId} is not a member of home {homeId}");
-        }
+            throw new InvalidRequestException($"Member {props.PaidByMemberId} is not a member of home {homeId}");
 
         var credit = _mapper.Map<DbModels.Credit>(props);
 

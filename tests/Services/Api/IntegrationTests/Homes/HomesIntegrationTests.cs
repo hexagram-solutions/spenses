@@ -1,11 +1,14 @@
 using System.Net;
 using FluentAssertions.Execution;
+using Hexagrams.Extensions.Common.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Application.Models;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
+using ProblemDetails = Refit.ProblemDetails;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 
@@ -38,6 +41,18 @@ public class HomesIntegrationTests
         homes.Content.Should().ContainEquivalentOf(retrievedHome);
 
         await _homes.DeleteHome(createdHome.Id);
+    }
+
+    [Fact]
+    public async Task Post_invalid_home_yields_bad_request()
+    {
+        var result = await _homes.PostHome(new HomeProperties());
+
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var validationErrors = result.Error!.Content!.FromJson<ValidationProblemDetails>()!.Errors;
+
+        validationErrors.Should().ContainKey(nameof(Home.Name));
     }
 
     [Fact]
@@ -79,7 +94,7 @@ public class HomesIntegrationTests
 
             var homeResponse = await _homes.GetHome(homeId);
 
-            homeResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            homeResponse.Error!.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
             await TearDown(homeId);
         }
