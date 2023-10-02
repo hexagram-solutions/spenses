@@ -1,6 +1,7 @@
 using System.Net;
 using FluentAssertions.Execution;
 using Hexagrams.Extensions.Common.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Application.Models;
@@ -49,7 +50,7 @@ public class HomesIntegrationTests
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var validationErrors = result.Error!.Content!.FromJson<ProblemDetails>()!.Errors;
+        var validationErrors = result.Error!.Content!.FromJson<ValidationProblemDetails>()!.Errors;
 
         validationErrors.Should().ContainKey(nameof(Home.Name));
     }
