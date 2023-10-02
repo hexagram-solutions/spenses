@@ -10,17 +10,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.BuildConfiguration();
 
-builder.Services.AddControllers();
-
 builder.Services
     .AddControllers(options =>
     {
         options.Filters.Add<UserSyncFilter>();
+        options.Filters.Add<ApplicationExceptionFilter>();
+        options.ModelValidatorProviders.Clear(); // Disable data annotations model validation
     })
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
+
+//todo: and a-what is a-dis?
+//services.AddScoped(provider =>
+//{
+//    var validationRules = provider.GetService<IEnumerable<FluentValidationRule>>();
+//    var loggerFactory = provider.GetService<ILoggerFactory>();
+
+//    return new FluentValidationSchemaProcessor(provider, validationRules, loggerFactory);
+//});
 
 builder.Services.AddRouting(opts =>
 {

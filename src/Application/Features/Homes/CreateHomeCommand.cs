@@ -1,6 +1,5 @@
 using AutoMapper;
 using MediatR;
-using Spenses.Application.Common.Results;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 using Spenses.Utilities.Security;
@@ -9,9 +8,9 @@ using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Homes;
 
-public record CreateHomeCommand(HomeProperties Props) : IRequest<ServiceResult<Home>>;
+public record CreateHomeCommand(HomeProperties Props) : IRequest<Home>;
 
-public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, ServiceResult<Home>>
+public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, Home>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -24,7 +23,7 @@ public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, Servi
         _currentUserService = currentUserService;
     }
 
-    public async Task<ServiceResult<Home>> Handle(CreateHomeCommand request, CancellationToken cancellationToken)
+    public async Task<Home> Handle(CreateHomeCommand request, CancellationToken cancellationToken)
     {
         var home = _mapper.Map<DbModels.Home>(request.Props);
 

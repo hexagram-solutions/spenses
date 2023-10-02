@@ -17,10 +17,11 @@ public class HomesController : ApiControllerBase
 
     [HttpPost]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
-    public Task<ActionResult<Home>> PostHome(HomeProperties props)
+    public async Task<ActionResult<Home>> PostHome(HomeProperties props)
     {
-        return GetCommandResult<Home, CreateHomeCommand>(new CreateHomeCommand(props),
-            home => CreatedAtAction(nameof(GetHome), new { homeId = home.Id }, home));
+        var home = await Mediator.Send(new CreateHomeCommand(props));
+
+        return CreatedAtAction(nameof(GetHome), new { homeId = home.Id }, home);
     }
 
     [HttpGet]

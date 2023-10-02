@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Application.Common.Behaviors;
@@ -18,9 +19,14 @@ public static class ServiceCollectionExtensions
             cfg.ConstructServicesUsing(sp.GetRequiredService);
         }, userCodeAssemblies);
 
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<HomeQuery>());
+        services.AddMediatR(cfg =>
+        {
+            cfg.RegisterServicesFromAssemblyContaining<HomeQuery>();
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(RequestAuthorizationBehavior<,>));
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehaviour<,>));
+        });
 
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestAuthorizationBehavior<,>));
+        services.AddValidatorsFromAssemblyContaining<CreateHomeCommandValidator>();
 
         return services;
     }

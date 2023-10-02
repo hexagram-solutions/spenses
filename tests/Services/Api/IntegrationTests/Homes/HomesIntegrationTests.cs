@@ -1,11 +1,13 @@
 using System.Net;
 using FluentAssertions.Execution;
+using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Application.Models;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
+using ProblemDetails = Refit.ProblemDetails;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 
@@ -38,6 +40,18 @@ public class HomesIntegrationTests
         homes.Content.Should().ContainEquivalentOf(retrievedHome);
 
         await _homes.DeleteHome(createdHome.Id);
+    }
+
+    [Fact]
+    public async Task Post_invalid_home_yields_bad_request()
+    {
+        var result = await _homes.PostHome(new HomeProperties());
+
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var validationErrors = result.Error!.Content!.FromJson<ProblemDetails>()!.Errors;
+
+        validationErrors.Should().ContainKey(nameof(Home.Name));
     }
 
     [Fact]
