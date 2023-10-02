@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Authorization;
+using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Common.Results;
 using Spenses.Resources.Relational;
 

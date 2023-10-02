@@ -2,7 +2,14 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Spenses.Utilities.Security.Services;
 
-namespace Spenses.Application.Authorization;
+namespace Spenses.Application.Common.Behaviors;
+
+public interface IAuthorizedRequest<out TResponse> : IRequest<TResponse>
+{
+    AuthorizationPolicy Policy { get; }
+
+    TResponse OnUnauthorized();
+}
 
 public class RequestAuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IAuthorizedRequest<TResponse>

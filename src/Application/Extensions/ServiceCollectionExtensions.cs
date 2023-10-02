@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Spenses.Application.Authorization;
+using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Features.Homes;
 
 namespace Spenses.Application.Extensions;

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
-using Spenses.Application.Authorization;
+using Spenses.Application.Features.Homes.Members;
 
 namespace Spenses.Application.Features.Homes;
 public static class Policies
