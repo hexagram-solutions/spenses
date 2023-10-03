@@ -15,6 +15,11 @@ public class InvalidRequestException : Exception
         Errors = new Dictionary<string, string[]>();
     }
 
+    public InvalidRequestException(params ValidationFailure[] failures)
+        : this(failures.AsEnumerable())
+    {
+    }
+
     public InvalidRequestException(IEnumerable<ValidationFailure> failures)
         : this()
     {

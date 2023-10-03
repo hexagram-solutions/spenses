@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -30,20 +31,31 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, M
     {
         var (homeId, memberId, props) = request;
 
-        var member = await _db.Members
-            .Include(m => m.User)
-            .Include(m => m.CreatedBy)
-            .Include(m => m.ModifiedBy)
+        var homeMembers = await _db.Members
             .Where(m => m.HomeId == homeId)
-            .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
+            .ToListAsync(cancellationToken);
 
-        if (member is null)
+        var memberToUpdate = homeMembers
+            .FirstOrDefault(h => h.Id == memberId);
+
+        if (memberToUpdate is null)
             throw new ResourceNotFoundException(memberId);
 
-        _mapper.Map(props, member);
+        var otherMembersSplitPercentageTotal = homeMembers
+            .Where(m => m.Id != memberId)
+            .Sum(m => m.SplitPercentage);
+
+        if (otherMembersSplitPercentageTotal + props.SplitPercentage > 1)
+        {
+            throw new InvalidRequestException(
+                new ValidationFailure(nameof(MemberProperties.SplitPercentage),
+                    "Total split percentage among home members cannot exceed 100%"));
+        }
+
+        _mapper.Map(props, memberToUpdate);
 
         await _db.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<Member>(member);
+        return _mapper.Map<Member>(memberToUpdate);
     }
 }

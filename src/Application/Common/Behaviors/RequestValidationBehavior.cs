@@ -37,10 +37,15 @@ public class RequestValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
         // Remove first level of nested property names. For example, a validation error for property "Foo.Bar.Baz" will
         // be changed to a validation error for "Bar.Baz". This is done to present a friendly validation error message
         // that does not contain the property name of the MediatR request being validated.
+        // TODO: This could be stupid. Had to do this because we can't add the right type params to the behavior to be able to select the property from the model.
         failures.ForEach(f =>
         {
             var propertyNamePath = f.PropertyName.Split('.');
-            var nestedMembersPath = propertyNamePath[1..];
+
+            if (propertyNamePath.Length <= 1)
+                return;
+
+            var nestedMembersPath = propertyNamePath.Skip(1);
             var rootMemberName = propertyNamePath[0];
 
             f.PropertyName = string.Join('.', nestedMembersPath);

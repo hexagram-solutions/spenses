@@ -1,8 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Spenses.Resources.Relational.Models;
 
 public class Member : AggregateRoot
 {
     public string Name { get; set; } = null!;
+
+    [Range(0, 1)]
+    public double SplitPercentage { get; set; }
 
     public Guid HomeId { get; set; }
 
