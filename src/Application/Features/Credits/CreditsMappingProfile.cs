@@ -2,19 +2,20 @@ using AutoMapper;
 using Spenses.Application.Models;
 using DbModels = Spenses.Resources.Relational.Models;
 
-namespace Spenses.Application.Features.Homes;
+namespace Spenses.Application.Features.Credits;
 
-public class HomesMappingProfile : Profile
+public class CreditsMappingProfile : Profile
 {
-    public HomesMappingProfile()
+    public CreditsMappingProfile()
     {
-        CreateMap<DbModels.Home, Home>();
+        CreateMap<DbModels.Credit, Credit>();
 
-        CreateMap<HomeProperties, DbModels.Home>()
+        CreateMap<CreditProperties, DbModels.Credit>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())
-            .ForMember(dest => dest.Members, opts => opts.Ignore())
-            .ForMember(dest => dest.Expenses, opts => opts.Ignore())
-            .ForMember(dest => dest.Credits, opts => opts.Ignore())
+            .ForMember(dest => dest.Home, opts => opts.Ignore())
+            .ForMember(dest => dest.HomeId, opts => opts.Ignore())
+            .ForMember(dest => dest.PaidByMemberId, opts => opts.Ignore())
+            .ForMember(dest => dest.PaidByMember, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedBy, opts => opts.Ignore())
             .ForMember(dest => dest.ModifiedById, opts => opts.Ignore())

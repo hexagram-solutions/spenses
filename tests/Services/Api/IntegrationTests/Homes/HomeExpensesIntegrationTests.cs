@@ -50,6 +50,16 @@ public class HomeExpensesIntegrationTests
     }
 
     [Fact]
+    public async Task Post_invalid_expense_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var result = await _homeExpenses.PostHomeExpense(home.Id, new ExpenseProperties());
+
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task Put_expense_creates_expense()
     {
         var home = (await _homes.GetHomes()).Content!.First();
