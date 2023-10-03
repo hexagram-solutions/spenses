@@ -1,6 +1,6 @@
 namespace Spenses.Application.Models;
 
-public record BalanceSummary
+public record BalanceBreakdown
 {
     public decimal TotalExpenses { get; set; }
 

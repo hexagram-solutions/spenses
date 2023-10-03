@@ -7,20 +7,20 @@ using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes;
 
-public record BalanceSummaryQuery(Guid HomeId, DateOnly PeriodStart, DateOnly PeriodEnd) : IRequest<BalanceSummary>;
+public record BalanceBreakdownQuery(Guid HomeId, DateOnly PeriodStart, DateOnly PeriodEnd) : IRequest<BalanceBreakdown>;
 
-public class BalanceSummaryQueryHandler : IRequestHandler<BalanceSummaryQuery, BalanceSummary>
+public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuery, BalanceBreakdown>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
 
-    public BalanceSummaryQueryHandler(ApplicationDbContext db, IMapper mapper)
+    public BalanceBreakdownQueryHandler(ApplicationDbContext db, IMapper mapper)
     {
         _db = db;
         _mapper = mapper;
     }
 
-    public async Task<BalanceSummary> Handle(BalanceSummaryQuery request, CancellationToken cancellationToken)
+    public async Task<BalanceBreakdown> Handle(BalanceBreakdownQuery request, CancellationToken cancellationToken)
     {
         var (homeId, periodStart, periodEnd) = request;
 
@@ -38,7 +38,7 @@ public class BalanceSummaryQueryHandler : IRequestHandler<BalanceSummaryQuery, B
 
         var totalBalance = totalExpenses - totalCredits;
 
-        return new BalanceSummary
+        return new BalanceBreakdown
         {
             TotalExpenses = totalExpenses,
             TotalCredits = totalCredits,
