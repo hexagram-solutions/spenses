@@ -23,6 +23,7 @@ partial class Build
         });
 
     Target MigrateDatabase => _ => _
+        .Description("Migrate the SQL Server database to the latest version.")
         .DependsOn(RestoreTools)
         .Requires(() => SqlServerConnectionString)
         .Executes(() =>
