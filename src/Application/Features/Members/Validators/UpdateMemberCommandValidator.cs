@@ -3,9 +3,9 @@ using Spenses.Application.Features.Members.Requests;
 
 namespace Spenses.Application.Features.Members.Validators;
 
-public class CreateMemberCommandValidator : AbstractValidator<CreateMemberCommand>
+public class UpdateMemberCommandValidator : AbstractValidator<UpdateMemberCommand>
 {
-    public CreateMemberCommandValidator()
+    public UpdateMemberCommandValidator()
     {
         RuleFor(x => x.Props)
             .SetValidator(new MemberPropertiesValidator());
