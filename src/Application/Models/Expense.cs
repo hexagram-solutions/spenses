@@ -11,6 +11,7 @@ public abstract record ExpenseBase
     public DateOnly Date { get; set; }
 
     [Required]
+    [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
 }
 

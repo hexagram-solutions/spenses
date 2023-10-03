@@ -1,0 +1,23 @@
+using FluentValidation;
+using Spenses.Application.Models;
+
+namespace Spenses.Application.Features.Expenses.Validators;
+
+public class ExpensePropertiesValidator : AbstractValidator<ExpenseProperties>
+{
+    public ExpensePropertiesValidator()
+    {
+        RuleFor(x => x.Description)
+            .NotEmpty();
+
+        RuleFor(x => x.Date)
+            .NotEmpty();
+
+        RuleFor(x => x.Amount)
+            .PrecisionScale(8, 2, false)
+            .InclusiveBetween(0.01m, 999_999.99m);
+
+        RuleFor(x => x.IncurredByMemberId)
+            .NotEmpty();
+    }
+}
