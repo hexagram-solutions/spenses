@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -30,10 +31,21 @@ public class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, M
     {
         var (homeId, props) = request;
 
-        var home = await _db.Homes.FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
+        var home = await _db.Homes
+            .Include(h => h.Members)
+            .FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
 
         if (home == null)
             throw new ResourceNotFoundException(homeId);
+
+        var otherMembersSplitPercentageTotal = home.Members.Sum(m => m.SplitPercentage);
+
+        if (otherMembersSplitPercentageTotal + props.SplitPercentage > 1)
+        {
+            throw new InvalidRequestException(
+                new ValidationFailure(nameof(MemberProperties.SplitPercentage),
+                    "Total split percentage among home members cannot exceed 100%"));
+        }
 
         var member = _mapper.Map<DbModels.Member>(props);
 
