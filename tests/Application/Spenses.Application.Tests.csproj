@@ -42,8 +42,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Homes\" />
-    <Folder Include="Features\Members\" />
     <Folder Include="Features\Users\" />
   </ItemGroup>
 
