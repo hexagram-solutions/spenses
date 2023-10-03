@@ -52,6 +52,9 @@ public class ApplicationDbContext : DbContext
             .WithMany(x => x.Expenses)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<ExpenseTag>()
+            .HasKey(e => new { e.Name, e.ExpenseId });
+
         modelBuilder.Entity<Credit>()
             .HasOne(x => x.PaidByMember)
             .WithMany(x => x.Credits)

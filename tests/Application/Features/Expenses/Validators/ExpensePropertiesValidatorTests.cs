@@ -9,20 +9,6 @@ public class ExpensePropertiesValidatorTests
     private readonly ExpensePropertiesValidator _validator = new();
 
     [Fact]
-    public void Description_must_have_value()
-    {
-        var model = new ExpenseProperties();
-
-        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.Description);
-
-        _validator.TestValidate(model with { Description = string.Empty })
-            .ShouldHaveValidationErrorFor(x => x.Description);
-
-        _validator.TestValidate(model with { Description = "Girl scout cookies", Amount = 3.50m })
-            .ShouldNotHaveValidationErrorFor(x => x.Description);
-    }
-
-    [Fact]
     public void Date_must_have_value()
     {
         var model = new ExpenseProperties();
@@ -96,5 +82,27 @@ public class ExpensePropertiesValidatorTests
 
         _validator.TestValidate(model with { IncurredByMemberId = Guid.NewGuid() })
             .ShouldNotHaveValidationErrorFor(x => x.IncurredByMemberId);
+    }
+
+    [Fact]
+    public void Tags_must_have_one_or_more_values()
+    {
+        var model = new ExpenseProperties();
+
+        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.Tags);
+
+        _validator.TestValidate(model with { Tags = new[] { "groceries" } })
+            .ShouldNotHaveValidationErrorFor(x => x.Tags);
+    }
+
+    [Fact]
+    public void Tags_values_must_be_distinct()
+    {
+        var model = new ExpenseProperties { Tags = new[] { "foo", "Foo", "bar" } };
+
+        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.Tags);
+
+        _validator.TestValidate(model with { Tags = new []{ "foo", "bar", "baz" }})
+            .ShouldNotHaveValidationErrorFor(x => x.Tags);
     }
 }

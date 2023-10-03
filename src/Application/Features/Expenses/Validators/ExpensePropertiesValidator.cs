@@ -7,9 +7,6 @@ public class ExpensePropertiesValidator : AbstractValidator<ExpenseProperties>
 {
     public ExpensePropertiesValidator()
     {
-        RuleFor(x => x.Description)
-            .NotEmpty();
-
         RuleFor(x => x.Date)
             .NotEmpty();
 
@@ -19,5 +16,11 @@ public class ExpensePropertiesValidator : AbstractValidator<ExpenseProperties>
 
         RuleFor(x => x.IncurredByMemberId)
             .NotEmpty();
+
+        RuleFor(x => x.Tags)
+            .NotEmpty()
+            .Must(tags => tags.Select(t => t.ToLower()).Distinct().Count() == tags.Length)
+            .WithMessage("Tags must be unique, ignoring case");
+
     }
 }

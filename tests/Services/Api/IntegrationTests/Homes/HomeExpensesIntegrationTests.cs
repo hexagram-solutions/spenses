@@ -27,6 +27,7 @@ public class HomeExpensesIntegrationTests
             Description = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Tags = new []{ "groceries" },
             IncurredByMemberId = home.Members.First().Id
         };
 
@@ -68,9 +69,10 @@ public class HomeExpensesIntegrationTests
 
         var properties = new ExpenseProperties
         {
-            Description = "Foo",
+            Description = "Bar",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Tags = new[] { "household" },
             IncurredByMemberId = home.Members.First().Id
         };
 

@@ -8,9 +8,12 @@ public class ExpensesMappingProfile : Profile
 {
     public ExpensesMappingProfile()
     {
-        CreateMap<DbModels.Expense, Expense>();
+        CreateMap<DbModels.Expense, Expense>()
+            .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(t => t.Name)));
 
         CreateMap<ExpenseProperties, DbModels.Expense>()
+            .ForMember(dest => dest.Tags,
+                opts => opts.MapFrom(src => src.Tags.Select(t => new DbModels.ExpenseTag { Name = t })))
             .ForMember(dest => dest.Id, opts => opts.Ignore())
             .ForMember(dest => dest.Home, opts => opts.Ignore())
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())

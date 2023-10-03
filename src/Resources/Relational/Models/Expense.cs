@@ -5,7 +5,7 @@ namespace Spenses.Resources.Relational.Models;
 
 public class Expense : AggregateRoot
 {
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; }
 
     public DateOnly Date { get; set; }
 
@@ -20,4 +20,6 @@ public class Expense : AggregateRoot
     public Guid HomeId { get; set; }
 
     public Home Home { get; set; } = null!;
+
+    public ICollection<ExpenseTag> Tags { get; set; } = new HashSet<ExpenseTag>();
 }
