@@ -61,4 +61,14 @@ public class HomesController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("{homeId:guid}/balance-summary")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
+    public async Task<ActionResult<BalanceSummary>> GetBalanceSummary(Guid homeId, DateOnly periodStart,
+        DateOnly periodEnd)
+    {
+        var balance = await _mediator.Send(new BalanceSummaryQuery(homeId, periodStart, periodEnd));
+
+        return Ok(balance);
+    }
 }

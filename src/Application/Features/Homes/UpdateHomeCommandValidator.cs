@@ -2,9 +2,9 @@ using FluentValidation;
 
 namespace Spenses.Application.Features.Homes;
 
-public class CreateHomeCommandValidator : AbstractValidator<CreateHomeCommand>
+public class UpdateHomeCommandValidator : AbstractValidator<UpdateHomeCommand>
 {
-    public CreateHomeCommandValidator()
+    public UpdateHomeCommandValidator()
     {
         RuleFor(x => x.Props)
             .SetValidator(new HomePropertiesValidator());

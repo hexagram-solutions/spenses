@@ -40,15 +40,19 @@ public class RequestValidationBehaviour<TRequest, TResponse> : IPipelineBehavior
         failures.ForEach(f =>
         {
             var propertyNamePath = f.PropertyName.Split('.');
-            var nestedMembersPath = propertyNamePath[1..];
-            var rootMemberName = propertyNamePath[0];
 
-            f.PropertyName = string.Join('.', nestedMembersPath);
+            if (propertyNamePath.Length > 1)
+            {
+                var nestedMembersPath = propertyNamePath;
+                var rootMemberName = propertyNamePath[0];
 
-            var rootMemberNameMessageIndex = f.ErrorMessage.IndexOf(rootMemberName + " ", StringComparison.Ordinal);
+                f.PropertyName = string.Join('.', nestedMembersPath);
 
-            if (rootMemberNameMessageIndex >= 0)
-                f.ErrorMessage = f.ErrorMessage.Remove(rootMemberNameMessageIndex, rootMemberName.Length + 1);
+                var rootMemberNameMessageIndex = f.ErrorMessage.IndexOf(rootMemberName + " ", StringComparison.Ordinal);
+
+                if (rootMemberNameMessageIndex >= 0)
+                    f.ErrorMessage = f.ErrorMessage.Remove(rootMemberNameMessageIndex, rootMemberName.Length + 1);
+            }
         });
 
         throw new InvalidRequestException(failures);

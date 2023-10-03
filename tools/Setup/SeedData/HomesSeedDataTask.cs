@@ -20,6 +20,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.NickName,
+                    SplitPercentage = 1d / userIdentities.Count,
                     UserId = u.Id
                 }).ToList()
             },
@@ -30,6 +31,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.NickName,
+                    SplitPercentage = 1d / userIdentities.Count,
                     UserId = u.Id
                 }).ToList()
             });
