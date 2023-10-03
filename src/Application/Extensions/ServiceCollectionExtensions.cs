@@ -2,7 +2,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Application.Common.Behaviors;
-using Spenses.Application.Features.Homes;
+using Spenses.Application.Features.Homes.Requests;
+using Spenses.Application.Features.Homes.Validators;
 
 namespace Spenses.Application.Extensions;
 
