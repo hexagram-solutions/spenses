@@ -8,6 +8,8 @@ public class HomesMappingProfile : Profile
 {
     public HomesMappingProfile()
     {
+        CreateMap<DbModels.Home, Home>();
+
         CreateMap<HomeProperties, DbModels.Home>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())
             .ForMember(dest => dest.Members, opts => opts.Ignore())
