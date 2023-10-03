@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Spenses.Application.Features.Users;
+using Spenses.Application.Features.Users.Requests;
 
 namespace Spenses.Api.Infrastructure;
 

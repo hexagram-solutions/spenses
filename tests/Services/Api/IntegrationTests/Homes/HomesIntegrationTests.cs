@@ -8,7 +8,6 @@ using Spenses.Application.Models;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
-using ProblemDetails = Refit.ProblemDetails;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 

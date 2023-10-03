@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
-using Spenses.Application.Features.Homes;
+using Spenses.Application.Features.Homes.Requests;
 using Spenses.Application.Models;
 
 namespace Spenses.Api.Controllers;

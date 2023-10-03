@@ -9,7 +9,7 @@ using NSwag;
 using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
-using Spenses.Application.Features.Homes.Members;
+using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Utilities.Security.Services;
