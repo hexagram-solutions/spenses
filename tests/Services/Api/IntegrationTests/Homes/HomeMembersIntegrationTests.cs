@@ -41,6 +41,16 @@ public class HomeMembersIntegrationTests
     }
 
     [Fact]
+    public async Task Post_invalid_member_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var result = await _homeMembers.PostHomeMember(home.Id, new MemberProperties());
+
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
     public async Task Put_home_member_updates_member()
     {
         var home = (await _homes.GetHomes()).Content!.First();

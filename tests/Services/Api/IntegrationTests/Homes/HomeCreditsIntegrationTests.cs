@@ -1,4 +1,6 @@
 using System.Net;
+using Hexagrams.Extensions.Common.Serialization;
+using Microsoft.AspNetCore.Mvc;
 using Refit;
 using Spenses.Application.Models;
 using Spenses.Client.Http;
@@ -46,6 +48,16 @@ public class HomeCreditsIntegrationTests
         credits.Should().ContainEquivalentOf(createdCredit);
 
         await _homeCredits.DeleteHomeCredit(home.Id, createdCredit.Id);
+    }
+
+    [Fact]
+    public async Task Post_invalid_credit_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var result = await _homeCredits.PostHomeCredit(home.Id, new CreditProperties());
+
+        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]

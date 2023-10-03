@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Spenses.Application.Features.Credits.Requests;
 
 namespace Spenses.Application.Features.Credits.Validators;
