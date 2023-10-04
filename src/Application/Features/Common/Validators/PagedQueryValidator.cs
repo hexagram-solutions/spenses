@@ -6,7 +6,6 @@ using Spenses.Application.Models.Common;
 
 namespace Spenses.Application.Features.Common.Validators;
 
-// TODO: Tests
 public class PagedQueryValidator<T> : AbstractValidator<PagedQuery<T>>
     where T : class
 {
