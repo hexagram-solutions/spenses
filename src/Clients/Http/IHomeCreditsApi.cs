@@ -1,4 +1,5 @@
 using Refit;
+using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Credits;
 
 namespace Spenses.Client.Http;
@@ -9,7 +10,7 @@ public interface IHomeCreditsApi
     Task<ApiResponse<Credit>> PostHomeCredit(Guid homeId, CreditProperties props);
 
     [Get("/homes/{homeId}/credits")]
-    Task<ApiResponse<IEnumerable<Credit>>> GetHomeCredits(Guid homeId);
+    Task<ApiResponse<PagedResult<CreditDigest>>> GetHomeCredits(Guid homeId, [Query] FilteredCreditsQuery query);
 
     [Get("/homes/{homeId}/credits/{creditId}")]
     Task<ApiResponse<Credit>> GetHomeCredit(Guid homeId, Guid creditId);

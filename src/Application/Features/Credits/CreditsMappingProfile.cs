@@ -1,5 +1,6 @@
 using AutoMapper;
 using Spenses.Application.Models.Credits;
+using DbDigests = Spenses.Resources.Relational.DigestModels;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Credits;
@@ -22,5 +23,7 @@ public class CreditsMappingProfile : Profile
             .ForMember(dest => dest.ModifiedBy, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedAt, opts => opts.Ignore())
             .ForMember(dest => dest.ModifiedAt, opts => opts.Ignore());
+
+        CreateMap<DbDigests.CreditDigest, CreditDigest>();
     }
 }
