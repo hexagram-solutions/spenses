@@ -11,6 +11,10 @@ public class ExpensesMappingProfile : Profile
         CreateMap<DbModels.Expense, Expense>()
             .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(t => t.Name)));
 
+        CreateMap<DbModels.Expense, ExpenseDigest>()
+            .ForMember(dest => dest.Tags,
+                opts => opts.MapFrom(src => src.Tags.Any() ? string.Join(',', src.Tags.Select(t => t.Name)) : null));
+
         CreateMap<ExpenseProperties, DbModels.Expense>()
             .ForMember(dest => dest.Tags,
                 opts => opts.MapFrom(src => src.Tags.Select(t => new DbModels.ExpenseTag { Name = t })))

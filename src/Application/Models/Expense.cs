@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Spenses.Application.Infrastructure;
+using Spenses.Application.Common.Serialization;
 
 namespace Spenses.Application.Models;
 

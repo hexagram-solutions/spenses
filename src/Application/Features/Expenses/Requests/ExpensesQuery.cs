@@ -1,21 +1,23 @@
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Hexagrams.Extensions.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Common.Query;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Application.Models;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Expenses.Requests;
 
-public record ExpensesQuery(Guid HomeId) : IAuthorizedRequest<IEnumerable<Expense>>
+public record ExpensesQuery(Guid HomeId) : FilteredExpensesQuery, IAuthorizedRequest<PagedResult<ExpenseDigest>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, IEnumerable<Expense>>
+public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, PagedResult<ExpenseDigest>>
 {
     private readonly ApplicationDbContext _db;
     private readonly IMapper _mapper;
@@ -26,15 +28,36 @@ public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, IEnumerable<E
         _mapper = mapper;
     }
 
-    public async Task<IEnumerable<Expense>> Handle(ExpensesQuery request,
+    public async Task<PagedResult<ExpenseDigest>> Handle(ExpensesQuery request,
         CancellationToken cancellationToken)
     {
-        var expenses = await _db.Expenses
-            .Where(e => e.Home.Id == request.HomeId)
-            .OrderByDescending(h => h.Date)
-            .ProjectTo<Expense>(_mapper.ConfigurationProvider)
+        var query = _db.Expenses
+            .Where(e => e.HomeId == request.HomeId);
+
+        query = !string.IsNullOrEmpty(request.OrderBy) && request.SortDirection.HasValue
+            ? query.OrderBy(new[] { request.OrderBy!.ToUpperCamelCase() }, request.SortDirection!.Value, true)
+            : query.OrderBy(new[] { nameof(ExpenseDigest.Date) }, SortDirection.Desc, true);
+
+        query = request.MinDate.HasValue
+            ? query.Where(e => e.Date >= request.MinDate)
+            : query;
+
+        query = request.MaxDate.HasValue
+            ? query.Where(e => e.Date <= request.MaxDate)
+            : query;
+
+        query = request.Tags?.Any() == true
+            ? query.Where(e => e.Tags.Any(t => request.Tags.Contains(t.Name)))
+            : query;
+
+        var totalCount = await query.CountAsync(cancellationToken);
+
+        var items = await query
+            .ProjectTo<ExpenseDigest>(_mapper.ConfigurationProvider)
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize)
             .ToListAsync(cancellationToken);
 
-        return expenses;
+        return new PagedResult<ExpenseDigest>(totalCount, items);
     }
 }

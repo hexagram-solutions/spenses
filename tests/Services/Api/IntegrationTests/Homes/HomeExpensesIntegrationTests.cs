@@ -44,9 +44,6 @@ public class HomeExpensesIntegrationTests
         var fetchedExpense = (await _homeExpenses.GetHomeExpense(home.Id, createdExpense!.Id)).Content;
         fetchedExpense.Should().BeEquivalentTo(createdExpense);
 
-        var expenses = (await _homeExpenses.GetHomeExpenses(home.Id)).Content;
-        expenses.Should().ContainEquivalentOf(createdExpense);
-
         await _homeExpenses.DeleteHomeExpense(home.Id, createdExpense.Id);
     }
 
@@ -65,7 +62,11 @@ public class HomeExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var expense = (await _homeExpenses.GetHomeExpenses(home.Id)).Content!.First();
+        var expense = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        {
+            PageNumber = 1,
+            PageSize = 10
+        })).Content!.Items.First();
 
         var properties = new ExpenseProperties
         {
