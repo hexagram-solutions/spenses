@@ -19,4 +19,7 @@ public interface IHomeExpensesApi
 
     [Delete("/homes/{homeId}/expenses/{expenseId}")]
     Task DeleteHomeExpense(Guid homeId, Guid expenseId);
+
+    [Get("/homes/{homeId}/expenses/filters")]
+    Task<ApiResponse<ExpenseFilters>> GetExpenseFilters(Guid homeId);
 }

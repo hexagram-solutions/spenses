@@ -91,4 +91,25 @@ public class HomeExpensesIntegrationTests
 
         fetchedExpense.Should().BeEquivalentTo(updatedExpense);
     }
+
+    [Fact]
+    public async Task Get_filters_yields_filterable_values()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var expenses = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        {
+            PageNumber = 1,
+            PageSize = 25
+        })).Content!.Items;
+
+        var distinctTags = expenses
+            .SelectMany(t => t.Tags?.Split(' ') ?? Array.Empty<string>())
+            .Distinct();
+
+        var filterValues = (await _homeExpenses.GetExpenseFilters(home.Id)).Content!;
+
+        filterValues.Tags.Should().BeEquivalentTo(distinctTags);
+        filterValues.Tags.Should().BeInAscendingOrder();
+    }
 }

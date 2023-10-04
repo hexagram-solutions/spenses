@@ -1,5 +1,3 @@
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
@@ -71,5 +69,14 @@ public class HomeExpensesController : ControllerBase
         await _mediator.Send(new DeleteExpenseCommand(homeId, expenseId));
 
         return NoContent();
+    }
+
+    [HttpGet("filters")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
+    public async Task<ActionResult<ExpenseFilters>> Filters(Guid homeId)
+    {
+        var filters = await _mediator.Send(new ExpenseFiltersQuery(homeId));
+
+        return Ok(filters);
     }
 }
