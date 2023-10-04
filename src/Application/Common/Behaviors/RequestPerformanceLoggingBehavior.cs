@@ -25,7 +25,7 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse> : IPipelineB
             int.Parse(configuration[ConfigConstants.SpensesLoggingLongRunningRequestThreshold]!);
 
         _timer = new Stopwatch();
-        
+
     }
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
@@ -44,8 +44,9 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse> : IPipelineB
         var requestName = typeof(TRequest).Name;
         var userId = _currentUserService.CurrentUser.GetId();
 
-        _logger.LogWarning("Request {Name} took {ElapsedMilliseconds}ms to complete for user {@UserId}",
-            requestName, elapsedMilliseconds, userId);
+        _logger.LogWarning(
+            "Request {Name} took {ElapsedMilliseconds}ms to complete for user {@UserId} (threshold: {Threshold})",
+            requestName, elapsedMilliseconds, userId, _longRunningRequestThreshold);
 
         return response;
     }
