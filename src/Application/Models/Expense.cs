@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using Spenses.Application.Common.Serialization;
 
 namespace Spenses.Application.Models;
 
 public abstract record ExpenseBase
 {
-    [Required]
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; }
 
     [Required]
     public DateOnly Date { get; set; }
@@ -13,6 +14,9 @@ public abstract record ExpenseBase
     [Required]
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
+
+    [JsonConverter(typeof(LowerCaseNormalizingStringArrayConverter))]
+    public string[] Tags { get; set; } = Array.Empty<string>();
 }
 
 public record Expense : ExpenseBase, IAggregateRoot

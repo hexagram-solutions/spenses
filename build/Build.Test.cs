@@ -22,6 +22,9 @@ partial class Build
             DotNetToolRestore(_ => _);
         });
 
+
+    Project RelationalSetupTool => Solution.GetAllProjects("Spenses.Tools.Setup").Single();
+
     Target MigrateDatabase => _ => _
         .Description("Migrate the SQL Server database to the latest version.")
         .DependsOn(RestoreTools)
@@ -33,6 +36,10 @@ partial class Build
             EntityFrameworkDatabaseUpdate(s => s
                 .SetProject(dbContextProject)
                 .SetConnection(SqlServerConnectionString));
+
+            DotNetRun(s => s
+                .SetProjectFile(RelationalSetupTool)
+                .SetApplicationArguments($"views --connection \"{SqlServerConnectionString}\""));
         });
 
     Target IntegrationTestSetup => _ => _
@@ -40,10 +47,8 @@ partial class Build
         .Requires(() => SqlServerConnectionString)
         .Executes(() =>
         {
-            var relationalSetupTool = Solution.GetAllProjects("Spenses.Tools.Setup").Single();
-
             DotNetRun(s => s
-                .SetProjectFile(relationalSetupTool)
+                .SetProjectFile(RelationalSetupTool)
                 .SetApplicationArguments($"seed --connection \"{SqlServerConnectionString}\""));
         });
 

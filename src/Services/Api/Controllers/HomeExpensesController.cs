@@ -28,9 +28,19 @@ public class HomeExpensesController : ControllerBase
 
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
-    public async Task<ActionResult<IEnumerable<Expense>>> GetExpenses(Guid homeId)
+    public async Task<ActionResult<IEnumerable<ExpenseDigest>>> GetExpenses(Guid homeId,
+        [FromQuery] FilteredExpensesQuery query)
     {
-        var expenses = await _mediator.Send(new ExpensesQuery(homeId));
+        var expenses = await _mediator.Send(new ExpensesQuery(homeId)
+        {
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize,
+            OrderBy = query.OrderBy,
+            SortDirection = query.SortDirection,
+            MinDate = query.MinDate,
+            MaxDate = query.MaxDate,
+            Tags = query.Tags
+        });
 
         return Ok(expenses);
     }
@@ -55,10 +65,19 @@ public class HomeExpensesController : ControllerBase
 
     [HttpDelete("{expenseId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
-    public async Task<ActionResult> DeleteMember(Guid homeId, Guid expenseId)
+    public async Task<ActionResult> DeleteExpense(Guid homeId, Guid expenseId)
     {
         await _mediator.Send(new DeleteExpenseCommand(homeId, expenseId));
 
         return NoContent();
+    }
+
+    [HttpGet("filters")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
+    public async Task<ActionResult<ExpenseFilters>> Filters(Guid homeId)
+    {
+        var filters = await _mediator.Send(new ExpenseFiltersQuery(homeId));
+
+        return Ok(filters);
     }
 }

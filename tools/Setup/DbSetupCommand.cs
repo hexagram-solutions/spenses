@@ -1,9 +1,14 @@
 using System.CommandLine;
+using System.Data.Common;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.SqlServer.Management.Common;
+using Microsoft.SqlServer.Management.Smo;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Tools.Setup.SeedData;
+using SqlServer = Microsoft.SqlServer.Management.Smo;
 
 namespace Spenses.Tools.Setup;
 
@@ -25,6 +30,7 @@ public class DbSetupCommand : RootCommand
         _dbContextOptionsFactory = dbContextOptionsFactory;
 
         Add(GetSeedDatabaseCommand());
+        Add(GetRebuildViewsCommand());
         Add(GetResetDatabaseCommand());
 
         AddGlobalOption(ConnectionOption);
@@ -37,6 +43,15 @@ public class DbSetupCommand : RootCommand
         seedCommand.SetHandler(SeedDatabase, ConnectionOption);
 
         return seedCommand;
+    }
+
+    private Command GetRebuildViewsCommand()
+    {
+        var rebuildViewsCommand = new Command("views", "Rebuild the views in the database.");
+
+        rebuildViewsCommand.SetHandler(RebuildViews, ConnectionOption);
+
+        return rebuildViewsCommand;
     }
 
     private Command GetResetDatabaseCommand()
@@ -55,6 +70,7 @@ public class DbSetupCommand : RootCommand
                 return;
 
             await MigrateDatabase(connection);
+            await RebuildViews(connection);
             await SeedDatabase(connection);
 
             _logger.LogInformation("Done resetting database!");
@@ -83,19 +99,51 @@ public class DbSetupCommand : RootCommand
 
     public async Task<bool> DropDatabase(string connection, bool force)
     {
-        await using var db = CreateDbContext(connection);
-        await using var dbConnection = db.Database.GetDbConnection();
+        await using var dbContext = CreateDbContext(connection);
+        await using var dbConnection = dbContext.Database.GetDbConnection();
 
         if (!force && !Confirm($"Really drop '{dbConnection.DataSource}/{dbConnection.Database}'?"))
             return false;
 
-        _logger.LogWarning("Dropping database... ");
+        var db = GetSqlServerDatabase(dbConnection);
 
-        await db.Database.EnsureDeletedAsync();
+        _logger.LogWarning("Dropping tables...");
 
-        _logger.LogInformation("Database dropped.");
+        var sql = string.Empty;
+
+        foreach (SqlServer.Table? table in db.Tables)
+        {
+            sql = table!.ForeignKeys.Cast<SqlServer.ForeignKey?>().Aggregate(sql,
+                (current, fk) => $"ALTER TABLE [{table.Name}] DROP CONSTRAINT [{fk!.Name}];\n" + current);
+
+            sql += $"DROP TABLE [{table.Name}];\n";
+        }
+        db.ExecuteNonQuery(sql);
+
+        _logger.LogWarning("Dropping views...");
+
+        foreach (var view in db.Views.Cast<SqlServer.View>().Where(v => !v.IsSystemObject))
+        {
+            db.ExecuteNonQuery($"DROP VIEW [{view!.Name}]");
+        }
+
+        _logger.LogWarning("Dropping sequences...");
+
+        foreach (var sequence in db.Sequences.Cast<SqlServer.Sequence>())
+        {
+            db.ExecuteNonQuery($"DROP SEQUENCE [{sequence!.Name}]");
+        }
 
         return true;
+    }
+
+    private static Database GetSqlServerDatabase(DbConnection dbConnection)
+    {
+        var server = new Server(new ServerConnection((SqlConnection) dbConnection));
+
+        server.Refresh();
+
+        return server.Databases[dbConnection.Database];
     }
 
     private async Task MigrateDatabase(string connection)
@@ -107,6 +155,17 @@ public class DbSetupCommand : RootCommand
         await db.Database.MigrateAsync();
 
         _logger.LogInformation("Database migrated.");
+    }
+
+    private async Task RebuildViews(string connection)
+    {
+        await using var db = CreateDbContext(connection);
+
+        _logger.LogInformation("Rebuilding views... ");
+
+        db.UpdateViews();
+
+        _logger.LogInformation("Done rebuilding views.");
     }
 
     private ApplicationDbContext CreateDbContext(string? connection)

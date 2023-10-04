@@ -9,7 +9,7 @@ public interface IHomeExpensesApi
     Task<ApiResponse<Expense>> PostHomeExpense(Guid homeId, ExpenseProperties props);
 
     [Get("/homes/{homeId}/expenses")]
-    Task<ApiResponse<IEnumerable<Expense>>> GetHomeExpenses(Guid homeId);
+    Task<ApiResponse<PagedResult<ExpenseDigest>>> GetHomeExpenses(Guid homeId, [Query] FilteredExpensesQuery query);
 
     [Get("/homes/{homeId}/expenses/{expenseId}")]
     Task<ApiResponse<Expense>> GetHomeExpense(Guid homeId, Guid expenseId);
@@ -19,4 +19,7 @@ public interface IHomeExpensesApi
 
     [Delete("/homes/{homeId}/expenses/{expenseId}")]
     Task DeleteHomeExpense(Guid homeId, Guid expenseId);
+
+    [Get("/homes/{homeId}/expenses/filters")]
+    Task<ApiResponse<ExpenseFilters>> GetExpenseFilters(Guid homeId);
 }

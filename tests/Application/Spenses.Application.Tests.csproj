@@ -41,8 +41,4 @@
     <ProjectReference Include="..\..\src\Application\Spenses.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\Users\" />
-  </ItemGroup>
-
 </Project>

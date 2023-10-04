@@ -18,16 +18,26 @@ public class ExpensesSeedDataTask : ISeedDataTask
             .Include(h => h.Members)
             .ToListAsync();
 
+        var sampleTags = new[] { "groceries", "bills", "supplies" };
+
         foreach (var home in homes)
         {
             for (var i = 0; i < 10; i++)
             {
+                var firstTag = Random.Shared.NextItem(sampleTags);
+                var secondTag = Random.Shared.NextItem(sampleTags.Except(firstTag.Yield()));
+
                 home.Expenses.Add(new Expense
                 {
                     Description = faker.Lorem.Sentence(3),
                     Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 10)),
                     Amount = Random.Shared.NextDecimal(5, 500, 2),
-                    IncurredByMember = Random.Shared.NextItem(home.Members)
+                    IncurredByMember = Random.Shared.NextItem(home.Members),
+                    Tags =
+                    {
+                        new ExpenseTag { Name = firstTag },
+                        new ExpenseTag { Name = secondTag }
+                    }
                 });
             }
         }

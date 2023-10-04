@@ -22,4 +22,8 @@
     <ProjectReference Include="..\..\Utilities\Security\Spenses.Utilities.Security.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ComponentModel\" />
+  </ItemGroup>
+
 </Project>
