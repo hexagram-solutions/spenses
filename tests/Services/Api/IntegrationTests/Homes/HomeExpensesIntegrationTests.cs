@@ -1,6 +1,5 @@
 using System.Net;
 using Refit;
-using Spenses.Application.Common.Query;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Expenses;
 using Spenses.Client.Http;
@@ -199,7 +198,7 @@ public class HomeExpensesIntegrationTests
 
         expenses.Should().BeInAscendingOrder(x => x.Amount);
 
-        expenses = (await _homeExpenses.GetHomeExpenses(home.Id, query with { SortDirection = SortDirection.Desc}))
+        expenses = (await _homeExpenses.GetHomeExpenses(home.Id, query with { SortDirection = SortDirection.Desc }))
             .Content!.Items;
 
         expenses.Should().BeInDescendingOrder(x => x.Amount);

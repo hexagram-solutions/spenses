@@ -5,10 +5,10 @@ namespace Spenses.Application.Models.Expenses;
 
 public record FilteredExpensesQuery : PagedQuery<ExpenseDigest>
 {
-    [Description("The minimum date of the expenses to retrieve")]
+    [Description("The minimum date of expenses to retrieve")]
     public DateOnly? MinDate { get; set; }
 
-    [Description("The maximum date of the expenses to retrieve")]
+    [Description("The maximum date of expenses to retrieve")]
     public DateOnly? MaxDate { get; set; }
 
     [Description("Tags to filter expenses by")]

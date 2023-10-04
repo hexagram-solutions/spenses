@@ -41,6 +41,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<UserIdentity> Users => Set<UserIdentity>();
 
+    public DbSet<CreditDigest> CreditDigests => Set<CreditDigest>();
+
     public DbSet<ExpenseDigest> ExpenseDigests => Set<ExpenseDigest>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -63,6 +65,7 @@ public class ApplicationDbContext : DbContext
             .WithMany(x => x.Credits)
             .OnDelete(DeleteBehavior.Restrict);
 
+        ConfigureDigestModel<CreditDigest>(modelBuilder);
         ConfigureDigestModel<ExpenseDigest>(modelBuilder);
     }
 
@@ -105,7 +108,7 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<TDigest>()
             // We map digests to views, but we have to use .ToTable() here so we can exclude the view from migrations
-            .ToTable(nameof(ExpenseDigest), t => t.ExcludeFromMigrations())
+            .ToTable(typeof(TDigest).Name, t => t.ExcludeFromMigrations())
             .HasNoKey();
     }
 

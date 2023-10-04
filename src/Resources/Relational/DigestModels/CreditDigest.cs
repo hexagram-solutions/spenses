@@ -5,17 +5,15 @@ using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Resources.Relational.DigestModels;
 
-[BaseTable(nameof(Expense), "e")]
-[JoinedTable(JoinType.Left, nameof(Member), "ibm", "ibm.Id = e.IncurredByMemberId")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", "cui.Id = e.CreatedById")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", "mui.Id = e.ModifiedById")]
-public class ExpenseDigest
+[BaseTable(nameof(Credit), "c")]
+[JoinedTable(JoinType.Left, nameof(Member), "pbm", "pbm.Id = c.PaidByMemberId")]
+[JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", "cui.Id = c.CreatedById")]
+[JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", "mui.Id = c.ModifiedById")]
+public class CreditDigest
 {
     public Guid Id { get; set; }
 
     public Guid HomeId { get; set; }
-
-    public string? Description { get; set; }
 
     public DateOnly Date { get; set; }
 
@@ -23,11 +21,8 @@ public class ExpenseDigest
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
 
-    [SourceColumn("ibm", nameof(Member.Name))]
-    public string IncurredByMemberName { get; set; } = null!;
-
-    [CalculatedColumn("SELECT STRING_AGG(t.Name, ' ') FROM ExpenseTag t WHERE t.ExpenseId = e.Id")]
-    public string? Tags { get; set; }
+    [SourceColumn("pbm", nameof(Member.Name))]
+    public string PaidByMemberName { get; set; } = null!;
 
     [SourceColumn("cui", nameof(UserIdentity.NickName))]
     public string CreatedByUserName { get; set; } = null!;

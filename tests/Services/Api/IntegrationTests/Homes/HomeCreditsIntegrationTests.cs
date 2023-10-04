@@ -1,5 +1,6 @@
 using System.Net;
 using Refit;
+using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Credits;
 using Spenses.Client.Http;
 
@@ -42,9 +43,6 @@ public class HomeCreditsIntegrationTests
         var fetchedCredit = (await _homeCredits.GetHomeCredit(home.Id, createdCredit!.Id)).Content;
         fetchedCredit.Should().BeEquivalentTo(createdCredit);
 
-        var credits = (await _homeCredits.GetHomeCredits(home.Id)).Content;
-        credits.Should().ContainEquivalentOf(createdCredit);
-
         await _homeCredits.DeleteHomeCredit(home.Id, createdCredit.Id);
     }
 
@@ -63,7 +61,11 @@ public class HomeCreditsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var credit = (await _homeCredits.GetHomeCredits(home.Id)).Content!.First();
+        var credit = (await _homeCredits.GetHomeCredits(home.Id, new FilteredCreditsQuery
+        {
+            PageNumber = 1,
+            PageSize = 100
+        })).Content!.Items.First();
 
         var properties = new CreditProperties
         {
@@ -85,5 +87,60 @@ public class HomeCreditsIntegrationTests
         var fetchedCredit = (await _homeCredits.GetHomeCredit(home.Id, updatedCredit!.Id)).Content;
 
         fetchedCredit.Should().BeEquivalentTo(updatedCredit);
+    }
+
+    [Fact]
+    public async Task Get_credits_with_period_filters_yields_Credits_in_range()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var unfilteredCredits = (await _homeCredits.GetHomeCredits(home.Id, new FilteredCreditsQuery
+        {
+            PageNumber = 1,
+            PageSize = 100
+        })).Content!.Items.ToList();
+
+        var earliestCreditDate = unfilteredCredits.MinBy(x => x.Date)!.Date;
+        var latestCreditDate = unfilteredCredits.MaxBy(x => x.Date)!.Date;
+
+        var minDateFilterValue = earliestCreditDate.AddDays(1);
+        var maxDateFilterValue = latestCreditDate.AddDays(-1);
+
+        var filteredCredits = (await _homeCredits.GetHomeCredits(home.Id, new FilteredCreditsQuery
+        {
+            PageNumber = 1,
+            PageSize = 100,
+            MinDate = minDateFilterValue,
+            MaxDate = maxDateFilterValue
+        })).Content!.Items;
+
+        filteredCredits.Should().AllSatisfy(e =>
+        {
+            e.Date.Should().BeOnOrAfter(minDateFilterValue)
+                .And.BeOnOrBefore(maxDateFilterValue);
+        });
+    }
+
+    [Fact]
+    public async Task Get_credits_ordered_by_amount_yields_ordered_Credits()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var query = new FilteredCreditsQuery
+        {
+            PageNumber = 1,
+            PageSize = 25,
+            OrderBy = nameof(CreditDigest.Amount),
+            SortDirection = SortDirection.Asc
+        };
+
+        var credits = (await _homeCredits.GetHomeCredits(home.Id, query)).Content!.Items;
+
+        credits.Should().BeInAscendingOrder(x => x.Amount);
+
+        credits = (await _homeCredits.GetHomeCredits(home.Id, query with { SortDirection = SortDirection.Desc }))
+            .Content!.Items;
+
+        credits.Should().BeInDescendingOrder(x => x.Amount);
     }
 }

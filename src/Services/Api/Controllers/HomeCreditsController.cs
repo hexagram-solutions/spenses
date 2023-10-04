@@ -28,9 +28,18 @@ public class HomeCreditsController : ControllerBase
 
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
-    public async Task<ActionResult<IEnumerable<Credit>>> GetCredits(Guid homeId)
+    public async Task<ActionResult<IEnumerable<CreditDigest>>> GetCredits(Guid homeId,
+        [FromQuery] FilteredCreditsQuery query)
     {
-        var credits = await _mediator.Send(new CreditsQuery(homeId));
+        var credits = await _mediator.Send(new CreditsQuery(homeId)
+        {
+            PageNumber = query.PageNumber,
+            PageSize = query.PageSize,
+            OrderBy = query.OrderBy,
+            SortDirection = query.SortDirection,
+            MinDate = query.MinDate,
+            MaxDate = query.MaxDate,
+        });
 
         return Ok(credits);
     }
