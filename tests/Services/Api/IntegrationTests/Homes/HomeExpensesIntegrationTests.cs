@@ -1,6 +1,6 @@
 using System.Net;
 using Refit;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Expenses;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Homes;

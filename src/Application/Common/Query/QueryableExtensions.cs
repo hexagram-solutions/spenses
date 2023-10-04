@@ -1,6 +1,6 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Common;
 
 namespace Spenses.Application.Common.Query;
 

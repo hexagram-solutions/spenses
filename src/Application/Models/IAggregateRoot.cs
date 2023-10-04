@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Spenses.Application.Models.Users;
 
 namespace Spenses.Application.Models;
 

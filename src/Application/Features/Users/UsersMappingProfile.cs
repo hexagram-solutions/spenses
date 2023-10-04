@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using AutoMapper;
 using Spenses.Application.Extensions;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Users;
 using Spenses.Utilities.Security;
 using DbModels = Spenses.Resources.Relational.Models;
 

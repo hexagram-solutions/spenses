@@ -1,8 +1,6 @@
 using System.Net;
-using Hexagrams.Extensions.Common.Serialization;
-using Microsoft.AspNetCore.Mvc;
 using Refit;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Credits;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Homes;

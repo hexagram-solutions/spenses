@@ -1,4 +1,4 @@
-namespace Spenses.Application.Models;
+namespace Spenses.Application.Models.Expenses;
 
 public record ExpenseFilters
 {

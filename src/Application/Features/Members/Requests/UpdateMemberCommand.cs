@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Members;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Members.Requests;

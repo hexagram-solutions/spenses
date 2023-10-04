@@ -1,6 +1,7 @@
 using System.ComponentModel;
+using Spenses.Application.Models.Common;
 
-namespace Spenses.Application.Models;
+namespace Spenses.Application.Models.Expenses;
 
 public record FilteredExpensesQuery : PagedQuery<ExpenseDigest>
 {

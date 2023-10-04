@@ -1,5 +1,5 @@
 using BlazorState;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Homes;
 
 namespace Spenses.Client.Web.Features.Homes;
 

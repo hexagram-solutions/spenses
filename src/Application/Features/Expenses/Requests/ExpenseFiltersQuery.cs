@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Expenses;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Expenses.Requests;

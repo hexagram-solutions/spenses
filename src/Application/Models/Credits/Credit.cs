@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using Spenses.Application.Models.Members;
+using Spenses.Application.Models.Users;
 
-namespace Spenses.Application.Models;
+namespace Spenses.Application.Models.Credits;
 
 public abstract record CreditBase
 {

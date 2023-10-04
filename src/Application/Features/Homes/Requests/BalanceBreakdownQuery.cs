@@ -2,7 +2,8 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Exceptions;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Homes;
+using Spenses.Application.Models.Members;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Homes.Requests;

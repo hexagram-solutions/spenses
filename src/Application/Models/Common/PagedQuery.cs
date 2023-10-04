@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Spenses.Application.Models;
+namespace Spenses.Application.Models.Common;
 
 public record PagedQuery<TResult>
 {

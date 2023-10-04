@@ -1,6 +1,6 @@
 using FluentValidation.TestHelper;
 using Spenses.Application.Features.Members.Validators;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Members;
 
 namespace Spenses.Application.Tests.Features.Members.Validators;
 

@@ -1,5 +1,5 @@
 using FluentValidation;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Homes;
 
 namespace Spenses.Application.Features.Homes.Validators;
 

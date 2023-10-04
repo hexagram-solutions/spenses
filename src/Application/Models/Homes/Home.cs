@@ -1,4 +1,7 @@
-namespace Spenses.Application.Models;
+using Spenses.Application.Models.Members;
+using Spenses.Application.Models.Users;
+
+namespace Spenses.Application.Models.Homes;
 
 public record Home : HomeProperties, IAggregateRoot
 {

@@ -4,7 +4,7 @@ using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Homes;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;

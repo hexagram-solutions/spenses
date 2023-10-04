@@ -1,4 +1,6 @@
-namespace Spenses.Application.Models;
+using Spenses.Application.Models.Members;
+
+namespace Spenses.Application.Models.Homes;
 
 public record BalanceBreakdown
 {

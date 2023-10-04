@@ -1,6 +1,6 @@
 using AutoMapper;
 using MediatR;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Homes;
 using Spenses.Resources.Relational;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;

@@ -1,5 +1,6 @@
 using Refit;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Common;
+using Spenses.Application.Models.Expenses;
 
 namespace Spenses.Client.Http;
 

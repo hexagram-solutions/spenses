@@ -2,7 +2,7 @@ using System.Reflection;
 using FluentValidation;
 using Hexagrams.Extensions.Common;
 using Spenses.Application.Common.Query;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Common;
 
 namespace Spenses.Application.Features.Common.Validators;
 

@@ -2,7 +2,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Users;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
 using Spenses.Utilities.Security;

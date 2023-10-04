@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Spenses.Application.Common.Query;
 
-namespace Spenses.Application.Models;
+namespace Spenses.Application.Models.Expenses;
 
 public class ExpenseDigest
 {

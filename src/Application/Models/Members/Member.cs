@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Spenses.Application.Models;
+namespace Spenses.Application.Models.Members;
 
 public record Member : MemberProperties
 {

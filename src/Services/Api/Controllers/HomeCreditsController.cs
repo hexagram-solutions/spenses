@@ -2,7 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Credits.Requests;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Credits;
 
 namespace Spenses.Api.Controllers;
 

@@ -7,7 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Common.Query;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Application.Models;
+using Spenses.Application.Models.Common;
+using Spenses.Application.Models.Expenses;
 using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Features.Expenses.Requests;
