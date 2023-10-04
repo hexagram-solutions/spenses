@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Spenses.Resources.Relational.DigestModels;
 using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Resources.Relational.Models;
 
@@ -40,6 +41,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<UserIdentity> Users => Set<UserIdentity>();
 
+    public DbSet<ExpenseDigest> ExpenseDigests => Set<ExpenseDigest>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -59,6 +62,8 @@ public class ApplicationDbContext : DbContext
             .HasOne(x => x.PaidByMember)
             .WithMany(x => x.Credits)
             .OnDelete(DeleteBehavior.Restrict);
+
+        ConfigureDigestModel<ExpenseDigest>(modelBuilder);
     }
 
     private static void ConfigureTableNames(ModelBuilder modelBuilder)
@@ -72,6 +77,7 @@ public class ApplicationDbContext : DbContext
             mutableEntityType.SetTableName(mutableEntityType.ClrType.Name);
         }
     }
+
     private static void ConfigureAuditingNavigationProperties(ModelBuilder modelBuilder)
     {
         var auditableNavigationProperties = typeof(UserIdentity).GetProperties()
@@ -92,6 +98,15 @@ public class ApplicationDbContext : DbContext
                     .OnDelete(DeleteBehavior.Restrict);
             }
         });
+    }
+
+    private static void ConfigureDigestModel<TDigest>(ModelBuilder modelBuilder)
+        where TDigest : class
+    {
+        modelBuilder.Entity<TDigest>()
+            // We map digests to views, but we have to use .ToTable() here so we can exclude the view from migrations
+            .ToTable(nameof(ExpenseDigest), t => t.ExcludeFromMigrations())
+            .HasNoKey();
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

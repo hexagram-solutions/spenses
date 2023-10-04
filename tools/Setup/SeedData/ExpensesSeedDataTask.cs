@@ -18,6 +18,9 @@ public class ExpensesSeedDataTask : ISeedDataTask
             .Include(h => h.Members)
             .ToListAsync();
 
+        var sampleTags1 = new[] { "groceries", "bills", "supplies" };
+        var sampleTags2 = new[] { "recurring", "one-time" };
+
         foreach (var home in homes)
         {
             for (var i = 0; i < 10; i++)
@@ -27,7 +30,12 @@ public class ExpensesSeedDataTask : ISeedDataTask
                     Description = faker.Lorem.Sentence(3),
                     Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 10)),
                     Amount = Random.Shared.NextDecimal(5, 500, 2),
-                    IncurredByMember = Random.Shared.NextItem(home.Members)
+                    IncurredByMember = Random.Shared.NextItem(home.Members),
+                    Tags =
+                    {
+                        new ExpenseTag { Name = Random.Shared.NextItem(sampleTags1) },
+                        new ExpenseTag { Name = Random.Shared.NextItem(sampleTags2) }
+                    }
                 });
             }
         }

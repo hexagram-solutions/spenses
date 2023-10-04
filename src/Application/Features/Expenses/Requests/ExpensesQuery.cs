@@ -31,8 +31,9 @@ public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, PagedResult<E
     public async Task<PagedResult<ExpenseDigest>> Handle(ExpensesQuery request,
         CancellationToken cancellationToken)
     {
-        var query = _db.Expenses
-            .Where(e => e.HomeId == request.HomeId);
+        var query = _db.ExpenseDigests
+            .Where(e => e.HomeId == request.HomeId)
+            .ProjectTo<ExpenseDigest>(_mapper.ConfigurationProvider);
 
         query = !string.IsNullOrEmpty(request.OrderBy) && request.SortDirection.HasValue
             ? query.OrderBy(new[] { request.OrderBy!.ToUpperCamelCase() }, request.SortDirection!.Value, true)
@@ -47,13 +48,13 @@ public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, PagedResult<E
             : query;
 
         query = request.Tags?.Any() == true
-            ? query.Where(e => e.Tags.Any(t => request.Tags.Contains(t.Name)))
+            ? query.Where(e => e.Tags != null &&
+                e.Tags!.Split(' ', StringSplitOptions.None).Any(t => request.Tags.Contains(t)))
             : query;
 
         var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query
-            .ProjectTo<ExpenseDigest>(_mapper.ConfigurationProvider)
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
             .ToListAsync(cancellationToken);

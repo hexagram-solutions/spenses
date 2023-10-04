@@ -1,6 +1,7 @@
 using AutoMapper;
 using Spenses.Application.Models;
 using DbModels = Spenses.Resources.Relational.Models;
+using DbDigests = Spenses.Resources.Relational.DigestModels;
 
 namespace Spenses.Application.Features.Expenses;
 
@@ -10,10 +11,6 @@ public class ExpensesMappingProfile : Profile
     {
         CreateMap<DbModels.Expense, Expense>()
             .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(t => t.Name)));
-
-        CreateMap<DbModels.Expense, ExpenseDigest>()
-            .ForMember(dest => dest.Tags,
-                opts => opts.MapFrom(src => src.Tags.Any() ? string.Join(',', src.Tags.Select(t => t.Name)) : null));
 
         CreateMap<ExpenseProperties, DbModels.Expense>()
             .ForMember(dest => dest.Tags,
@@ -29,5 +26,7 @@ public class ExpensesMappingProfile : Profile
             .ForMember(dest => dest.ModifiedBy, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedAt, opts => opts.Ignore())
             .ForMember(dest => dest.ModifiedAt, opts => opts.Ignore());
+
+        CreateMap<DbDigests.ExpenseDigest, ExpenseDigest>();
     }
 }

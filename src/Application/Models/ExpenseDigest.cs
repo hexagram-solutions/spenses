@@ -23,10 +23,10 @@ public class ExpenseDigest
     public string IncurredByMemberName { get; set; } = null!;
 
     [Required]
-    public string CreatedByName { get; set; } = null!;
+    public string CreatedByUserName { get; set; } = null!;
 
     [Required]
-    public string ModifiedByName { get; set; } = null!;
+    public string ModifiedByUserName { get; set; } = null!;
     
     public string? Tags { get; set; }
 }

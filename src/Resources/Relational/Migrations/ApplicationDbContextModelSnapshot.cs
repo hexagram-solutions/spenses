@@ -64,7 +64,7 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.HasIndex("PaidByMemberId");
 
-                    b.ToTable("Credit");
+                    b.ToTable("Credit", (string)null);
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
@@ -112,7 +112,7 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.HasIndex("ModifiedById");
 
-                    b.ToTable("Expense");
+                    b.ToTable("Expense", (string)null);
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.ExpenseTag", b =>
@@ -127,7 +127,7 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.HasIndex("ExpenseId");
 
-                    b.ToTable("ExpenseTag");
+                    b.ToTable("ExpenseTag", (string)null);
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Home", b =>
@@ -162,7 +162,7 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.HasIndex("ModifiedById");
 
-                    b.ToTable("Home");
+                    b.ToTable("Home", (string)null);
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Member", b =>
@@ -207,7 +207,7 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Member");
+                    b.ToTable("Member", (string)null);
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>
@@ -229,7 +229,7 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserIdentity");
+                    b.ToTable("UserIdentity", (string)null);
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Credit", b =>
