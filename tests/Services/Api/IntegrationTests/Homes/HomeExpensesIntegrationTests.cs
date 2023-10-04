@@ -1,5 +1,7 @@
 using System.Net;
 using Refit;
+using Spenses.Application.Common.Query;
+using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Expenses;
 using Spenses.Client.Http;
 
@@ -148,8 +150,6 @@ public class HomeExpensesIntegrationTests
         await _homeExpenses.DeleteHomeExpense(home.Id, expense.Id);
     }
 
-
-
     [Fact]
     public async Task Get_expenses_with_period_filters_yields_expenses_in_range()
     {
@@ -180,5 +180,28 @@ public class HomeExpensesIntegrationTests
             e.Date.Should().BeOnOrAfter(minDateFilterValue)
                 .And.BeOnOrBefore(maxDateFilterValue);
         });
+    }
+
+    [Fact]
+    public async Task Get_expenses_ordered_by_amount_yields_ordered_expenses()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var query = new FilteredExpensesQuery
+        {
+            PageNumber = 1,
+            PageSize = 25,
+            OrderBy = nameof(ExpenseDigest.Amount),
+            SortDirection = SortDirection.Asc
+        };
+
+        var expenses = (await _homeExpenses.GetHomeExpenses(home.Id, query)).Content!.Items;
+
+        expenses.Should().BeInAscendingOrder(x => x.Amount);
+
+        expenses = (await _homeExpenses.GetHomeExpenses(home.Id, query with { SortDirection = SortDirection.Desc}))
+            .Content!.Items;
+
+        expenses.Should().BeInDescendingOrder(x => x.Amount);
     }
 }
