@@ -13,9 +13,22 @@ public class HomePropertiesValidatorTests
     {
         var model = new HomeProperties();
 
-        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.Name);
+        _validator.TestValidate(model)
+            .ShouldHaveValidationErrorFor(x => x.Name);
 
         _validator.TestValidate(model with { Name = "Valhalla" })
             .ShouldNotHaveValidationErrorFor(x => x.Name);
+    }
+
+    [Fact]
+    public void Expense_period_must_be_in_enum()
+    {
+        var model = new HomeProperties { ExpensePeriod = (ExpensePeriod) 100 };
+
+        _validator.TestValidate(model)
+            .ShouldHaveValidationErrorFor(x => x.ExpensePeriod);
+
+        _validator.TestValidate(model with { ExpensePeriod = ExpensePeriod.Monthly })
+            .ShouldNotHaveValidationErrorFor(x => x.ExpensePeriod);
     }
 }

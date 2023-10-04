@@ -17,6 +17,7 @@ public class HomesSeedDataTask : ISeedDataTask
             {
                 Name = "Test home",
                 Description = "Test home for integration testing",
+                ExpensePeriod = ExpensePeriod.Monthly,
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.NickName,
@@ -28,6 +29,7 @@ public class HomesSeedDataTask : ISeedDataTask
             {
                 Name = "Test home 2",
                 Description = "Second test home",
+                ExpensePeriod = ExpensePeriod.Weekly,
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.NickName,

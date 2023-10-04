@@ -26,7 +26,12 @@ public class HomesIntegrationTests
     [Fact]
     public async Task Post_creates_home()
     {
-        var properties = new HomeProperties { Name = "foo", Description = "bar" };
+        var properties = new HomeProperties
+        {
+            Name = "sut",
+            Description = "baz",
+            ExpensePeriod = ExpensePeriod.Weekly
+        };
 
         var createdHome = (await _homes.PostHome(properties)).Content!;
         createdHome.Should().BeEquivalentTo(properties, opts =>
@@ -59,7 +64,12 @@ public class HomesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var properties = new HomeProperties { Name = "sut", Description = "baz" };
+        var properties = new HomeProperties
+        {
+            Name = "sut",
+            Description = "baz",
+            ExpensePeriod = ExpensePeriod.Weekly
+        };
 
         var updatedHome = (await _homes.PutHome(home.Id, properties)).Content!;
 
