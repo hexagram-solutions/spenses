@@ -73,6 +73,7 @@ if (app.Environment.IsEnvironment(EnvironmentNames.Local) ||
     app.Environment.IsEnvironment(EnvironmentNames.Development))
 {
     app.UseDeveloperExceptionPage();
+    app.UseHttpLogging();
 
     IdentityModelEventSource.ShowPII = true;
 }

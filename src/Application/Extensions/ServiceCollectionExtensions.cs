@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
         {
             cfg.RegisterServicesFromAssemblyContaining<HomeQuery>();
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(RequestAuthorizationBehavior<,>));
+            cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceLoggingBehavior<,>));
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehaviour<,>));
         });
 
