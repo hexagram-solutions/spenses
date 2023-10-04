@@ -147,4 +147,38 @@ public class HomeExpensesIntegrationTests
 
         await _homeExpenses.DeleteHomeExpense(home.Id, expense.Id);
     }
+
+
+
+    [Fact]
+    public async Task Get_expenses_with_period_filters_yields_expenses_in_range()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var unfilteredExpenses = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        {
+            PageNumber = 1,
+            PageSize = 100
+        })).Content!.Items.ToList();
+
+        var earliestExpenseDate = unfilteredExpenses.MinBy(x => x.Date)!.Date;
+        var latestExpenseDate = unfilteredExpenses.MaxBy(x => x.Date)!.Date;
+
+        var minDateFilterValue = earliestExpenseDate.AddDays(1);
+        var maxDateFilterValue = latestExpenseDate.AddDays(-1);
+
+        var filteredExpenses = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        {
+            PageNumber = 1,
+            PageSize = 100,
+            MinDate = minDateFilterValue,
+            MaxDate = maxDateFilterValue
+        })).Content!.Items;
+
+        filteredExpenses.Should().AllSatisfy(e =>
+        {
+            e.Date.Should().BeOnOrAfter(minDateFilterValue)
+                .And.BeOnOrBefore(maxDateFilterValue);
+        });
+    }
 }
