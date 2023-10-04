@@ -18,13 +18,15 @@ public class ExpensesSeedDataTask : ISeedDataTask
             .Include(h => h.Members)
             .ToListAsync();
 
-        var sampleTags1 = new[] { "groceries", "bills", "supplies" };
-        var sampleTags2 = new[] { "recurring", "one-time" };
+        var sampleTags = new[] { "groceries", "bills", "supplies" };
 
         foreach (var home in homes)
         {
             for (var i = 0; i < 10; i++)
             {
+                var firstTag = Random.Shared.NextItem(sampleTags);
+                var secondTag = Random.Shared.NextItem(sampleTags.Except(firstTag.Yield()));
+
                 home.Expenses.Add(new Expense
                 {
                     Description = faker.Lorem.Sentence(3),
@@ -33,8 +35,8 @@ public class ExpensesSeedDataTask : ISeedDataTask
                     IncurredByMember = Random.Shared.NextItem(home.Members),
                     Tags =
                     {
-                        new ExpenseTag { Name = Random.Shared.NextItem(sampleTags1) },
-                        new ExpenseTag { Name = Random.Shared.NextItem(sampleTags2) }
+                        new ExpenseTag { Name = firstTag },
+                        new ExpenseTag { Name = secondTag }
                     }
                 });
             }

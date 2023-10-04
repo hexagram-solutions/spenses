@@ -27,6 +27,6 @@ public class ExpenseDigest
 
     [Required]
     public string ModifiedByUserName { get; set; } = null!;
-    
+
     public string? Tags { get; set; }
 }

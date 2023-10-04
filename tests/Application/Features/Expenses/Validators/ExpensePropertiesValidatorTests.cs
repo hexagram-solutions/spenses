@@ -102,7 +102,7 @@ public class ExpensePropertiesValidatorTests
 
         _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.Tags);
 
-        _validator.TestValidate(model with { Tags = new []{ "foo", "bar", "baz" }})
+        _validator.TestValidate(model with { Tags = new[] { "foo", "bar", "baz" } })
             .ShouldNotHaveValidationErrorFor(x => x.Tags);
     }
 }

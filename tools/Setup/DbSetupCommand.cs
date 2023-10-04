@@ -1,6 +1,6 @@
 using System.CommandLine;
-using Microsoft.Data.SqlClient;
 using System.Data.Common;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.SqlServer.Management.Common;
@@ -140,7 +140,7 @@ public class DbSetupCommand : RootCommand
     private static Database GetSqlServerDatabase(DbConnection dbConnection)
     {
         var server = new Server(new ServerConnection((SqlConnection) dbConnection));
-        
+
         server.Refresh();
 
         return server.Databases[dbConnection.Database];

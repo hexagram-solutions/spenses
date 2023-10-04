@@ -28,7 +28,8 @@ public class HomeExpensesController : ControllerBase
 
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
-    public async Task<ActionResult<IEnumerable<ExpenseDigest>>> GetExpenses(Guid homeId, [FromQuery] FilteredExpensesQuery query)
+    public async Task<ActionResult<IEnumerable<ExpenseDigest>>> GetExpenses(Guid homeId,
+        [FromQuery] FilteredExpensesQuery query)
     {
         var expenses = await _mediator.Send(new ExpensesQuery(homeId)
         {

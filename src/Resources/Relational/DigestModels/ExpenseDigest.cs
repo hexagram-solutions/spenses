@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 using Spenses.Resources.Relational.ComponentModel;
 using Spenses.Resources.Relational.Models;
 

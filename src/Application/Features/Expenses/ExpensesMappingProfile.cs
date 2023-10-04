@@ -1,7 +1,7 @@
 using AutoMapper;
 using Spenses.Application.Models;
-using DbModels = Spenses.Resources.Relational.Models;
 using DbDigests = Spenses.Resources.Relational.DigestModels;
+using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Expenses;
 

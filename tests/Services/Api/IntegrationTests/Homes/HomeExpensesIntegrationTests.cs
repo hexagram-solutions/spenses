@@ -14,7 +14,9 @@ public class HomeExpensesIntegrationTests
     public HomeExpensesIntegrationTests(WebApplicationFixture<Program> fixture)
     {
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
-        _homeExpenses = RestService.For<IHomeExpensesApi>(fixture.WebApplicationFactory.CreateClient());
+
+        _homeExpenses = RestService.For<IHomeExpensesApi>(fixture.WebApplicationFactory.CreateClient(),
+            new RefitSettings { CollectionFormat = CollectionFormat.Multi });
     }
 
     [Fact]
@@ -27,7 +29,7 @@ public class HomeExpensesIntegrationTests
             Description = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new []{ "groceries" },
+            Tags = new[] { "groceries" },
             IncurredByMemberId = home.Members.First().Id
         };
 
@@ -111,5 +113,38 @@ public class HomeExpensesIntegrationTests
 
         filterValues.Tags.Should().BeEquivalentTo(distinctTags);
         filterValues.Tags.Should().BeInAscendingOrder();
+    }
+
+    [Fact]
+    public async Task Get_expenses_with_tag_filters_yields_tagged_expenses()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var tags = new[] { "bills", "groceries" };
+
+        var expense = (await _homeExpenses.PostHomeExpense(home.Id, new ExpenseProperties
+        {
+            Description = "Foo",
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Tags = tags,
+            IncurredByMemberId = home.Members.First().Id
+        })).Content!;
+
+        var expenses = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        {
+            PageNumber = 1,
+            PageSize = 25,
+            Tags = tags
+        })).Content!.Items;
+
+        expenses.Should().AllSatisfy(e =>
+        {
+            var expenseTags = e.Tags?.Split(' ');
+
+            expenseTags.Should().BeEquivalentTo(tags);
+        });
+
+        await _homeExpenses.DeleteHomeExpense(home.Id, expense.Id);
     }
 }

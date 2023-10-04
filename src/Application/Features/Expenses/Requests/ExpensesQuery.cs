@@ -47,10 +47,12 @@ public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, PagedResult<E
             ? query.Where(e => e.Date <= request.MaxDate)
             : query;
 
-        query = request.Tags?.Any() == true
-            ? query.Where(e => e.Tags != null &&
-                e.Tags!.Split(' ', StringSplitOptions.None).Any(t => request.Tags.Contains(t)))
-            : query;
+        if (request.Tags?.Any() == true)
+        {
+            query = request.Tags
+                .Aggregate(query, (current, tag) =>
+                    current.Where(e => e.Tags != null && EF.Functions.Like(e.Tags, $"%{tag}%")));
+        }
 
         var totalCount = await query.CountAsync(cancellationToken);
 
