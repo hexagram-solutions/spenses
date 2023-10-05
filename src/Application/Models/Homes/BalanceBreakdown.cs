@@ -15,7 +15,7 @@ public record BalanceBreakdown
     public decimal TotalBalance { get; set; }
 
     [Required]
-    public MemberBalance[] Balances { get; set; } = Array.Empty<MemberBalance>();
+    public IEnumerable<MemberBalance> MemberBalances { get; set; } = Array.Empty<MemberBalance>();
 }
 
 public record MemberBalance
