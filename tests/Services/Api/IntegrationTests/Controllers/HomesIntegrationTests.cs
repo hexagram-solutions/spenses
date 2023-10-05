@@ -9,7 +9,7 @@ using Spenses.Client.Http;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 
-namespace Spenses.Api.IntegrationTests.Homes;
+namespace Spenses.Api.IntegrationTests.Controllers;
 
 [Collection(WebApplicationCollection.CollectionName)]
 public class HomesIntegrationTests
@@ -120,5 +120,13 @@ public class HomesIntegrationTests
 
             await db.SaveChangesAsync();
         }
+    }
+
+    [Fact]
+    public async Task Balance_breakdown_yields_correct_balances()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var balanceBreakdown = 
     }
 }
