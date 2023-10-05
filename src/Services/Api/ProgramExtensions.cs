@@ -167,7 +167,7 @@ public static class ProgramExtensions
         services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
 
         services.Scan(scan => scan
-            .FromAssemblyOf<HomeMemberRequirement>() // todo: is there a better hook for this?
+            .FromAssemblyOf<HomeMemberRequirement>()
             .AddClasses(classes => classes.AssignableTo<IAuthorizationHandler>())
             .AsImplementedInterfaces()
             .WithTransientLifetime());

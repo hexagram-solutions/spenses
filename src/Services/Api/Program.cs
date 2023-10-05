@@ -1,8 +1,8 @@
 using Hexagrams.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
+using Spenses.Application;
 using Spenses.Application.Common;
-using Spenses.Application.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
