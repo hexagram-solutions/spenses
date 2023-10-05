@@ -1,8 +1,11 @@
 using System.Security.Claims;
+using System.Text.Json.Serialization;
 using Azure.Identity;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
@@ -42,6 +45,49 @@ public static class ProgramExtensions
         configuration.SetKeyDelimiters(":", "_", "-", ".");
 
         return configuration;
+    }
+
+    public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration,
+        string corsPolicyName)
+    {
+        services
+            .AddControllers(options =>
+            {
+                options.Filters.Add<UserSyncFilter>();
+                options.Filters.Add<ApplicationExceptionFilter>();
+                options.ModelValidatorProviders.Clear(); // Disable data annotations model validation // todo: can this be done with that snippet from clean arch
+            })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
+        services.AddApiVersioning(options =>
+        {
+            options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.AssumeDefaultVersionWhenUnspecified = true;
+        });
+
+        services.AddRouting(opts =>
+        {
+            opts.LowercaseUrls = true;
+            opts.LowercaseQueryStrings = true;
+        });
+
+        services.AddCors(opts =>
+        {
+            opts.AddPolicy(name: corsPolicyName,
+                policy =>
+                {
+                    policy.WithOrigins(configuration.Collection(ConfigConstants.SpensesApiAllowedOrigins))
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+        });
+
+        return services;
     }
 
     public static IServiceCollection AddAuth0Authentication(this IServiceCollection services, string authority,

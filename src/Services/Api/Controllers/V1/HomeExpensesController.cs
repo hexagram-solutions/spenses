@@ -4,9 +4,10 @@ using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Expenses.Requests;
 using Spenses.Application.Models.Expenses;
 
-namespace Spenses.Api.Controllers;
+namespace Spenses.Api.Controllers.V1;
 
 [ApiController]
+[ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/expenses")]
 public class HomeExpensesController : ControllerBase
 {

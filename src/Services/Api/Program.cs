@@ -1,8 +1,6 @@
-using System.Text.Json.Serialization;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
-using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
 using Spenses.Application.Extensions;
 
@@ -10,48 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.BuildConfiguration();
 
-builder.Services
-    .AddControllers(options =>
-    {
-        options.Filters.Add<UserSyncFilter>();
-        options.Filters.Add<ApplicationExceptionFilter>();
-        options.ModelValidatorProviders.Clear(); // Disable data annotations model validation
-    })
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
-
-//todo: and a-what is a-dis?
-//services.AddScoped(provider =>
-//{
-//    var validationRules = provider.GetService<IEnumerable<FluentValidationRule>>();
-//    var loggerFactory = provider.GetService<ILoggerFactory>();
-
-//    return new FluentValidationSchemaProcessor(provider, validationRules, loggerFactory);
-//});
-
-builder.Services.AddRouting(opts =>
-{
-    opts.LowercaseUrls = true;
-    opts.LowercaseQueryStrings = true;
-});
-
 const string corsPolicyName = "AllowSpecificOrigins";
 
-builder.Services.AddCors(opts =>
-{
-    opts.AddPolicy(name: corsPolicyName,
-        policy =>
-        {
-            policy.WithOrigins(builder.Configuration.Collection(ConfigConstants.SpensesApiAllowedOrigins))
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .AllowCredentials();
-        });
-});
-
 builder.Services
+    .AddWebApiServices(builder.Configuration, corsPolicyName)
     .AddApplicationServices()
     .AddAuthorizationServices()
     .AddDbContextServices(builder.Configuration);

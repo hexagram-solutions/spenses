@@ -4,9 +4,10 @@ using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Members.Requests;
 using Spenses.Application.Models.Members;
 
-namespace Spenses.Api.Controllers;
+namespace Spenses.Api.Controllers.V1;
 
 [ApiController]
+[ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/members")]
 public class HomeMembersController : ControllerBase
 {

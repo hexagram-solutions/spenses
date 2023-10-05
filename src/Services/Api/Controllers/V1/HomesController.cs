@@ -4,9 +4,10 @@ using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Homes.Requests;
 using Spenses.Application.Models.Homes;
 
-namespace Spenses.Api.Controllers;
+namespace Spenses.Api.Controllers.V1;
 
 [ApiController]
+[ApiVersion("1.0")]
 [Route("homes")]
 public class HomesController : ControllerBase
 {

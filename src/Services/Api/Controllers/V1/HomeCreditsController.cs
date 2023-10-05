@@ -4,9 +4,10 @@ using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Credits.Requests;
 using Spenses.Application.Models.Credits;
 
-namespace Spenses.Api.Controllers;
+namespace Spenses.Api.Controllers.V1;
 
 [ApiController]
+[ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/credits")]
 public class HomeCreditsController : ControllerBase
 {
