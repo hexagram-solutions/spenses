@@ -175,20 +175,6 @@ public static class ProgramExtensions
         return services;
     }
 
-    public static IServiceCollection AddDbContextServices(this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        services.AddDbContext<ApplicationDbContext>(opts =>
-            opts.UseSqlServer(configuration.Require(ConfigConstants.SqlServerConnectionString)));
-
-        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-
-        services.AddHealthChecks()
-            .AddDbContextCheck<ApplicationDbContext>();
-
-        return services;
-    }
-
     public static IApplicationBuilder AddSwaggerUi(this IApplicationBuilder app, string clientId)
     {
         app.UseOpenApi();

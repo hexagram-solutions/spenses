@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
 using Spenses.Application;
 using Spenses.Application.Common;
+using Spenses.Resources.Relational;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +15,7 @@ builder.Services
     .AddWebApiServices(builder.Configuration, corsPolicyName)
     .AddApplicationServices()
     .AddAuthorizationServices()
-    .AddDbContextServices(builder.Configuration);
+    .AddRelationalServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString));
 
 builder.Services.AddAuthenticatedOpenApiDocument(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
