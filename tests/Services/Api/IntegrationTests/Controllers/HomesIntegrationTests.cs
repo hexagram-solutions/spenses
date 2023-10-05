@@ -29,7 +29,7 @@ public class HomesIntegrationTests
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
         _homeExpenses = RestService.For<IHomeExpensesApi>(fixture.WebApplicationFactory.CreateClient(),
             new RefitSettings { CollectionFormat = CollectionFormat.Multi });
-        _homeCredits =  RestService.For<IHomeCreditsApi>(fixture.WebApplicationFactory.CreateClient(),
+        _homeCredits = RestService.For<IHomeCreditsApi>(fixture.WebApplicationFactory.CreateClient(),
             new RefitSettings { CollectionFormat = CollectionFormat.Multi });
     }
 

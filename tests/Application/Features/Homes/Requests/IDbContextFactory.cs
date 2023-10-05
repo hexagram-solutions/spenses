@@ -1,4 +1,4 @@
-﻿using Spenses.Resources.Relational;
+using Spenses.Resources.Relational;
 
 namespace Spenses.Application.Tests.Features.Homes.Requests;
 

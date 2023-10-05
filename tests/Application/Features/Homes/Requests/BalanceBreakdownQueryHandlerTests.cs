@@ -65,7 +65,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             {
                 var dbMember = home.Members.Single(m => m.Id == memberBalance.OwedByMember.Id);
                 var memberPaid = dbMember.Credits.Sum(c => c.Amount);
-                
+
                 memberBalance.TotalPaid.Should().Be(memberPaid);
 
                 var expectedMemberOwed = allExpensesSum * new decimal(memberBalance.OwedByMember.SplitPercentage);
