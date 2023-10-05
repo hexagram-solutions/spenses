@@ -19,4 +19,7 @@ public interface IHomesApi
 
     [Delete("/homes/{homeId}")]
     Task DeleteHome(Guid homeId);
+
+    [Get("/homes/{homeId}/balance-breakdown")]
+    Task<ApiResponse<BalanceBreakdown>> GetBalanceBreakdown(Guid homeId, DateOnly periodStart, DateOnly periodEnd);
 }

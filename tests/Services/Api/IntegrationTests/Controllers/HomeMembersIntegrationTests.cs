@@ -3,7 +3,7 @@ using Refit;
 using Spenses.Application.Models.Members;
 using Spenses.Client.Http;
 
-namespace Spenses.Api.IntegrationTests.Homes;
+namespace Spenses.Api.IntegrationTests.Controllers;
 
 [Collection(WebApplicationCollection.CollectionName)]
 public class HomeMembersIntegrationTests

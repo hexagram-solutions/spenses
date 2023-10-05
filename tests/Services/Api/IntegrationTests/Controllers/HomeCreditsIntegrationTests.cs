@@ -4,7 +4,7 @@ using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Credits;
 using Spenses.Client.Http;
 
-namespace Spenses.Api.IntegrationTests.Homes;
+namespace Spenses.Api.IntegrationTests.Controllers;
 
 [Collection(WebApplicationCollection.CollectionName)]
 public class HomeCreditsIntegrationTests

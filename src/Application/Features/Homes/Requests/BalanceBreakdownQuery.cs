@@ -31,7 +31,11 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
             .Include(m => m.Credits.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
             .ToListAsync(cancellationToken);
 
-        if (Math.Abs(members.Sum(m => m.SplitPercentage) - 1) > 0.01)
+        // All homes will have at least one member, so if no members are found we know the home doesn't exist.
+        if (!members.Any())
+            throw new ResourceNotFoundException(request.HomeId);
+
+        if (Math.Abs(members.Sum(m => m.SplitPercentage) - 1) > 0.1)
             throw new InvalidRequestException("Split percentage among home members is less than 100%.");
 
         var totalExpenses = members.SelectMany(m => m.Expenses).Sum(e => e.Amount);
@@ -44,7 +48,7 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
             TotalExpenses = totalExpenses,
             TotalCredits = totalCredits,
             TotalBalance = totalBalance,
-            Balances = members.Select(m =>
+            MemberBalances = members.Select(m =>
             {
                 var owedByMember = Math.Round(totalExpenses * new decimal(m.SplitPercentage), 2);
                 var paidByMember = m.Credits.Sum(e => e.Amount);
@@ -56,7 +60,7 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
                     TotalPaid = paidByMember,
                     Balance = owedByMember - paidByMember
                 };
-            }).ToArray()
+            })
         };
     }
 }

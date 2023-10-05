@@ -4,23 +4,33 @@ using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
+using Spenses.Application.Models.Credits;
+using Spenses.Application.Models.Expenses;
 using Spenses.Application.Models.Homes;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 
-namespace Spenses.Api.IntegrationTests.Homes;
+namespace Spenses.Api.IntegrationTests.Controllers;
 
 [Collection(WebApplicationCollection.CollectionName)]
 public class HomesIntegrationTests
 {
     private readonly WebApplicationFixture<Program> _fixture;
+
     private readonly IHomesApi _homes;
+    private readonly IHomeExpensesApi _homeExpenses;
+    private readonly IHomeCreditsApi _homeCredits;
 
     public HomesIntegrationTests(WebApplicationFixture<Program> fixture)
     {
         _fixture = fixture;
+
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
+        _homeExpenses = RestService.For<IHomeExpensesApi>(fixture.WebApplicationFactory.CreateClient(),
+            new RefitSettings { CollectionFormat = CollectionFormat.Multi });
+        _homeCredits =  RestService.For<IHomeCreditsApi>(fixture.WebApplicationFactory.CreateClient(),
+            new RefitSettings { CollectionFormat = CollectionFormat.Multi });
     }
 
     [Fact]

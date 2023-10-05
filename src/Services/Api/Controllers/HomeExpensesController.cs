@@ -4,7 +4,7 @@ using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Expenses.Requests;
 using Spenses.Application.Models.Expenses;
 
-namespace Spenses.Api.Controllers.V1;
+namespace Spenses.Api.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
