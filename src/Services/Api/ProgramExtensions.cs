@@ -61,26 +61,27 @@ public static class ProgramExtensions
             {
                 options.Filters.Add<UserSyncFilter>();
                 options.Filters.Add<ApplicationExceptionFilter>();
-
-                options.ModelValidatorProviders
-                    .Clear(); // Disable data annotations model validation // todo: can this be done with that snippet from clean arch
             })
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+        services.AddRouting(opts =>
+        {
+            opts.LowercaseUrls = true;
+            opts.LowercaseQueryStrings = true;
+        });
+
+        // Disables data annotations model validation, we only want to use FluentValidation
+        services.Configure<ApiBehaviorOptions>(options =>
+            options.SuppressModelStateInvalidFilter = true);
+
         services.AddApiVersioning(options =>
         {
             options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
             options.DefaultApiVersion = new ApiVersion(1, 0);
             options.AssumeDefaultVersionWhenUnspecified = true;
-        });
-
-        services.AddRouting(opts =>
-        {
-            opts.LowercaseUrls = true;
-            opts.LowercaseQueryStrings = true;
         });
 
         services.AddCors(opts =>
