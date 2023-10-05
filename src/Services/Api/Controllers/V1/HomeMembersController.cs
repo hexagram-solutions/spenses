@@ -18,6 +18,12 @@ public class HomeMembersController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary>
+    /// Add a new member to a home.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="props">The member properties.</param>
+    /// <returns>The new home member.</returns>
     [HttpPost]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
@@ -27,6 +33,11 @@ public class HomeMembersController : ControllerBase
         return CreatedAtAction(nameof(GetMember), new { homeId, memberId = member.Id }, member);
     }
 
+    /// <summary>
+    /// Fetch the members of a home.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <returns>The home members.</returns>
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<Member>>> GetMembers(Guid homeId)
@@ -36,6 +47,12 @@ public class HomeMembersController : ControllerBase
         return Ok(members);
     }
 
+    /// <summary>
+    /// Fetch a home member.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">the member identifier.</param>
+    /// <returns>The home member.</returns>
     [HttpGet("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<Member>> GetMember(Guid homeId, Guid memberId)
@@ -45,6 +62,13 @@ public class HomeMembersController : ControllerBase
         return Ok(member);
     }
 
+    /// <summary>
+    /// Update a home member.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">the member identifier.</param>
+    /// <param name="props">The new member properties.</param>
+    /// <returns>The updated member.</returns>
     [HttpPut("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
     public async Task<ActionResult<Member>> PutMember(Guid homeId, Guid memberId, MemberProperties props)
@@ -54,6 +78,11 @@ public class HomeMembersController : ControllerBase
         return Ok(member);
     }
 
+    /// <summary>
+    /// Remove a member from a home.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">the member identifier.</param>
     [HttpDelete("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
     public async Task<ActionResult> DeleteMember(Guid homeId, Guid memberId)
