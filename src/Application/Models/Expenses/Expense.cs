@@ -21,8 +21,9 @@ public abstract record ExpenseBase
     public string[] Tags { get; set; } = Array.Empty<string>();
 }
 
-public record Expense : ExpenseBase, IAggregateRoot
+public record Expense : ExpenseBase
 {
+    [Required]
     public Guid Id { get; set; }
 
     [Required]

@@ -20,7 +20,7 @@ public record CreditProperties : CreditBase
     public Guid PaidByMemberId { get; set; }
 }
 
-public record Credit : CreditBase, IAggregateRoot
+public record Credit : CreditBase
 {
     public Guid Id { get; set; }
 
