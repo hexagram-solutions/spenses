@@ -5,7 +5,7 @@ using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Features.Homes.Requests;
 using Spenses.Application.Features.Homes.Validators;
 
-namespace Spenses.Application.Extensions;
+namespace Spenses.Application;
 
 public static class ServiceCollectionExtensions
 {
