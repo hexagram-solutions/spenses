@@ -4,6 +4,7 @@ using Hexagrams.Nuke.Components;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
+using Nuke.Common.Tools.Coverlet;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.EntityFramework;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
@@ -16,12 +17,14 @@ partial class Build
 
     IEnumerable<Project> ITest.TestProjects => Partition.GetCurrent(Solution.GetAllProjects("*.Tests"));
 
+    public Configure<DotNetTestSettings> TestSettings => _ => _
+        .SetExcludeByFile("\\\"*.Generated.cs,**/Resources/Relational/**.cs\\\"");
+
     Target RestoreTools => _ => _
         .Executes(() =>
         {
             DotNetToolRestore(_ => _);
         });
-
 
     Project RelationalSetupTool => Solution.GetAllProjects("Spenses.Tools.Setup").Single();
 
@@ -64,6 +67,7 @@ partial class Build
 
             DotNetTest(_ => _
                 .Apply(this.FromComponent<ITest>().TestSettingsBase)
+                .Apply(TestSettings)
                 .SetVerbosity(DotNetVerbosity.Minimal)
                 .SetProcessEnvironmentVariable("Spenses:SqlServer:ConnectionString", SqlServerConnectionString)
                 .CombineWith(integrationTestProjects, (_, v) => _
