@@ -13,6 +13,10 @@
         "AzureResourceGroup": {
           "type": "string"
         },
+        "AzureStaticWebAppsApiToken": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
         "AzureTenant": {
           "type": "string"
         },
@@ -105,6 +109,7 @@
               "Clean",
               "Compile",
               "DeployApi",
+              "DeployWebApp",
               "Format",
               "IntegrationTest",
               "IntegrationTestSetup",
@@ -136,6 +141,7 @@
               "Clean",
               "Compile",
               "DeployApi",
+              "DeployWebApp",
               "Format",
               "IntegrationTest",
               "IntegrationTestSetup",

@@ -35,5 +35,7 @@ partial class Build
     [Parameter]
     readonly string ContainerRegistryPassword;
 
-
+    [Secret]
+    [Parameter]
+    readonly string AzureStaticWebAppsApiToken;
 }

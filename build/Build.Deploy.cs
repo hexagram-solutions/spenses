@@ -1,7 +1,10 @@
 using System.Linq;
+using Hexagrams.Nuke.Components;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
+using Nuke.Common.Tools.DotNet;
+using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 // ReSharper disable InconsistentNaming
 
@@ -9,6 +12,9 @@ partial class Build
 {
     [PathVariable]
     readonly Tool Az;
+
+    [PathVariable]
+    readonly Tool Npx;
 
     Target AzureLogin => _ => _
         .Description("Log in with the Azure CLI.")
@@ -65,5 +71,25 @@ partial class Build
                 $"--registry-server {ContainerRegistryServer} " +
                 $"--registry-username {ContainerRegistryUsername} " +
                 $"--registry-password {ContainerRegistryPassword}");
+        });
+
+    Project WebProject => Solution.GetAllProjects("Spenses.Client.Web").Single();
+
+    Target DeployWebApp => _ => _
+        .Description("Deploy the front-end web app to Azure Static Web Apps.")
+        .DependsOn<IClean>()
+        .Requires(
+            () => AzureStaticWebAppsApiToken)
+        .Executes(() =>
+        {
+            DotNetPublish(s => s
+                .SetProject(WebProject)
+                .SetFramework("net7.0")
+                .SetConfiguration(Configuration.Release));
+
+            Npx($"@azure/static-web-apps-cli deploy " +
+                $"{WebProject.Directory / "bin" / "Release" / "net7.0" / "publish" / "wwwroot"} " +
+                $"--deployment-token {AzureStaticWebAppsApiToken} " +
+                $"--env Production");
         });
 }

@@ -34,8 +34,6 @@ jobs:
           dotnet-version: 7.0.x
 
       - name: "Deploy API"
-        # todo: temporary
-        if: false
         run: ./build.cmd deploy-api
         env:
           NUKE_AZURE_USERNAME: ${{ vars.AZURE_USERNAME }}
@@ -48,19 +46,11 @@ jobs:
           NUKE_CONTAINER_REGISTRY_PASSWORD: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 
       - name: "Deploy web app"
-        uses: Azure/static-web-apps-deploy@v1
+        run: ./build.cmd deploy-web-app
         env:
-          PROJECT: "src/Clients/Web/Spenses.Client.Web.csproj"
-          MSBUILD_CONFIGURATION: RELEASE
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: upload
-          app_location: "src/Clients/Web"
+          NUKE_AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
 
       - name: "Migrate database"
-        # todo: temporary
-        if: false
         run: ./build.cmd migrate-database
         env:
           NUKE_SQL_SERVER_CONNECTION_STRING: ${{ secrets.SQL_SERVER_CONNECTION_STRING }}
