@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Spenses.Application.Exceptions;
 using Spenses.Resources.Relational;
 using Spenses.Utilities.Security;
 
@@ -19,10 +20,15 @@ public class HomeMemberAuthorizationHandler : AuthorizationHandler<HomeMemberReq
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         HomeMemberRequirement requirement)
     {
-        var homeMemberUserIds = await _db.Homes
-            .Where(h => h.Id == requirement.HomeId)
-            .SelectMany(h => h.Members.Select(m => m.UserId))
-            .ToListAsync();
+        var home = await _db.Homes
+            .Include(m => m.Members)
+            .ThenInclude(m => m.User)
+            .SingleOrDefaultAsync(h => h.Id == requirement.HomeId);
+
+        if (home is null)
+            throw new ResourceNotFoundException(requirement.HomeId);
+
+        var homeMemberUserIds = home.Members.Select(m => m.UserId);
 
         if (homeMemberUserIds.Contains(context.User.GetId()))
             context.Succeed(requirement);

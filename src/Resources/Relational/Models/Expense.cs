@@ -21,5 +21,9 @@ public class Expense : AggregateRoot
 
     public Home Home { get; set; } = null!;
 
+    public Guid? CategoryId { get; set; }
+
+    public ExpenseCategory? Category { get; set; }
+
     public ICollection<ExpenseTag> Tags { get; set; } = new HashSet<ExpenseTag>();
 }

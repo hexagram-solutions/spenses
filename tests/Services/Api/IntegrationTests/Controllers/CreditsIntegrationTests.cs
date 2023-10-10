@@ -7,15 +7,15 @@ using Spenses.Client.Http;
 namespace Spenses.Api.IntegrationTests.Controllers;
 
 [Collection(WebApplicationCollection.CollectionName)]
-public class HomeCreditsIntegrationTests
+public class CreditsIntegrationTests
 {
     private readonly IHomesApi _homes;
-    private readonly IHomeCreditsApi _homeCredits;
+    private readonly ICreditsApi _credits;
 
-    public HomeCreditsIntegrationTests(WebApplicationFixture<Program> fixture)
+    public CreditsIntegrationTests(WebApplicationFixture<Program> fixture)
     {
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
-        _homeCredits = RestService.For<IHomeCreditsApi>(fixture.WebApplicationFactory.CreateClient());
+        _credits = RestService.For<ICreditsApi>(fixture.WebApplicationFactory.CreateClient());
     }
 
     [Fact]
@@ -31,7 +31,7 @@ public class HomeCreditsIntegrationTests
             PaidByMemberId = home.Members.First().Id
         };
 
-        var createdCreditResponse = await _homeCredits.PostHomeCredit(home.Id, properties);
+        var createdCreditResponse = await _credits.PostCredit(home.Id, properties);
 
         createdCreditResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -41,10 +41,10 @@ public class HomeCreditsIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedCredit = (await _homeCredits.GetHomeCredit(home.Id, createdCredit!.Id)).Content;
+        var fetchedCredit = (await _credits.GetCredit(home.Id, createdCredit!.Id)).Content;
         fetchedCredit.Should().BeEquivalentTo(createdCredit);
 
-        await _homeCredits.DeleteHomeCredit(home.Id, createdCredit.Id);
+        await _credits.DeleteCredit(home.Id, createdCredit.Id);
     }
 
     [Fact]
@@ -52,7 +52,7 @@ public class HomeCreditsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var result = await _homeCredits.PostHomeCredit(home.Id, new CreditProperties());
+        var result = await _credits.PostCredit(home.Id, new CreditProperties());
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -62,7 +62,7 @@ public class HomeCreditsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var credit = (await _homeCredits.GetHomeCredits(home.Id, new FilteredCreditsQuery
+        var credit = (await _credits.GetCredits(home.Id, new FilteredCreditsQuery
         {
             PageNumber = 1,
             PageSize = 100
@@ -76,7 +76,7 @@ public class HomeCreditsIntegrationTests
             PaidByMemberId = home.Members.First().Id
         };
 
-        var updatedCreditResponse = await _homeCredits.PutHomeCredit(home.Id, credit.Id, properties);
+        var updatedCreditResponse = await _credits.PutCredit(home.Id, credit.Id, properties);
 
         updatedCreditResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -86,7 +86,7 @@ public class HomeCreditsIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedCredit = (await _homeCredits.GetHomeCredit(home.Id, updatedCredit!.Id)).Content;
+        var fetchedCredit = (await _credits.GetCredit(home.Id, updatedCredit!.Id)).Content;
 
         fetchedCredit.Should().BeEquivalentTo(updatedCredit);
     }
@@ -96,7 +96,7 @@ public class HomeCreditsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var unfilteredCredits = (await _homeCredits.GetHomeCredits(home.Id, new FilteredCreditsQuery
+        var unfilteredCredits = (await _credits.GetCredits(home.Id, new FilteredCreditsQuery
         {
             PageNumber = 1,
             PageSize = 100
@@ -108,7 +108,7 @@ public class HomeCreditsIntegrationTests
         var minDateFilterValue = earliestCreditDate.AddDays(1);
         var maxDateFilterValue = latestCreditDate.AddDays(-1);
 
-        var filteredCredits = (await _homeCredits.GetHomeCredits(home.Id, new FilteredCreditsQuery
+        var filteredCredits = (await _credits.GetCredits(home.Id, new FilteredCreditsQuery
         {
             PageNumber = 1,
             PageSize = 100,
@@ -136,11 +136,11 @@ public class HomeCreditsIntegrationTests
             SortDirection = SortDirection.Asc
         };
 
-        var credits = (await _homeCredits.GetHomeCredits(home.Id, query)).Content!.Items;
+        var credits = (await _credits.GetCredits(home.Id, query)).Content!.Items;
 
         credits.Should().BeInAscendingOrder(x => x.Amount);
 
-        credits = (await _homeCredits.GetHomeCredits(home.Id, query with { SortDirection = SortDirection.Desc }))
+        credits = (await _credits.GetCredits(home.Id, query with { SortDirection = SortDirection.Desc }))
             .Content!.Items;
 
         credits.Should().BeInDescendingOrder(x => x.Amount);

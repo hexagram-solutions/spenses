@@ -30,6 +30,11 @@ public class ExpenseFiltersQueryHandler : IRequestHandler<ExpenseFiltersQuery, E
             .Distinct()
             .ToArrayAsync(cancellationToken);
 
-        return new ExpenseFilters { Tags = uniqueTags.OrderBy(x => x).ToArray() };
+        var categories = await _db.ExpenseCategories
+            .Where(e => e.HomeId == request.HomeId)
+            .OrderBy(ec => ec.Name)
+            .ToDictionaryAsync(k => k.Id, v => v.Name, cancellationToken);
+
+        return new ExpenseFilters { Tags = uniqueTags.OrderBy(x => x).ToArray(), Categories = categories };
     }
 }

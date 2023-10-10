@@ -4,7 +4,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
-using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Application.Models.Homes;
 using Spenses.Resources.Relational;
@@ -31,8 +30,8 @@ public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, Home>
     {
         var home = await _db.Homes
             .ProjectTo<Home>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(h => h.Id == request.HomeId, cancellationToken);
+            .FirstAsync(h => h.Id == request.HomeId, cancellationToken);
 
-        return home ?? throw new ResourceNotFoundException(request.HomeId);
+        return home;
     }
 }

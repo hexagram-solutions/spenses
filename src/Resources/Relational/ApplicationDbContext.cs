@@ -33,6 +33,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Credit> Credits => Set<Credit>();
 
+    public DbSet<ExpenseCategory> ExpenseCategories => Set<ExpenseCategory>();
+
     public DbSet<Expense> Expenses => Set<Expense>();
 
     public DbSet<Home> Homes => Set<Home>();

@@ -1,0 +1,73 @@
+using System.Net;
+using Refit;
+using Spenses.Application.Models.ExpenseCategories;
+using Spenses.Client.Http;
+
+namespace Spenses.Api.IntegrationTests.Controllers;
+
+[Collection(WebApplicationCollection.CollectionName)]
+public class ExpenseCategoriesIntegrationTests
+{
+    private readonly IHomesApi _homes;
+    private readonly IExpenseCategoriesApi _categories;
+
+    public ExpenseCategoriesIntegrationTests(WebApplicationFixture<Program> fixture)
+    {
+        _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
+        _categories = RestService.For<IExpenseCategoriesApi>(fixture.WebApplicationFactory.CreateClient());
+    }
+
+    [Fact]
+    public async Task Post_expense_category_creates_category()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var properties = new ExpenseCategoryProperties
+        {
+            Name = "Gubbins",
+            Description = "Provisions for the coming war"
+        };
+
+        var createdCategoryResponse = await _categories.PostExpenseCategory(home.Id, properties);
+
+        createdCategoryResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var createdCategory = createdCategoryResponse.Content;
+
+        createdCategory.Should().BeEquivalentTo(properties, opts =>
+            opts.ExcludingNestedObjects()
+                .ExcludingMissingMembers());
+
+        var members = (await _categories.GetExpenseCategories(home.Id)).Content;
+        members.Should().ContainEquivalentOf(createdCategory);
+
+        await _categories.DeleteExpenseCategory(home.Id, createdCategory!.Id);
+    }
+
+    [Fact]
+    public async Task Put_expense_category_updates_category()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var category = (await _categories.GetExpenseCategories(home.Id)).Content!.First();
+
+        var properties = new ExpenseCategoryProperties
+        {
+            Name = "Gubbins",
+            Description = "Provisions for the coming war"
+        };
+
+        var createdCategoryResponse = await _categories.PutExpenseCategory(home.Id, category.Id, properties);
+
+        createdCategoryResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var createdCategory = createdCategoryResponse.Content;
+
+        createdCategory.Should().BeEquivalentTo(properties, opts =>
+            opts.ExcludingNestedObjects()
+                .ExcludingMissingMembers());
+
+        var members = (await _categories.GetExpenseCategories(home.Id)).Content;
+        members.Should().ContainEquivalentOf(createdCategory);
+    }
+}

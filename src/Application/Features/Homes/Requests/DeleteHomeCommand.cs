@@ -24,10 +24,7 @@ public class DeleteHomeCommandHandler : IRequestHandler<DeleteHomeCommand>
 
     public async Task Handle(DeleteHomeCommand request, CancellationToken cancellationToken)
     {
-        var home = await _db.Homes.FirstOrDefaultAsync(h => h.Id == request.HomeId, cancellationToken);
-
-        if (home is null)
-            throw new ResourceNotFoundException(request.HomeId);
+        var home = await _db.Homes.FirstAsync(h => h.Id == request.HomeId, cancellationToken);
 
         _db.Homes.Remove(home);
 

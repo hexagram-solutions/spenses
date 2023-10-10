@@ -34,18 +34,20 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
 
         var home = await _db.Homes
             .Include(h => h.Members)
-            .FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
-
-        if (home is null)
-            throw new ResourceNotFoundException(homeId);
+            .Include(h => h.ExpenseCategories)
+            .FirstAsync(h => h.Id == homeId, cancellationToken);
 
         if (home.Members.All(m => m.Id != props.IncurredByMemberId))
             throw new InvalidRequestException($"Member {props.IncurredByMemberId} is not a member of home {homeId}");
+
+        if (props.CategoryId.HasValue && home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
+            throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
 
         var expense = _mapper.Map<DbModels.Expense>(props);
 
         expense.HomeId = homeId;
         expense.IncurredByMemberId = props.IncurredByMemberId;
+        expense.CategoryId = props.CategoryId;
 
         home.Expenses.Add(expense);
 

@@ -23,7 +23,18 @@ public class HomesSeedDataTask : ISeedDataTask
                     Name = u.NickName,
                     SplitPercentage = 1d / userIdentities.Count,
                     UserId = u.Id
-                }).ToList()
+                }).ToList(),
+                ExpenseCategories =
+                {
+                    new ExpenseCategory
+                    {
+                        Name = "groceries",
+                    },
+                    new ExpenseCategory
+                    {
+                        Name = "housing"
+                    }
+                }
             },
             new Home
             {
@@ -35,7 +46,18 @@ public class HomesSeedDataTask : ISeedDataTask
                     Name = u.NickName,
                     SplitPercentage = 1d / userIdentities.Count,
                     UserId = u.Id
-                }).ToList()
+                }).ToList(),
+                ExpenseCategories =
+                {
+                    new ExpenseCategory
+                    {
+                        Name = "groceries",
+                    },
+                    new ExpenseCategory
+                    {
+                        Name = "housing"
+                    }
+                }
             });
 
         await db.SaveChangesAsync();

@@ -16,9 +16,10 @@ public class ExpensesSeedDataTask : ISeedDataTask
 
         var homes = await db.Homes
             .Include(h => h.Members)
+            .Include(h => h.ExpenseCategories)
             .ToListAsync();
 
-        var sampleTags = new[] { "groceries", "bills", "supplies" };
+        var sampleTags = new[] { "cable", "restaurants", "gas" };
 
         foreach (var home in homes)
         {
@@ -33,6 +34,7 @@ public class ExpensesSeedDataTask : ISeedDataTask
                     Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 10)),
                     Amount = Random.Shared.NextDecimal(5, 500, 2),
                     IncurredByMember = Random.Shared.NextItem(home.Members),
+                    Category = Random.Shared.NextItem(home.ExpenseCategories),
                     Tags =
                     {
                         new ExpenseTag { Name = firstTag },

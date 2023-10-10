@@ -31,10 +31,6 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
             .Include(m => m.Credits.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
             .ToListAsync(cancellationToken);
 
-        // All homes will have at least one member, so if no members are found we know the home doesn't exist.
-        if (!members.Any())
-            throw new ResourceNotFoundException(request.HomeId);
-
         if (Math.Abs(members.Sum(m => m.SplitPercentage) - 1) > 0.1)
             throw new InvalidRequestException("Split percentage among home members is less than 100%.");
 

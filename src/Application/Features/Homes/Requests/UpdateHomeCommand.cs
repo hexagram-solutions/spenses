@@ -35,9 +35,6 @@ public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, Home>
             .Include(h => h.ModifiedBy)
             .FirstOrDefaultAsync(h => h.Id == request.HomeId, cancellationToken);
 
-        if (home is null)
-            throw new ResourceNotFoundException(request.HomeId);
-
         _mapper.Map(request.Props, home);
 
         await _db.SaveChangesAsync(cancellationToken);
