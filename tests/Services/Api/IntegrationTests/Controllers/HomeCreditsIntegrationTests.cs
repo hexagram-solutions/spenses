@@ -27,6 +27,7 @@ public class HomeCreditsIntegrationTests
         {
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Note = "foobar",
             PaidByMemberId = home.Members.First().Id
         };
 
@@ -71,6 +72,7 @@ public class HomeCreditsIntegrationTests
         {
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Note = "foobar",
             PaidByMemberId = home.Members.First().Id
         };
 

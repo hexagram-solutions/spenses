@@ -12,6 +12,8 @@ public abstract record CreditBase
     [Required]
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
+
+    public string? Note { get; set; }
 }
 
 public record CreditProperties : CreditBase
