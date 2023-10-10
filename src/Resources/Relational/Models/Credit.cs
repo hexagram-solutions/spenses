@@ -11,6 +11,8 @@ public class Credit : AggregateRoot
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
 
+    public string? Note { get; set; }
+
     public Guid PaidByMemberId { get; set; }
 
     public Member PaidByMember { get; set; } = null!;
