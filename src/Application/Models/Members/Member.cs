@@ -13,6 +13,9 @@ public record MemberProperties
     [Required]
     public string Name { get; set; } = null!;
 
+    [EmailAddress]
+    public string? ContactEmail { get; set; }
+
     [Required]
     [Range(0, 1)]
     public double SplitPercentage { get; set; }
