@@ -32,6 +32,7 @@ public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, Home>
         home.Members.Add(new DbModels.Member
         {
             Name = currentUser.FindFirst(ApplicationClaimTypes.NickName)!.Value,
+            ContactEmail = currentUser.FindFirst(ApplicationClaimTypes.Email)!.Value,
             UserId = currentUser.GetId()
         });
 

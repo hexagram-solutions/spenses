@@ -10,6 +10,9 @@ public class MemberPropertiesValidator : AbstractValidator<MemberProperties>
         RuleFor(x => x.Name)
             .NotEmpty();
 
+        RuleFor(x => x.ContactEmail)
+            .EmailAddress();
+
         RuleFor(x => x.SplitPercentage)
             .InclusiveBetween(0d, 1d);
     }

@@ -6,6 +6,8 @@ public class Member : AggregateRoot
 {
     public string Name { get; set; } = null!;
 
+    public string? ContactEmail { get; set; }
+
     [Range(0, 1)]
     public double SplitPercentage { get; set; }
 

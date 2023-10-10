@@ -22,7 +22,12 @@ public class HomeMembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var properties = new MemberProperties { Name = "Bob" };
+        var properties = new MemberProperties
+        {
+            Name = "Bob",
+            SplitPercentage = 0.0,
+            ContactEmail = "bob@example.com"
+        };
 
         var createdMemberResponse = await _homeMembers.PostHomeMember(home.Id, properties);
 
@@ -57,7 +62,12 @@ public class HomeMembersIntegrationTests
 
         var member = home.Members.First();
 
-        var properties = new MemberProperties { Name = "Grunky Peep" };
+        var properties = new MemberProperties
+        {
+            Name = "Grunky Peep",
+            SplitPercentage = 0.0,
+            ContactEmail = "grunky.peep@georgiasouthern.edu"
+        };
 
         var updatedMemberResponse = await _homeMembers.PutHomeMember(home.Id, member.Id, properties);
 

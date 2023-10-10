@@ -20,6 +20,17 @@ public class MemberPropertiesValidatorTests
     }
 
     [Fact]
+    public void Contact_email_must_be_valid()
+    {
+        var model = new MemberProperties { ContactEmail = "foobar" };
+
+        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.ContactEmail);
+
+        _validator.TestValidate(model with { ContactEmail = "george@vandelayindustries.com" })
+            .ShouldNotHaveValidationErrorFor(x => x.ContactEmail);
+    }
+
+    [Fact]
     public void Split_percentage_must_be_within_acceptable_range()
     {
         var model = new MemberProperties();
