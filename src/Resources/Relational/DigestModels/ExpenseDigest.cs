@@ -7,6 +7,7 @@ namespace Spenses.Resources.Relational.DigestModels;
 
 [BaseTable(nameof(Expense), "e")]
 [JoinedTable(JoinType.Left, nameof(Member), "ibm", "ibm.Id = e.IncurredByMemberId")]
+[JoinedTable(JoinType.Left, nameof(ExpenseCategory), "ec", "ec.Id = e.CategoryId")]
 [JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", "cui.Id = e.CreatedById")]
 [JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", "mui.Id = e.ModifiedById")]
 public class ExpenseDigest
@@ -22,6 +23,12 @@ public class ExpenseDigest
     [Precision(8, 2)]
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
+
+    [SourceColumn("ec", nameof(ExpenseCategory.Id))]
+    public Guid? CategoryId { get; set; }
+
+    [SourceColumn("ec", nameof(ExpenseCategory.Name))]
+    public string? CategoryName { get; set; }
 
     [SourceColumn("ibm", nameof(Member.Name))]
     public string IncurredByMemberName { get; set; } = null!;

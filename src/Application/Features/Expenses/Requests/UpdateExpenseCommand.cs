@@ -35,6 +35,8 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
         var expense = await _db.Expenses
             .Include(e => e.Home)
                 .ThenInclude(h => h.Members)
+            .Include(e => e.Home)
+                .ThenInclude(h => h.ExpenseCategories)
             .Include(e => e.Tags)
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);
@@ -44,6 +46,9 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
 
         if (expense.Home.Members.All(m => m.Id != props.IncurredByMemberId))
             throw new InvalidRequestException($"Member {props.IncurredByMemberId} is not a member of home {homeId}");
+
+        if (props.CategoryId.HasValue && expense.Home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
+            throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
 
         _mapper.Map(request.Props, expense);
 

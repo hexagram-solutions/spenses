@@ -6,15 +6,15 @@ using Spenses.Client.Http;
 namespace Spenses.Api.IntegrationTests.Controllers;
 
 [Collection(WebApplicationCollection.CollectionName)]
-public class HomeMembersIntegrationTests
+public class MembersIntegrationTests
 {
     private readonly IHomesApi _homes;
-    private readonly IHomeMembersApi _homeMembers;
+    private readonly IMembersApi _members;
 
-    public HomeMembersIntegrationTests(WebApplicationFixture<Program> fixture)
+    public MembersIntegrationTests(WebApplicationFixture<Program> fixture)
     {
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
-        _homeMembers = RestService.For<IHomeMembersApi>(fixture.WebApplicationFactory.CreateClient());
+        _members = RestService.For<IMembersApi>(fixture.WebApplicationFactory.CreateClient());
     }
 
     [Fact]
@@ -29,7 +29,7 @@ public class HomeMembersIntegrationTests
             ContactEmail = "bob@example.com"
         };
 
-        var createdMemberResponse = await _homeMembers.PostHomeMember(home.Id, properties);
+        var createdMemberResponse = await _members.PostMember(home.Id, properties);
 
         createdMemberResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -39,10 +39,10 @@ public class HomeMembersIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var members = (await _homeMembers.GetHomeMembers(home.Id)).Content;
+        var members = (await _members.GetMembers(home.Id)).Content;
         members.Should().ContainEquivalentOf(createdMember);
 
-        await _homeMembers.DeleteHomeMember(home.Id, createdMember!.Id);
+        await _members.DeleteMember(home.Id, createdMember!.Id);
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public class HomeMembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var result = await _homeMembers.PostHomeMember(home.Id, new MemberProperties());
+        var result = await _members.PostMember(home.Id, new MemberProperties());
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -69,7 +69,7 @@ public class HomeMembersIntegrationTests
             ContactEmail = "grunky.peep@georgiasouthern.edu"
         };
 
-        var updatedMemberResponse = await _homeMembers.PutHomeMember(home.Id, member.Id, properties);
+        var updatedMemberResponse = await _members.PutMember(home.Id, member.Id, properties);
 
         updatedMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -79,7 +79,7 @@ public class HomeMembersIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedMember = (await _homeMembers.GetHomeMember(home.Id, member.Id)).Content;
+        var fetchedMember = (await _members.GetMember(home.Id, member.Id)).Content;
         fetchedMember.Should().BeEquivalentTo(updatedMember);
     }
 
@@ -88,7 +88,7 @@ public class HomeMembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var result = await _homeMembers.GetHomeMember(home.Id, Guid.Empty);
+        var result = await _members.GetMember(home.Id, Guid.Empty);
 
         result.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }

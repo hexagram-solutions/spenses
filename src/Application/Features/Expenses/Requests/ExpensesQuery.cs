@@ -55,6 +55,9 @@ public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, PagedResult<E
                     current.Where(e => e.Tags != null && EF.Functions.Like(e.Tags, $"%{tag}%")));
         }
 
+        if (request.Categories?.Any() == true)
+            query = query.Where(e => request.Categories.Contains(e.CategoryId.GetValueOrDefault()));
+
         var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query

@@ -9,11 +9,11 @@ namespace Spenses.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/expenses")]
-public class HomeExpensesController : ControllerBase
+public class ExpensesController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public HomeExpensesController(IMediator mediator)
+    public ExpensesController(IMediator mediator)
     {
         _mediator = mediator;
     }

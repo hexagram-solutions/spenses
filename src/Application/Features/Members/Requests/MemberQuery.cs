@@ -29,10 +29,9 @@ public class MemberQueryHandler : IRequestHandler<MemberQuery, Member>
 
     public async Task<Member> Handle(MemberQuery request, CancellationToken cancellationToken)
     {
-        var (homeId, memberId) = request;
+        var (_, memberId) = request;
 
         var member = await _db.Members
-            .Where(m => m.HomeId == homeId)
             .ProjectTo<Member>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
 

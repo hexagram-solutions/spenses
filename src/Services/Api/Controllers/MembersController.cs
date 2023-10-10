@@ -9,11 +9,11 @@ namespace Spenses.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/members")]
-public class HomeMembersController : ControllerBase
+public class MembersController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public HomeMembersController(IMediator mediator)
+    public MembersController(IMediator mediator)
     {
         _mediator = mediator;
     }

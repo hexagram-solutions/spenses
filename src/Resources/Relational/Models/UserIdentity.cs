@@ -20,6 +20,10 @@ public class UserIdentity
 
     public ICollection<Credit> ModifiedCredits { get; set; } = new HashSet<Credit>();
 
+    public ICollection<ExpenseCategory> CreatedExpenseCategories { get; set; } = new HashSet<ExpenseCategory>();
+
+    public ICollection<ExpenseCategory> ModifiedExpenseCategories { get; set; } = new HashSet<ExpenseCategory>();
+
     public ICollection<Expense> CreatedExpenses { get; set; } = new HashSet<Expense>();
 
     public ICollection<Expense> ModifiedExpenses { get; set; } = new HashSet<Expense>();

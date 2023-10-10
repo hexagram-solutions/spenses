@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using Spenses.Application.Common.Serialization;
+using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Application.Models.Members;
 using Spenses.Application.Models.Users;
 
@@ -21,6 +22,14 @@ public abstract record ExpenseBase
     public string[] Tags { get; set; } = Array.Empty<string>();
 }
 
+public record ExpenseProperties : ExpenseBase
+{
+    [Required]
+    public Guid IncurredByMemberId { get; set; }
+
+    public Guid? CategoryId { get; set; }
+}
+
 public record Expense : ExpenseBase
 {
     [Required]
@@ -28,6 +37,8 @@ public record Expense : ExpenseBase
 
     [Required]
     public Member IncurredByMember { get; set; } = null!;
+
+    public ExpenseCategory? Category { get; set; }
 
     [Required]
     public User CreatedBy { get; set; } = null!;
@@ -40,10 +51,4 @@ public record Expense : ExpenseBase
 
     [Required]
     public DateTime ModifiedAt { get; set; }
-}
-
-public record ExpenseProperties : ExpenseBase
-{
-    [Required]
-    public Guid IncurredByMemberId { get; set; }
 }

@@ -17,6 +17,8 @@ public class CreditDigest
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
 
+    public string? Note { get; set; }
+
     [Required]
     [Orderable]
     public string PaidByMemberName { get; set; } = null!;

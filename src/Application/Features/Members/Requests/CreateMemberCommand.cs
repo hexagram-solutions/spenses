@@ -34,10 +34,7 @@ public class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, M
 
         var home = await _db.Homes
             .Include(h => h.Members)
-            .FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
-
-        if (home == null)
-            throw new ResourceNotFoundException(homeId);
+            .FirstAsync(h => h.Id == homeId, cancellationToken);
 
         var otherMembersSplitPercentageTotal = home.Members.Sum(m => m.SplitPercentage);
 

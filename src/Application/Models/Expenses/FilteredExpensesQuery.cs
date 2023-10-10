@@ -13,4 +13,7 @@ public record FilteredExpensesQuery : PagedQuery<ExpenseDigest>
 
     [Description("Tags to filter expenses by")]
     public string[]? Tags { get; set; }
+
+    [Description("Identifiers of categories to filter expenses by")]
+    public Guid[]? Categories { get; set; }
 }

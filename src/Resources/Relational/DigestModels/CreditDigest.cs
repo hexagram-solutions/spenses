@@ -21,6 +21,8 @@ public class CreditDigest
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
 
+    public string? Note { get; set; }
+
     [SourceColumn("pbm", nameof(Member.Name))]
     public string PaidByMemberName { get; set; } = null!;
 

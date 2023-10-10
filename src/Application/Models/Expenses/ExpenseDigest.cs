@@ -23,6 +23,11 @@ public class ExpenseDigest
     [Orderable]
     public string IncurredByMemberName { get; set; } = null!;
 
+    public Guid? CategoryId { get; set; }
+
+    [Orderable]
+    public string? CategoryName { get; set; }
+
     [Required]
     public string CreatedByUserName { get; set; } = null!;
 

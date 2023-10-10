@@ -7,16 +7,16 @@ using Spenses.Client.Http;
 namespace Spenses.Api.IntegrationTests.Controllers;
 
 [Collection(WebApplicationCollection.CollectionName)]
-public class HomeExpensesIntegrationTests
+public class ExpensesIntegrationTests
 {
     private readonly IHomesApi _homes;
-    private readonly IHomeExpensesApi _homeExpenses;
+    private readonly IExpensesApi _expenses;
 
-    public HomeExpensesIntegrationTests(WebApplicationFixture<Program> fixture)
+    public ExpensesIntegrationTests(WebApplicationFixture<Program> fixture)
     {
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
 
-        _homeExpenses = RestService.For<IHomeExpensesApi>(fixture.WebApplicationFactory.CreateClient(),
+        _expenses = RestService.For<IExpensesApi>(fixture.WebApplicationFactory.CreateClient(),
             new RefitSettings { CollectionFormat = CollectionFormat.Multi });
     }
 
@@ -34,7 +34,7 @@ public class HomeExpensesIntegrationTests
             IncurredByMemberId = home.Members.First().Id
         };
 
-        var createdExpenseResponse = await _homeExpenses.PostHomeExpense(home.Id, properties);
+        var createdExpenseResponse = await _expenses.PostExpense(home.Id, properties);
 
         createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -44,10 +44,10 @@ public class HomeExpensesIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedExpense = (await _homeExpenses.GetHomeExpense(home.Id, createdExpense!.Id)).Content;
+        var fetchedExpense = (await _expenses.GetExpense(home.Id, createdExpense!.Id)).Content;
         fetchedExpense.Should().BeEquivalentTo(createdExpense);
 
-        await _homeExpenses.DeleteHomeExpense(home.Id, createdExpense.Id);
+        await _expenses.DeleteExpense(home.Id, createdExpense.Id);
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public class HomeExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var result = await _homeExpenses.PostHomeExpense(home.Id, new ExpenseProperties());
+        var result = await _expenses.PostExpense(home.Id, new ExpenseProperties());
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -65,7 +65,7 @@ public class HomeExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var expense = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
             PageNumber = 1,
             PageSize = 10
@@ -80,7 +80,7 @@ public class HomeExpensesIntegrationTests
             IncurredByMemberId = home.Members.First().Id
         };
 
-        var updatedExpenseResponse = await _homeExpenses.PutHomeExpense(home.Id, expense.Id, properties);
+        var updatedExpenseResponse = await _expenses.PutExpense(home.Id, expense.Id, properties);
 
         updatedExpenseResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -90,7 +90,7 @@ public class HomeExpensesIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedExpense = (await _homeExpenses.GetHomeExpense(home.Id, updatedExpense!.Id)).Content;
+        var fetchedExpense = (await _expenses.GetExpense(home.Id, updatedExpense!.Id)).Content;
 
         fetchedExpense.Should().BeEquivalentTo(updatedExpense);
     }
@@ -100,7 +100,7 @@ public class HomeExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var expenses = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
             PageNumber = 1,
             PageSize = 25
@@ -110,7 +110,7 @@ public class HomeExpensesIntegrationTests
             .SelectMany(t => t.Tags?.Split(' ') ?? Array.Empty<string>())
             .Distinct();
 
-        var filterValues = (await _homeExpenses.GetExpenseFilters(home.Id)).Content!;
+        var filterValues = (await _expenses.GetExpenseFilters(home.Id)).Content!;
 
         filterValues.Tags.Should().BeEquivalentTo(distinctTags);
         filterValues.Tags.Should().BeInAscendingOrder();
@@ -123,7 +123,7 @@ public class HomeExpensesIntegrationTests
 
         var tags = new[] { "bills", "groceries" };
 
-        var expense = (await _homeExpenses.PostHomeExpense(home.Id, new ExpenseProperties
+        var expense = (await _expenses.PostExpense(home.Id, new ExpenseProperties
         {
             Description = "Foo",
             Amount = 1234.56m,
@@ -132,7 +132,7 @@ public class HomeExpensesIntegrationTests
             IncurredByMemberId = home.Members.First().Id
         })).Content!;
 
-        var expenses = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
             PageNumber = 1,
             PageSize = 25,
@@ -146,7 +146,7 @@ public class HomeExpensesIntegrationTests
             expenseTags.Should().BeEquivalentTo(tags);
         });
 
-        await _homeExpenses.DeleteHomeExpense(home.Id, expense.Id);
+        await _expenses.DeleteExpense(home.Id, expense.Id);
     }
 
     [Fact]
@@ -154,7 +154,7 @@ public class HomeExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var unfilteredExpenses = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        var unfilteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
             PageNumber = 1,
             PageSize = 100
@@ -166,7 +166,7 @@ public class HomeExpensesIntegrationTests
         var minDateFilterValue = earliestExpenseDate.AddDays(1);
         var maxDateFilterValue = latestExpenseDate.AddDays(-1);
 
-        var filteredExpenses = (await _homeExpenses.GetHomeExpenses(home.Id, new FilteredExpensesQuery
+        var filteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
             PageNumber = 1,
             PageSize = 100,
@@ -194,11 +194,11 @@ public class HomeExpensesIntegrationTests
             SortDirection = SortDirection.Asc
         };
 
-        var expenses = (await _homeExpenses.GetHomeExpenses(home.Id, query)).Content!.Items;
+        var expenses = (await _expenses.GetExpenses(home.Id, query)).Content!.Items;
 
         expenses.Should().BeInAscendingOrder(x => x.Amount);
 
-        expenses = (await _homeExpenses.GetHomeExpenses(home.Id, query with { SortDirection = SortDirection.Desc }))
+        expenses = (await _expenses.GetExpenses(home.Id, query with { SortDirection = SortDirection.Desc }))
             .Content!.Items;
 
         expenses.Should().BeInDescendingOrder(x => x.Amount);
