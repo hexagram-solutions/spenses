@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
@@ -17,8 +16,6 @@ using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Resources.Relational;
-using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api;
@@ -29,12 +26,10 @@ public static class ProgramExtensions
 
     public static ConfigurationManager BuildConfiguration(this ConfigurationManager configuration)
     {
-        configuration.SetKeyDelimiters(":", "_", "-", ".");
+        var environment = configuration.Require(ConfigConstants.AspNetCoreEnvironment);
 
-        var configurationEnvironment = configuration.Require(ConfigConstants.SpensesConfigurationEnvironment);
-
-        if (configurationEnvironment != EnvironmentNames.Local &&
-            configurationEnvironment != EnvironmentNames.IntegrationTest)
+        if (environment != EnvironmentNames.Local &&
+            environment != EnvironmentNames.IntegrationTest)
         {
             var appConfigurationConnectionString =
                 configuration.Require(ConfigConstants.SpensesAppConfigurationConnectionString);

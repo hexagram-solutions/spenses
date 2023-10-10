@@ -28,7 +28,11 @@ if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local))
 else
     builder.Services.AddApiClients(baseUrl, scopes);
 
-builder.Services.AddStateManagement(builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local));
+var isLocalOrDevelopmentEnvironment =
+    builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local) ||
+    builder.HostEnvironment.IsEnvironment(EnvironmentNames.Development);
+
+builder.Services.AddStateManagement(isLocalOrDevelopmentEnvironment);
 
 builder.Services.AddFluentUIComponents(options =>
 {
