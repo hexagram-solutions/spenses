@@ -1,17 +1,34 @@
 ﻿@using Spenses.Client.Web.Layouts
+@using Spenses.Client.Web.Components
+<CascadingAuthenticationState>
+  <Blazorise.ThemeProvider Theme="@_theme">
+    <Router AppAssembly="typeof(App).Assembly">
+      <Found Context="routeData">
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+          <Authorizing>
+            <p>Determining session state, please wait...</p>
+          </Authorizing>
+          <NotAuthorized>
+            @if (context.User.Identity?.IsAuthenticated != true)
+            {
+              <LoginRedirect/>
+            }
+            else
+            {
+              <p role="alert">You are not authorized to access this resource.</p>
+            }
+          </NotAuthorized>
+        </AuthorizeRouteView>
+      </Found>
+      <NotFound>
+        <p>Sorry, there's nothing at this address.</p>
+      </NotFound>
+    </Router>
+    <MessageProvider/>
+    <PageProgressProvider/>
+  </Blazorise.ThemeProvider>
 
-<Blazorise.ThemeProvider Theme="@_theme">
-  <Router AppAssembly="typeof(App).Assembly">
-    <Found Context="routeData">
-      <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)"/>
-    </Found>
-    <NotFound>
-      <p>Sorry, there's nothing at this address.</p>
-    </NotFound>
-  </Router>
-  <MessageProvider/>
-  <PageProgressProvider/>
-</Blazorise.ThemeProvider>
+</CascadingAuthenticationState>
 
 @code {
 

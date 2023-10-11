@@ -20,7 +20,7 @@ builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
 var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
-var scopes = new[] { "openid", "profile", "email" };
+var scopes = new[] { "openid", "profile", "email", "offline_access" };
 
 if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local))
     builder.Services.AddApiClients(baseUrl, scopes, TimeSpan.FromMilliseconds(500));
