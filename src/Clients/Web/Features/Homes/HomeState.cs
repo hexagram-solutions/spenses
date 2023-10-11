@@ -16,5 +16,6 @@ public partial class HomeState : State<HomeState>
 
     public override void Initialize()
     {
+        Homes = new List<Home>();
     }
 }

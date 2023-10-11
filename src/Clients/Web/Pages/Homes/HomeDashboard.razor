@@ -13,10 +13,6 @@
 else
 {
   <h1>@CurrentHome?.Name</h1>
-
-@*   <FluentDataGrid Id="manualGrid" Items=@CurrentHome?.Members.AsQueryable() GridTemplateColumns="1fr 1fr 1fr 2fr" TGridItem=Member>
-    <PropertyColumn Title="Name" Property="@(c => c!.Name)" Sortable="true" Align=Align.Start/>
-  </FluentDataGrid> *@
 }
 
 @code {

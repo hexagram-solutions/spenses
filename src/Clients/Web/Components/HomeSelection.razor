@@ -4,15 +4,28 @@
 
 @inject NavigationManager NavigationManager;
 
-@* <FluentSelect Id="homes-global-selection"
-              Appearance="Appearance.Stealth"
-              Multiple="false"
-              TOption="Home"
-              Items="HomeState.Homes"
-              OptionValue="@(home => home.Id.ToString())"
-              OptionText="@(home => home.Name)"
-              SelectedOption="CurrentHome"
-              SelectedOptionChanged="SelectHome"/> *@
+<BarItem>
+  <BarDropdown>
+    <BarDropdownToggle>@(CurrentHome?.Name ?? "Loading")</BarDropdownToggle>
+    <BarDropdownMenu>
+      @if (HomeState.HomesRequesting && CurrentHome is null)
+      {
+        <BarDropdownItem>
+          Loading...
+        </BarDropdownItem>
+      }
+      else
+      {
+        @foreach (var home in HomeState.Homes!)
+        {
+          <BarDropdownItem Clicked="() => SelectHome(home.Id)">
+            @home.Name
+          </BarDropdownItem>
+        }
+      }
+    </BarDropdownMenu>
+  </BarDropdown>
+</BarItem>
 
 @code
 {
@@ -25,8 +38,8 @@
     await Mediator.Send(new HomeState.HomesRequested());
   }
 
-  private void SelectHome(Home? selectedHome)
+  private async Task SelectHome(Guid homeId)
   {
-    NavigationManager.NavigateTo($"homes/{selectedHome!.Id}/dashboard");
+    await Mediator.Send(new HomeState.HomeSelected(homeId));
   }
 }
