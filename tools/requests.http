@@ -1,0 +1,19 @@
+@HOST=https://localhost:8081
+@ACCESS_TOKEN=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVCSHBVV1BCZmJfWGNDYXJzQXFUMCJ9.eyJlbWFpbCI6ImVyaWNzb25kZXJnYXJkK3NwZW5zZXN1c2VyQGZhc3RtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmlja25hbWUiOiJlcmljc29uZGVyZ2FyZCtzcGVuc2VzdXNlckBmYXN0bWFpbC5jb20iLCJpc3MiOiJodHRwczovL3NwZW5zZXMudXMuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDY0YWQ3YjllYzM1OWI1ZGM5ZDQ2N2E1YiIsImF1ZCI6WyJodHRwczovL3NwZW5zZXMtcGxhdGZvcm0iLCJodHRwczovL3NwZW5zZXMudXMuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTY5NzA0MDU1NSwiZXhwIjoxNjk3MTI2OTU1LCJhenAiOiJlNEptWUxINWdXRnFQblU5eGFxVVRxaGRhSXNiR1pDQiIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwifQ.AQAvzoRNpW2Kpo5eHb8nXaVcMkhyjBQHS8XLxg1NWmU8jGVdaMKWcmfwkp3fJ5_acLhIxqkHJnCbyZ9xWmRUeQXQ2_cGf4nswQNcoSrSe9IkOl0_xryGCfWRI5zPQ3CXMl0PQgFjbSs49WBSHigdORmWmc3IfuxABF2XcKG_p4X9Nj3o-WH51KIPg0ekaz5FJoFZlb5EaFTi654DDPZ_8v7mL8nBAl5OABgzrN2RdUxBqp0r9Vxsxt0gY46c609TIwyrS9Y2l9sxvkzsSMRb1kS8fzvhUGEy-1OecRgx-9n4UOsVjOQsnaRPk4oUglWj2XvAPSYSaci5tArplFpC0g
+
+###
+# @name homes
+GET {{HOST}}/homes
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+@homeId = {{homes.response.body.$[0].id}}
+
+###
+# @name expenses
+GET {{HOST}}/homes/{{homeId}}/expenses
+Authorization: Bearer {{ACCESS_TOKEN}}
+
+###
+# @name credits
+GET {{HOST}}/homes/{{homeId}}/credits
+Authorization: Bearer {{ACCESS_TOKEN}}
