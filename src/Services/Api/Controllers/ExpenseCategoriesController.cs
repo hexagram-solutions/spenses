@@ -74,9 +74,9 @@ public class ExpenseCategoriesController : ControllerBase
     public async Task<ActionResult<ExpenseCategory>> PutExpenseCategory(Guid homeId, Guid expenseCategoryId,
         ExpenseCategoryProperties props)
     {
-        var expenses = await _mediator.Send(new UpdateExpenseCategoryCommand(homeId, expenseCategoryId, props));
+        var category = await _mediator.Send(new UpdateExpenseCategoryCommand(homeId, expenseCategoryId, props));
 
-        return Ok(expenses);
+        return Ok(category);
     }
 
     /// <summary>

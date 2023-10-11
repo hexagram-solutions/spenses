@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Resources.Relational;
@@ -31,11 +32,14 @@ public class UpdateExpenseCategoryCommandHandler : IRequestHandler<UpdateExpense
     {
         var (homeId, categoryId, props) = request;
 
-        var expense = await _db.ExpenseCategories
+        var category = await _db.ExpenseCategories
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == categoryId, cancellationToken);
 
-        _mapper.Map(props, expense);
+        if (category is null)
+            throw new ResourceNotFoundException(categoryId);
+
+        _mapper.Map(props, category);
 
         await _db.SaveChangesAsync(cancellationToken);
 

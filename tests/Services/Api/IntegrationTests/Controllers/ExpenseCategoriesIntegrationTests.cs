@@ -24,7 +24,7 @@ public class ExpenseCategoriesIntegrationTests
 
         var properties = new ExpenseCategoryProperties
         {
-            Name = "Gubbins",
+            Name = $"Gubbins_{Guid.NewGuid()}",
             Description = "Provisions for the coming war"
         };
 
@@ -53,21 +53,21 @@ public class ExpenseCategoriesIntegrationTests
 
         var properties = new ExpenseCategoryProperties
         {
-            Name = "Gubbins",
+            Name = $"Gubbins_{Guid.NewGuid()}",
             Description = "Provisions for the coming war"
         };
 
-        var createdCategoryResponse = await _categories.PutExpenseCategory(home.Id, category.Id, properties);
+        var updatedCategoryResponse = await _categories.PutExpenseCategory(home.Id, category.Id, properties);
 
-        createdCategoryResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        updatedCategoryResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var createdCategory = createdCategoryResponse.Content;
+        var updatedCategory = updatedCategoryResponse.Content;
 
-        createdCategory.Should().BeEquivalentTo(properties, opts =>
+        updatedCategory.Should().BeEquivalentTo(properties, opts =>
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var members = (await _categories.GetExpenseCategories(home.Id)).Content;
-        members.Should().ContainEquivalentOf(createdCategory);
+        var fetchedCategory = (await _categories.GetExpenseCategory(home.Id, updatedCategory!.Id)).Content;
+        fetchedCategory.Should().BeEquivalentTo(updatedCategory);
     }
 }
