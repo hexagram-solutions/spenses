@@ -1,4 +1,6 @@
 using System.Reflection;
+using Blazorise.Icons.FontAwesome;
+using Blazorise.Tailwind;
 using BlazorState;
 using Hexagrams.Extensions.Authentication.OAuth;
 using Hexagrams.Extensions.Common.Http;
@@ -70,6 +72,17 @@ public static class ProgramExtensions
 
             options.Assemblies = new[] { typeof(Program).GetTypeInfo().Assembly };
         });
+
+        return services;
+    }
+
+    public static IServiceCollection AddBlazoriseComponents(this IServiceCollection services)
+    {
+        services
+            .AddBlazorise();
+        services
+            .AddTailwindProviders()
+            .AddFontAwesomeIcons();
 
         return services;
     }

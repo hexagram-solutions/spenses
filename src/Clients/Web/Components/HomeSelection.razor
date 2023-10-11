@@ -1,11 +1,10 @@
 ﻿@using Spenses.Client.Web.Features.Homes
-@using Spenses.Application.Models
 @using Spenses.Application.Models.Homes
 @inherits BlazorState.BlazorStateComponent
 
 @inject NavigationManager NavigationManager;
 
-<FluentSelect Id="homes-global-selection"
+@* <FluentSelect Id="homes-global-selection"
               Appearance="Appearance.Stealth"
               Multiple="false"
               TOption="Home"
@@ -13,7 +12,7 @@
               OptionValue="@(home => home.Id.ToString())"
               OptionText="@(home => home.Name)"
               SelectedOption="CurrentHome"
-              SelectedOptionChanged="SelectHome"/>
+              SelectedOptionChanged="SelectHome"/> *@
 
 @code
 {
