@@ -52,7 +52,8 @@ public class ExpensesController : ControllerBase
             SortDirection = query.SortDirection,
             MinDate = query.MinDate,
             MaxDate = query.MaxDate,
-            Tags = query.Tags
+            Tags = query.Tags,
+            Categories = query.Categories,
         });
 
         return Ok(expenses);

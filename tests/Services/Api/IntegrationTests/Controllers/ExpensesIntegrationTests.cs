@@ -11,12 +11,16 @@ public class ExpensesIntegrationTests
 {
     private readonly IHomesApi _homes;
     private readonly IExpensesApi _expenses;
+    private readonly IExpenseCategoriesApi _expenseCategories;
 
     public ExpensesIntegrationTests(WebApplicationFixture<Program> fixture)
     {
         _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
 
         _expenses = RestService.For<IExpensesApi>(fixture.WebApplicationFactory.CreateClient(),
+            new RefitSettings { CollectionFormat = CollectionFormat.Multi });
+
+        _expenseCategories = RestService.For<IExpenseCategoriesApi>(fixture.WebApplicationFactory.CreateClient(),
             new RefitSettings { CollectionFormat = CollectionFormat.Multi });
     }
 
@@ -110,10 +114,15 @@ public class ExpensesIntegrationTests
             .SelectMany(t => t.Tags?.Split(' ') ?? Array.Empty<string>())
             .Distinct();
 
+        var categories = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!;
+
         var filterValues = (await _expenses.GetExpenseFilters(home.Id)).Content!;
 
         filterValues.Tags.Should().BeEquivalentTo(distinctTags);
         filterValues.Tags.Should().BeInAscendingOrder();
+
+        filterValues.Categories.Should().BeEquivalentTo(categories.ToDictionary(k => k.Id, v => v.Name));
+        filterValues.Categories.Values.Should().BeInAscendingOrder();
     }
 
     [Fact]
@@ -178,6 +187,33 @@ public class ExpensesIntegrationTests
         {
             e.Date.Should().BeOnOrAfter(minDateFilterValue)
                 .And.BeOnOrBefore(maxDateFilterValue);
+        });
+    }
+
+    [Fact]
+    public async Task Get_expenses_with_category_filters_yields_expenses_in_category()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        {
+            PageNumber = 1,
+            PageSize = 100
+        })).Content!.Items;
+
+        var expense = expenses.First(e => e.CategoryId != null);
+
+        var filteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        {
+            PageNumber = 1,
+            PageSize = 100,
+            Categories = new[] { expense.CategoryId.GetValueOrDefault() }
+        })).Content!.Items.ToList();
+
+        filteredExpenses.Should().AllSatisfy(e =>
+        {
+            e.CategoryId.Should().Be(expense.CategoryId);
+            e.CategoryName.Should().Be(expense.CategoryName);
         });
     }
 

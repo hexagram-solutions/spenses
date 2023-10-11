@@ -56,7 +56,7 @@ public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, PagedResult<E
         }
 
         if (request.Categories?.Any() == true)
-            query = query.Where(e => request.Categories.Contains(e.CategoryId.GetValueOrDefault()));
+            query = query.Where(e => e.CategoryId.HasValue && request.Categories.Contains(e.CategoryId.Value));
 
         var totalCount = await query.CountAsync(cancellationToken);
 
