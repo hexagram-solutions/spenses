@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Resources.Relational.Infrastructure;
 
@@ -10,7 +11,8 @@ public static class ServiceCollectionExtensions
         string connectionString)
     {
         services.AddDbContext<ApplicationDbContext>(opts =>
-            opts.UseSqlServer(connectionString));
+            opts.UseSqlServer(connectionString,
+                sqlOpts => sqlOpts.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
         services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 

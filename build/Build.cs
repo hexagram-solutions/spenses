@@ -4,7 +4,6 @@ using Hexagrams.Extensions.Common.Serialization;
 using Hexagrams.Nuke.Components;
 using Nuke.Common;
 using Nuke.Common.CI;
-using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
@@ -41,9 +40,6 @@ partial class Build : NukeBuild,
     [Solution]
     readonly Solution Solution;
     Solution IHasSolution.Solution => Solution;
-
-    [CI]
-    readonly GitHubActions GitHubActions;
 
     [Required]
     [GitRepository]

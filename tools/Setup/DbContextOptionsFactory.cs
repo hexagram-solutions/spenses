@@ -30,7 +30,7 @@ public class DbContextOptionsFactory
 
         return new DbContextOptionsBuilder<ApplicationDbContext>()
             .LogTo(Console.WriteLine, LogLevel.Warning)
-            .UseSqlServer(connection)
+            .UseSqlServer(connection, sqlOpts => sqlOpts.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
             .Options;
     }
 }
