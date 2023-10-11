@@ -1,0 +1,11 @@
+﻿@using Spenses.Client.Web.Components
+@inherits LayoutComponentBase
+@attribute [AllowAnonymous]
+  <AuthorizeView>
+    <Authorized>
+        @Body
+    </Authorized>
+    <NotAuthorized>
+      <LoginRedirect/>
+    </NotAuthorized>
+  </AuthorizeView>

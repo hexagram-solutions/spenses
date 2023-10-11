@@ -2,12 +2,9 @@
 @using Spenses.Client.Web.Components
 <CascadingAuthenticationState>
   <Blazorise.ThemeProvider Theme="@_theme">
-    <Router AppAssembly="typeof(App).Assembly">
+    <Router AppAssembly="@typeof(App).Assembly">
       <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-          <Authorizing>
-            <p>Determining session state, please wait...</p>
-          </Authorizing>
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
           <NotAuthorized>
             @if (context.User.Identity?.IsAuthenticated != true)
             {
@@ -21,13 +18,15 @@
         </AuthorizeRouteView>
       </Found>
       <NotFound>
-        <p>Sorry, there's nothing at this address.</p>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+          <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
       </NotFound>
     </Router>
     <MessageProvider/>
     <PageProgressProvider/>
   </Blazorise.ThemeProvider>
-
 </CascadingAuthenticationState>
 
 @code {
