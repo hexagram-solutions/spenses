@@ -1,0 +1,24 @@
+﻿@page "/homes/{homeId:guid}/settings"
+@using Spenses.Client.Web.Layouts
+@using Spenses.Client.Web.Features.Homes
+
+@layout HomeLayout
+
+@inherits BlazorState.BlazorStateComponent
+
+<h3>Settings</h3>
+
+<iframe style="overflow: hidden; width: 100%;" height="720" src="https://www.youtube.com/embed/yNxPVj0hejg?si=pGCFIKb45vItwkPx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+@code {
+
+  [Parameter]
+  public Guid HomeId { get; set; }
+
+  HomeState HomeState => GetState<HomeState>();
+
+  protected override async Task OnParametersSetAsync()
+  {
+    await Mediator.Send(new HomeState.HomeSelected(HomeId));
+  }
+}

@@ -1,5 +1,5 @@
 using BlazorState;
-using MediatR;
+using Microsoft.AspNetCore.Components;
 using Spenses.Client.Http;
 
 namespace Spenses.Client.Web.Features.Homes;
@@ -13,12 +13,13 @@ public partial class HomeState
     public class HomesRequestedHandler : ActionHandler<HomesRequested>
     {
         private readonly IHomesApi _homes;
-        private readonly IMediator _mediator;
+        private readonly NavigationManager _navigationManager;
 
-        public HomesRequestedHandler(IStore aStore, IHomesApi homes, IMediator mediator) : base(aStore)
+        public HomesRequestedHandler(IStore aStore, IHomesApi homes, NavigationManager navigationManager)
+            : base(aStore)
         {
             _homes = homes;
-            _mediator = mediator;
+            _navigationManager = navigationManager;
         }
 
         private HomeState HomeState => Store.GetState<HomeState>();
@@ -32,10 +33,9 @@ public partial class HomeState
             HomeState.Homes = homes;
 
             HomeState.HomesRequesting = false;
-
-            // TODO: Some kind of saga
+            
             if (HomeState.CurrentHome is null)
-                await _mediator.Send(new HomeSelected(homes.First().Id), aCancellationToken);
+                _navigationManager.NavigateTo($"/homes/{homes.First().Id}/dashboard");
         }
     }
 }

@@ -1,0 +1,23 @@
+﻿@page "/homes/{homeId:guid}/dashboard"
+@using Spenses.Client.Web.Features.Homes
+@using Spenses.Client.Web.Layouts
+
+@inherits BlazorState.BlazorStateComponent
+
+@layout HomeLayout
+
+<h3>Dashboard: @(HomeState.CurrentHome?.Name ?? "Loading...")</h3>
+
+
+@code {
+
+    [Parameter]
+    public Guid HomeId { get; set; }
+
+    HomeState HomeState => GetState<HomeState>();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Mediator.Send(new HomeState.HomeSelected(HomeId));
+    }
+}

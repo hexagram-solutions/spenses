@@ -18,8 +18,8 @@
       {
         @foreach (var home in HomeState.Homes!)
         {
-          <BarDropdownItem Clicked="() => SelectHome(home.Id)">
-            @home.Name
+          <BarDropdownItem>
+            <Blazorise.Link To="@($"homes/{home.Id}/dashboard")">@home.Name</Blazorise.Link>
           </BarDropdownItem>
         }
       }

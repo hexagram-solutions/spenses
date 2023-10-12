@@ -1,5 +1,4 @@
 using BlazorState;
-using Microsoft.AspNetCore.Components;
 using Spenses.Client.Http;
 
 namespace Spenses.Client.Web.Features.Homes;
@@ -11,13 +10,11 @@ public partial class HomeState
     public class HomeSelectedHandler : ActionHandler<HomeSelected>
     {
         private readonly IHomesApi _homes;
-        private readonly NavigationManager _navigationManager;
 
-        public HomeSelectedHandler(IStore store, IHomesApi homes, NavigationManager navigationManager)
+        public HomeSelectedHandler(IStore store, IHomesApi homes)
             : base(store)
         {
             _homes = homes;
-            _navigationManager = navigationManager;
         }
 
         private HomeState HomeState => Store.GetState<HomeState>();
@@ -34,8 +31,6 @@ public partial class HomeState
             HomeState.CurrentHome = home.Content;
 
             HomeState.HomeRequesting = false;
-
-            _navigationManager.NavigateTo($"/homes/{aAction.HomeId}/dashboard");
         }
     }
 }

@@ -1,22 +1,9 @@
 ﻿@using Spenses.Client.Web.Components.Layout
 @inherits LayoutComponentBase
+
 <Layout>
   <LayoutHeader Fixed>
-    <TopMenu ThemeEnabledChanged="@OnThemeEnabledChanged"
-             ThemeGradientChanged="@OnThemeGradientChanged"
-             ThemeRoundedChanged="@OnThemeRoundedChanged"
-             ThemeColorChanged="@OnThemeColorChanged"/>
+    <TopMenu />
   </LayoutHeader>
-  <Layout Sider>
-    <LayoutSider>
-      <LayoutSiderContent>
-        <SideMenu/>
-      </LayoutSiderContent>
-    </LayoutSider>
-    <Layout>
-      <LayoutContent Padding="Padding.Is4.OnX.Is4.FromTop">
-        @Body
-      </LayoutContent>
-    </Layout>
-  </Layout>
+  @Body
 </Layout>
