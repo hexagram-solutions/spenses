@@ -1,10 +1,13 @@
 using System.Reflection;
+using Blazorise.FluentValidation;
 using Blazorise.Icons.FontAwesome;
 using Blazorise.Tailwind;
 using BlazorState;
+using FluentValidation;
 using Hexagrams.Extensions.Authentication.OAuth;
 using Hexagrams.Extensions.Common.Http;
 using Refit;
+using Spenses.Application.Features.Homes.Validators;
 using Spenses.Client.Http;
 using Spenses.Client.Web.Infrastructure;
 using IAccessTokenProvider = Hexagrams.Extensions.Authentication.OAuth.IAccessTokenProvider;
@@ -79,10 +82,13 @@ public static class ProgramExtensions
     public static IServiceCollection AddBlazoriseComponents(this IServiceCollection services)
     {
         services
-            .AddBlazorise();
-        services
+            .AddBlazorise()
             .AddTailwindProviders()
-            .AddFontAwesomeIcons();
+            .AddFontAwesomeIcons()
+            .AddBlazoriseFluentValidation();
+
+        // todo: is there a better hood for this?
+        services.AddValidatorsFromAssemblyContaining<HomePropertiesValidator>();
 
         return services;
     }
