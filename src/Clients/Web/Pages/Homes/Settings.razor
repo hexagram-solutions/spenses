@@ -1,11 +1,9 @@
 ﻿@page "/homes/{homeId:guid}/settings"
-
-@layout HomeLayout
-@using Spenses.Client.Web.Features.Homes
 @using Spenses.Client.Web.Layouts
-@using Spenses.Application.Models.Homes
 @using Blazorise.FluentValidation
 @inherits BlazorState.BlazorStateComponent
+
+@layout HomeLayout
 
 <h3>@(HomeState.CurrentHome!.Name): Settings</h3>
 
@@ -16,11 +14,11 @@
         <CardTitle>Basic Settings</CardTitle>
       </CardHeader>
       <CardBody>
-        <Validations @ref="@_validations" Mode="ValidationMode.Manual" Model="@Props" HandlerType="typeof(FluentValidationHandler)">
+        <Validations @ref="@Validations" Mode="ValidationMode.Manual" Model="@Props" HandlerType="typeof(FluentValidationHandler)">
           <Validation>
             <Field>
               <FieldLabel>Name</FieldLabel>
-                            <TextEdit @bind-Text="@Props.Name" Placeholder="Enter the name of this home">
+              <TextEdit @bind-Text="@Props.Name" Placeholder="Enter the name of this home">
                 <Feedback>
                   <ValidationError/>
                 </Feedback>
@@ -30,7 +28,7 @@
           <Validation>
             <Field>
               <FieldLabel>Description</FieldLabel>
-                            <TextEdit @bind-Text="@Props.Description" Placeholder="An optional description of this home.">
+              <TextEdit @bind-Text="@Props.Description" Placeholder="An optional description of this home.">
 
                 <Feedback>
                   <ValidationError/>
@@ -44,47 +42,3 @@
     </Card>
   </Column>
 </Row>
-
-@code {
-
-    [Parameter]
-    public Guid HomeId { get; set; }
-
-    HomeState HomeState => GetState<HomeState>();
-
-    protected override Task OnInitializedAsync()
-    {
-      // Props = new HomeProperties
-      // {
-      //   Name = HomeState.CurrentHome.Description,
-      //   Description = HomeState.CurrentHome.Description
-      // };
-
-      var currentHome = HomeState.CurrentHome;
-
-      // todo: don't like this, have to create new models because the blazorise validator uses .gettype under the hood
-      Props = new HomeProperties
-      {
-        Name = currentHome.Name,
-        Description = currentHome.Description,
-        ExpensePeriod = currentHome.ExpensePeriod
-      };
-
-      var t = Props.GetType();
-
-    return base.OnInitializedAsync();
-  }
-
-  Validations _validations;
-
-  HomeProperties Props { get; set; } = new();
-
-  async Task Save()
-  {
-    if (!await _validations.ValidateAll())
-      return;
-
-    await Mediator.Send(new HomeState.HomeUpdated(HomeId, Props));
-  }
-
-}
