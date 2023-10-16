@@ -33,7 +33,7 @@ if (app.Environment.IsEnvironment(EnvironmentNames.Local) ||
     app.Environment.IsEnvironment(EnvironmentNames.IntegrationTest) ||
     app.Environment.IsEnvironment(EnvironmentNames.Development))
 {
-    app.UseDeveloperExceptionPage();
+    app.UseExceptionHandler("/error-development");
     app.UseHttpLogging();
 
     IdentityModelEventSource.ShowPII = true;
