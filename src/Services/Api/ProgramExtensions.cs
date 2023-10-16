@@ -42,6 +42,10 @@ public static class ProgramExtensions
                         refresh.Register(ConfigConstants.SpensesAppConfigurationSentinel, true));
             });
         }
+        else
+        {
+            configuration.AddUserSecrets<Program>();
+        }
 
         configuration.SetKeyDelimiters(":", "_", "-", ".");
 

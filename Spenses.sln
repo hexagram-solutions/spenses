@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Client.Web", "src\C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Utilities", "Utilities", "{15A0C0E8-62F2-4234-915D-942C4F5BB9B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Utilities.Security", "src\Utilities\Security\Spenses.Utilities.Security.csproj", "{9B132DC2-65E1-4000-8841-682BAEB9B17C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Utilities.Security", "src\Utilities\Security\Spenses.Utilities.Security.csproj", "{9B132DC2-65E1-4000-8841-682BAEB9B17C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

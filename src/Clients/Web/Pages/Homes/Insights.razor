@@ -1,0 +1,23 @@
+﻿@page "/homes/{homeId:guid}/insights"
+@using Spenses.Client.Web.Layouts
+@using Spenses.Client.Web.Features.Homes
+
+@inherits BlazorState.BlazorStateComponent
+@layout HomeLayout
+
+<h3>Insights</h3>
+
+<iframe style="overflow: hidden; width: 100%;" height="720" src="https://www.youtube.com/embed/MHWBEK8w_YY?si=E5mpyP5USuKCYHYq" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+@code {
+
+  [Parameter]
+  public Guid HomeId { get; set; }
+
+  HomeState HomeState => GetState<HomeState>();
+
+  protected override async Task OnParametersSetAsync()
+  {
+    await Mediator.Send(new HomeState.HomeSelected(HomeId));
+  }
+}

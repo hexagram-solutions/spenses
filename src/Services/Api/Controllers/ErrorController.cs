@@ -8,12 +8,13 @@ namespace Spenses.Api.Controllers;
 [ApiExplorerSettings(IgnoreApi = true)]
 public class ErrorController : ControllerBase
 {
-    [Route("/error-local-development")]
+    [Route("/error-development")]
     public IActionResult ErrorLocalDevelopment(
         [FromServices] IWebHostEnvironment webHostEnvironment)
     {
-        if (!webHostEnvironment.IsEnvironment(EnvironmentNames.Local) ||
-            webHostEnvironment.IsEnvironment(EnvironmentNames.IntegrationTest))
+        if (webHostEnvironment.IsEnvironment(EnvironmentNames.Local) ||
+            webHostEnvironment.IsEnvironment(EnvironmentNames.IntegrationTest) ||
+            webHostEnvironment.IsEnvironment(EnvironmentNames.Development))
         {
             throw new InvalidOperationException(
                 "This shouldn't be invoked in non-local or non-test environments.");

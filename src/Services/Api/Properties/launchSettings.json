@@ -17,7 +17,9 @@
         "ASPNETCORE_ENVIRONMENT": "Local"
       },
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "httpPort": 8080,
+      "sslPort": 8081
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"

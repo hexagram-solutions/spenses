@@ -1,7 +1,6 @@
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Fast.Components.FluentUI;
 using Spenses.Application.Common;
 using Spenses.Client.Web;
 
@@ -21,7 +20,7 @@ builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 
 var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
-var scopes = new[] { "openid", "profile", "email" };
+var scopes = new[] { "openid", "profile", "email", "offline_access" };
 
 if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local))
     builder.Services.AddApiClients(baseUrl, scopes, TimeSpan.FromMilliseconds(500));
@@ -34,9 +33,6 @@ var isLocalOrDevelopmentEnvironment =
 
 builder.Services.AddStateManagement(isLocalOrDevelopmentEnvironment);
 
-builder.Services.AddFluentUIComponents(options =>
-{
-    options.HostingModel = BlazorHostingModel.WebAssembly;
-});
+builder.Services.AddBlazoriseComponents();
 
 await builder.Build().RunAsync();
