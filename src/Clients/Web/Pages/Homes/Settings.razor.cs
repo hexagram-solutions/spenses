@@ -14,28 +14,13 @@ public partial class Settings : BlazorStateComponent
 
     private Validations Validations { get; set; } = new();
 
-    private HomeProperties Props { get; set; } = new();
-
-    protected override Task OnInitializedAsync()
-    {
-        var currentHome = HomeState.CurrentHome;
-
-        // todo: don't like this, have to create new models because the blazorise validator uses .GetType() under the hood
-        Props = new HomeProperties
-        {
-            Name = currentHome.Name,
-            Description = currentHome.Description,
-            ExpensePeriod = currentHome.ExpensePeriod
-        };
-
-        return base.OnInitializedAsync();
-    }
+    private Home Home => HomeState.CurrentHome!;
 
     private async Task Save()
     {
         if (!await Validations.ValidateAll())
             return;
 
-        await Mediator.Send(new HomeState.HomeUpdated(HomeId, Props));
+        await Mediator.Send(new HomeState.HomeUpdated(HomeId, Home));
     }
 }

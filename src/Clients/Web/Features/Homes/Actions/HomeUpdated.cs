@@ -24,9 +24,6 @@ public partial class HomeState
         {
             var updated = await _homes.PutHome(aAction.HomeId, aAction.Props);
 
-            if (updated.Error is not null)
-                throw new NotImplementedException(); // todo: error state
-
             HomeState.CurrentHome = updated.Content;
         }
     }

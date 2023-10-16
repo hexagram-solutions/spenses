@@ -33,7 +33,7 @@ public partial class HomeState
             HomeState.Homes = homes;
 
             HomeState.HomesRequesting = false;
-            
+
             if (HomeState.CurrentHome is null)
                 _navigationManager.NavigateTo($"/homes/{homes.First().Id}/dashboard");
         }

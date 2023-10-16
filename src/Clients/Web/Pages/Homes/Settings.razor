@@ -5,7 +5,7 @@
 
 @layout HomeLayout
 
-<h3>@(HomeState.CurrentHome!.Name): Settings</h3>
+<h3>@(Home.Name): Settings</h3>
 
 <Row>
   <Column ColumnSize="ColumnSize.Is6.OnDesktop">
@@ -14,11 +14,11 @@
         <CardTitle>Basic Settings</CardTitle>
       </CardHeader>
       <CardBody>
-        <Validations @ref="@Validations" Mode="ValidationMode.Manual" Model="@Props" HandlerType="typeof(FluentValidationHandler)">
+        <Validations @ref="@Validations" Mode="ValidationMode.Manual" Model="@Home" HandlerType="typeof(FluentValidationHandler)">
           <Validation>
             <Field>
               <FieldLabel>Name</FieldLabel>
-              <TextEdit @bind-Text="@Props.Name" Placeholder="Enter the name of this home">
+              <TextEdit @bind-Text="@Home.Name" Placeholder="Enter the name of this home">
                 <Feedback>
                   <ValidationError/>
                 </Feedback>
@@ -28,8 +28,7 @@
           <Validation>
             <Field>
               <FieldLabel>Description</FieldLabel>
-              <TextEdit @bind-Text="@Props.Description" Placeholder="An optional description of this home.">
-
+              <TextEdit @bind-Text="@Home.Description" Placeholder="An optional description of this home.">
                 <Feedback>
                   <ValidationError/>
                 </Feedback>
