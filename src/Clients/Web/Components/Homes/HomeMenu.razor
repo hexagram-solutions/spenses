@@ -35,7 +35,7 @@
 
 @code
 {
-  [Inject] public IModalService ModalService { get; set; }
+  [Inject] public IModalService? ModalService { get; set; }
 
   HomeState HomeState => GetState<HomeState>();
 
@@ -48,6 +48,6 @@
 
   private  Task ShowCreateHomeModal()
   {
-    return ModalService.Show<CreateHomeModal>();
+    return ModalService!.Show<CreateHomeModal>();
   }
 }
