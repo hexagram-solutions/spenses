@@ -1,0 +1,53 @@
+﻿@using Spenses.Client.Web.Features.Homes
+@using Spenses.Application.Models.Homes
+@using Spenses.Client.Web.Components.Homes
+@inherits BlazorState.BlazorStateComponent
+
+<BarItem>
+  <BarDropdown>
+    <BarDropdownToggle>@(CurrentHome?.Name ?? "Select a home")</BarDropdownToggle>
+    <BarDropdownMenu>
+      @if (HomeState.HomesRequesting && CurrentHome is null)
+      {
+        <BarDropdownItem>
+          Loading...
+        </BarDropdownItem>
+      }
+      else
+      {
+        @foreach (var home in HomeState.Homes!)
+        {
+          <BarDropdownItem>
+            <BarLink To="@($"homes/{home.Id}/dashboard")">
+              @home.Name
+            </BarLink>
+          </BarDropdownItem>
+        }
+      }
+      <BarDropdownDivider />
+      <BarDropdownItem Clicked="ShowCreateHomeModal">
+        <BarIcon IconName="IconName.PlusCircle" />
+        Create home
+      </BarDropdownItem>
+    </BarDropdownMenu>
+  </BarDropdown>
+</BarItem>
+
+@code
+{
+  [Inject] public IModalService ModalService { get; set; }
+
+  HomeState HomeState => GetState<HomeState>();
+
+  private Home? CurrentHome => HomeState.CurrentHome;
+
+  protected override Task OnInitializedAsync()
+  {
+    return Mediator.Send(new HomeState.HomesRequested());
+  }
+
+  private  Task ShowCreateHomeModal()
+  {
+    return ModalService.Show<CreateHomeModal>();
+  }
+}
