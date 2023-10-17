@@ -31,7 +31,7 @@ app.UseHttpLogging();
 
 if (app.Environment.IsEnvironment(EnvironmentNames.Local) ||
     app.Environment.IsEnvironment(EnvironmentNames.IntegrationTest) ||
-    app.Environment.IsEnvironment(EnvironmentNames.Development))
+    app.Environment.IsEnvironment(EnvironmentNames.Test))
 {
     app.UseExceptionHandler("/error-development");
     app.UseHttpLogging();

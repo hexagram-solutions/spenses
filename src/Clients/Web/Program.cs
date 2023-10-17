@@ -27,11 +27,11 @@ if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local))
 else
     builder.Services.AddApiClients(baseUrl, scopes);
 
-var isLocalOrDevelopmentEnvironment =
+var isLocalOrTestEnvironment =
     builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local) ||
-    builder.HostEnvironment.IsEnvironment(EnvironmentNames.Development);
+    builder.HostEnvironment.IsEnvironment(EnvironmentNames.Test);
 
-builder.Services.AddStateManagement(isLocalOrDevelopmentEnvironment);
+builder.Services.AddStateManagement(isLocalOrTestEnvironment);
 
 builder.Services.AddBlazoriseComponents();
 
