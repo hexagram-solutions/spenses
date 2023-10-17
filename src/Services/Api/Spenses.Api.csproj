@@ -7,8 +7,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
     <UserSecretsId>a44855bf-a2bc-4ec3-bf4e-79d40a70e851</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..\..</DockerfileContext>
+    <ContainerRepository>spenses-api</ContainerRepository>
   </PropertyGroup>
 
   <ItemGroup>
