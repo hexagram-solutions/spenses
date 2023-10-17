@@ -1,4 +1,6 @@
 using BlazorState;
+using BlazorState.Features.Routing;
+using MediatR;
 using Spenses.Client.Http;
 
 namespace Spenses.Client.Web.Features.Homes;
@@ -10,11 +12,13 @@ public partial class HomeState
     public class HomeSelectedHandler : ActionHandler<HomeSelected>
     {
         private readonly IHomesApi _homes;
+        private readonly IMediator _mediator;
 
-        public HomeSelectedHandler(IStore store, IHomesApi homes)
+        public HomeSelectedHandler(IStore store, IHomesApi homes, IMediator mediator)
             : base(store)
         {
             _homes = homes;
+            _mediator = mediator;
         }
 
         private HomeState HomeState => Store.GetState<HomeState>();
