@@ -46,7 +46,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             var home = await db.Homes
                 .Include(h => h.Members)
                 .Include(h => h.Expenses)
-                .Include(h => h.Credits)
+                .Include(h => h.Payments)
                 .SingleAsync();
 
             var today = DateOnly.FromDateTime(DateTime.Today);
@@ -55,20 +55,20 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             var balanceBreakdown = await handler.Handle(query, CancellationToken.None);
 
             var allExpensesSum = home.Expenses.Sum(e => e.Amount);
-            var allCreditsSum = home.Credits.Sum(c => c.Amount);
+            var allPaymentsSum = home.Payments.Sum(c => c.Amount);
 
             balanceBreakdown.TotalExpenses.Should().Be(allExpensesSum);
-            balanceBreakdown.TotalCredits.Should().Be(allCreditsSum);
-            balanceBreakdown.TotalBalance.Should().Be(allExpensesSum - allCreditsSum);
+            balanceBreakdown.TotalPayments.Should().Be(allPaymentsSum);
+            balanceBreakdown.TotalBalance.Should().Be(allExpensesSum - allPaymentsSum);
 
             foreach (var memberBalance in balanceBreakdown.MemberBalances)
             {
                 var dbMember = home.Members.Single(m => m.Id == memberBalance.OwedByMember.Id);
-                var memberPaid = dbMember.Credits.Sum(c => c.Amount);
+                var memberPaid = dbMember.Payments.Sum(c => c.Amount);
 
                 memberBalance.TotalPaid.Should().Be(memberPaid);
 
-                var expectedMemberOwed = allExpensesSum * new decimal(memberBalance.OwedByMember.SplitPercentage);
+                var expectedMemberOwed = allExpensesSum * new decimal(memberBalance.OwedByMember.DefaultSplitPercentage);
 
                 memberBalance.TotalOwed.Should().BeApproximately(expectedMemberOwed, 0.01m);
             }
@@ -103,13 +103,13 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             new DbModels.Member
             {
                 Name = "Hingle McCringleberry",
-                SplitPercentage = 0.33,
+                DefaultSplitPercentage = 0.33,
                 HomeId = homeEntry.Entity.Id
             },
             new DbModels.Member
             {
                 Name = "Grunky Peep",
-                SplitPercentage = 0.66,
+                DefaultSplitPercentage = 0.66,
                 HomeId = homeEntry.Entity.Id
             });
 
@@ -123,11 +123,11 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                 {
                     Date = today,
                     Amount = 100.00m,
-                    IncurredByMemberId = member.Id,
+                    PaidByMemberId = member.Id,
                     HomeId = homeEntry.Entity.Id
                 });
 
-                await db.Credits.AddAsync(new DbModels.Credit
+                await db.Payments.AddAsync(new DbModels.Payment
                 {
                     Date = today,
                     Amount = 50.00m,

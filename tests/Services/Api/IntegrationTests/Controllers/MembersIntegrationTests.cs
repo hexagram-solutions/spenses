@@ -25,7 +25,7 @@ public class MembersIntegrationTests
         var properties = new MemberProperties
         {
             Name = "Bob",
-            SplitPercentage = 0.0,
+            DefaultSplitPercentage = 0.0,
             ContactEmail = "bob@example.com"
         };
 
@@ -65,7 +65,7 @@ public class MembersIntegrationTests
         var properties = new MemberProperties
         {
             Name = "Grunky Peep",
-            SplitPercentage = 0.0,
+            DefaultSplitPercentage = 0.0,
             ContactEmail = "grunky.peep@georgiasouthern.edu"
         };
 

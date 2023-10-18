@@ -89,12 +89,12 @@ public class HomesController : ControllerBase
     }
 
     /// <summary>
-    /// Fetch a summary of expenses and credits for the home.
+    /// Fetch a summary of expenses and payments for the home.
     /// </summary>
     /// <param name="homeId">The home identifier.</param>
-    /// <param name="periodStart">The minimum date of credits and expenses to include in the breakdown.</param>
-    /// <param name="periodEnd">The maximum date of credits and expenses to include in the breakdown.</param>
-    /// <returns>The expense and credit balance breakdown.</returns>
+    /// <param name="periodStart">The minimum date of payments and expenses to include in the breakdown.</param>
+    /// <param name="periodEnd">The maximum date of payments and expenses to include in the breakdown.</param>
+    /// <returns>The expense and payment balance breakdown.</returns>
     [HttpGet("{homeId:guid}/balance-breakdown")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<BalanceBreakdown>> GetBalanceBreakdown(Guid homeId, DateOnly periodStart,

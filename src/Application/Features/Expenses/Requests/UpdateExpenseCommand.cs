@@ -44,15 +44,15 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
         if (expense is null)
             throw new ResourceNotFoundException(expenseId);
 
-        if (expense.Home.Members.All(m => m.Id != props.IncurredByMemberId))
-            throw new InvalidRequestException($"Member {props.IncurredByMemberId} is not a member of home {homeId}");
+        if (expense.Home.Members.All(m => m.Id != props.PaidByMemberId))
+            throw new InvalidRequestException($"Member {props.PaidByMemberId} is not a member of home {homeId}");
 
         if (props.CategoryId.HasValue && expense.Home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
             throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
 
         _mapper.Map(request.Props, expense);
 
-        expense.IncurredByMemberId = props.IncurredByMemberId;
+        expense.PaidByMemberId = props.PaidByMemberId;
 
         await _db.SaveChangesAsync(cancellationToken);
 

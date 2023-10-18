@@ -15,7 +15,7 @@ public class HomesMappingProfile : Profile
             .ForMember(dest => dest.Members, opts => opts.Ignore())
             .ForMember(dest => dest.ExpenseCategories, opts => opts.Ignore())
             .ForMember(dest => dest.Expenses, opts => opts.Ignore())
-            .ForMember(dest => dest.Credits, opts => opts.Ignore())
+            .ForMember(dest => dest.Payments, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedBy, opts => opts.Ignore())
             .ForMember(dest => dest.ModifiedById, opts => opts.Ignore())

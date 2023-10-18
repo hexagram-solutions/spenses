@@ -33,7 +33,7 @@ public class ExpensesSeedDataTask : ISeedDataTask
                     Description = faker.Lorem.Sentence(3),
                     Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 10)),
                     Amount = Random.Shared.NextDecimal(5, 500, 2),
-                    IncurredByMember = Random.Shared.NextItem(home.Members),
+                    PaidByMember = Random.Shared.NextItem(home.Members),
                     Category = Random.Shared.NextItem(home.ExpenseCategories),
                     Tags =
                     {

@@ -1,5 +1,4 @@
 using AutoMapper;
-using Spenses.Application.Features.Expenses.Requests;
 using Spenses.Application.Models.Expenses;
 using DbDigests = Spenses.Resources.Relational.DigestModels;
 using DbModels = Spenses.Resources.Relational.Models;
@@ -21,8 +20,8 @@ public class ExpensesMappingProfile : Profile
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())
             .ForMember(dest => dest.Category, opts => opts.Ignore())
             .ForMember(dest => dest.CategoryId, opts => opts.Ignore())
-            .ForMember(dest => dest.IncurredByMemberId, opts => opts.Ignore())
-            .ForMember(dest => dest.IncurredByMember, opts => opts.Ignore())
+            .ForMember(dest => dest.PaidByMemberId, opts => opts.Ignore())
+            .ForMember(dest => dest.PaidByMember, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedBy, opts => opts.Ignore())
             .ForMember(dest => dest.ModifiedById, opts => opts.Ignore())

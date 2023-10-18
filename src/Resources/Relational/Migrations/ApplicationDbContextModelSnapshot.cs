@@ -17,12 +17,66 @@ namespace Spenses.Resources.Relational.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.11")
+                .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Spenses.Resources.Relational.DigestModels.CreditDigest", b =>
+            modelBuilder.Entity("Spenses.Resources.Relational.DigestModels.ExpenseDigest", b =>
+                {
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(8, 2)
+                        .HasColumnType("decimal(8,2)");
+
+                    b.Property<Guid?>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedByUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("HomeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedByUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PaidByMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PaidByMemberName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable("ExpenseDigest", null, t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("Spenses.Resources.Relational.DigestModels.PaymentDigest", b =>
                 {
                     b.Property<decimal>("Amount")
                         .HasPrecision(8, 2)
@@ -58,109 +112,10 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("CreditDigest", null, t =>
+                    b.ToTable("PaymentDigest", null, t =>
                         {
                             t.ExcludeFromMigrations();
                         });
-                });
-
-            modelBuilder.Entity("Spenses.Resources.Relational.DigestModels.ExpenseDigest", b =>
-                {
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(8, 2)
-                        .HasColumnType("decimal(8,2)");
-
-                    b.Property<string>("CategoryId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CategoryName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedByUserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("HomeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("IncurredByMemberName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedByUserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Tags")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("ExpenseDigest", null, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
-                });
-
-            modelBuilder.Entity("Spenses.Resources.Relational.Models.Credit", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(8, 2)
-                        .HasColumnType("decimal(8,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("date");
-
-                    b.Property<Guid>("HomeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ModifiedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PaidByMemberId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("HomeId");
-
-                    b.HasIndex("ModifiedById");
-
-                    b.HasIndex("PaidByMemberId");
-
-                    b.ToTable("Credit");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
@@ -191,15 +146,15 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("IncurredByMemberId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedById")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("PaidByMemberId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -209,9 +164,9 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.HasIndex("HomeId");
 
-                    b.HasIndex("IncurredByMemberId");
-
                     b.HasIndex("ModifiedById");
+
+                    b.HasIndex("PaidByMemberId");
 
                     b.ToTable("Expense");
                 });
@@ -324,6 +279,9 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<double>("DefaultSplitPercentage")
+                        .HasColumnType("float");
+
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -337,9 +295,6 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("SplitPercentage")
-                        .HasColumnType("float");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -355,6 +310,54 @@ namespace Spenses.Resources.Relational.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Member");
+                });
+
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(8, 2)
+                        .HasColumnType("decimal(8,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("HomeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PaidByMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("HomeId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.HasIndex("PaidByMemberId");
+
+                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>
@@ -379,41 +382,6 @@ namespace Spenses.Resources.Relational.Migrations
                     b.ToTable("UserIdentity");
                 });
 
-            modelBuilder.Entity("Spenses.Resources.Relational.Models.Credit", b =>
-                {
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
-                        .WithMany("CreatedCredits")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Spenses.Resources.Relational.Models.Home", "Home")
-                        .WithMany("Credits")
-                        .HasForeignKey("HomeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
-                        .WithMany("ModifiedCredits")
-                        .HasForeignKey("ModifiedById")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
-                        .WithMany("Credits")
-                        .HasForeignKey("PaidByMemberId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("Home");
-
-                    b.Navigation("ModifiedBy");
-
-                    b.Navigation("PaidByMember");
-                });
-
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
                 {
                     b.HasOne("Spenses.Resources.Relational.Models.ExpenseCategory", "Category")
@@ -432,15 +400,15 @@ namespace Spenses.Resources.Relational.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.Member", "IncurredByMember")
-                        .WithMany("Expenses")
-                        .HasForeignKey("IncurredByMemberId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
                         .WithMany("ModifiedExpenses")
                         .HasForeignKey("ModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
+                        .WithMany("Expenses")
+                        .HasForeignKey("PaidByMemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -450,9 +418,9 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.Navigation("Home");
 
-                    b.Navigation("IncurredByMember");
-
                     b.Navigation("ModifiedBy");
+
+                    b.Navigation("PaidByMember");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.ExpenseCategory", b =>
@@ -545,6 +513,41 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.Payment", b =>
+                {
+                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
+                        .WithMany("CreatedPayments")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.Home", "Home")
+                        .WithMany("Payments")
+                        .HasForeignKey("HomeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
+                        .WithMany("ModifiedPayments")
+                        .HasForeignKey("ModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
+                        .WithMany("Payments")
+                        .HasForeignKey("PaidByMemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Home");
+
+                    b.Navigation("ModifiedBy");
+
+                    b.Navigation("PaidByMember");
+                });
+
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
                 {
                     b.Navigation("Tags");
@@ -557,26 +560,24 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Home", b =>
                 {
-                    b.Navigation("Credits");
-
                     b.Navigation("ExpenseCategories");
 
                     b.Navigation("Expenses");
 
                     b.Navigation("Members");
+
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Member", b =>
                 {
-                    b.Navigation("Credits");
-
                     b.Navigation("Expenses");
+
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>
                 {
-                    b.Navigation("CreatedCredits");
-
                     b.Navigation("CreatedExpenseCategories");
 
                     b.Navigation("CreatedExpenses");
@@ -585,7 +586,7 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.Navigation("CreatedMembers");
 
-                    b.Navigation("ModifiedCredits");
+                    b.Navigation("CreatedPayments");
 
                     b.Navigation("ModifiedExpenseCategories");
 
@@ -594,6 +595,8 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("ModifiedHomes");
 
                     b.Navigation("ModifiedMembers");
+
+                    b.Navigation("ModifiedPayments");
                 });
 #pragma warning restore 612, 618
         }

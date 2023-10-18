@@ -16,6 +16,20 @@ partial class Build
     [PathVariable]
     readonly Tool Npx;
 
+    Target Publish => _ => _
+        .Description("Publish deployment artifacts.")
+        .Executes(() =>
+        {
+            DotNetPublish(_ => _
+                .SetProject(ApiProject)
+                .SetConfiguration("Release")
+                .SetVersion(GitVersion.NuGetVersionV2)
+                .SetProcessArgumentConfigurator(args => args
+                    .Add("/t:PublishContainer")
+                    .Add("--os linux")
+                    .Add("--arch x64")));
+        });
+
     Target AzureLogin => _ => _
         .Description("Log in with the Azure CLI.")
         .Requires(

@@ -17,7 +17,7 @@ public class MembersMappingProfile : Profile
             .ForMember(dest => dest.User, opts => opts.Ignore())
             .ForMember(dest => dest.UserId, opts => opts.Ignore())
             .ForMember(dest => dest.Expenses, opts => opts.Ignore())
-            .ForMember(dest => dest.Credits, opts => opts.Ignore())
+            .ForMember(dest => dest.Payments, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedBy, opts => opts.Ignore())
             .ForMember(dest => dest.ModifiedById, opts => opts.Ignore())

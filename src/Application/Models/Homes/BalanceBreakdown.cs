@@ -9,7 +9,7 @@ public record BalanceBreakdown
     public decimal TotalExpenses { get; set; }
 
     [Required]
-    public decimal TotalCredits { get; set; }
+    public decimal TotalPayments { get; set; }
 
     [Required]
     public decimal TotalBalance { get; set; }

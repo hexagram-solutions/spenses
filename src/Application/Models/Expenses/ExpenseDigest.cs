@@ -21,7 +21,7 @@ public class ExpenseDigest
 
     [Required]
     [Orderable]
-    public string IncurredByMemberName { get; set; } = null!;
+    public string PaidByMemberName { get; set; } = null!;
 
     public Guid? CategoryId { get; set; }
 

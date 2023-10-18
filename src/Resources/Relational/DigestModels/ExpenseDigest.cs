@@ -6,7 +6,7 @@ using Spenses.Resources.Relational.Models;
 namespace Spenses.Resources.Relational.DigestModels;
 
 [BaseTable(nameof(Expense), "e")]
-[JoinedTable(JoinType.Left, nameof(Member), "ibm", "ibm.Id = e.IncurredByMemberId")]
+[JoinedTable(JoinType.Left, nameof(Member), "pbm", "pbm.Id = e.PaidByMemberId")]
 [JoinedTable(JoinType.Left, nameof(ExpenseCategory), "ec", "ec.Id = e.CategoryId")]
 [JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", "cui.Id = e.CreatedById")]
 [JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", "mui.Id = e.ModifiedById")]
@@ -30,8 +30,11 @@ public class ExpenseDigest
     [SourceColumn("ec", nameof(ExpenseCategory.Name))]
     public string? CategoryName { get; set; }
 
-    [SourceColumn("ibm", nameof(Member.Name))]
-    public string IncurredByMemberName { get; set; } = null!;
+    [SourceColumn("pbm", nameof(Member.Id))]
+    public Guid PaidByMemberId { get; set; }
+
+    [SourceColumn("pbm", nameof(Member.Name))]
+    public string PaidByMemberName { get; set; } = null!;
 
     [CalculatedColumn("SELECT STRING_AGG(t.Name, ' ') FROM ExpenseTag t WHERE t.ExpenseId = e.Id")]
     public string? Tags { get; set; }

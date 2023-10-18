@@ -13,9 +13,9 @@ public class Expense : AggregateRoot
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
 
-    public Guid IncurredByMemberId { get; set; }
+    public Guid PaidByMemberId { get; set; }
 
-    public Member IncurredByMember { get; set; } = null!;
+    public Member PaidByMember { get; set; } = null!;
 
     public Guid HomeId { get; set; }
 

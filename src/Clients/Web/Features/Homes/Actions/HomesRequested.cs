@@ -1,7 +1,4 @@
 using BlazorState;
-using BlazorState.Features.Routing;
-using MediatR;
-using Microsoft.AspNetCore.Components;
 using Spenses.Client.Http;
 
 namespace Spenses.Client.Web.Features.Homes;

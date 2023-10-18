@@ -21,7 +21,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.NickName,
-                    SplitPercentage = 1d / userIdentities.Count,
+                    DefaultSplitPercentage = 1d / userIdentities.Count,
                     UserId = u.Id
                 }).ToList(),
                 ExpenseCategories =
@@ -44,7 +44,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.NickName,
-                    SplitPercentage = 1d / userIdentities.Count,
+                    DefaultSplitPercentage = 1d / userIdentities.Count,
                     UserId = u.Id
                 }).ToList(),
                 ExpenseCategories =

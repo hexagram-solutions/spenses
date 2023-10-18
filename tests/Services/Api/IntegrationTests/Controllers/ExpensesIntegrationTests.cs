@@ -35,7 +35,7 @@ public class ExpensesIntegrationTests
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = new[] { "groceries" },
-            IncurredByMemberId = home.Members.First().Id
+            PaidByMemberId = home.Members.First().Id
         };
 
         var createdExpenseResponse = await _expenses.PostExpense(home.Id, properties);
@@ -81,7 +81,7 @@ public class ExpensesIntegrationTests
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = new[] { "household" },
-            IncurredByMemberId = home.Members.First().Id
+            PaidByMemberId = home.Members.First().Id
         };
 
         var updatedExpenseResponse = await _expenses.PutExpense(home.Id, expense.Id, properties);
@@ -138,7 +138,7 @@ public class ExpensesIntegrationTests
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = tags,
-            IncurredByMemberId = home.Members.First().Id
+            PaidByMemberId = home.Members.First().Id
         })).Content!;
 
         var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery

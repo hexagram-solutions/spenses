@@ -44,12 +44,12 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, M
 
         var otherMembersSplitPercentageTotal = homeMembers
             .Where(m => m.Id != memberId)
-            .Sum(m => m.SplitPercentage);
+            .Sum(m => m.DefaultSplitPercentage);
 
-        if (otherMembersSplitPercentageTotal + props.SplitPercentage > 1)
+        if (otherMembersSplitPercentageTotal + props.DefaultSplitPercentage > 1)
         {
             throw new InvalidRequestException(
-                new ValidationFailure(nameof(MemberProperties.SplitPercentage),
+                new ValidationFailure(nameof(MemberProperties.DefaultSplitPercentage),
                     "Total split percentage among home members cannot exceed 100%"));
         }
 

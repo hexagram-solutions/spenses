@@ -14,7 +14,7 @@ public class ExpensePropertiesValidator : AbstractValidator<ExpenseProperties>
             .PrecisionScale(8, 2, false)
             .InclusiveBetween(0.01m, 999_999.99m);
 
-        RuleFor(x => x.IncurredByMemberId)
+        RuleFor(x => x.PaidByMemberId)
             .NotEmpty();
 
         RuleFor(x => x.Tags)

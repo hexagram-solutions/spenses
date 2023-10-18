@@ -18,5 +18,5 @@ public record MemberProperties
 
     [Required]
     [Range(0, 1)]
-    public double SplitPercentage { get; set; }
+    public double DefaultSplitPercentage { get; set; }
 }

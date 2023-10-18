@@ -77,11 +77,11 @@ public class ExpensePropertiesValidatorTests
     {
         var model = new ExpenseProperties();
 
-        _validator.TestValidate(model with { IncurredByMemberId = Guid.Empty })
-            .ShouldHaveValidationErrorFor(x => x.IncurredByMemberId);
+        _validator.TestValidate(model with { PaidByMemberId = Guid.Empty })
+            .ShouldHaveValidationErrorFor(x => x.PaidByMemberId);
 
-        _validator.TestValidate(model with { IncurredByMemberId = Guid.NewGuid() })
-            .ShouldNotHaveValidationErrorFor(x => x.IncurredByMemberId);
+        _validator.TestValidate(model with { PaidByMemberId = Guid.NewGuid() })
+            .ShouldNotHaveValidationErrorFor(x => x.PaidByMemberId);
     }
 
     [Fact]

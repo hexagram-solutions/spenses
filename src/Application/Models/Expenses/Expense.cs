@@ -25,7 +25,7 @@ public abstract record ExpenseBase
 public record ExpenseProperties : ExpenseBase
 {
     [Required]
-    public Guid IncurredByMemberId { get; set; }
+    public Guid PaidByMemberId { get; set; }
 
     public Guid? CategoryId { get; set; }
 }
@@ -36,7 +36,7 @@ public record Expense : ExpenseBase
     public Guid Id { get; set; }
 
     [Required]
-    public Member IncurredByMember { get; set; } = null!;
+    public Member PaidByMember { get; set; } = null!;
 
     public ExpenseCategory? Category { get; set; }
 

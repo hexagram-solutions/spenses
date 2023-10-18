@@ -36,12 +36,12 @@ public class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, M
             .Include(h => h.Members)
             .FirstAsync(h => h.Id == homeId, cancellationToken);
 
-        var otherMembersSplitPercentageTotal = home.Members.Sum(m => m.SplitPercentage);
+        var otherMembersSplitPercentageTotal = home.Members.Sum(m => m.DefaultSplitPercentage);
 
-        if (otherMembersSplitPercentageTotal + props.SplitPercentage > 1)
+        if (otherMembersSplitPercentageTotal + props.DefaultSplitPercentage > 1)
         {
             throw new InvalidRequestException(
-                new ValidationFailure(nameof(MemberProperties.SplitPercentage),
+                new ValidationFailure(nameof(MemberProperties.DefaultSplitPercentage),
                     "Total split percentage among home members cannot exceed 100%"));
         }
 
