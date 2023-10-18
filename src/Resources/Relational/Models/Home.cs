@@ -14,5 +14,5 @@ public class Home : AggregateRoot
 
     public ICollection<Expense> Expenses { get; set; } = new HashSet<Expense>();
 
-    public ICollection<Credit> Credits { get; set; } = new HashSet<Credit>();
+    public ICollection<Payment> Payments { get; set; } = new HashSet<Payment>();
 }

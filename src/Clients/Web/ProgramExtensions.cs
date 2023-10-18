@@ -61,7 +61,7 @@ public static class ProgramExtensions
         AddApiClient<IHomesApi>();
         AddApiClient<IMembersApi>();
         AddApiClient<IExpensesApi>();
-        AddApiClient<ICreditsApi>();
+        AddApiClient<IPaymentsApi>();
 
         return services;
     }

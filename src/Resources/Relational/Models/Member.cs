@@ -9,7 +9,7 @@ public class Member : AggregateRoot
     public string? ContactEmail { get; set; }
 
     [Range(0, 1)]
-    public double SplitPercentage { get; set; }
+    public double DefaultSplitPercentage { get; set; }
 
     public Guid HomeId { get; set; }
 
@@ -21,5 +21,5 @@ public class Member : AggregateRoot
 
     public ICollection<Expense> Expenses { get; set; } = new HashSet<Expense>();
 
-    public ICollection<Credit> Credits { get; set; } = new HashSet<Credit>();
+    public ICollection<Payment> Payments { get; set; } = new HashSet<Payment>();
 }

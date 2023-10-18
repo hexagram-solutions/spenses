@@ -28,26 +28,26 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
         var members = await _db.Members
             .Where(m => m.HomeId == homeId)
             .Include(m => m.Expenses.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
-            .Include(m => m.Credits.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
+            .Include(m => m.Payments.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
             .ToListAsync(cancellationToken);
 
-        if (Math.Abs(members.Sum(m => m.SplitPercentage) - 1) > 0.1)
+        if (Math.Abs(members.Sum(m => m.DefaultSplitPercentage) - 1) > 0.1)
             throw new InvalidRequestException("Split percentage among home members is less than 100%.");
 
         var totalExpenses = members.SelectMany(m => m.Expenses).Sum(e => e.Amount);
-        var totalCredits = members.SelectMany(m => m.Credits).Sum(e => e.Amount);
+        var totalPayments = members.SelectMany(m => m.Payments).Sum(e => e.Amount);
 
-        var totalBalance = totalExpenses - totalCredits;
+        var totalBalance = totalExpenses - totalPayments;
 
         return new BalanceBreakdown
         {
             TotalExpenses = totalExpenses,
-            TotalCredits = totalCredits,
+            TotalPayments = totalPayments,
             TotalBalance = totalBalance,
             MemberBalances = members.Select(m =>
             {
-                var owedByMember = Math.Round(totalExpenses * new decimal(m.SplitPercentage), 2);
-                var paidByMember = m.Credits.Sum(e => e.Amount);
+                var owedByMember = Math.Round(totalExpenses * new decimal(m.DefaultSplitPercentage), 2);
+                var paidByMember = m.Payments.Sum(e => e.Amount);
 
                 return new MemberBalance
                 {

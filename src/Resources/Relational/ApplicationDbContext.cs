@@ -31,8 +31,6 @@ public class ApplicationDbContext : DbContext
         optionsBuilder.UseSqlServer("Server=.;Database=Spenses;Trusted_Connection=True;Encrypt=False;");
     }
 
-    public DbSet<Credit> Credits => Set<Credit>();
-
     public DbSet<ExpenseCategory> ExpenseCategories => Set<ExpenseCategory>();
 
     public DbSet<Expense> Expenses => Set<Expense>();
@@ -41,9 +39,11 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Member> Members => Set<Member>();
 
+    public DbSet<Payment> Payments => Set<Payment>();
+
     public DbSet<UserIdentity> Users => Set<UserIdentity>();
 
-    public DbSet<CreditDigest> CreditDigests => Set<CreditDigest>();
+    public DbSet<PaymentDigest> PaymentDigests => Set<PaymentDigest>();
 
     public DbSet<ExpenseDigest> ExpenseDigests => Set<ExpenseDigest>();
 
@@ -55,19 +55,19 @@ public class ApplicationDbContext : DbContext
         ConfigureAuditingNavigationProperties(modelBuilder);
 
         modelBuilder.Entity<Expense>()
-            .HasOne(x => x.IncurredByMember)
+            .HasOne(x => x.PaidByMember)
             .WithMany(x => x.Expenses)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ExpenseTag>()
             .HasKey(e => new { e.Name, e.ExpenseId });
 
-        modelBuilder.Entity<Credit>()
+        modelBuilder.Entity<Payment>()
             .HasOne(x => x.PaidByMember)
-            .WithMany(x => x.Credits)
+            .WithMany(x => x.Payments)
             .OnDelete(DeleteBehavior.Restrict);
 
-        ConfigureDigestModel<CreditDigest>(modelBuilder);
+        ConfigureDigestModel<PaymentDigest>(modelBuilder);
         ConfigureDigestModel<ExpenseDigest>(modelBuilder);
     }
 

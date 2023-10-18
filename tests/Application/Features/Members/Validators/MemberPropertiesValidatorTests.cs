@@ -35,19 +35,19 @@ public class MemberPropertiesValidatorTests
     {
         var model = new MemberProperties();
 
-        _validator.TestValidate(model with { SplitPercentage = -0.1 })
-            .ShouldHaveValidationErrorFor(x => x.SplitPercentage);
+        _validator.TestValidate(model with { DefaultSplitPercentage = -0.1 })
+            .ShouldHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
-        _validator.TestValidate(model with { SplitPercentage = 1.1 })
-            .ShouldHaveValidationErrorFor(x => x.SplitPercentage);
+        _validator.TestValidate(model with { DefaultSplitPercentage = 1.1 })
+            .ShouldHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
-        _validator.TestValidate(model with { SplitPercentage = 0 })
-            .ShouldNotHaveValidationErrorFor(x => x.SplitPercentage);
+        _validator.TestValidate(model with { DefaultSplitPercentage = 0 })
+            .ShouldNotHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
-        _validator.TestValidate(model with { SplitPercentage = 1 })
-            .ShouldNotHaveValidationErrorFor(x => x.SplitPercentage);
+        _validator.TestValidate(model with { DefaultSplitPercentage = 1 })
+            .ShouldNotHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
-        _validator.TestValidate(model with { SplitPercentage = 0.5 })
-            .ShouldNotHaveValidationErrorFor(x => x.SplitPercentage);
+        _validator.TestValidate(model with { DefaultSplitPercentage = 0.5 })
+            .ShouldNotHaveValidationErrorFor(x => x.DefaultSplitPercentage);
     }
 }

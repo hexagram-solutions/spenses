@@ -14,6 +14,6 @@ GET {{HOST}}/homes/{{homeId}}/expenses
 Authorization: Bearer {{ACCESS_TOKEN}}
 
 ###
-# @name credits
-GET {{HOST}}/homes/{{homeId}}/credits
+# @name payments
+GET {{HOST}}/homes/{{homeId}}/payments
 Authorization: Bearer {{ACCESS_TOKEN}}

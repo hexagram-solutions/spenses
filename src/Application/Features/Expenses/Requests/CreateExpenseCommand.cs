@@ -37,8 +37,8 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
             .Include(h => h.ExpenseCategories)
             .FirstAsync(h => h.Id == homeId, cancellationToken);
 
-        if (home.Members.All(m => m.Id != props.IncurredByMemberId))
-            throw new InvalidRequestException($"Member {props.IncurredByMemberId} is not a member of home {homeId}");
+        if (home.Members.All(m => m.Id != props.PaidByMemberId))
+            throw new InvalidRequestException($"Member {props.PaidByMemberId} is not a member of home {homeId}");
 
         if (props.CategoryId.HasValue && home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
             throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
@@ -46,7 +46,7 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
         var expense = _mapper.Map<DbModels.Expense>(props);
 
         expense.HomeId = homeId;
-        expense.IncurredByMemberId = props.IncurredByMemberId;
+        expense.PaidByMemberId = props.PaidByMemberId;
         expense.CategoryId = props.CategoryId;
 
         home.Expenses.Add(expense);
