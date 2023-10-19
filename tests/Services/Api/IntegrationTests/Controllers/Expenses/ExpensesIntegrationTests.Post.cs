@@ -29,8 +29,9 @@ public partial class ExpensesIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedExpense = (await _expenses.GetExpense(home.Id, createdExpense!.Id)).Content;
+        var fetchedExpense = (await _expenses.GetExpense(home.Id, createdExpense!.Id)).Content!;
         fetchedExpense.Should().BeEquivalentTo(createdExpense);
+        fetchedExpense.ExpenseShares.Select(es => es.OwedByMember).Should().BeEquivalentTo(home.Members);
 
         await _expenses.DeleteExpense(home.Id, createdExpense.Id);
     }

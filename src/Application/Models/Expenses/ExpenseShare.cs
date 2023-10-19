@@ -3,7 +3,7 @@ using Spenses.Application.Models.Members;
 
 namespace Spenses.Application.Models.Expenses;
 
-public record ExpenseShare : ExpenseShareProperties
+public record ExpenseShare : ExpenseShareBase
 {
     public Guid Id { get; set; }
 
@@ -14,18 +14,16 @@ public record ExpenseShare : ExpenseShareProperties
 public record ExpenseShareBase
 {
     [Required]
-    public Guid OwedByMemberId { get; set; }
-}
-
-public record ExpenseShareProperties : ExpenseShareBase
-{
-
-    [Required]
     [Range(0, 999_999.99)]
     public decimal OwedAmount { get; set; }
 
     [Required]
     [Range(0.00, 1.00)]
     public decimal OwedPercentage { get; set; }
+}
 
+public record ExpenseShareProperties : ExpenseBase
+{
+    [Required]
+    public Guid OwedByMemberId { get; set; }
 }

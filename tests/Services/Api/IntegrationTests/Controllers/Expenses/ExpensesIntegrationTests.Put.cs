@@ -35,8 +35,9 @@ public partial class ExpensesIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        var fetchedExpense = (await _expenses.GetExpense(home.Id, updatedExpense!.Id)).Content;
+        var fetchedExpense = (await _expenses.GetExpense(home.Id, updatedExpense!.Id)).Content!;
 
         fetchedExpense.Should().BeEquivalentTo(updatedExpense);
+        fetchedExpense.ExpenseShares.Select(es => es.OwedByMember).Should().BeEquivalentTo(home.Members);
     }
 }
