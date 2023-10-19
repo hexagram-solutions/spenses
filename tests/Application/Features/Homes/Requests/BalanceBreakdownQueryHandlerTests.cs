@@ -68,7 +68,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
                 memberBalance.TotalPaid.Should().Be(memberPaid);
 
-                var expectedMemberOwed = allExpensesSum * new decimal(memberBalance.OwedByMember.DefaultSplitPercentage);
+                var expectedMemberOwed = allExpensesSum * memberBalance.OwedByMember.DefaultSplitPercentage;
 
                 memberBalance.TotalOwed.Should().BeApproximately(expectedMemberOwed, 0.01m);
             }
@@ -103,13 +103,13 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             new DbModels.Member
             {
                 Name = "Hingle McCringleberry",
-                DefaultSplitPercentage = 0.33,
+                DefaultSplitPercentage = 0.33m,
                 HomeId = homeEntry.Entity.Id
             },
             new DbModels.Member
             {
                 Name = "Grunky Peep",
-                DefaultSplitPercentage = 0.66,
+                DefaultSplitPercentage = 0.66m,
                 HomeId = homeEntry.Entity.Id
             });
 

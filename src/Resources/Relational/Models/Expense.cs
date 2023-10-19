@@ -25,5 +25,7 @@ public class Expense : AggregateRoot
 
     public ExpenseCategory? Category { get; set; }
 
+    public ICollection<ExpenseShare> ExpenseShares { get; set; } = new HashSet<ExpenseShare>();
+
     public ICollection<ExpenseTag> Tags { get; set; } = new HashSet<ExpenseTag>();
 }

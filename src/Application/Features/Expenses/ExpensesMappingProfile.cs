@@ -20,6 +20,7 @@ public class ExpensesMappingProfile : Profile
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())
             .ForMember(dest => dest.Category, opts => opts.Ignore())
             .ForMember(dest => dest.CategoryId, opts => opts.Ignore())
+            .ForMember(dest => dest.ExpenseShares, opts => opts.Ignore())
             .ForMember(dest => dest.PaidByMemberId, opts => opts.Ignore())
             .ForMember(dest => dest.PaidByMember, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
@@ -30,5 +31,7 @@ public class ExpensesMappingProfile : Profile
             .ForMember(dest => dest.ModifiedAt, opts => opts.Ignore());
 
         CreateMap<DbDigests.ExpenseDigest, ExpenseDigest>();
+
+        CreateMap<DbModels.ExpenseShare, ExpenseShare>();
     }
 }

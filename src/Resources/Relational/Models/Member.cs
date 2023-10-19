@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Spenses.Resources.Relational.Models;
 
@@ -8,8 +9,9 @@ public class Member : AggregateRoot
 
     public string? ContactEmail { get; set; }
 
-    [Range(0, 1)]
-    public double DefaultSplitPercentage { get; set; }
+    [Precision(3, 2)]
+    [Range(0.00, 1.00)]
+    public decimal DefaultSplitPercentage { get; set; }
 
     public Guid HomeId { get; set; }
 
@@ -20,6 +22,8 @@ public class Member : AggregateRoot
     public UserIdentity? User { get; set; }
 
     public ICollection<Expense> Expenses { get; set; } = new HashSet<Expense>();
+
+    public ICollection<ExpenseShare> ExpenseShares { get; set; } = new HashSet<ExpenseShare>();
 
     public ICollection<Payment> Payments { get; set; } = new HashSet<Payment>();
 }

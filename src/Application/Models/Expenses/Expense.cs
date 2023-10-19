@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Serialization;
 using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Application.Models.Members;
@@ -39,6 +40,8 @@ public record Expense : ExpenseBase
     public Member PaidByMember { get; set; } = null!;
 
     public ExpenseCategory? Category { get; set; }
+
+    public ExpenseShare[] ExpenseShares { get; set; } = Array.Empty<ExpenseShare>();
 
     [Required]
     public User CreatedBy { get; set; } = null!;

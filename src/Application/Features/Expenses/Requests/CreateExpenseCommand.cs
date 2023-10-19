@@ -49,6 +49,16 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
         expense.PaidByMemberId = props.PaidByMemberId;
         expense.CategoryId = props.CategoryId;
 
+        foreach (var member in home.Members)
+        {
+            expense.ExpenseShares.Add(new DbModels.ExpenseShare
+            {
+                OwedByMemberId = member.Id,
+                OwedPercentage = member.DefaultSplitPercentage,
+                OwedAmount = expense.Amount * member.DefaultSplitPercentage
+            });
+        }
+
         home.Expenses.Add(expense);
 
         await _db.SaveChangesAsync(cancellationToken);

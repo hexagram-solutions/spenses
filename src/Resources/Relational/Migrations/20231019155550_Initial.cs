@@ -98,7 +98,7 @@ namespace Spenses.Resources.Relational.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ContactEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DefaultSplitPercentage = table.Column<double>(type: "float", nullable: false),
+                    DefaultSplitPercentage = table.Column<decimal>(type: "decimal(3,2)", precision: 3, scale: 2, nullable: false),
                     HomeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -229,6 +229,33 @@ namespace Spenses.Resources.Relational.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ExpenseShare",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OwedAmount = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: false),
+                    OwedPercentage = table.Column<decimal>(type: "decimal(3,2)", precision: 3, scale: 2, nullable: false),
+                    ExpenseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OwedByMemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExpenseShare", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExpenseShare_Expense_ExpenseId",
+                        column: x => x.ExpenseId,
+                        principalTable: "Expense",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ExpenseShare_Member_OwedByMemberId",
+                        column: x => x.OwedByMemberId,
+                        principalTable: "Member",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ExpenseTag",
                 columns: table => new
                 {
@@ -285,6 +312,16 @@ namespace Spenses.Resources.Relational.Migrations
                 name: "IX_ExpenseCategory_ModifiedById",
                 table: "ExpenseCategory",
                 column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExpenseShare_ExpenseId",
+                table: "ExpenseShare",
+                column: "ExpenseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExpenseShare_OwedByMemberId",
+                table: "ExpenseShare",
+                column: "OwedByMemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ExpenseTag_ExpenseId",
@@ -345,6 +382,9 @@ namespace Spenses.Resources.Relational.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ExpenseShare");
+
             migrationBuilder.DropTable(
                 name: "ExpenseTag");
 
