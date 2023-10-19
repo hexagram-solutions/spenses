@@ -436,7 +436,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired();
 
                     b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
-                        .WithMany("Expenses")
+                        .WithMany("PaidExpenses")
                         .HasForeignKey("PaidByMemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -623,7 +623,7 @@ namespace Spenses.Resources.Relational.Migrations
                 {
                     b.Navigation("ExpenseShares");
 
-                    b.Navigation("Expenses");
+                    b.Navigation("PaidExpenses");
 
                     b.Navigation("Payments");
                 });

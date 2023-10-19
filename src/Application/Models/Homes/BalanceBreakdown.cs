@@ -21,7 +21,7 @@ public record BalanceBreakdown
 public record MemberBalance
 {
     [Required]
-    public Member OwedByMember { get; set; } = null!;
+    public Member Member { get; set; } = null!;
 
     [Required]
     public decimal TotalOwed { get; set; }

@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231019155550_Initial")]
+    [Migration("20231019171238_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -439,7 +439,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired();
 
                     b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
-                        .WithMany("Expenses")
+                        .WithMany("PaidExpenses")
                         .HasForeignKey("PaidByMemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -626,7 +626,7 @@ namespace Spenses.Resources.Relational.Migrations
                 {
                     b.Navigation("ExpenseShares");
 
-                    b.Navigation("Expenses");
+                    b.Navigation("PaidExpenses");
 
                     b.Navigation("Payments");
                 });

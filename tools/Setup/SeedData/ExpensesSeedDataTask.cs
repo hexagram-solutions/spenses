@@ -19,7 +19,7 @@ public class ExpensesSeedDataTask : ISeedDataTask
             .Include(h => h.ExpenseCategories)
             .ToListAsync();
 
-        var sampleTags = new[] { "cable", "restaurants", "gas" };
+        var sampleTags = new[] { "internet", "restaurants", "gas", "entertainment" };
 
         foreach (var home in homes)
         {
@@ -28,19 +28,30 @@ public class ExpensesSeedDataTask : ISeedDataTask
                 var firstTag = Random.Shared.NextItem(sampleTags);
                 var secondTag = Random.Shared.NextItem(sampleTags.Except(firstTag.Yield()));
 
-                home.Expenses.Add(new Expense
+                var expense = new Expense
                 {
                     Description = faker.Lorem.Sentence(3),
                     Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 10)),
                     Amount = Random.Shared.NextDecimal(5, 500, 2),
                     PaidByMember = Random.Shared.NextItem(home.Members),
                     Category = Random.Shared.NextItem(home.ExpenseCategories),
-                    Tags =
+                    Tags = { new ExpenseTag { Name = firstTag }, new ExpenseTag { Name = secondTag } }
+                };
+
+                foreach (var member in home.Members)
+                {
+                    expense.ExpenseShares.Add(new ExpenseShare
                     {
-                        new ExpenseTag { Name = firstTag },
-                        new ExpenseTag { Name = secondTag }
-                    }
-                });
+                        OwedByMemberId = member.Id,
+                        OwedPercentage = member.DefaultSplitPercentage,
+                        // Only add owing amounts for the other members; the member that paid the expense owes nothing.
+                        OwedAmount = member.Id != expense.PaidByMemberId
+                            ? expense.Amount * member.DefaultSplitPercentage
+                            : 0.00m
+                    });
+                }
+
+                home.Expenses.Add(expense);
             }
         }
 

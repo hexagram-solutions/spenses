@@ -46,6 +46,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             var home = await db.Homes
                 .Include(h => h.Members)
                 .Include(h => h.Expenses)
+                    .ThenInclude(e => e.ExpenseShares)
                 .Include(h => h.Payments)
                 .SingleAsync();
 
@@ -63,14 +64,17 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
             foreach (var memberBalance in balanceBreakdown.MemberBalances)
             {
-                var dbMember = home.Members.Single(m => m.Id == memberBalance.OwedByMember.Id);
+                var dbMember = home.Members.Single(m => m.Id == memberBalance.Member.Id);
                 var memberPaid = dbMember.Payments.Sum(c => c.Amount);
 
                 memberBalance.TotalPaid.Should().Be(memberPaid);
 
-                var expectedMemberOwed = allExpensesSum * memberBalance.OwedByMember.DefaultSplitPercentage;
+                var expectedMemberOwed = home.Expenses
+                    .SelectMany(e => e.ExpenseShares)
+                    .Where(es => es.OwedByMemberId == dbMember.Id)
+                    .Sum(es => es.OwedAmount);
 
-                memberBalance.TotalOwed.Should().BeApproximately(expectedMemberOwed, 0.01m);
+                memberBalance.TotalOwed.Should().Be(expectedMemberOwed);
             }
         }
 
@@ -99,19 +103,21 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
         var homeEntry = await db.Homes.AddAsync(new DbModels.Home { Name = "Test home" });
 
-        await db.Members.AddRangeAsync(
+        var oneThirdMember = (await db.Members.AddAsync(
             new DbModels.Member
             {
                 Name = "Hingle McCringleberry",
-                DefaultSplitPercentage = 0.33m,
+                DefaultSplitPercentage = 0.34m,
                 HomeId = homeEntry.Entity.Id
-            },
+            })).Entity;
+
+        var twoThirdsMember = (await db.Members.AddAsync(
             new DbModels.Member
             {
                 Name = "Grunky Peep",
                 DefaultSplitPercentage = 0.66m,
                 HomeId = homeEntry.Entity.Id
-            });
+            })).Entity;
 
         await db.SaveChangesAsync();
 
@@ -124,7 +130,22 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                     Date = today,
                     Amount = 100.00m,
                     PaidByMemberId = member.Id,
-                    HomeId = homeEntry.Entity.Id
+                    HomeId = homeEntry.Entity.Id,
+                    ExpenseShares =
+                    {
+                        new DbModels.ExpenseShare
+                        {
+                            OwedByMemberId = oneThirdMember.Id,
+                            OwedAmount = 33.34m,
+                            OwedPercentage = 33.34m
+                        },
+                        new DbModels.ExpenseShare
+                        {
+                            OwedByMemberId = twoThirdsMember.Id,
+                            OwedAmount = 66.66m,
+                            OwedPercentage = 66.66m
+                        }
+                    }
                 });
 
                 await db.Payments.AddAsync(new DbModels.Payment

@@ -56,7 +56,7 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Expense>()
             .HasOne(x => x.PaidByMember)
-            .WithMany(x => x.Expenses)
+            .WithMany(x => x.PaidExpenses)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ExpenseShare>()

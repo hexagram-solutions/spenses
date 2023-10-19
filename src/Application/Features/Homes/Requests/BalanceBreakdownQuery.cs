@@ -25,19 +25,22 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
     {
         var (homeId, periodStart, periodEnd) = request;
 
-        var members = await _db.Members
-            .Where(m => m.HomeId == homeId)
-            .Include(m => m.Expenses.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
-            .Include(m => m.Payments.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
-            .ToListAsync(cancellationToken);
+        var home = await _db.Homes
+            .Include(h => h.Expenses.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
+                .ThenInclude(e => e.ExpenseShares)
+            .Include(h => h.Payments.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
+            .Include(h => h.Members)
+            .FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
 
-        if (Math.Abs(members.Sum(m => m.DefaultSplitPercentage) - 1) > 0.1m)
-            throw new InvalidRequestException("Split percentage among home members is less than 100%.");
+        if (home is null)
+            throw new ResourceNotFoundException(homeId);
 
-        var totalExpenses = members.SelectMany(m => m.Expenses).Sum(e => e.Amount);
-        var totalPayments = members.SelectMany(m => m.Payments).Sum(e => e.Amount);
+        var totalExpenses = home.Expenses.Sum(e => e.Amount);
+        var totalPayments = home.Payments.Sum(e => e.Amount);
 
         var totalBalance = totalExpenses - totalPayments;
+
+        var members = home.Members;
 
         return new BalanceBreakdown
         {
@@ -46,12 +49,16 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
             TotalBalance = totalBalance,
             MemberBalances = members.Select(m =>
             {
-                var owedByMember = Math.Round(totalExpenses * m.DefaultSplitPercentage, 2);
+                var owedByMember = home.Expenses
+                    .SelectMany(e => e.ExpenseShares)
+                    .Where(es => es.OwedByMemberId == m.Id)
+                    .Sum(es => es.OwedAmount);
+
                 var paidByMember = m.Payments.Sum(e => e.Amount);
 
                 return new MemberBalance
                 {
-                    OwedByMember = _mapper.Map<Member>(m),
+                    Member = _mapper.Map<Member>(m),
                     TotalOwed = owedByMember,
                     TotalPaid = paidByMember,
                     Balance = owedByMember - paidByMember
