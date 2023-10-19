@@ -37,10 +37,7 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, M
             .ToListAsync(cancellationToken);
 
         var memberToUpdate = homeMembers
-            .FirstOrDefault(h => h.Id == memberId);
-
-        if (memberToUpdate is null)
-            throw new ResourceNotFoundException(memberId);
+            .FirstOrDefault(h => h.Id == memberId) ?? throw new ResourceNotFoundException(memberId);
 
         var otherMembersSplitPercentageTotal = homeMembers
             .Where(m => m.Id != memberId)

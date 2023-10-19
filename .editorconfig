@@ -274,14 +274,17 @@ dotnet_diagnostic.CA1805.severity = warning
 # CA1810: Do not initialize unnecessarily
 dotnet_diagnostic.CA1810.severity = suggestion
 
-# CA1821: Remove empty Finalizers
-dotnet_diagnostic.CA1821.severity = warning
+# CA1810: Do not initialize unnecessarily
+dotnet_diagnostic.CA1810.severity = suggestion
+
+# CA1816: Call GC.SuppressFinalize correctly
+dotnet_diagnostic.CA1816.severity = none
 
 # CA1822: Make member static
 dotnet_diagnostic.CA1822.severity = suggestion
 
 # CA1823: Avoid unused private fields
-dotnet_diagnostic.CA1823.severity = warning
+dotnet_diagnostic.CA1823.severity = suggestion
 
 # CA1825: Avoid zero-length array allocations
 dotnet_diagnostic.CA1825.severity = warning

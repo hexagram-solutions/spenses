@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231018181506_Initial")]
+    [Migration("20231019171238_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -214,6 +214,34 @@ namespace Spenses.Resources.Relational.Migrations
                     b.ToTable("ExpenseCategory");
                 });
 
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.ExpenseShare", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ExpenseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("OwedAmount")
+                        .HasPrecision(8, 2)
+                        .HasColumnType("decimal(8,2)");
+
+                    b.Property<Guid>("OwedByMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("OwedPercentage")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpenseId");
+
+                    b.HasIndex("OwedByMemberId");
+
+                    b.ToTable("ExpenseShare");
+                });
+
             modelBuilder.Entity("Spenses.Resources.Relational.Models.ExpenseTag", b =>
                 {
                     b.Property<string>("Name")
@@ -282,8 +310,9 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<double>("DefaultSplitPercentage")
-                        .HasColumnType("float");
+                    b.Property<decimal>("DefaultSplitPercentage")
+                        .HasPrecision(3, 2)
+                        .HasColumnType("decimal(3,2)");
 
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
@@ -410,7 +439,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired();
 
                     b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
-                        .WithMany("Expenses")
+                        .WithMany("PaidExpenses")
                         .HasForeignKey("PaidByMemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -451,6 +480,25 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("Home");
 
                     b.Navigation("ModifiedBy");
+                });
+
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.ExpenseShare", b =>
+                {
+                    b.HasOne("Spenses.Resources.Relational.Models.Expense", "Expense")
+                        .WithMany("ExpenseShares")
+                        .HasForeignKey("ExpenseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.Member", "OwedByMember")
+                        .WithMany("ExpenseShares")
+                        .HasForeignKey("OwedByMemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Expense");
+
+                    b.Navigation("OwedByMember");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.ExpenseTag", b =>
@@ -553,6 +601,8 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
                 {
+                    b.Navigation("ExpenseShares");
+
                     b.Navigation("Tags");
                 });
 
@@ -574,7 +624,9 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Member", b =>
                 {
-                    b.Navigation("Expenses");
+                    b.Navigation("ExpenseShares");
+
+                    b.Navigation("PaidExpenses");
 
                     b.Navigation("Payments");
                 });

@@ -1,104 +1,10 @@
-using System.Net;
-using Refit;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Expenses;
-using Spenses.Client.Http;
 
-namespace Spenses.Api.IntegrationTests.Controllers;
+namespace Spenses.Api.IntegrationTests.Expenses;
 
-[Collection(WebApplicationCollection.CollectionName)]
-public class ExpensesIntegrationTests
+public partial class ExpensesIntegrationTests
 {
-    private readonly IHomesApi _homes;
-    private readonly IExpensesApi _expenses;
-    private readonly IExpenseCategoriesApi _expenseCategories;
-
-    public ExpensesIntegrationTests(WebApplicationFixture<Program> fixture)
-    {
-        _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
-
-        _expenses = RestService.For<IExpensesApi>(fixture.WebApplicationFactory.CreateClient(),
-            new RefitSettings { CollectionFormat = CollectionFormat.Multi });
-
-        _expenseCategories = RestService.For<IExpenseCategoriesApi>(fixture.WebApplicationFactory.CreateClient(),
-            new RefitSettings { CollectionFormat = CollectionFormat.Multi });
-    }
-
-    [Fact]
-    public async Task Post_expense_creates_expense()
-    {
-        var home = (await _homes.GetHomes()).Content!.First();
-
-        var properties = new ExpenseProperties
-        {
-            Description = "Foo",
-            Amount = 1234.56m,
-            Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new[] { "groceries" },
-            PaidByMemberId = home.Members.First().Id
-        };
-
-        var createdExpenseResponse = await _expenses.PostExpense(home.Id, properties);
-
-        createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.Created);
-
-        var createdExpense = createdExpenseResponse.Content;
-
-        createdExpense.Should().BeEquivalentTo(properties, opts =>
-            opts.ExcludingNestedObjects()
-                .ExcludingMissingMembers());
-
-        var fetchedExpense = (await _expenses.GetExpense(home.Id, createdExpense!.Id)).Content;
-        fetchedExpense.Should().BeEquivalentTo(createdExpense);
-
-        await _expenses.DeleteExpense(home.Id, createdExpense.Id);
-    }
-
-    [Fact]
-    public async Task Post_invalid_expense_yields_bad_request()
-    {
-        var home = (await _homes.GetHomes()).Content!.First();
-
-        var result = await _expenses.PostExpense(home.Id, new ExpenseProperties());
-
-        result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-    }
-
-    [Fact]
-    public async Task Put_expense_creates_expense()
-    {
-        var home = (await _homes.GetHomes()).Content!.First();
-
-        var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
-        {
-            PageNumber = 1,
-            PageSize = 10
-        })).Content!.Items.First();
-
-        var properties = new ExpenseProperties
-        {
-            Description = "Bar",
-            Amount = 1234.56m,
-            Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new[] { "household" },
-            PaidByMemberId = home.Members.First().Id
-        };
-
-        var updatedExpenseResponse = await _expenses.PutExpense(home.Id, expense.Id, properties);
-
-        updatedExpenseResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        var updatedExpense = updatedExpenseResponse.Content;
-
-        updatedExpense.Should().BeEquivalentTo(properties, opts =>
-            opts.ExcludingNestedObjects()
-                .ExcludingMissingMembers());
-
-        var fetchedExpense = (await _expenses.GetExpense(home.Id, updatedExpense!.Id)).Content;
-
-        fetchedExpense.Should().BeEquivalentTo(updatedExpense);
-    }
-
     [Fact]
     public async Task Get_filters_yields_filterable_values()
     {

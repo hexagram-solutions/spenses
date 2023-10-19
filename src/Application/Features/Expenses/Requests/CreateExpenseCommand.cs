@@ -49,6 +49,19 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
         expense.PaidByMemberId = props.PaidByMemberId;
         expense.CategoryId = props.CategoryId;
 
+        foreach (var member in home.Members)
+        {
+            expense.ExpenseShares.Add(new DbModels.ExpenseShare
+            {
+                OwedByMemberId = member.Id,
+                OwedPercentage = member.DefaultSplitPercentage,
+                // Only add owing amounts for the other members; the member that paid the expense owes nothing.
+                OwedAmount = member.Id != expense.PaidByMemberId
+                    ? expense.Amount * member.DefaultSplitPercentage
+                    : 0.00m
+            });
+        }
+
         home.Expenses.Add(expense);
 
         await _db.SaveChangesAsync(cancellationToken);

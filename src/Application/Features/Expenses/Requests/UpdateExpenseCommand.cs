@@ -8,6 +8,7 @@ using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Application.Models.Expenses;
 using Spenses.Resources.Relational;
+using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Expenses.Requests;
 
@@ -37,6 +38,7 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
                 .ThenInclude(h => h.Members)
             .Include(e => e.Home)
                 .ThenInclude(h => h.ExpenseCategories)
+            .Include(e => e.ExpenseShares)
             .Include(e => e.Tags)
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);
@@ -53,6 +55,19 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
         _mapper.Map(request.Props, expense);
 
         expense.PaidByMemberId = props.PaidByMemberId;
+        expense.CategoryId = props.CategoryId;
+
+        expense.ExpenseShares.Clear();
+
+        foreach (var member in expense.Home.Members)
+        {
+            expense.ExpenseShares.Add(new DbModels.ExpenseShare
+            {
+                OwedByMemberId = member.Id,
+                OwedPercentage = member.DefaultSplitPercentage,
+                OwedAmount = expense.Amount * member.DefaultSplitPercentage
+            });
+        }
 
         await _db.SaveChangesAsync(cancellationToken);
 

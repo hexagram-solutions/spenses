@@ -3,7 +3,7 @@ using Refit;
 using Spenses.Application.Models.Members;
 using Spenses.Client.Http;
 
-namespace Spenses.Api.IntegrationTests.Controllers;
+namespace Spenses.Api.IntegrationTests.Members;
 
 [Collection(WebApplicationCollection.CollectionName)]
 public class MembersIntegrationTests
@@ -25,7 +25,7 @@ public class MembersIntegrationTests
         var properties = new MemberProperties
         {
             Name = "Bob",
-            DefaultSplitPercentage = 0.0,
+            DefaultSplitPercentage = 0.0m,
             ContactEmail = "bob@example.com"
         };
 
@@ -65,7 +65,7 @@ public class MembersIntegrationTests
         var properties = new MemberProperties
         {
             Name = "Grunky Peep",
-            DefaultSplitPercentage = 0.0,
+            DefaultSplitPercentage = 0.0m,
             ContactEmail = "grunky.peep@georgiasouthern.edu"
         };
 

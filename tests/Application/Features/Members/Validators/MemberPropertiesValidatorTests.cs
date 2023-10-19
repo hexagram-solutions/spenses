@@ -35,10 +35,10 @@ public class MemberPropertiesValidatorTests
     {
         var model = new MemberProperties();
 
-        _validator.TestValidate(model with { DefaultSplitPercentage = -0.1 })
+        _validator.TestValidate(model with { DefaultSplitPercentage = -0.1m })
             .ShouldHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
-        _validator.TestValidate(model with { DefaultSplitPercentage = 1.1 })
+        _validator.TestValidate(model with { DefaultSplitPercentage = 1.1m })
             .ShouldHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
         _validator.TestValidate(model with { DefaultSplitPercentage = 0 })
@@ -47,7 +47,7 @@ public class MemberPropertiesValidatorTests
         _validator.TestValidate(model with { DefaultSplitPercentage = 1 })
             .ShouldNotHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
-        _validator.TestValidate(model with { DefaultSplitPercentage = 0.5 })
+        _validator.TestValidate(model with { DefaultSplitPercentage = 0.5m })
             .ShouldNotHaveValidationErrorFor(x => x.DefaultSplitPercentage);
     }
 }

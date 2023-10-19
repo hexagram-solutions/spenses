@@ -16,6 +16,10 @@ partial class Build
     [PathVariable]
     readonly Tool Npx;
 
+    Project ApiProject => Solution.GetAllProjects("Spenses.Api").Single();
+
+    Project WebProject => Solution.GetAllProjects("Spenses.Client.Web").Single();
+
     Target Publish => _ => _
         .Description("Publish deployment artifacts.")
         .Executes(() =>
@@ -43,8 +47,6 @@ partial class Build
                 $"-p {AzurePassword} " +
                 $"--tenant {AzureTenant}");
         });
-
-    Project ApiProject => Solution.GetAllProjects("Spenses.Api").Single();
 
     string DockerTag => IsServerBuild ? GitVersion.NuGetVersionV2 : "dev";
 
@@ -87,8 +89,6 @@ partial class Build
                 $"--registry-password {ContainerRegistryPassword}");
         });
 
-    Project WebProject => Solution.GetAllProjects("Spenses.Client.Web").Single();
-
     Target DeployWebApp => _ => _
         .Description("Deploy the front-end web app to Azure Static Web Apps.")
         .DependsOn<IClean>()
@@ -96,10 +96,12 @@ partial class Build
             () => AzureStaticWebAppsApiToken)
         .Executes(() =>
         {
-            DotNetPublish(s => s
+            DotNetPublish(_ => _
                 .SetProject(WebProject)
-                .SetFramework("net7.0")
-                .SetConfiguration(Configuration.Release));
+                .SetConfiguration(Configuration.Release)
+                .SetVersion(GitVersion.NuGetVersionV2)
+                .SetAssemblyVersion(GitVersion.AssemblySemVer)
+                .SetFileVersion(GitVersion.AssemblySemFileVer));
 
             Npx($"@azure/static-web-apps-cli deploy " +
                 $"{WebProject.Directory / "bin" / "Release" / "net7.0" / "publish" / "wwwroot"} " +
