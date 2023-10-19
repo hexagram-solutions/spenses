@@ -3,18 +3,18 @@ using Refit;
 using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Client.Http;
 
-namespace Spenses.Api.IntegrationTests.Controllers;
+namespace Spenses.Api.IntegrationTests.ExpenseCategories;
 
 [Collection(WebApplicationCollection.CollectionName)]
 public class ExpenseCategoriesIntegrationTests
 {
-    private readonly IHomesApi _homes;
     private readonly IExpenseCategoriesApi _categories;
+    private readonly IHomesApi _homes;
 
     public ExpenseCategoriesIntegrationTests(WebApplicationFixture<Program> fixture)
     {
-        _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
         _categories = RestService.For<IExpenseCategoriesApi>(fixture.WebApplicationFactory.CreateClient());
+        _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
     }
 
     [Fact]

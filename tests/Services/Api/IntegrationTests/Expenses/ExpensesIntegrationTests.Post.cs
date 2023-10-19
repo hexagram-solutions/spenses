@@ -1,7 +1,7 @@
 using System.Net;
 using Spenses.Application.Models.Expenses;
 
-namespace Spenses.Api.IntegrationTests.Controllers.Expenses;
+namespace Spenses.Api.IntegrationTests.Expenses;
 
 public partial class ExpensesIntegrationTests
 {

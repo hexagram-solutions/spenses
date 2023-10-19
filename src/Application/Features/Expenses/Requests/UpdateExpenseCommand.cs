@@ -38,6 +38,7 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
                 .ThenInclude(h => h.Members)
             .Include(e => e.Home)
                 .ThenInclude(h => h.ExpenseCategories)
+            .Include(e => e.ExpenseShares)
             .Include(e => e.Tags)
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);

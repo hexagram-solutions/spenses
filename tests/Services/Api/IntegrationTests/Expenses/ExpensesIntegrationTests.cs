@@ -1,7 +1,7 @@
 using Refit;
 using Spenses.Client.Http;
 
-namespace Spenses.Api.IntegrationTests.Controllers.Expenses;
+namespace Spenses.Api.IntegrationTests.Expenses;
 
 [Collection(WebApplicationCollection.CollectionName)]
 public partial class ExpensesIntegrationTests
