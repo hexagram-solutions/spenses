@@ -4,6 +4,7 @@ namespace Spenses.Client.Web.Layouts;
 
 public partial class HomeLayout : LayoutComponentBase
 {
+    [CascadingParameter]
     public Guid HomeId { get; set; }
 
     protected override void OnParametersSet()

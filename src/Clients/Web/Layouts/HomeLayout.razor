@@ -1,40 +1,48 @@
 ﻿@inherits LayoutComponentBase
 @layout MainLayout
 
-<Layout Sider>
-  <LayoutSider>
-    <LayoutSiderContent>
-      <Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
-           Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small">
-        <BarToggler/>
-        <BarMenu>
-          <BarStart>
-            <BarItem>
-              <BarLink To="@($"/homes/{HomeId}/dashboard")" Match="Match.All">
-                <BarIcon IconName="IconName.Dashboard"/>
-                Dashboard
-              </BarLink>
-            </BarItem>
-            <BarItem>
-              <BarLink To="@($"/homes/{HomeId}/insights")" Match="Match.All">
-                <BarIcon IconName="IconName.Lightbulb"/>
-                Insights
-              </BarLink>
-            </BarItem>
-            <BarItem>
-              <BarLink To="@($"/homes/{HomeId}/settings")" Match="Match.All">
-                <BarIcon IconName="IconName.Wrench"/>
-                Settings
-              </BarLink>
-            </BarItem>
-          </BarStart>
-        </BarMenu>
-      </Bar>
-    </LayoutSiderContent>
-  </LayoutSider>
-  <Layout>
-    <LayoutContent>
-      @Body
-    </LayoutContent>
+<CascadingValue Value="@HomeId">
+  <Layout Sider>
+    <LayoutSider>
+      <LayoutSiderContent>
+        <Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
+             Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small">
+          <BarToggler/>
+          <BarMenu>
+            <BarStart>
+              <BarItem>
+                <BarLink To="@($"/homes/{HomeId}/dashboard")" Match="Match.All">
+                  <BarIcon IconName="IconName.Dashboard"/>
+                  Dashboard
+                </BarLink>
+              </BarItem>
+              <BarItem>
+                <BarLink To="@($"/homes/{HomeId}/expenses")" Match="Match.All">
+                  <BarIcon IconName="IconName.DollarSign"/>
+                  Expenses
+                </BarLink>
+              </BarItem>
+              <BarItem>
+                <BarLink To="@($"/homes/{HomeId}/insights")" Match="Match.All">
+                  <BarIcon IconName="IconName.Lightbulb"/>
+                  Insights
+                </BarLink>
+              </BarItem>
+              <BarItem>
+                <BarLink To="@($"/homes/{HomeId}/settings")" Match="Match.All">
+                  <BarIcon IconName="IconName.Wrench"/>
+                  Settings
+                </BarLink>
+              </BarItem>
+            </BarStart>
+          </BarMenu>
+        </Bar>
+      </LayoutSiderContent>
+    </LayoutSider>
+    <Layout>
+      <LayoutContent>
+        @Body
+      </LayoutContent>
+    </Layout>
   </Layout>
-</Layout>
+</CascadingValue>

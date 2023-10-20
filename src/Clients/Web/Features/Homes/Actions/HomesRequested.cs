@@ -5,9 +5,7 @@ namespace Spenses.Client.Web.Features.Homes;
 
 public partial class HomeState
 {
-    public class HomesRequested : IAction
-    {
-    }
+    public record HomesRequested : IAction;
 
     public class HomesRequestedHandler : ActionHandler<HomesRequested>
     {
