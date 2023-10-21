@@ -3,7 +3,7 @@
 @using Spenses.Client.Web.Components.Homes
 @inherits BlazorState.BlazorStateComponent
 
-<BarItem>
+
   <BarDropdown>
     <BarDropdownToggle>@(CurrentHome?.Name ?? "Select a home")</BarDropdownToggle>
     <BarDropdownMenu>
@@ -31,7 +31,6 @@
       </BarDropdownItem>
     </BarDropdownMenu>
   </BarDropdown>
-</BarItem>
 
 @code
 {

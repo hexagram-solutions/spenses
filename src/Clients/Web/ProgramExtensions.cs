@@ -1,7 +1,7 @@
 using System.Reflection;
+using Blazorise.Bootstrap5;
 using Blazorise.FluentValidation;
 using Blazorise.Icons.FontAwesome;
-using Blazorise.Tailwind;
 using BlazorState;
 using FluentValidation;
 using Hexagrams.Extensions.Authentication.OAuth;
@@ -83,11 +83,11 @@ public static class ProgramExtensions
     {
         services
             .AddBlazorise()
-            .AddTailwindProviders()
+            .AddBootstrap5Providers()
             .AddFontAwesomeIcons()
             .AddBlazoriseFluentValidation();
 
-        // todo: is there a better hood for this?
+        // todo: is there a better hook for this?
         services.AddValidatorsFromAssemblyContaining<HomePropertiesValidator>();
 
         return services;
