@@ -1,9 +1,18 @@
 ﻿@using Spenses.Client.Web.Components.Layout
 @inherits LayoutComponentBase
 
-<Layout>
-  <LayoutHeader>
-    <TopMenu />
-  </LayoutHeader>
-  @Body
+<Layout Sider>
+  <LayoutSider>
+    <LayoutSiderContent>
+      <SideMenu />
+    </LayoutSiderContent>
+  </LayoutSider>
+  <Layout>
+    <LayoutHeader>
+      <TopMenu />
+    </LayoutHeader>
+    <LayoutContent Padding="Padding.Is4.OnAll">
+      @Body
+    </LayoutContent>
+  </Layout>
 </Layout>
