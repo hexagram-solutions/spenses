@@ -8,7 +8,7 @@ namespace Spenses.Client.Web.Components.Expenses;
 
 public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 {
-    private DataGrid<ExpenseDigest> _dataGridRef;
+    private DataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
 
     [Parameter]
     public Guid HomeId { get; set; }
@@ -43,6 +43,13 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 
         //return valid;
     }
+    private async Task OnDataGridReadData(DataGridReadDataEventArgs<ExpenseDigest> args)
+    {
+        Query.PageNumber = args.Page;
+        Query.PageSize = args.PageSize;
+
+        await Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query));
+    }
 
     private Task ToEdit()
     {
@@ -54,10 +61,10 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         return Task.CompletedTask;
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        await Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query));
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    await Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query));
 
-        await base.OnInitializedAsync();
-    }
+    //    await base.OnInitializedAsync();
+    //}
 }
