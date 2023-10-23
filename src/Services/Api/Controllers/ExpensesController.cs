@@ -47,8 +47,8 @@ public class ExpensesController : ControllerBase
     {
         var expenses = await _mediator.Send(new ExpensesQuery(homeId)
         {
-            PageNumber = query.PageNumber,
-            PageSize = query.PageSize,
+            Skip = query.Skip,
+            Take = query.Take,
             OrderBy = query.OrderBy,
             SortDirection = query.SortDirection,
             MinDate = query.MinDate,

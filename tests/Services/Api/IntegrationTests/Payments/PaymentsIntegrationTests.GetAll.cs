@@ -11,7 +11,7 @@ public partial class PaymentsIntegrationTests
         var home = (await _homes.GetHomes()).Content!.First();
 
         var unfilteredPayments =
-            (await _payments.GetPayments(home.Id, new FilteredPaymentQuery { PageNumber = 1, PageSize = 100 })).Content!
+            (await _payments.GetPayments(home.Id, new FilteredPaymentQuery { Skip = 0, Take = 100 })).Content!
             .Items.ToList();
 
         var earliestPaymentDate = unfilteredPayments.MinBy(x => x.Date)!.Date;
@@ -23,8 +23,8 @@ public partial class PaymentsIntegrationTests
         var filteredPayments = (await _payments.GetPayments(home.Id,
             new FilteredPaymentQuery
             {
-                PageNumber = 1,
-                PageSize = 100,
+                Skip = 0,
+                Take = 100,
                 MinDate = minDateFilterValue,
                 MaxDate = maxDateFilterValue
             })).Content!.Items;
@@ -43,8 +43,8 @@ public partial class PaymentsIntegrationTests
 
         var query = new FilteredPaymentQuery
         {
-            PageNumber = 1,
-            PageSize = 25,
+            Skip = 0,
+            Take = 25,
             OrderBy = nameof(PaymentDigest.Amount),
             SortDirection = SortDirection.Asc
         };

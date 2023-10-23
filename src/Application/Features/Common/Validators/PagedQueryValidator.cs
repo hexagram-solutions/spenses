@@ -11,11 +11,11 @@ public class PagedQueryValidator<T> : AbstractValidator<PagedQuery<T>>
 {
     public PagedQueryValidator()
     {
-        RuleFor(x => x.PageNumber)
+        RuleFor(x => x.Skip)
             .NotNull()
-            .GreaterThanOrEqualTo(1);
+            .GreaterThanOrEqualTo(0);
 
-        RuleFor(x => x.PageSize)
+        RuleFor(x => x.Take)
             .NotNull()
             .InclusiveBetween(1, 200);
 

@@ -22,13 +22,12 @@
                     <DataGrid @ref="DataGridRef"
                               TItem="ExpenseDigest"
                               Data="ExpensesState.Expenses.Items"
+                              ReadData="OnDataGridReadData"
                               Responsive
                               Sortable
                               Striped
+                              Virtualize
                               TotalItems="ExpensesState.Expenses.TotalCount"
-                              ReadData="OnDataGridReadData"
-                              ShowPager
-                              ShowPageSizes
                               SortMode="DataGridSortMode.Single"
                               CustomFilter="@CustomFilterHandler">
                         <DataGridColumns>
@@ -40,7 +39,9 @@
                             <DataGridNumericColumn
                                 TItem="ExpenseDigest"
                                 Field="@nameof(ExpenseDigest.Amount)"
-                                Caption="Amount" DisplayFormat="{0:C}"/>
+                                Caption="Amount"
+                                DisplayFormat="{0:C}"
+                                DisplayFormatProvider="@System.Globalization.CultureInfo.CurrentCulture" />
                             <DataGridColumn
                                 TItem="ExpenseDigest"
                                 Field="@nameof(ExpenseDigest.PaidByMemberName)"

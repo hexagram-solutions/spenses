@@ -17,8 +17,8 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 
     private FilteredExpensesQuery Query { get; set; } = new()
     {
-        PageNumber = 1,
-        PageSize = 25,
+        Skip = 0,
+        Take = 25,
         OrderBy = nameof(ExpenseDigest.Date),
         SortDirection = SortDirection.Desc
     };
@@ -45,8 +45,8 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
     }
     private async Task OnDataGridReadData(DataGridReadDataEventArgs<ExpenseDigest> args)
     {
-        Query.PageNumber = args.Page;
-        Query.PageSize = args.PageSize;
+        Query.Skip = args.VirtualizeOffset;
+        Query.Take = args.VirtualizeCount;
 
         await Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query));
     }

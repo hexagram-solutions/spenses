@@ -47,8 +47,8 @@ public class PaymentsController : ControllerBase
     {
         var payments = await _mediator.Send(new PaymentsQuery(homeId)
         {
-            PageNumber = query.PageNumber,
-            PageSize = query.PageSize,
+            Skip = query.Skip,
+            Take = query.Take,
             OrderBy = query.OrderBy,
             SortDirection = query.SortDirection,
             MinDate = query.MinDate,
