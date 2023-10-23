@@ -2,10 +2,10 @@
 @using Spenses.Application.Models.Expenses
 @inherits BlazorState.BlazorStateComponent
 
-<LoadingIndicator Visible="ExpensesState.ExpensesRequesting">
-    <Row>
-        <Column ColumnSize="ColumnSize.Is12">
-            <Card Margin="@ThemeStyles.CardMargin" Shadow="@ThemeStyles.CardShadow">
+<Row>
+    <Column ColumnSize="ColumnSize.Is12">
+        <Card Margin="@ThemeStyles.CardMargin" Shadow="@ThemeStyles.CardShadow">
+            <LoadingIndicator Visible="ExpensesState.ExpensesRequesting">
                 <CardBody>
                     <Row>
                         <Column ColumnSize="ColumnSize.Is8.OnTablet">
@@ -23,6 +23,8 @@
                               TItem="ExpenseDigest"
                               Data="ExpensesState.Expenses.Items"
                               Responsive
+                              Sortable
+                              Striped
                               TotalItems="ExpensesState.Expenses.TotalCount"
                               ReadData="OnDataGridReadData"
                               ShowPager
@@ -55,7 +57,8 @@
                                 Field="@nameof(ExpenseDigest.Id)"
                                 Caption="Action"
                                 TextAlignment="TextAlignment.End"
-                                Width="140px">
+                                Width="140px"
+                                Sortable="false">
                                 <DisplayTemplate>
                                     <Tooltip Text="Edit" Inline>
                                         <Button Size="Size.Small" Clicked="@ToEdit">
@@ -72,7 +75,7 @@
                         </DataGridColumns>
                     </DataGrid>
                 </CardBody>
-            </Card>
-        </Column>
-    </Row>
-</LoadingIndicator>
+            </LoadingIndicator>
+        </Card>
+    </Column>
+</Row>
