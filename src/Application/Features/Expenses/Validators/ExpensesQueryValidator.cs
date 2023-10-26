@@ -20,7 +20,11 @@ public class ExpensesQueryValidator : AbstractValidator<ExpensesQuery>
             .When(x => x.MinDate.HasValue);
 
         RuleFor(x => x.Tags)
-            .Must(x => x?.Distinct().Count() == x?.Length)
+            .Must(x =>
+            {
+                var tagsArray = x?.ToArray() ?? Array.Empty<string>();
+                return tagsArray.Distinct().Count() == tagsArray.Length;
+            })
             .WithMessage("Tags must be unique")
             .ForEach(x => x.NotEmpty());
     }

@@ -10,8 +10,13 @@ public partial class ExpensesState : State<ExpensesState>
 
     public bool ExpensesRequesting { get; private set; }
 
+    public ExpenseFilters? ExpenseFilters { get; private set; }
+
+    public bool ExpenseFiltersRequesting { get; private set; }
+
     public override void Initialize()
     {
-        Expenses = new PagedResult<ExpenseDigest>(0, new List<ExpenseDigest>());
+        Expenses = new PagedResult<ExpenseDigest>(0, Array.Empty<ExpenseDigest>());
+        ExpenseFilters = new ExpenseFilters();
     }
 }

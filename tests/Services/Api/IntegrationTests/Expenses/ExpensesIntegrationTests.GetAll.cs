@@ -27,8 +27,8 @@ public partial class ExpensesIntegrationTests
         filterValues.Tags.Should().BeEquivalentTo(distinctTags);
         filterValues.Tags.Should().BeInAscendingOrder();
 
-        filterValues.Categories.Should().BeEquivalentTo(categories.ToDictionary(k => k.Id, v => v.Name));
-        filterValues.Categories.Values.Should().BeInAscendingOrder();
+        filterValues.Categories.Should().BeEquivalentTo(categories);
+        filterValues.Categories.Should().BeInAscendingOrder(cat => cat.Name);
     }
 
     [Fact]

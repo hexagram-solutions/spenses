@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Expenses;
@@ -8,6 +9,7 @@ namespace Spenses.Client.Web.Components.Expenses;
 
 public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 {
+
     private DataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
 
     [Parameter]
@@ -22,6 +24,22 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         OrderBy = nameof(ExpenseDigest.Date),
         SortDirection = SortDirection.Desc
     };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Mediator.Send(new ExpensesState.ExpenseFiltersRequested(HomeId));
+
+        Query.Categories = ExpensesState.ExpenseFilters?.Categories.Select(c => c.Id);
+
+        await base.OnParametersSetAsync();
+    }
+
+    private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
+    {
+        Query.Categories = categoryIds.ToArray();
+
+        return DataGridRef.Reload();
+    }
 
     private bool CustomFilterHandler(ExpenseDigest expense)
     {
@@ -60,11 +78,4 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
     {
         return Task.CompletedTask;
     }
-
-    //protected override async Task OnInitializedAsync()
-    //{
-    //    await Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query));
-
-    //    await base.OnInitializedAsync();
-    //}
 }
