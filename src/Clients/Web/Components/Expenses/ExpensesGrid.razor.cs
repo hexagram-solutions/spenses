@@ -30,13 +30,21 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         await Mediator.Send(new ExpensesState.ExpenseFiltersRequested(HomeId));
 
         Query.Categories = ExpensesState.ExpenseFilters?.Categories.Select(c => c.Id);
+        Query.Tags = ExpensesState.ExpenseFilters?.Tags;
 
         await base.OnParametersSetAsync();
     }
 
     private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
     {
-        Query.Categories = categoryIds.ToArray();
+        Query.Categories = categoryIds;
+
+        return DataGridRef.Reload();
+    }
+
+    private Task OnTagFilter(IEnumerable<string> tags)
+    {
+        Query.Tags = tags;
 
         return DataGridRef.Reload();
     }

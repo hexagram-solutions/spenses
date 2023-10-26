@@ -34,6 +34,22 @@
                                     </DropdownList>
                                 </Div>
                             </Column>
+                            <Column ColumnSize="ColumnSize.IsAuto">
+                                <Div Flex="Flex.AlignItems.Start">
+                                    <DropdownList TItem="string"
+                                                  TValue="string"
+                                                  Data="@ExpensesState.ExpenseFilters?.Tags"
+                                                  TextField="@(item => item)"
+                                                  ValueField="@(item => item)"
+                                                  SelectionMode="DropdownListSelectionMode.Checkbox"
+                                                  Color="Color.Info"
+                                                  Disabled="@(ExpensesState.ExpenseFiltersRequesting)"
+                                                  SelectedValuesChanged="OnTagFilter"
+                                                  SelectedValues="@(Query.Tags?.ToList())">
+                                        Tags
+                                    </DropdownList>
+                                </Div>
+                            </Column>
                         </Row>
                     </Column>
                 </Row>

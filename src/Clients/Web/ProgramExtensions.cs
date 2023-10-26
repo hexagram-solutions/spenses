@@ -50,7 +50,10 @@ public static class ProgramExtensions
             where T : class
         {
             var clientBuilder = services
-                .AddRefitClient<T>()
+                .AddRefitClient<T>(_ => new RefitSettings
+                {
+                    CollectionFormat = CollectionFormat.Multi
+                })
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
                 .AddHttpMessageHandler<BearerTokenAuthenticationHandler>();
 
