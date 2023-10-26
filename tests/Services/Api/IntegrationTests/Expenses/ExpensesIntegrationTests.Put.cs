@@ -12,8 +12,8 @@ public partial class ExpensesIntegrationTests
 
         var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            PageNumber = 1,
-            PageSize = 10
+            Skip = 0,
+            Take = 10
         })).Content!.Items.First();
 
         var properties = new ExpenseProperties

@@ -12,8 +12,8 @@ public record FilteredExpensesQuery : PagedQuery<ExpenseDigest>
     public DateOnly? MaxDate { get; set; }
 
     [Description("Tags to filter expenses by")]
-    public string[]? Tags { get; set; }
+    public IEnumerable<string>? Tags { get; set; }
 
     [Description("Identifiers of categories to filter expenses by")]
-    public Guid[]? Categories { get; set; }
+    public IEnumerable<Guid>? Categories { get; set; }
 }

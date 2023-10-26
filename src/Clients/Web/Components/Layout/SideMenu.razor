@@ -22,14 +22,13 @@
                 }
                 else
                 {
-                    @foreach (var home in HomeState.Homes!)
+                    @foreach (var home in HomeState.Homes)
                     {
-                        <BarDropdown>
+                        <BarDropdown Visible>
                             <BarDropdownToggle>
                                 <BarIcon IconName="IconName.Home" IconSize="IconSize.Small" Margin="Margin.Is1.FromEnd"/>
                                 @home.Name
                             </BarDropdownToggle>
-                            @*TODO: bind-show to route*@
                             <BarDropdownMenu>
                                 <BarDropdownItem To="@(Routes.Homes.Dashboard(home.Id))" Match="Match.All">
                                     <BarIcon IconName="IconName.Dashboard"/>
@@ -71,11 +70,10 @@
 
     HomeState HomeState => GetState<HomeState>();
 
-    private Home? CurrentHome => HomeState.CurrentHome;
-
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        return Mediator.Send(new HomeState.HomesRequested());
+        await Mediator.Send(new HomeState.HomesRequested());
+        await base.OnInitializedAsync();
     }
 
     private Task ShowCreateHomeModal()

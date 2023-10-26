@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using Spenses.Application.Models.ExpenseCategories;
 
 namespace Spenses.Application.Models.Expenses;
 
 public record ExpenseFilters
 {
     [Required]
-    public string[] Tags { get; set; } = Array.Empty<string>();
+    public IEnumerable<string> Tags { get; set; } = Enumerable.Empty<string>();
 
     [Required]
-    public Dictionary<Guid, string> Categories { get; set; } = new();
+    public IEnumerable<ExpenseCategory> Categories { get; set; } = Enumerable.Empty<ExpenseCategory>();
 }

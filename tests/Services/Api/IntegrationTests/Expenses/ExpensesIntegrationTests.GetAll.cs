@@ -12,8 +12,8 @@ public partial class ExpensesIntegrationTests
 
         var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            PageNumber = 1,
-            PageSize = 25
+            Skip = 0,
+            Take = 25
         })).Content!.Items;
 
         var distinctTags = expenses
@@ -27,8 +27,8 @@ public partial class ExpensesIntegrationTests
         filterValues.Tags.Should().BeEquivalentTo(distinctTags);
         filterValues.Tags.Should().BeInAscendingOrder();
 
-        filterValues.Categories.Should().BeEquivalentTo(categories.ToDictionary(k => k.Id, v => v.Name));
-        filterValues.Categories.Values.Should().BeInAscendingOrder();
+        filterValues.Categories.Should().BeEquivalentTo(categories);
+        filterValues.Categories.Should().BeInAscendingOrder(cat => cat.Name);
     }
 
     [Fact]
@@ -49,8 +49,8 @@ public partial class ExpensesIntegrationTests
 
         var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            PageNumber = 1,
-            PageSize = 25,
+            Skip = 0,
+            Take = 25,
             Tags = tags
         })).Content!.Items;
 
@@ -71,8 +71,8 @@ public partial class ExpensesIntegrationTests
 
         var unfilteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            PageNumber = 1,
-            PageSize = 100
+            Skip = 0,
+            Take = 100
         })).Content!.Items.ToList();
 
         var earliestExpenseDate = unfilteredExpenses.MinBy(x => x.Date)!.Date;
@@ -83,8 +83,8 @@ public partial class ExpensesIntegrationTests
 
         var filteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            PageNumber = 1,
-            PageSize = 100,
+            Skip = 0,
+            Take = 100,
             MinDate = minDateFilterValue,
             MaxDate = maxDateFilterValue
         })).Content!.Items;
@@ -103,16 +103,16 @@ public partial class ExpensesIntegrationTests
 
         var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            PageNumber = 1,
-            PageSize = 100
+            Skip = 0,
+            Take = 100
         })).Content!.Items;
 
         var expense = expenses.First(e => e.CategoryId != null);
 
         var filteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            PageNumber = 1,
-            PageSize = 100,
+            Skip = 0,
+            Take = 100,
             Categories = new[] { expense.CategoryId.GetValueOrDefault() }
         })).Content!.Items.ToList();
 
@@ -130,8 +130,8 @@ public partial class ExpensesIntegrationTests
 
         var query = new FilteredExpensesQuery
         {
-            PageNumber = 1,
-            PageSize = 25,
+            Skip = 0,
+            Take = 25,
             OrderBy = nameof(ExpenseDigest.Amount),
             SortDirection = SortDirection.Asc
         };

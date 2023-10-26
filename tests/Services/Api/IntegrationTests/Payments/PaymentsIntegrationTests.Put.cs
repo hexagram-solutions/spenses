@@ -12,8 +12,8 @@ public partial class PaymentsIntegrationTests
 
         var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentQuery
         {
-            PageNumber = 1,
-            PageSize = 100
+            Skip = 0,
+            Take = 100
         })).Content!.Items.First();
 
         var properties = new PaymentProperties

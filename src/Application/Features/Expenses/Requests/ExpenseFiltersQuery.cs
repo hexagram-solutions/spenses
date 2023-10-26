@@ -1,8 +1,11 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Features.Homes.Authorization;
+using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Application.Models.Expenses;
 using Spenses.Resources.Relational;
 
@@ -16,10 +19,12 @@ public record ExpenseFiltersQuery(Guid HomeId) : IAuthorizedRequest<ExpenseFilte
 public class ExpenseFiltersQueryHandler : IRequestHandler<ExpenseFiltersQuery, ExpenseFilters>
 {
     private readonly ApplicationDbContext _db;
+    private readonly IMapper _mapper;
 
-    public ExpenseFiltersQueryHandler(ApplicationDbContext db)
+    public ExpenseFiltersQueryHandler(ApplicationDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     public async Task<ExpenseFilters> Handle(ExpenseFiltersQuery request, CancellationToken cancellationToken)
@@ -33,7 +38,8 @@ public class ExpenseFiltersQueryHandler : IRequestHandler<ExpenseFiltersQuery, E
         var categories = await _db.ExpenseCategories
             .Where(e => e.HomeId == request.HomeId)
             .OrderBy(ec => ec.Name)
-            .ToDictionaryAsync(k => k.Id, v => v.Name, cancellationToken);
+            .ProjectTo<ExpenseCategory>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
 
         return new ExpenseFilters { Tags = uniqueTags.OrderBy(x => x).ToArray(), Categories = categories };
     }

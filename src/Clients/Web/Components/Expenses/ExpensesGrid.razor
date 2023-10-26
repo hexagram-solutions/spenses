@@ -1,55 +1,123 @@
 ﻿@using Spenses.Client.Web.Infrastructure
+@using Spenses.Application.Models.ExpenseCategories
 @using Spenses.Application.Models.Expenses
+@using System.Globalization
 @inherits BlazorState.BlazorStateComponent
 
 <Row>
-  <Column ColumnSize="ColumnSize.Is12">
-    <Card Margin="@ThemeStyles.CardMargin" Shadow="@ThemeStyles.CardShadow">
-      <CardBody>
-        <Row>
-          <Column ColumnSize="ColumnSize.Is8.OnTablet">
-            <Row>
-              <Column ColumnSize="ColumnSize.IsAuto">
-                <Button Type="ButtonType.Link" To="#" Color="Color.Danger" Margin="Margin.Is2.FromBottom">
-                  <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd"/>
-                  Add Expense
-                </Button>
-              </Column>
-            </Row>
-          </Column>
-        </Row>
-        <DataGrid @ref="_dataGridRef"
-                  TItem="ExpenseDigest"
-                  Data="ExpensesState.Expenses.Items"
-                  Responsive
-                  PageSize="Query.PageSize"
-                  CurrentPage="Query.PageNumber"
-                  ShowPager
-                  ShowPageSizes
-                  CustomFilter="@CustomFilterHandler">
-          <DataGridColumns>
-            <DataGridColumn TItem="ExpenseDigest" Field="@nameof(ExpenseDigest.Date)" Caption="Date" DisplayFormat="{0:yyyy-MM-dd}"/>
-            <DataGridNumericColumn TItem="ExpenseDigest" Field="@nameof(ExpenseDigest.Amount)" Caption="Amount" DisplayFormat="{0:C}"/>
-            <DataGridColumn TItem="ExpenseDigest" Field="@nameof(ExpenseDigest.PaidByMemberName)" Caption="Paid by"/>
-            <DataGridColumn TItem="ExpenseDigest" Field="@nameof(ExpenseDigest.CategoryName)" Caption="Category"/>
-            <DataGridColumn TItem="ExpenseDigest" Field="@nameof(ExpenseDigest.Tags)" Caption="Tags"/>
-            <DataGridColumn TItem="ExpenseDigest" Field="@nameof(ExpenseDigest.Id)" Caption="Action" TextAlignment="TextAlignment.End" Width="140px">
-              <DisplayTemplate>
-                <Tooltip Text="Edit" Inline>
-                  <Button Size="Size.Small" Clicked="@ToEdit">
-                    <Icon Name="IconName.Edit"/>
-                  </Button>
-                </Tooltip>
-                <Tooltip Text="Delete" Inline>
-                  <Button Size="Size.Small" Clicked="@ToDelete">
-                    <Icon Name="IconName.Delete"/>
-                  </Button>
-                </Tooltip>
-              </DisplayTemplate>
-            </DataGridColumn>
-          </DataGridColumns>
-        </DataGrid>
-      </CardBody>
-    </Card>
-  </Column>
+    <Column ColumnSize="ColumnSize.Is12">
+        <Card Margin="@ThemeStyles.CardMargin" Shadow="@ThemeStyles.CardShadow">
+            <CardBody>
+                <Row>
+                    <Column ColumnSize="ColumnSize.Is8.OnTablet">
+                        <Row>
+                            <Column ColumnSize="ColumnSize.IsAuto">
+                                <Button Type="ButtonType.Button" To="#" Color="Color.Primary" Margin="Margin.Is2.FromBottom">
+                                    <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd"/>
+                                    New Expense
+                                </Button>
+                            </Column>
+                            <Column ColumnSize="ColumnSize.IsAuto">
+                                <Div Flex="Flex.AlignItems.Start">
+                                    <DropdownList
+                                        TItem="ExpenseCategory"
+                                        TValue="Guid"
+                                        Data="@ExpensesState.ExpenseFilters?.Categories"
+                                        TextField="@(item => item.Name)"
+                                        ValueField="@(item => item.Id)"
+                                        SelectionMode="DropdownListSelectionMode.Checkbox"
+                                        Color="Color.Info"
+                                        Disabled="@(ExpensesState.ExpenseFiltersRequesting)"
+                                        SelectedValuesChanged="OnCategoryFilter"
+                                        SelectedValues="@(Query.Categories?.ToList())">
+                                        Categories
+                                    </DropdownList>
+                                </Div>
+                            </Column>
+                            <Column ColumnSize="ColumnSize.IsAuto">
+                                <Div Flex="Flex.AlignItems.Start">
+                                    <DropdownList TItem="string"
+                                                  TValue="string"
+                                                  Data="@ExpensesState.ExpenseFilters?.Tags"
+                                                  TextField="@(item => item)"
+                                                  ValueField="@(item => item)"
+                                                  SelectionMode="DropdownListSelectionMode.Checkbox"
+                                                  Color="Color.Info"
+                                                  Disabled="@(ExpensesState.ExpenseFiltersRequesting)"
+                                                  SelectedValuesChanged="OnTagFilter"
+                                                  SelectedValues="@(Query.Tags?.ToList())">
+                                        Tags
+                                    </DropdownList>
+                                </Div>
+                            </Column>
+                        </Row>
+                    </Column>
+                </Row>
+                <DataGrid @ref="DataGridRef"
+                          TItem="ExpenseDigest"
+                          Data="ExpensesState.Expenses?.Items"
+                          ReadData="OnDataGridReadData"
+                          Responsive
+                          Sortable
+                          Striped
+                          Virtualize
+                          LoadingTemplate="_loadingIcon"
+                          EmptyTemplate="_loadingIcon"
+                          TotalItems="ExpensesState.Expenses.TotalCount"
+                          SortMode="DataGridSortMode.Single"
+                          CustomFilter="@CustomFilterHandler">
+                    <DataGridColumns>
+                        <DataGridColumn
+                            TItem="ExpenseDigest"
+                            Field="@nameof(ExpenseDigest.Date)"
+                            Caption="Date"
+                            DisplayFormat="{0:yyyy-MM-dd}"/>
+                        <DataGridNumericColumn
+                            TItem="ExpenseDigest"
+                            Field="@nameof(ExpenseDigest.Amount)"
+                            Caption="Amount"
+                            DisplayFormat="{0:C}"
+                            DisplayFormatProvider="@CultureInfo.CurrentCulture"/>
+                        <DataGridColumn
+                            TItem="ExpenseDigest"
+                            Field="@nameof(ExpenseDigest.PaidByMemberName)"
+                            Caption="Paid by"/>
+                        <DataGridColumn
+                            TItem="ExpenseDigest"
+                            Field="@nameof(ExpenseDigest.CategoryName)"
+                            Caption="Category"/>
+                        <DataGridColumn
+                            TItem="ExpenseDigest"
+                            Field="@nameof(ExpenseDigest.Tags)"
+                            Caption="Tags"/>
+                        <DataGridColumn
+                            Field="@nameof(ExpenseDigest.Id)"
+                            Caption="Action"
+                            TextAlignment="TextAlignment.End"
+                            Width="140px"
+                            Sortable="false">
+                            <DisplayTemplate>
+                                <Tooltip Text="Edit" Inline>
+                                    <Button Size="Size.Small" Clicked="@ToEdit">
+                                        <Icon Name="IconName.Edit"/>
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip Text="Delete" Inline>
+                                    <Button Size="Size.Small" Clicked="@ToDelete">
+                                        <Icon Name="IconName.Delete"/>
+                                    </Button>
+                                </Tooltip>
+                            </DisplayTemplate>
+                        </DataGridColumn>
+                    </DataGridColumns>
+                </DataGrid>
+            </CardBody>
+        </Card>
+    </Column>
 </Row>
+
+@code {
+
+    RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="width:32px; height: 32px"/>;
+
+}

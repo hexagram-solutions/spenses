@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Expenses;
@@ -8,7 +9,8 @@ namespace Spenses.Client.Web.Components.Expenses;
 
 public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 {
-    private DataGrid<ExpenseDigest> _dataGridRef;
+
+    private DataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
 
     [Parameter]
     public Guid HomeId { get; set; }
@@ -17,11 +19,35 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 
     private FilteredExpensesQuery Query { get; set; } = new()
     {
-        PageNumber = 1,
-        PageSize = 25,
+        Skip = 0,
+        Take = 25,
         OrderBy = nameof(ExpenseDigest.Date),
         SortDirection = SortDirection.Desc
     };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Mediator.Send(new ExpensesState.ExpenseFiltersRequested(HomeId));
+
+        Query.Categories = ExpensesState.ExpenseFilters?.Categories.Select(c => c.Id);
+        Query.Tags = ExpensesState.ExpenseFilters?.Tags;
+
+        await base.OnParametersSetAsync();
+    }
+
+    private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
+    {
+        Query.Categories = categoryIds;
+
+        return DataGridRef.Reload();
+    }
+
+    private Task OnTagFilter(IEnumerable<string> tags)
+    {
+        Query.Tags = tags;
+
+        return DataGridRef.Reload();
+    }
 
     private bool CustomFilterHandler(ExpenseDigest expense)
     {
@@ -43,6 +69,13 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 
         //return valid;
     }
+    private async Task OnDataGridReadData(DataGridReadDataEventArgs<ExpenseDigest> args)
+    {
+        Query.Skip = args.VirtualizeOffset;
+        Query.Take = args.VirtualizeCount;
+
+        await Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query));
+    }
 
     private Task ToEdit()
     {
@@ -52,12 +85,5 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
     private Task ToDelete()
     {
         return Task.CompletedTask;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query));
-
-        await base.OnInitializedAsync();
     }
 }

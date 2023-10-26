@@ -24,7 +24,7 @@ public partial class ExpensesState
         {
             ExpenseState.ExpensesRequesting = true;
 
-            var expensesResponse = (await _expenses.GetExpenses(aAction.HomeId, aAction.Query));
+            var expensesResponse = await _expenses.GetExpenses(aAction.HomeId, aAction.Query);
 
             if (!expensesResponse.IsSuccessStatusCode)
                 throw new NotImplementedException();

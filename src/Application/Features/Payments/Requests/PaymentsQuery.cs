@@ -51,8 +51,8 @@ public class PaymentsQueryHandler : IRequestHandler<PaymentsQuery, PagedResult<P
         var totalCount = await query.CountAsync(cancellationToken);
 
         var items = await query
-            .Skip((request.PageNumber - 1) * request.PageSize)
-            .Take(request.PageSize)
+            .Skip(request.Skip)
+            .Take(request.Take)
             .ToListAsync(cancellationToken);
 
         return new PagedResult<PaymentDigest>(totalCount, items);
