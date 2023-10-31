@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Expenses;
@@ -9,8 +8,11 @@ namespace Spenses.Client.Web.Components.Expenses;
 
 public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 {
-
     private DataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
+
+    private IReadOnlyList<DateOnly?>? FilterDates { get; set; }
+
+    private VirtualizeOptions VirtualizeOptions { get; set; } = new() { DataGridHeight = "750px" };
 
     [Parameter]
     public Guid HomeId { get; set; }
@@ -29,9 +31,6 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
     {
         await Mediator.Send(new ExpensesState.ExpenseFiltersRequested(HomeId));
 
-        Query.Categories = ExpensesState.ExpenseFilters?.Categories.Select(c => c.Id);
-        Query.Tags = ExpensesState.ExpenseFilters?.Tags;
-
         await base.OnParametersSetAsync();
     }
 
@@ -49,32 +48,65 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         return DataGridRef.Reload();
     }
 
-    private bool CustomFilterHandler(ExpenseDigest expense)
+    private Task OnDatesFilterChanged(IReadOnlyList<DateOnly?> dateValues)
     {
-        return true;
-        //var hasSearchValue = !string.IsNullOrEmpty(searchValue);
-        //var hasSearchCategoryValue = !string.IsNullOrEmpty(searchCategoryValue);
+        var dates = dateValues.OrderBy(x => x).ToList();
 
-        //if (!hasSearchValue && !hasSearchCategoryValue)
-        //    return true;
+        Query.MinDate = dates.FirstOrDefault();
+        Query.MaxDate = dates.LastOrDefault();
 
-        //var valid = true;
-        //if (hasSearchValue)
-        //    valid = expense.Name?.Contains(searchValue, StringComparison.OrdinalIgnoreCase) == true
-        //        || expense.Description?.Contains(searchValue, StringComparison.OrdinalIgnoreCase) == true
-        //        || expense.Price?.Contains(searchValue, StringComparison.OrdinalIgnoreCase) == true;
+        FilterDates = dateValues;
 
-        //if (hasSearchCategoryValue)
-        //    valid = valid & expense.Category == searchCategoryValue;
-
-        //return valid;
+        return DataGridRef.Reload();
     }
-    private async Task OnDataGridReadData(DataGridReadDataEventArgs<ExpenseDigest> args)
+
+    private Task OnMinDateFilter(DateOnly? date)
+    {
+        Query.MinDate = date;
+
+        return DataGridRef.Reload();
+    }
+
+    private Task OnMaxDateFilter(DateOnly? date)
+    {
+        Query.MaxDate = date;
+
+        return DataGridRef.Reload();
+    }
+
+    private Task ClearFilters()
+    {
+        Query.Tags = null;
+        Query.Categories = null;
+        Query.MinDate = null;
+        Query.MaxDate = null;
+
+        FilterDates = null;
+
+        return DataGridRef.Reload();
+    }
+
+    private Task OnDataGridSortChanged(DataGridSortChangedEventArgs args)
+    {
+        Query.SortDirection = args.SortDirection switch
+        {
+            Blazorise.SortDirection.Default => null,
+            Blazorise.SortDirection.Ascending => SortDirection.Asc,
+            Blazorise.SortDirection.Descending => SortDirection.Desc,
+            _ => throw new ArgumentOutOfRangeException(nameof(args), args.SortDirection, null)
+        };
+
+        Query.OrderBy = args.FieldName;
+
+        return DataGridRef.Reload();
+    }
+
+    private Task OnDataGridReadData(DataGridReadDataEventArgs<ExpenseDigest> args)
     {
         Query.Skip = args.VirtualizeOffset;
         Query.Take = args.VirtualizeCount;
 
-        await Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query));
+        return Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query), args.CancellationToken);
     }
 
     private Task ToEdit()

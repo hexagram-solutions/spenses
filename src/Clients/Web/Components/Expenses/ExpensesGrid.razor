@@ -36,81 +36,115 @@
                             </Column>
                             <Column ColumnSize="ColumnSize.IsAuto">
                                 <Div Flex="Flex.AlignItems.Start">
-                                    <DropdownList TItem="string"
-                                                  TValue="string"
-                                                  Data="@ExpensesState.ExpenseFilters?.Tags"
-                                                  TextField="@(item => item)"
-                                                  ValueField="@(item => item)"
-                                                  SelectionMode="DropdownListSelectionMode.Checkbox"
-                                                  Color="Color.Info"
-                                                  Disabled="@(ExpensesState.ExpenseFiltersRequesting)"
-                                                  SelectedValuesChanged="OnTagFilter"
-                                                  SelectedValues="@(Query.Tags?.ToList())">
+                                    <DropdownList
+                                        TItem="string"
+                                        TValue="string"
+                                        Data="@ExpensesState.ExpenseFilters?.Tags"
+                                        TextField="@(item => item)"
+                                        ValueField="@(item => item)"
+                                        SelectionMode="DropdownListSelectionMode.Checkbox"
+                                        Color="Color.Info"
+                                        Disabled="@(ExpensesState.ExpenseFiltersRequesting)"
+                                        SelectedValuesChanged="OnTagFilter">
                                         Tags
                                     </DropdownList>
                                 </Div>
                             </Column>
+                            <Column ColumnSize="ColumnSize.IsAuto">
+                                <Div Flex="Flex.AlignItems.Start">
+                                    <Addons>
+                                        <Addon AddonType="AddonType.Start">
+                                            <AddonLabel>Dates</AddonLabel>
+                                        </Addon>
+                                        <Addon AddonType="AddonType.Body">
+                                            <DatePicker
+                                                TValue="DateOnly?"
+                                                Dates="FilterDates"
+                                                InputMode="DateInputMode.Date"
+                                                SelectionMode="DateInputSelectionMode.Range"
+                                                DatesChanged="OnDatesFilterChanged"
+                                                Placeholder="Select a date range" />
+                                        </Addon>
+                                    </Addons>
+                                </Div>
+                            </Column>
                         </Row>
                     </Column>
+                    <Column ColumnSize="ColumnSize.Is4.OnTablet">
+                        <Div TextAlignment="TextAlignment.End">
+                            <Button Type="ButtonType.Button"
+                                    Color="Color.Warning"
+                                    Margin="Margin.Is2.FromBottom"
+                                    Clicked="@ClearFilters">
+                                <Icon Name="IconName.Clear" Margin="Margin.Is2.FromEnd" />
+                                Clear filters
+                            </Button>
+                        </Div>
+                    </Column>
                 </Row>
-                <DataGrid @ref="DataGridRef"
-                          TItem="ExpenseDigest"
-                          Data="ExpensesState.Expenses?.Items"
-                          ReadData="OnDataGridReadData"
-                          Responsive
-                          Sortable
-                          Striped
-                          Virtualize
-                          LoadingTemplate="_loadingIcon"
-                          EmptyTemplate="_loadingIcon"
-                          TotalItems="ExpensesState.Expenses.TotalCount"
-                          SortMode="DataGridSortMode.Single"
-                          CustomFilter="@CustomFilterHandler">
-                    <DataGridColumns>
-                        <DataGridColumn
-                            TItem="ExpenseDigest"
-                            Field="@nameof(ExpenseDigest.Date)"
-                            Caption="Date"
-                            DisplayFormat="{0:yyyy-MM-dd}"/>
-                        <DataGridNumericColumn
-                            TItem="ExpenseDigest"
-                            Field="@nameof(ExpenseDigest.Amount)"
-                            Caption="Amount"
-                            DisplayFormat="{0:C}"
-                            DisplayFormatProvider="@CultureInfo.CurrentCulture"/>
-                        <DataGridColumn
-                            TItem="ExpenseDigest"
-                            Field="@nameof(ExpenseDigest.PaidByMemberName)"
-                            Caption="Paid by"/>
-                        <DataGridColumn
-                            TItem="ExpenseDigest"
-                            Field="@nameof(ExpenseDigest.CategoryName)"
-                            Caption="Category"/>
-                        <DataGridColumn
-                            TItem="ExpenseDigest"
-                            Field="@nameof(ExpenseDigest.Tags)"
-                            Caption="Tags"/>
-                        <DataGridColumn
-                            Field="@nameof(ExpenseDigest.Id)"
-                            Caption="Action"
-                            TextAlignment="TextAlignment.End"
-                            Width="140px"
-                            Sortable="false">
-                            <DisplayTemplate>
-                                <Tooltip Text="Edit" Inline>
-                                    <Button Size="Size.Small" Clicked="@ToEdit">
-                                        <Icon Name="IconName.Edit"/>
-                                    </Button>
-                                </Tooltip>
-                                <Tooltip Text="Delete" Inline>
-                                    <Button Size="Size.Small" Clicked="@ToDelete">
-                                        <Icon Name="IconName.Delete"/>
-                                    </Button>
-                                </Tooltip>
-                            </DisplayTemplate>
-                        </DataGridColumn>
-                    </DataGridColumns>
-                </DataGrid>
+                <Row>
+                    <DataGrid @ref="DataGridRef"
+                              TItem="ExpenseDigest"
+                              Data="ExpensesState.Expenses?.Items"
+                              ReadData="OnDataGridReadData"
+                              SortChanged="OnDataGridSortChanged"
+                              Responsive
+                              Sortable
+                              Striped
+                              Virtualize
+                              LoadingTemplate="_loadingIcon"
+                              EmptyTemplate="_loadingIcon"
+                              TotalItems="ExpensesState.Expenses?.TotalCount"
+                              SortMode="DataGridSortMode.Single"
+                              VirtualizeOptions="VirtualizeOptions">
+                        <DataGridColumns>
+                            <DataGridColumn
+                                TItem="ExpenseDigest"
+                                Field="@nameof(ExpenseDigest.Date)"
+                                Caption="Date"
+                                DisplayFormat="{0:yyyy-MM-dd}"
+                                SortDirection="SortDirection.Descending" />
+                            <DataGridNumericColumn
+                                TItem="ExpenseDigest"
+                                Field="@nameof(ExpenseDigest.Amount)"
+                                Caption="Amount"
+                                DisplayFormat="{0:C}"
+                                DisplayFormatProvider="@CultureInfo.CurrentCulture"/>
+                            <DataGridColumn
+                                TItem="ExpenseDigest"
+                                Field="@nameof(ExpenseDigest.PaidByMemberName)"
+                                Caption="Paid by"/>
+                            <DataGridColumn
+                                TItem="ExpenseDigest"
+                                Field="@nameof(ExpenseDigest.CategoryName)"
+                                Caption="Category"/>
+                            <DataGridColumn
+                                TItem="ExpenseDigest"
+                                Field="@nameof(ExpenseDigest.Tags)"
+                                Caption="Tags"
+                                Sortable="false"/>
+                            <DataGridColumn
+                                Field="@nameof(ExpenseDigest.Id)"
+                                Caption="Action"
+                                TextAlignment="TextAlignment.End"
+                                Width="140px"
+                                Sortable="false">
+                                <DisplayTemplate>
+                                    <Tooltip Text="Edit" Inline>
+                                        <Button Size="Size.Small" Clicked="@ToEdit">
+                                            <Icon Name="IconName.Edit"/>
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip Text="Delete" Inline>
+                                        <Button Size="Size.Small" Clicked="@ToDelete">
+                                            <Icon Name="IconName.Delete"/>
+                                        </Button>
+                                    </Tooltip>
+                                </DisplayTemplate>
+                            </DataGridColumn>
+                        </DataGridColumns>
+                    </DataGrid>
+                </Row>
             </CardBody>
         </Card>
     </Column>
@@ -118,6 +152,7 @@
 
 @code {
 
-    RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="width:32px; height: 32px"/>;
+    RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="width:32px; height 32px"/>;
 
 }
+

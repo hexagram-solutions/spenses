@@ -1,3 +1,4 @@
+using Hexagrams.Extensions.Common;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Expenses;
 
@@ -65,7 +66,7 @@ public partial class ExpensesIntegrationTests
     }
 
     [Fact]
-    public async Task Get_expenses_with_period_filters_yields_expenses_in_range()
+    public async Task Get_expenses_with_date_filters_yields_expenses_in_range()
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
@@ -144,5 +145,33 @@ public partial class ExpensesIntegrationTests
             .Content!.Items;
 
         expenses.Should().BeInDescendingOrder(x => x.Amount);
+    }
+
+    [Fact]
+    public async Task Get_expenses_with_complex_query_yields_expected_expenses()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var filters = (await _expenses.GetExpenseFilters(home.Id)).Content!;
+
+        var query = new FilteredExpensesQuery
+        {
+            Skip = 0,
+            Take = 25,
+            OrderBy = nameof(ExpenseDigest.Date),
+            SortDirection = SortDirection.Desc,
+            Tags = filters.Tags.First().Yield(),
+            Categories = filters.Categories.First().Id.Yield()
+        };
+
+        var expenses = (await _expenses.GetExpenses(home.Id, query)).Content!.Items.ToList();
+
+        expenses.Should().BeInDescendingOrder(x => x.Date);
+
+        expenses.Should().AllSatisfy(x =>
+        {
+            x.Tags.Should().Contain(query.Tags.Single());
+            x.CategoryId.Should().Be(query.Categories.Single());
+        });
     }
 }
