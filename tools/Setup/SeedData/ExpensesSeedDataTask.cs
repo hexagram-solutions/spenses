@@ -23,7 +23,7 @@ public class ExpensesSeedDataTask : ISeedDataTask
 
         foreach (var home in homes)
         {
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 50; i++)
             {
                 var firstTag = Random.Shared.NextItem(sampleTags);
                 var secondTag = Random.Shared.NextItem(sampleTags.Except(firstTag.Yield()));
