@@ -2,47 +2,60 @@
 @using Spenses.Application.Models.Homes
 @inherits BlazorState.BlazorStateComponent
 
-<ModalContent Centered>
-  <ModalHeader>
+<ModalHeader>
     <ModalTitle>New home</ModalTitle>
-  </ModalHeader>
-  <ModalBody>
-    <Validations @ref="@Validations" Mode="ValidationMode.Manual" Model="@Home" HandlerType="typeof(FluentValidationHandler)">
-      <Validation>
-        <Field>
-          <FieldLabel>Name</FieldLabel>
-          <TextEdit @bind-Text="@Home.Name" Placeholder="Enter the name of this home">
-            <Feedback>
-              <ValidationError/>
-            </Feedback>
-          </TextEdit>
-        </Field>
-      </Validation>
-      <Validation>
-        <Field>
-          <FieldLabel>Description</FieldLabel>
-          <TextEdit @bind-Text="@Home.Description" Placeholder="An optional description of this home.">
-            <Feedback>
-              <ValidationError/>
-            </Feedback>
-          </TextEdit>
-        </Field>
+    <CloseButton/>
+</ModalHeader>
+<ModalBody>
+    <Form>
+        <Validations @ref="Validations"
+                     Mode="ValidationMode.Manual"
+                     Model="@Home"
+                     HandlerType="typeof(FluentValidationHandler)">
+            <Validation>
+                <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="Home.Name"
+                                  Placeholder="The name of the home">
+                            <Feedback>
+                                <ValidationError/>
+                            </Feedback>
+                        </TextEdit>
+                    </FieldBody>
+                </Field>
             </Validation>
             <Validation>
                 <Field>
-                  <FieldLabel>Expense period</FieldLabel>
-                  <Select @bind-SelectedValue="@Home.ExpensePeriod" TValue="ExpensePeriod">
-                      <SelectItem Value="ExpensePeriod.Weekly">Weekly</SelectItem>
-                      <SelectItem Value="ExpensePeriod.Monthly">Monthly</SelectItem>
-                  </Select>
-                  <ValidationNone>Enter the default expense period for this home.</ValidationNone>
-                  <ValidationError/>
+                    <FieldLabel>Description</FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="@Home.Description"
+                                  Placeholder="An optional description of this home.">
+                            <Feedback>
+                                <ValidationError/>
+                            </Feedback>
+                        </TextEdit>
+                    </FieldBody>
                 </Field>
             </Validation>
-    </Validations>
-  </ModalBody>
-  <ModalFooter>
-    <Button Color="Color.Secondary" Clicked="@Close">Cancel</Button>
-    <Button Color="Color.Primary" Clicked="@Create">Create</Button>
-  </ModalFooter>
-</ModalContent>
+            <Validation>
+                <Field>
+                    <FieldLabel>Expense period</FieldLabel>
+                    <FieldBody>
+                        <Select @bind-SelectedValue="@Home.ExpensePeriod"
+                                TValue="ExpensePeriod">
+                            <SelectItem Value="ExpensePeriod.Weekly">Weekly</SelectItem>
+                            <SelectItem Value="ExpensePeriod.Monthly">Monthly</SelectItem>
+                        </Select>
+                        <ValidationNone>Enter the default expense period for this home.</ValidationNone>
+                        <ValidationError/>
+                    </FieldBody>
+                </Field>
+            </Validation>
+        </Validations>
+    </Form>
+</ModalBody>
+<ModalFooter>
+    <Button Color="Color.Secondary" Clicked="Close">Cancel</Button>
+    <Button Color="Color.Primary" Clicked="Create">Create</Button>
+</ModalFooter>
