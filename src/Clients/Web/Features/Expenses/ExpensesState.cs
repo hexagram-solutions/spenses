@@ -6,6 +6,10 @@ namespace Spenses.Client.Web.Features.Expenses;
 
 public partial class ExpensesState : State<ExpensesState>
 {
+    public Expense? CurrentExpense { get; private set; }
+
+    public bool ExpenseCreating { get; private set; }
+
     public PagedResult<ExpenseDigest>? Expenses { get; private set; }
 
     public bool ExpensesRequesting { get; private set; }

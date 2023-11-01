@@ -17,8 +17,8 @@
 
     HomeState HomeState => GetState<HomeState>();
 
-    protected override async Task OnParametersSetAsync()
+    protected override Task OnParametersSetAsync()
     {
-        await Mediator.Send(new HomeState.HomeSelected(HomeId));
+        return Mediator.Send(new HomeState.HomeSelected(HomeId));
     }
 }

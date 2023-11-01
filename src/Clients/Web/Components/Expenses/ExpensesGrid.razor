@@ -12,9 +12,13 @@
                     <Column ColumnSize="ColumnSize.Is8.OnTablet">
                         <Row>
                             <Column ColumnSize="ColumnSize.IsAuto">
-                                <Button Type="ButtonType.Button" To="#" Color="Color.Primary" Margin="Margin.Is2.FromBottom">
+                                <Button Type="ButtonType.Button"
+                                        To="#"
+                                        Color="Color.Primary"
+                                        Margin="Margin.Is2.FromBottom"
+                                        Clicked="OnAddExpenseClicked">
                                     <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd"/>
-                                    New Expense
+                                    Add Expense
                                 </Button>
                             </Column>
                             <Column ColumnSize="ColumnSize.IsAuto">
@@ -155,4 +159,5 @@
     RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="width:32px; height 32px"/>;
 
 }
+
 

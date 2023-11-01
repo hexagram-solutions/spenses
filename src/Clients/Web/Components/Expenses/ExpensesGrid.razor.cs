@@ -2,12 +2,16 @@ using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Expenses;
 using Spenses.Client.Web.Features.Expenses;
+using Spenses.Client.Web.Features.Homes;
 using SortDirection = Spenses.Application.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Expenses;
 
 public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 {
+    [Inject]
+    public IModalService ModalService { get; set; } = null!;
+
     private DataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
 
     private IReadOnlyList<DateOnly?>? FilterDates { get; set; }
@@ -21,8 +25,6 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 
     private FilteredExpensesQuery Query { get; set; } = new()
     {
-        Skip = 0,
-        Take = 25,
         OrderBy = nameof(ExpenseDigest.Date),
         SortDirection = SortDirection.Desc
     };
@@ -60,20 +62,6 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         return DataGridRef.Reload();
     }
 
-    private Task OnMinDateFilter(DateOnly? date)
-    {
-        Query.MinDate = date;
-
-        return DataGridRef.Reload();
-    }
-
-    private Task OnMaxDateFilter(DateOnly? date)
-    {
-        Query.MaxDate = date;
-
-        return DataGridRef.Reload();
-    }
-
     private Task ClearFilters()
     {
         Query.Tags = null;
@@ -107,6 +95,16 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         Query.Take = args.VirtualizeCount;
 
         return Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query), args.CancellationToken);
+    }
+
+    private Task OnCreateModalSaved()
+    {
+        return DataGridRef.Reload();
+    }
+
+    private async Task OnAddExpenseClicked()
+    {
+        await ModalService.Show<CreateExpenseModal>(p => p.Add(x => x.OnSave, OnCreateModalSaved));
     }
 
     private Task ToEdit()

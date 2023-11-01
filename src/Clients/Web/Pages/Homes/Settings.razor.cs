@@ -16,6 +16,11 @@ public partial class Settings : BlazorStateComponent
 
     private Home Home => HomeState.CurrentHome!;
 
+    protected override Task OnParametersSetAsync()
+    {
+        return Mediator.Send(new HomeState.HomeSelected(HomeId));
+    }
+
     private async Task Save()
     {
         if (!await Validations.ValidateAll())
