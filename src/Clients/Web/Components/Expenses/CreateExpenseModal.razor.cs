@@ -23,6 +23,8 @@ public partial class CreateExpenseModal
 
     private Home Home => GetState<HomeState>().CurrentHome!;
 
+    private ExpensesState ExpensesState => GetState<ExpensesState>();
+
     private Task Close()
     {
         return ModalService.Hide();

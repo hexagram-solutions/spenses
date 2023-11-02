@@ -1,26 +1,26 @@
 ﻿@using Blazorise.FluentValidation
 @inherits BlazorState.BlazorStateComponent
 
-<ModalHeader>
-    <ModalTitle>Add expense</ModalTitle>
-    <CloseButton/>
-</ModalHeader>
-<ModalBody>
-    <Form>
+<LoadingIndicator Visible="ExpensesState.ExpenseCreating">
+    <ModalHeader>
+        <ModalTitle>Add expense</ModalTitle>
+        <CloseButton/>
+    </ModalHeader>
+    <ModalBody>
         <Validations @ref="Validations"
                      Mode="ValidationMode.Manual"
                      Model="@Expense"
                      HandlerType="typeof(FluentValidationHandler)">
             <ExpenseFormFields Expense="Expense"/>
         </Validations>
-    </Form>
-</ModalBody>
-<ModalFooter>
-    <Button Color="Color.Warning" Clicked="Close">
-        Cancel
-    </Button>
-    <Button Color="Color.Primary" Clicked="Create">
-        <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd"/>
-        Add expense
-    </Button>
-</ModalFooter>
+    </ModalBody>
+    <ModalFooter>
+        <Button Color="Color.Warning" Clicked="Close">
+            Cancel
+        </Button>
+        <Button Color="Color.Primary" Clicked="Create">
+            <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd"/>
+            Add expense
+        </Button>
+    </ModalFooter>
+</LoadingIndicator>
