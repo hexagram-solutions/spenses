@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Serialization;
 using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Application.Models.Members;

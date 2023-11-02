@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "dotnet-ef": {
-      "version": "7.0.12",
+      "version": "7.0.13",
       "commands": [
         "dotnet-ef"
       ]
@@ -24,6 +24,12 @@
       "version": "0.6.2",
       "commands": [
         "husky"
+      ]
+    },
+    "nswag.consolecore": {
+      "version": "13.20.0",
+      "commands": [
+        "nswag"
       ]
     }
   }
