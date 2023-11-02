@@ -10,7 +10,7 @@ namespace Spenses.Client.Web.Components.Expenses;
 public partial class CreateExpenseModal
 {
     [Parameter]
-    public Func<Task> OnSave { get; set; }
+    public Func<Task> OnSave { get; set; } = null!;
 
     public ExpenseProperties Expense { get; set; } = new()
     {
@@ -26,9 +26,10 @@ public partial class CreateExpenseModal
 
     private ExpensesState ExpensesState => GetState<ExpensesState>();
 
-    private IEnumerable<ExpenseCategory> Categories => ExpensesState.ExpenseFilters.Categories;
+    private IEnumerable<ExpenseCategory> Categories =>
+        ExpensesState.ExpenseFilters?.Categories ?? Enumerable.Empty<ExpenseCategory>();
 
-    private IEnumerable<string> AvailableTags => ExpensesState.ExpenseFilters.Tags;
+    private IEnumerable<string> AvailableTags => ExpensesState.ExpenseFilters?.Tags ?? Enumerable.Empty<string>();
 
     private List<string> ExpenseTags
     {
