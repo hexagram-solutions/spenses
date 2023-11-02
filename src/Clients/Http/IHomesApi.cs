@@ -6,20 +6,20 @@ namespace Spenses.Client.Http;
 public interface IHomesApi
 {
     [Post("/homes")]
-    Task<ApiResponse<Home>> PostHome(HomeProperties props);
+    Task<IApiResponse<Home>> PostHome(HomeProperties props);
 
     [Get("/homes")]
-    Task<ApiResponse<IEnumerable<Home>>> GetHomes();
+    Task<IApiResponse<IEnumerable<Home>>> GetHomes();
 
     [Get("/homes/{homeId}")]
-    Task<ApiResponse<Home>> GetHome(Guid homeId);
+    Task<IApiResponse<Home>> GetHome(Guid homeId);
 
     [Put("/homes/{homeId}")]
-    Task<ApiResponse<Home>> PutHome(Guid homeId, HomeProperties props);
+    Task<IApiResponse<Home>> PutHome(Guid homeId, HomeProperties props);
 
     [Delete("/homes/{homeId}")]
-    Task DeleteHome(Guid homeId);
+    Task<IApiResponse> DeleteHome(Guid homeId);
 
     [Get("/homes/{homeId}/balance-breakdown")]
-    Task<ApiResponse<BalanceBreakdown>> GetBalanceBreakdown(Guid homeId, DateOnly periodStart, DateOnly periodEnd);
+    Task<IApiResponse<BalanceBreakdown>> GetBalanceBreakdown(Guid homeId, DateOnly periodStart, DateOnly periodEnd);
 }

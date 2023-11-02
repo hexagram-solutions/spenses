@@ -35,12 +35,10 @@ public partial class CreateExpenseModal
         if (!await Validations.ValidateAll())
             return;
 
-        //todo: if we created a new category, delete it if it's not been selected
-
         await Mediator.Send(new ExpensesState.ExpenseCreated(Home.Id, Expense));
 
-        await OnSave();
-
         await Close();
+
+        await OnSave();
     }
 }
