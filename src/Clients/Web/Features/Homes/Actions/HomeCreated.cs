@@ -40,7 +40,7 @@ public partial class HomeState
 
             await _mediator.Send(new HomesRequested(), aCancellationToken);
 
-            _navigationManager.NavigateTo($"homes/{homeResponse.Content.Id}/dashboard");
+            _navigationManager.NavigateTo($"homes/{homeResponse.Content!.Id}/dashboard");
         }
     }
 }

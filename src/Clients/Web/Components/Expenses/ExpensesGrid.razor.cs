@@ -1,6 +1,8 @@
 using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Expenses;
+using Spenses.Application.Models.Homes;
 using Spenses.Client.Web.Features.Expenses;
 using Spenses.Client.Web.Features.Homes;
 using SortDirection = Spenses.Application.Models.Common.SortDirection;
@@ -11,6 +13,9 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
 {
     [Inject]
     public IModalService ModalService { get; set; } = null!;
+
+    [Inject]
+    public IMessageService MessageService { get; set; } = null!;
 
     private DataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
 
@@ -29,11 +34,11 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         SortDirection = SortDirection.Desc
     };
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         await Mediator.Send(new ExpensesState.ExpenseFiltersRequested(HomeId));
 
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
     }
 
     private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
@@ -97,23 +102,35 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         return Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query), args.CancellationToken);
     }
 
-    private Task OnCreateModalSaved()
+    private Task OnExpenseSaved()
     {
         return DataGridRef.Reload();
     }
 
-    private async Task OnAddExpenseClicked()
+    private Task OnAddExpenseClicked()
     {
-        await ModalService.Show<CreateExpenseModal>(p => p.Add(x => x.OnSave, OnCreateModalSaved));
+        return ModalService.Show<CreateExpenseModal>(p => p.Add(x => x.OnSave, OnExpenseSaved));
     }
 
-    private Task ToEdit()
+    private Task OnEditClicked(MouseEventArgs _, Guid expenseId)
     {
-        return Task.CompletedTask;
+        return ModalService.Show<EditExpenseModal>(p =>
+        {
+            p.Add(x => x.ExpenseId, expenseId);
+            p.Add(x => x.OnSave, OnExpenseSaved);
+        });
     }
 
-    private Task ToDelete()
+    private async Task OnDeleteClicked(MouseEventArgs _, ExpenseDigest expense)
     {
-        return Task.CompletedTask;
+        var confirmed = await MessageService.Confirm($"{expense.Amount} paid by {expense.PaidByMemberName} on {expense.Date:O}",
+            "Are you sure you want to delete this expense?");
+
+        if (!confirmed)
+            return;
+
+        await Mediator.Send(new ExpensesState.ExpenseDeleted(HomeId, expense.Id));
+
+        await DataGridRef.Reload();
     }
 }

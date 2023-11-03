@@ -128,6 +128,7 @@
                                 Caption="Tags"
                                 Sortable="false"/>
                             <DataGridColumn
+                                TItem="ExpenseDigest"
                                 Field="@nameof(ExpenseDigest.Id)"
                                 Caption="Action"
                                 TextAlignment="TextAlignment.End"
@@ -135,12 +136,12 @@
                                 Sortable="false">
                                 <DisplayTemplate>
                                     <Tooltip Text="Edit" Inline>
-                                        <Button Size="Size.Small" Clicked="@ToEdit">
+                                        <Button Size="Size.Small" Clicked="@(args => OnEditClicked(args, context.Id))">
                                             <Icon Name="IconName.Edit"/>
                                         </Button>
                                     </Tooltip>
                                     <Tooltip Text="Delete" Inline>
-                                        <Button Size="Size.Small" Clicked="@ToDelete">
+                                        <Button Size="Size.Small" Clicked="@(args => OnDeleteClicked(args, context))">
                                             <Icon Name="IconName.Delete"/>
                                         </Button>
                                     </Tooltip>
@@ -155,9 +156,7 @@
 </Row>
 
 @code {
-
-    RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="width:32px; height 32px"/>;
-
+    RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="width:32px; height:32px"/>;
 }
 
 
