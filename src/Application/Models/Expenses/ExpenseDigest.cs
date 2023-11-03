@@ -20,6 +20,9 @@ public class ExpenseDigest
     public decimal Amount { get; set; }
 
     [Required]
+    public string PaidByMemberId { get; set; } = null!;
+
+    [Required]
     [Orderable]
     public string PaidByMemberName { get; set; } = null!;
 

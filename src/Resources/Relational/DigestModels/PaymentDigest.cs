@@ -5,10 +5,11 @@ using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Resources.Relational.DigestModels;
 
-[BaseTable(nameof(Payment), "c")]
-[JoinedTable(JoinType.Left, nameof(Member), "pbm", "pbm.Id = c.PaidByMemberId")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", "cui.Id = c.CreatedById")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", "mui.Id = c.ModifiedById")]
+[BaseTable(nameof(Payment), "p")]
+[JoinedTable(JoinType.Left, nameof(Member), "pbm", $"pbm.Id = p.{nameof(Payment.PaidByMemberId)}")]
+[JoinedTable(JoinType.Left, nameof(Member), "ptm", $"ptm.Id = p.{nameof(Payment.PaidToMemberId)}")]
+[JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", $"cui.Id = p.{nameof(Payment.CreatedById)}")]
+[JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", $"mui.Id = p.{nameof(Payment.ModifiedById)}")]
 public class PaymentDigest
 {
     public Guid Id { get; set; }
@@ -23,8 +24,17 @@ public class PaymentDigest
 
     public string? Note { get; set; }
 
+    [SourceColumn("pbm", nameof(Member.Id))]
+    public Guid PaidByMemberId { get; set; }
+
     [SourceColumn("pbm", nameof(Member.Name))]
     public string PaidByMemberName { get; set; } = null!;
+
+    [SourceColumn("ptm", nameof(Member.Id))]
+    public Guid PaidToMemberId { get; set; }
+
+    [SourceColumn("ptm", nameof(Member.Name))]
+    public string PaidToMemberName { get; set; } = null!;
 
     [SourceColumn("cui", nameof(UserIdentity.NickName))]
     public string CreatedByUserName { get; set; } = null!;

@@ -20,8 +20,18 @@ public class PaymentDigest
     public string? Note { get; set; }
 
     [Required]
+    public Guid PaidByMemberId { get; set; }
+
+    [Required]
     [Orderable]
     public string PaidByMemberName { get; set; } = null!;
+
+    [Required]
+    public Guid PaidToMemberId { get; set; }
+
+    [Required]
+    [Orderable]
+    public string PaidToMemberName { get; set; } = null!;
 
     [Required]
     public string CreatedByUserName { get; set; } = null!;

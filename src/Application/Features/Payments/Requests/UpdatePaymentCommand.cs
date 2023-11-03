@@ -44,9 +44,13 @@ public class UpdatePaymentCommandHandler : IRequestHandler<UpdatePaymentCommand,
         if (payment.Home.Members.All(m => m.Id != props.PaidByMemberId))
             throw new InvalidRequestException($"Member {props.PaidByMemberId} is not a member of home {homeId}");
 
+        if (payment.Home.Members.All(m => m.Id != props.PaidToMemberId))
+            throw new InvalidRequestException($"Member {props.PaidToMemberId} is not a member of home {homeId}");
+
         _mapper.Map(request.Props, payment);
 
         payment.PaidByMemberId = props.PaidByMemberId;
+        payment.PaidToMemberId = props.PaidToMemberId;
 
         await _db.SaveChangesAsync(cancellationToken);
 

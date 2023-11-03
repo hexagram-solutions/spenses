@@ -21,7 +21,8 @@ public partial class PaymentsIntegrationTests
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Note = "foobar",
-            PaidByMemberId = home.Members.First().Id
+            PaidByMemberId = home.Members[0].Id,
+            PaidToMemberId = home.Members[1].Id
         };
 
         var updatedPaymentResponse = await _payments.PutPayment(home.Id, payment.Id, properties);

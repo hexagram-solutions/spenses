@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231019171238_Initial")]
+    [Migration("20231103213439_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Spenses.Resources.Relational.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.12")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -47,9 +47,6 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -61,6 +58,9 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.Property<string>("ModifiedByUserName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PaidByMemberId")
@@ -111,7 +111,17 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("PaidByMemberId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("PaidByMemberName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PaidToMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("PaidToMemberName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -143,9 +153,6 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("date");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -155,6 +162,9 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<string>("ModifiedById")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("PaidByMemberId")
                         .HasColumnType("uniqueidentifier");
@@ -379,6 +389,9 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<Guid>("PaidByMemberId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("PaidToMemberId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
@@ -388,6 +401,8 @@ namespace Spenses.Resources.Relational.Migrations
                     b.HasIndex("ModifiedById");
 
                     b.HasIndex("PaidByMemberId");
+
+                    b.HasIndex("PaidToMemberId");
 
                     b.ToTable("Payment");
                 });
@@ -439,7 +454,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired();
 
                     b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
-                        .WithMany("PaidExpenses")
+                        .WithMany("ExpensesPaid")
                         .HasForeignKey("PaidByMemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -585,8 +600,14 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired();
 
                     b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidByMember")
-                        .WithMany("Payments")
+                        .WithMany("PaymentsPaid")
                         .HasForeignKey("PaidByMemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.Member", "PaidToMember")
+                        .WithMany("PaymentsReceived")
+                        .HasForeignKey("PaidToMemberId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -597,6 +618,8 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("ModifiedBy");
 
                     b.Navigation("PaidByMember");
+
+                    b.Navigation("PaidToMember");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
@@ -626,9 +649,11 @@ namespace Spenses.Resources.Relational.Migrations
                 {
                     b.Navigation("ExpenseShares");
 
-                    b.Navigation("PaidExpenses");
+                    b.Navigation("ExpensesPaid");
 
-                    b.Navigation("Payments");
+                    b.Navigation("PaymentsPaid");
+
+                    b.Navigation("PaymentsReceived");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>

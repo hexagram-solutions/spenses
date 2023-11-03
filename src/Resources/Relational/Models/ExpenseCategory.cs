@@ -4,7 +4,7 @@ public class ExpenseCategory : AggregateRoot
 {
     public string Name { get; set; } = null!;
 
-    public string? Note { get; set; }
+    public string? Description { get; set; }
 
     public Guid HomeId { get; set; }
 

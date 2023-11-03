@@ -17,6 +17,10 @@ public class Payment : AggregateRoot
 
     public Member PaidByMember { get; set; } = null!;
 
+    public Guid PaidToMemberId { get; set; }
+
+    public Member PaidToMember { get; set; } = null!;
+
     public Guid HomeId { get; set; }
 
     public Home Home { get; set; } = null!;
