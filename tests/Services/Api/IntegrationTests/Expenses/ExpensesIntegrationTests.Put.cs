@@ -18,7 +18,7 @@ public partial class ExpensesIntegrationTests
 
         var properties = new ExpenseProperties
         {
-            Description = "Bar",
+            Note = "Bar",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = new[] { "household" },

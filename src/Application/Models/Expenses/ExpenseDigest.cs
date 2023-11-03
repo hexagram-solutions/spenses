@@ -8,7 +8,7 @@ public class ExpenseDigest
     [Required]
     public Guid Id { get; set; }
 
-    public string? Description { get; set; }
+    public string? Note { get; set; }
 
     [Required]
     [Orderable]

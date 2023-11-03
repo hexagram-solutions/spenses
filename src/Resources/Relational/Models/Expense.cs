@@ -5,7 +5,7 @@ namespace Spenses.Resources.Relational.Models;
 
 public class Expense : AggregateRoot
 {
-    public string? Description { get; set; }
+    public string? Note { get; set; }
 
     public DateOnly Date { get; set; }
 

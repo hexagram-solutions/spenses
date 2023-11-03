@@ -30,7 +30,7 @@ public class ExpensesSeedDataTask : ISeedDataTask
 
                 var expense = new Expense
                 {
-                    Description = faker.Lorem.Sentence(3),
+                    Note = faker.Lorem.Sentence(3),
                     Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 0)),
                     Amount = Random.Shared.NextDecimal(5, 500, 2),
                     PaidByMember = Random.Shared.NextItem(home.Members),

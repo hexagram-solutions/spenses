@@ -9,7 +9,7 @@ namespace Spenses.Application.Models.Expenses;
 
 public abstract record ExpenseBase
 {
-    public string? Description { get; set; }
+    public string? Note { get; set; }
 
     [Required]
     public DateOnly Date { get; set; }

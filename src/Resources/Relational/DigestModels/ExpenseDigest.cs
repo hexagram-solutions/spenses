@@ -16,7 +16,7 @@ public class ExpenseDigest
 
     public Guid HomeId { get; set; }
 
-    public string? Description { get; set; }
+    public string? Note { get; set; }
 
     public DateOnly Date { get; set; }
 

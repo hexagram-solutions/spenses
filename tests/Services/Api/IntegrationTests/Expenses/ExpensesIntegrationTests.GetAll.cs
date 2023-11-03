@@ -41,7 +41,7 @@ public partial class ExpensesIntegrationTests
 
         var expense = (await _expenses.PostExpense(home.Id, new ExpenseProperties
         {
-            Description = "Foo",
+            Note = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = tags,
