@@ -73,8 +73,11 @@
                             <DataGridNumericColumn TItem="PaymentDigest"
                                                    Field="@nameof(PaymentDigest.Amount)"
                                                    Caption="Amount"
-                                                   DisplayFormat="{0:C}"
-                                                   DisplayFormatProvider="@CultureInfo.CurrentCulture"/>
+                                                   TextAlignment="TextAlignment.End">
+                                <DisplayTemplate>
+                                        <samp>@($"{context.Amount:C}")</samp>
+                                </DisplayTemplate>
+                            </DataGridNumericColumn>
                             <DataGridColumn TItem="PaymentDigest"
                                             Field="@nameof(PaymentDigest.PaidByMemberName)"
                                             Caption="Paid by"/>
