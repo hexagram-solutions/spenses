@@ -50,7 +50,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
         payment.HomeId = homeId;
         payment.PaidByMemberId = props.PaidByMemberId;
         payment.PaidToMemberId = props.PaidToMemberId;
-        
+
         home.Payments.Add(payment);
 
         await _db.SaveChangesAsync(cancellationToken);
