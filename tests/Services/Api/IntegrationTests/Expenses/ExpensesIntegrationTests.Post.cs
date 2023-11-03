@@ -45,4 +45,23 @@ public partial class ExpensesIntegrationTests
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task Post_expense_with_invalid_paid_by_member_id_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var properties = new ExpenseProperties
+        {
+            Note = "Foo",
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Tags = new[] { "groceries" },
+            PaidByMemberId = Guid.NewGuid()
+        };
+
+        var createdExpenseResponse = await _expenses.PostExpense(home.Id, properties);
+
+        createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 }
