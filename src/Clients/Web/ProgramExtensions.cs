@@ -85,7 +85,12 @@ public static class ProgramExtensions
     public static IServiceCollection AddBlazoriseComponents(this IServiceCollection services)
     {
         services
-            .AddBlazorise()
+            .AddBlazorise(opts =>
+            {
+                opts.Debounce = true;
+                opts.ProductToken =
+                    "CjxRA3B/NQs+UAVwezY1BlEAc3o0CTxSAXZ8MAg/bjoNJ2ZdYhBVCCo/DD9UPUsNalV8Al44B2ECAWllMit3cWhZPUsvbUBCIgcrLCp+RQdgGQs0D0MUXhMFTlcjVB8lI2QBfiZDIgxMTkI2CAQFfAlHBkkQN0pqaxBVNSNKe3kMBiBhdF5aEmIkPjFWPxN7FiFIUVVIdS4fYAxhTHpuO3N/YxlcJQN3TFomcSkbXX95MGcwDDEMVDJgKR53UU4SfTUPTV9cF1U2LGpvTVREKj1SUjkTVnA7d21bVwcXKnZPNA9FJHppYD8zHxAbN3kx";
+            })
             .AddBootstrap5Providers()
             .AddFontAwesomeIcons()
             .AddBlazoriseFluentValidation();

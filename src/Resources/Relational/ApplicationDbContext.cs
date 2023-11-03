@@ -56,7 +56,7 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Expense>()
             .HasOne(x => x.PaidByMember)
-            .WithMany(x => x.PaidExpenses)
+            .WithMany(x => x.ExpensesPaid)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ExpenseShare>()
@@ -69,7 +69,12 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<Payment>()
             .HasOne(x => x.PaidByMember)
-            .WithMany(x => x.Payments)
+            .WithMany(x => x.PaymentsPaid)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Payment>()
+            .HasOne(x => x.PaidToMember)
+            .WithMany(x => x.PaymentsReceived)
             .OnDelete(DeleteBehavior.Restrict);
 
         ConfigureDigestModel<PaymentDigest>(modelBuilder);

@@ -139,7 +139,7 @@ namespace Spenses.Resources.Relational.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Date = table.Column<DateTime>(type: "date", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: false),
                     PaidByMemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -193,6 +193,7 @@ namespace Spenses.Resources.Relational.Migrations
                     Amount = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PaidByMemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PaidToMemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     HomeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -211,6 +212,12 @@ namespace Spenses.Resources.Relational.Migrations
                     table.ForeignKey(
                         name: "FK_Payment_Member_PaidByMemberId",
                         column: x => x.PaidByMemberId,
+                        principalTable: "Member",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Payment_Member_PaidToMemberId",
+                        column: x => x.PaidToMemberId,
                         principalTable: "Member",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -377,6 +384,11 @@ namespace Spenses.Resources.Relational.Migrations
                 name: "IX_Payment_PaidByMemberId",
                 table: "Payment",
                 column: "PaidByMemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payment_PaidToMemberId",
+                table: "Payment",
+                column: "PaidToMemberId");
         }
 
         /// <inheritdoc />

@@ -15,7 +15,8 @@ public partial class PaymentsIntegrationTests
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Note = "foobar",
-            PaidByMemberId = home.Members.First().Id
+            PaidByMemberId = home.Members[0].Id,
+            PaidToMemberId = home.Members[1].Id
         };
 
         var createdPaymentResponse = await _payments.PostPayment(home.Id, properties);
@@ -42,5 +43,43 @@ public partial class PaymentsIntegrationTests
         var result = await _payments.PostPayment(home.Id, new PaymentProperties());
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Post_payment_with_invalid_paid_by_member_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var properties = new PaymentProperties
+        {
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Note = "foobar",
+            PaidByMemberId = Guid.NewGuid(),
+            PaidToMemberId = home.Members[0].Id
+        };
+
+        var createdPaymentResponse = await _payments.PostPayment(home.Id, properties);
+
+        createdPaymentResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Post_payment_with_invalid_paid_to_member_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var properties = new PaymentProperties
+        {
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Note = "foobar",
+            PaidByMemberId = home.Members[0].Id,
+            PaidToMemberId = Guid.NewGuid()
+        };
+
+        var createdPaymentResponse = await _payments.PostPayment(home.Id, properties);
+
+        createdPaymentResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 }

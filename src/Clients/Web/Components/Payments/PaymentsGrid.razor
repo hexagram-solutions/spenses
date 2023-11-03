@@ -69,11 +69,13 @@
                                             Field="@nameof(PaymentDigest.Date)"
                                             Caption="Date"
                                             DisplayFormat="{0:yyyy-MM-dd}"
-                                            SortDirection="SortDirection.Descending"/>
+                                            SortDirection="SortDirection.Descending"
+                                            Width="100px"/>
                             <DataGridNumericColumn TItem="PaymentDigest"
                                                    Field="@nameof(PaymentDigest.Amount)"
                                                    Caption="Amount"
-                                                   TextAlignment="TextAlignment.End">
+                                                   TextAlignment="TextAlignment.End"
+                                                   Width="100px">
                                 <DisplayTemplate>
                                         <samp>@($"{context.Amount:C}")</samp>
                                 </DisplayTemplate>
@@ -81,6 +83,9 @@
                             <DataGridColumn TItem="PaymentDigest"
                                             Field="@nameof(PaymentDigest.PaidByMemberName)"
                                             Caption="Paid by"/>
+                            <DataGridColumn TItem="PaymentDigest"
+                                            Field="@nameof(PaymentDigest.PaidToMemberName)"
+                                            Caption="Paid to" />
                             <DataGridColumn TItem="PaymentDigest"
                                             Field="@nameof(PaymentDigest.Note)"
                                             Caption="Note"

@@ -54,7 +54,7 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
                     .Where(es => es.OwedByMemberId == m.Id)
                     .Sum(es => es.OwedAmount);
 
-                var paidByMember = m.Payments.Sum(e => e.Amount);
+                var paidByMember = m.PaymentsPaid.Sum(e => e.Amount);
 
                 return new MemberBalance
                 {

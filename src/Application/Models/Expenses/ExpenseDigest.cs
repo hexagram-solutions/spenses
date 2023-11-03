@@ -8,7 +8,7 @@ public class ExpenseDigest
     [Required]
     public Guid Id { get; set; }
 
-    public string? Description { get; set; }
+    public string? Note { get; set; }
 
     [Required]
     [Orderable]
@@ -18,6 +18,9 @@ public class ExpenseDigest
     [Orderable]
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
+
+    [Required]
+    public string PaidByMemberId { get; set; } = null!;
 
     [Required]
     [Orderable]

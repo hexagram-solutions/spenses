@@ -45,6 +45,9 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
             var home = await db.Homes
                 .Include(h => h.Members)
+                    .ThenInclude(member => member.PaymentsPaid)
+                .Include(h => h.Members)
+                    .ThenInclude(member => member.PaymentsReceived)
                 .Include(h => h.Expenses)
                     .ThenInclude(e => e.ExpenseShares)
                 .Include(h => h.Payments)
@@ -65,7 +68,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             foreach (var memberBalance in balanceBreakdown.MemberBalances)
             {
                 var dbMember = home.Members.Single(m => m.Id == memberBalance.Member.Id);
-                var memberPaid = dbMember.Payments.Sum(c => c.Amount);
+                var memberPaid = dbMember.PaymentsPaid.Sum(c => c.Amount);
 
                 memberBalance.TotalPaid.Should().Be(memberPaid);
 
@@ -153,6 +156,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                     Date = today,
                     Amount = 50.00m,
                     PaidByMemberId = member.Id,
+                    PaidToMemberId = db.Members.First(m => m.Id != member.Id).Id,
                     HomeId = homeEntry.Entity.Id
                 });
             }

@@ -35,7 +35,7 @@ public partial class EditExpenseModal
         {
             Amount = currentExpense.Amount,
             Date = currentExpense.Date,
-            Description = currentExpense.Description,
+            Note = currentExpense.Note,
             CategoryId = currentExpense.Category?.Id,
             PaidByMemberId = currentExpense.PaidByMember.Id,
             Tags = currentExpense.Tags

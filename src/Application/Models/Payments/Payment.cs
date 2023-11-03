@@ -20,6 +20,9 @@ public record PaymentProperties : PaymentBase
 {
     [Required]
     public Guid PaidByMemberId { get; set; }
+
+    [Required]
+    public Guid PaidToMemberId { get; set; }
 }
 
 public record Payment : PaymentBase
@@ -28,6 +31,9 @@ public record Payment : PaymentBase
 
     [Required]
     public Member PaidByMember { get; set; } = null!;
+
+    [Required]
+    public Member PaidToMember { get; set; } = null!;
 
     [Required]
     public User CreatedBy { get; set; } = null!;

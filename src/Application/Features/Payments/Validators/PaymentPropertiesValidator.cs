@@ -15,6 +15,11 @@ public class PaymentPropertiesValidator : AbstractValidator<PaymentProperties>
             .InclusiveBetween(0.01m, 999_999.99m);
 
         RuleFor(x => x.PaidByMemberId)
-            .NotEmpty();
+            .NotEmpty()
+            .NotEqual(x => x.PaidToMemberId);
+
+        RuleFor(x => x.PaidToMemberId)
+            .NotEmpty()
+            .NotEqual(x => x.PaidByMemberId);
     }
 }

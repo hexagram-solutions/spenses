@@ -6,17 +6,17 @@ using Spenses.Resources.Relational.Models;
 namespace Spenses.Resources.Relational.DigestModels;
 
 [BaseTable(nameof(Expense), "e")]
-[JoinedTable(JoinType.Left, nameof(Member), "pbm", "pbm.Id = e.PaidByMemberId")]
-[JoinedTable(JoinType.Left, nameof(ExpenseCategory), "ec", "ec.Id = e.CategoryId")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", "cui.Id = e.CreatedById")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", "mui.Id = e.ModifiedById")]
+[JoinedTable(JoinType.Left, nameof(Member), "pbm", $"pbm.Id = e.{nameof(Expense.PaidByMemberId)}")]
+[JoinedTable(JoinType.Left, nameof(ExpenseCategory), "ec", $"ec.Id = e.{nameof(Expense.CategoryId)}")]
+[JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", $"cui.Id = e.{nameof(Expense.CreatedById)}")]
+[JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", $"mui.Id = e.{nameof(Expense.ModifiedById)}")]
 public class ExpenseDigest
 {
     public Guid Id { get; set; }
 
     public Guid HomeId { get; set; }
 
-    public string? Description { get; set; }
+    public string? Note { get; set; }
 
     public DateOnly Date { get; set; }
 

@@ -64,15 +64,15 @@
     <Validation>
         <Field>
             <FieldLabel>
-                Description
+                Note
             </FieldLabel>
             <FieldBody>
-                <TextEdit @bind-Text="Expense.Description">
+                <TextEdit @bind-Text="Expense.Note">
                     <Feedback>
                         <ValidationError/>
                     </Feedback>
                 </TextEdit>
-                <FieldHelp>An optional description for this expense</FieldHelp>
+                <FieldHelp>Optional details for this expense</FieldHelp>
             </FieldBody>
         </Field>
     </Validation>

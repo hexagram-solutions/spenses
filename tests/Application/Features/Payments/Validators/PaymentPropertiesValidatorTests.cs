@@ -83,4 +83,35 @@ public class PaymentPropertiesValidatorTests
         _validator.TestValidate(model with { PaidByMemberId = Guid.NewGuid() })
             .ShouldNotHaveValidationErrorFor(x => x.PaidByMemberId);
     }
+
+    [Fact]
+    public void Paid_to_member_id_must_have_value()
+    {
+        var model = new PaymentProperties();
+
+        _validator.TestValidate(model with { PaidToMemberId = Guid.Empty })
+            .ShouldHaveValidationErrorFor(x => x.PaidToMemberId);
+
+        _validator.TestValidate(model with { PaidToMemberId = Guid.NewGuid() })
+            .ShouldNotHaveValidationErrorFor(x => x.PaidToMemberId);
+    }
+
+    [Fact]
+    public void Paid_by_member_and_paid_to_member_must_be_different()
+    {
+        var model = new PaymentProperties();
+
+        var memberId = Guid.NewGuid();
+
+        var result = _validator.TestValidate(model with { PaidByMemberId = memberId, PaidToMemberId = memberId });
+
+        result.ShouldHaveValidationErrorFor(x => x.PaidByMemberId);
+        result.ShouldHaveValidationErrorFor(x => x.PaidToMemberId);
+
+        result = _validator.TestValidate(
+            model with { PaidByMemberId = Guid.NewGuid(), PaidToMemberId = Guid.NewGuid() });
+
+        result.ShouldNotHaveValidationErrorFor(x => x.PaidByMemberId);
+        result.ShouldNotHaveValidationErrorFor(x => x.PaidToMemberId);
+    }
 }

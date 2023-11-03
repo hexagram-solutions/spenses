@@ -6,7 +6,7 @@ namespace Spenses.Api.IntegrationTests.Expenses;
 public partial class ExpensesIntegrationTests
 {
     [Fact]
-    public async Task Put_expense_creates_expense()
+    public async Task Put_expense_updates_expense()
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
@@ -18,7 +18,7 @@ public partial class ExpensesIntegrationTests
 
         var properties = new ExpenseProperties
         {
-            Description = "Bar",
+            Note = "Bar",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = new[] { "household" },
@@ -39,5 +39,30 @@ public partial class ExpensesIntegrationTests
 
         fetchedExpense.Should().BeEquivalentTo(updatedExpense);
         fetchedExpense.ExpenseShares.Select(es => es.OwedByMember).Should().BeEquivalentTo(home.Members);
+    }
+
+    [Fact]
+    public async Task Put_expense_with_invalid_paid_by_member_id_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        {
+            Skip = 0,
+            Take = 10
+        })).Content!.Items.First();
+
+        var properties = new ExpenseProperties
+        {
+            Note = "Bar",
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Tags = new[] { "household" },
+            PaidByMemberId = Guid.NewGuid()
+        };
+
+        var updatedExpenseResponse = await _expenses.PutExpense(home.Id, expense.Id, properties);
+
+        updatedExpenseResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 }

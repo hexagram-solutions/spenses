@@ -107,12 +107,14 @@
                                 Field="@nameof(ExpenseDigest.Date)"
                                 Caption="Date"
                                 DisplayFormat="{0:yyyy-MM-dd}"
-                                SortDirection="SortDirection.Descending" />
+                                SortDirection="SortDirection.Descending"
+                                Width="100px"/>
                             <DataGridNumericColumn
                                 TItem="ExpenseDigest"
                                 Field="@nameof(ExpenseDigest.Amount)"
                                 Caption="Amount"
-                                TextAlignment="TextAlignment.End">
+                                TextAlignment="TextAlignment.End"
+                                Width="100px">
                                 <DisplayTemplate>
                                     <samp>@($"{context.Amount:C}")</samp>
                                 </DisplayTemplate>
