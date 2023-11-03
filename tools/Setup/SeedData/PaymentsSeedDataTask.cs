@@ -1,3 +1,4 @@
+using Bogus;
 using Hexagrams.Extensions.Common;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Resources.Relational;
@@ -11,19 +12,22 @@ public class PaymentsSeedDataTask : ISeedDataTask
 
     public async Task SeedData(ApplicationDbContext db)
     {
+        var faker = new Faker();
+
         var homes = await db.Homes
             .Include(h => h.Members)
             .ToListAsync();
 
         foreach (var home in homes)
         {
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 25; i++)
             {
                 home.Payments.Add(new Payment
                 {
-                    Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 10)),
+                    Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 0)),
                     Amount = Random.Shared.NextDecimal(5, 200, 2),
-                    PaidByMember = Random.Shared.NextItem(home.Members)
+                    PaidByMember = Random.Shared.NextItem(home.Members),
+                    Note = faker.Lorem.Sentence()
                 });
             }
         }

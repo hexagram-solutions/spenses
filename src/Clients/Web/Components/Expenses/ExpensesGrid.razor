@@ -112,8 +112,11 @@
                                 TItem="ExpenseDigest"
                                 Field="@nameof(ExpenseDigest.Amount)"
                                 Caption="Amount"
-                                DisplayFormat="{0:C}"
-                                DisplayFormatProvider="@CultureInfo.CurrentCulture"/>
+                                TextAlignment="TextAlignment.End">
+                                <DisplayTemplate>
+                                    <samp>@($"{context.Amount:C}")</samp>
+                                </DisplayTemplate>
+                            </DataGridNumericColumn>
                             <DataGridColumn
                                 TItem="ExpenseDigest"
                                 Field="@nameof(ExpenseDigest.PaidByMemberName)"
@@ -158,5 +161,3 @@
 @code {
     RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="width:32px; height:32px"/>;
 }
-
-

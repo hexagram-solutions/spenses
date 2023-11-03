@@ -1,0 +1,21 @@
+﻿@page "/homes/{homeId:guid}/payments"
+@using Spenses.Client.Web.Components.Payments
+@using Spenses.Client.Web.Layouts
+@using Spenses.Client.Web.Features.Homes
+@inherits BlazorState.BlazorStateComponent
+
+@layout MainLayout
+
+<h3>Expenses</h3>
+
+<PaymentsGrid HomeId="HomeId"/>
+
+@code {
+    [Parameter]
+    public Guid HomeId { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        return Mediator.Send(new HomeState.HomeSelected(HomeId));
+    }
+}

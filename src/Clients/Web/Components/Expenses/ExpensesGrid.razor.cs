@@ -2,15 +2,16 @@ using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Expenses;
-using Spenses.Application.Models.Homes;
 using Spenses.Client.Web.Features.Expenses;
-using Spenses.Client.Web.Features.Homes;
 using SortDirection = Spenses.Application.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Expenses;
 
-public partial class ExpensesGrid : BlazorState.BlazorStateComponent
+public partial class ExpensesGrid
 {
+    [Parameter]
+    public Guid HomeId { get; set; }
+
     [Inject]
     public IModalService ModalService { get; set; } = null!;
 
@@ -22,9 +23,6 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
     private IReadOnlyList<DateOnly?>? FilterDates { get; set; }
 
     private VirtualizeOptions VirtualizeOptions { get; set; } = new() { DataGridHeight = "750px" };
-
-    [Parameter]
-    public Guid HomeId { get; set; }
 
     private ExpensesState ExpensesState => GetState<ExpensesState>();
 

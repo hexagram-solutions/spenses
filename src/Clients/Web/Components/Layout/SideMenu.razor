@@ -35,9 +35,13 @@
                                     Dashboard
                                 </BarDropdownItem>
                                 <BarDropdownItem To="@(Routes.Homes.Expenses(home.Id))" Match="Match.All">
-                                    <BarIcon IconName="IconName.DollarSign"/>
+                                    <BarIcon IconName="IconName.CreditCard"/>
                                     Expenses
                                 </BarDropdownItem>
+                                 <BarDropdownItem To="@(Routes.Homes.Payments(home.Id))" Match="Match.All">
+                                     <BarIcon IconName="IconName.HandsHelping" />
+                                     Payments
+                                 </BarDropdownItem>
                                 <BarDropdownItem To="@(Routes.Homes.Insights(home.Id))" Match="Match.All">
                                     <BarIcon IconName="IconName.Lightbulb"/>
                                     Insights
