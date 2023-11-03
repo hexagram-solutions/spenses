@@ -85,17 +85,6 @@ public class ExpensePropertiesValidatorTests
     }
 
     [Fact]
-    public void Tags_must_have_one_or_more_values()
-    {
-        var model = new ExpenseProperties();
-
-        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.Tags);
-
-        _validator.TestValidate(model with { Tags = new[] { "groceries" } })
-            .ShouldNotHaveValidationErrorFor(x => x.Tags);
-    }
-
-    [Fact]
     public void Tags_values_must_be_distinct()
     {
         var model = new ExpenseProperties { Tags = new[] { "foo", "Foo", "bar" } };

@@ -11,10 +11,7 @@ public partial class CreateExpenseModal
     [Parameter]
     public Func<Task> OnSave { get; set; } = null!;
 
-    public ExpenseProperties Expense { get; set; } = new()
-    {
-        Date = DateOnly.FromDateTime(DateTime.Today)
-    };
+    public ExpenseProperties Expense { get; set; } = new();
 
     [Inject]
     public IModalService ModalService { get; init; } = null!;
@@ -24,6 +21,17 @@ public partial class CreateExpenseModal
     private Home Home => GetState<HomeState>().CurrentHome!;
 
     private ExpensesState ExpensesState => GetState<ExpensesState>();
+
+    protected override Task OnInitializedAsync()
+    {
+        Expense = new ExpenseProperties
+        {
+            Date = DateOnly.FromDateTime(DateTime.Today),
+            PaidByMemberId = Home.Members.OrderBy(m => m.Name).First().Id
+        };
+
+        return base.OnInitializedAsync();
+    }
 
     private Task Close()
     {

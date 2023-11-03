@@ -44,7 +44,7 @@
             <FieldBody>
                 <Select TValue="Guid" @bind-SelectedValue="Expense.PaidByMemberId">
                     <ChildContent>
-                        @foreach (var member in Home.Members)
+                        @foreach (var member in Home.Members.OrderBy(m => m.Name))
                         {
                             <SelectItem Value="@member.Id">
                                 @member.Name
@@ -84,10 +84,12 @@
             <FieldBody>
                 <Select TValue="Guid?" @bind-SelectedValue="Expense.CategoryId">
                     <ChildContent>
-                        <SelectItem>None</SelectItem>
+                        <SelectItem TValue="Guid?" Value="@(null)" Style="font-style: italic;">
+                            None
+                        </SelectItem>
                         @foreach (var category in Categories)
                         {
-                            <SelectItem Value="@category.Id">
+                            <SelectItem TValue="Guid?" Value="@category.Id">
                                 @category.Name
                             </SelectItem>
                         }

@@ -25,7 +25,7 @@ public partial class EditExpenseModal
 
     private ExpenseProperties Expense { get; set; } = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         await Mediator.Send(new ExpensesState.ExpenseSelected(Home.Id, ExpenseId));
 
@@ -41,7 +41,7 @@ public partial class EditExpenseModal
             Tags = currentExpense.Tags
         };
 
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
     }
 
     private Task Close()

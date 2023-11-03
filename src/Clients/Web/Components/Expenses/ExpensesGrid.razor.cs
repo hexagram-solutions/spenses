@@ -34,11 +34,11 @@ public partial class ExpensesGrid : BlazorState.BlazorStateComponent
         SortDirection = SortDirection.Desc
     };
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
         await Mediator.Send(new ExpensesState.ExpenseFiltersRequested(HomeId));
 
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
     }
 
     private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
