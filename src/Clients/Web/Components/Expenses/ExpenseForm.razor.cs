@@ -7,7 +7,7 @@ using Spenses.Client.Web.Features.Homes;
 
 namespace Spenses.Client.Web.Components.Expenses;
 
-public partial class ExpenseFormFields
+public partial class ExpenseForm
 {
     [Parameter]
     public ExpenseProperties Expense { get; set; } = new();

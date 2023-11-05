@@ -1,17 +1,17 @@
 using Microsoft.AspNetCore.Components;
-using Spenses.Application.Models.Expenses;
 using Spenses.Application.Models.Homes;
-using Spenses.Client.Web.Features.Expenses;
+using Spenses.Application.Models.Payments;
+using Spenses.Client.Web.Features.Payments;
 using Spenses.Client.Web.Features.Homes;
 
-namespace Spenses.Client.Web.Components.Expenses;
+namespace Spenses.Client.Web.Components.Payments;
 
-public partial class CreateExpenseModal
+public partial class CreatePaymentModal
 {
     [Parameter]
     public Func<Task> OnSave { get; set; } = null!;
 
-    public ExpenseProperties Expense { get; set; } = new();
+    public PaymentProperties Payment { get; set; } = new();
 
     [Inject]
     public IModalService ModalService { get; init; } = null!;
@@ -20,14 +20,19 @@ public partial class CreateExpenseModal
 
     private Home Home => GetState<HomeState>().CurrentHome!;
 
-    private ExpensesState ExpensesState => GetState<ExpensesState>();
+    private PaymentsState PaymentsState => GetState<PaymentsState>();
 
     protected override Task OnInitializedAsync()
     {
-        Expense = new ExpenseProperties
+        var members = Home.Members.OrderBy(m => m.Name);
+
+        Payment = new PaymentProperties
         {
             Date = DateOnly.FromDateTime(DateTime.Today),
-            PaidByMemberId = Home.Members.OrderBy(m => m.Name).First().Id
+            PaidByMemberId = members.First().Id,
+            // todo: probably need to prevent a home with only one member doing stuff
+            //todo, can a member pay themselves?
+            PaidToMemberId = Home.Members.Skip(1).First().Id
         };
 
         return base.OnInitializedAsync();
@@ -43,7 +48,7 @@ public partial class CreateExpenseModal
         if (!await Validations.ValidateAll())
             return;
 
-        await Mediator.Send(new ExpensesState.ExpenseCreated(Home.Id, Expense));
+        await Mediator.Send(new PaymentsState.PaymentCreated(Home.Id, Payment));
 
         await Close();
 
