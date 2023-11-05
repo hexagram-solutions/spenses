@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Homes;
 using Spenses.Application.Models.Payments;
-using Spenses.Client.Web.Features.Payments;
 using Spenses.Client.Web.Features.Homes;
+using Spenses.Client.Web.Features.Payments;
 
 namespace Spenses.Client.Web.Components.Payments;
 

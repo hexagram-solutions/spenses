@@ -12,10 +12,10 @@ public partial class PaymentsState
     {
         private readonly IPaymentsApi _payments;
 
-        public PaymentCreatedHandler(IStore aStore, IPaymentsApi Payments)
+        public PaymentCreatedHandler(IStore aStore, IPaymentsApi payments)
             : base(aStore)
         {
-            _payments = Payments;
+            _payments = payments;
         }
 
         private PaymentsState PaymentsState => Store.GetState<PaymentsState>();
