@@ -1,10 +1,10 @@
 using Blazorise.DataGrid;
-using MediatR;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Payments;
 using Spenses.Client.Http;
+using Spenses.Client.Web.Features.Payments;
 using SortDirection = Spenses.Application.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Payments;
@@ -81,20 +81,37 @@ public partial class PaymentsGrid
 
         return DataGridRef.Reload();
     }
+    private Task OnPaymentSaved()
+    {
+        return DataGridRef.Reload();
+    }
 
     private Task OnAddPaymentClicked()
     {
-        return Task.CompletedTask;
+        return ModalService.Show<CreatePaymentModal>(p => p.Add(x => x.OnSave, OnPaymentSaved));
     }
 
 
     private Task OnEditPaymentClicked(MouseEventArgs _, Guid paymentId)
     {
-        return Task.CompletedTask;
+        return ModalService.Show<EditPaymentModal>(p =>
+        {
+            p.Add(x => x.PaymentId, paymentId);
+            p.Add(x => x.OnSave, OnPaymentSaved);
+        });
     }
 
-    private Task OnDeletePaymentClicked(MouseEventArgs _, PaymentDigest payment)
+    private async Task OnDeletePaymentClicked(MouseEventArgs _, PaymentDigest payment)
     {
-        return Task.CompletedTask;
+        var confirmed = await MessageService.Confirm(
+            $"{payment.Amount} paid by {payment.PaidByMemberName} on {payment.Date:O}",
+            "Are you sure you want to delete this payment?");
+
+        if (!confirmed)
+            return;
+
+        await Mediator.Send(new PaymentsState.PaymentDeleted(HomeId, payment.Id));
+
+        await DataGridRef.Reload();
     }
 }

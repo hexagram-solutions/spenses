@@ -16,10 +16,13 @@ public class PaymentPropertiesValidator : AbstractValidator<PaymentProperties>
 
         RuleFor(x => x.PaidByMemberId)
             .NotEmpty()
-            .NotEqual(x => x.PaidToMemberId);
+            .NotEqual(x => x.PaidToMemberId)
+            .WithMessage("The member that made the payment must different from the member that received it.");
 
         RuleFor(x => x.PaidToMemberId)
             .NotEmpty()
-            .NotEqual(x => x.PaidByMemberId);
+            .NotEqual(x => x.PaidByMemberId)
+
+            .WithMessage("The member that received the payment must different from the member that made it.");
     }
 }

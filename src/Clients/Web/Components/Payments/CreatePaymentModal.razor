@@ -1,17 +1,17 @@
 ﻿@using Blazorise.FluentValidation
 @inherits BlazorState.BlazorStateComponent
 
-<LoadingIndicator Visible="ExpensesState.ExpenseCreating">
+<LoadingIndicator Visible="PaymentsState.PaymentCreating">
     <ModalHeader>
-        <ModalTitle>Add expense</ModalTitle>
+        <ModalTitle>Add payment</ModalTitle>
         <CloseButton/>
     </ModalHeader>
     <ModalBody>
         <Validations @ref="Validations"
                      Mode="ValidationMode.Manual"
-                     Model="@Expense"
+                     Model="@Payment"
                      HandlerType="typeof(FluentValidationHandler)">
-            <ExpenseForm Expense="Expense"/>
+            <PaymentForm Payment="Payment"/>
         </Validations>
     </ModalBody>
     <ModalFooter>
@@ -20,7 +20,7 @@
         </Button>
         <Button Color="Color.Primary" Clicked="Save">
             <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd"/>
-            Add expense
+            Add payment
         </Button>
     </ModalFooter>
 </LoadingIndicator>

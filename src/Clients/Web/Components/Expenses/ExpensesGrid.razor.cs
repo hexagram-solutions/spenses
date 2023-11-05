@@ -121,7 +121,8 @@ public partial class ExpensesGrid
 
     private async Task OnDeleteClicked(MouseEventArgs _, ExpenseDigest expense)
     {
-        var confirmed = await MessageService.Confirm($"{expense.Amount} paid by {expense.PaidByMemberName} on {expense.Date:O}",
+        var confirmed = await MessageService.Confirm(
+            $"{expense.Amount} paid by {expense.PaidByMemberName} on {expense.Date:O}",
             "Are you sure you want to delete this expense?");
 
         if (!confirmed)

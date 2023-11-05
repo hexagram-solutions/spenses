@@ -11,7 +11,7 @@
                      Mode="ValidationMode.Manual"
                      Model="@Expense"
                      HandlerType="typeof(FluentValidationHandler)">
-            <ExpenseFormFields Expense="Expense" />
+            <ExpenseForm Expense="Expense" />
         </Validations>
     </ModalBody>
     <ModalFooter>
@@ -20,7 +20,7 @@
         </Button>
         <Button Color="Color.Primary" Clicked="Save">
             <Icon Name="IconName.Save" Margin="Margin.Is2.FromEnd" />
-            Save
+            Save expense
         </Button>
     </ModalFooter>
 </LoadingIndicator>
