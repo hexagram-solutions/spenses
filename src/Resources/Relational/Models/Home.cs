@@ -6,8 +6,6 @@ public class Home : AggregateRoot
 
     public string? Description { get; set; }
 
-    public ExpensePeriod ExpensePeriod { get; set; }
-
     public ICollection<Member> Members { get; set; } = new HashSet<Member>();
 
     public ICollection<ExpenseCategory> ExpenseCategories { get; set; } = new HashSet<ExpenseCategory>();

@@ -13,7 +13,6 @@ public partial class HomesIntegrationTests
         {
             Name = "sut",
             Description = "baz",
-            ExpensePeriod = ExpensePeriod.Weekly
         };
 
         var updatedHome = (await _homes.PutHome(home.Id, properties)).Content!;

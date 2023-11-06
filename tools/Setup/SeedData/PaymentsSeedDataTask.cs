@@ -1,7 +1,6 @@
 using Bogus;
 using Hexagrams.Extensions.Common;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Models.Homes;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
 

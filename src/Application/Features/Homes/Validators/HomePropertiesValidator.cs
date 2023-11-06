@@ -9,8 +9,5 @@ public class HomePropertiesValidator : AbstractValidator<HomeProperties>
     {
         RuleFor(x => x.Name)
             .NotEmpty();
-
-        RuleFor(x => x.ExpensePeriod)
-            .IsInEnum();
     }
 }

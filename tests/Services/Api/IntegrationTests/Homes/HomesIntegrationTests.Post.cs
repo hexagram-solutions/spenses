@@ -13,8 +13,7 @@ public partial class HomesIntegrationTests
         var properties = new HomeProperties
         {
             Name = "sut",
-            Description = "baz",
-            ExpensePeriod = ExpensePeriod.Weekly
+            Description = "baz"
         };
 
         var createdHome = (await _homes.PostHome(properties)).Content!;
