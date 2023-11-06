@@ -33,6 +33,7 @@ public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, Home>
         {
             Name = currentUser.FindFirst(ApplicationClaimTypes.NickName)!.Value,
             ContactEmail = currentUser.FindFirst(ApplicationClaimTypes.Email)!.Value,
+            DefaultSplitPercentage = 1m,
             UserId = currentUser.GetId()
         });
 
