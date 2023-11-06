@@ -11,7 +11,7 @@
                     <Column ColumnSize="ColumnSize.Is8.OnTablet">
                         <Row>
                             <Column ColumnSize="ColumnSize.IsAuto">
-                                <Button Type="ButtonType.Button"
+                                <Button Type="@ButtonType.Button"
                                         To="#"
                                         Color="Color.Primary"
                                         Margin="Margin.Is2.FromBottom"
@@ -41,7 +41,7 @@
                     </Column>
                     <Column ColumnSize="ColumnSize.Is4.OnTablet">
                         <Div TextAlignment="TextAlignment.End">
-                            <Button Type="ButtonType.Button"
+                            <Button Type="@ButtonType.Button"
                                     Color="Color.Warning"
                                     Margin="Margin.Is2.FromBottom"
                                     Clicked="@ClearFilters">
@@ -100,13 +100,17 @@
                                             Sortable="false">
                                 <DisplayTemplate>
                                     <Tooltip Text="Edit" Inline>
-                                        <Button Size="Size.Small" Clicked="@(args => OnEditPaymentClicked(args, context.Id))">
-                                            <Icon Name="IconName.Edit"/>
+                                        <Button Size="Size.Small"
+                                                Color="Color.Light"
+                                                Clicked="@(args => OnEditClicked(args, context.Id))">
+                                            <Icon Name="IconName.Edit" />
                                         </Button>
                                     </Tooltip>
                                     <Tooltip Text="Delete" Inline>
-                                        <Button Size="Size.Small" Clicked="@(args => OnDeletePaymentClicked(args, context))">
-                                            <Icon Name="IconName.Delete"/>
+                                        <Button Size="Size.Small"
+                                                Color="Color.Light"
+                                                Clicked="@(args => OnDeleteClicked(args, context))">
+                                            <Icon Name="IconName.Delete" />
                                         </Button>
                                     </Tooltip>
                                 </DisplayTemplate>

@@ -12,6 +12,8 @@ public partial class ExpenseForm
     [Parameter]
     public ExpenseProperties Expense { get; set; } = new();
 
+    public Validations Validations { get; set; } = null!;
+
     private Home Home => GetState<HomeState>().CurrentHome!;
 
     private ExpensesState ExpensesState => GetState<ExpensesState>();

@@ -92,7 +92,7 @@ public partial class PaymentsGrid
     }
 
 
-    private Task OnEditPaymentClicked(MouseEventArgs _, Guid paymentId)
+    private Task OnEditClicked(MouseEventArgs _, Guid paymentId)
     {
         return ModalService.Show<EditPaymentModal>(p =>
         {
@@ -101,7 +101,7 @@ public partial class PaymentsGrid
         });
     }
 
-    private async Task OnDeletePaymentClicked(MouseEventArgs _, PaymentDigest payment)
+    private async Task OnDeleteClicked(MouseEventArgs _, PaymentDigest payment)
     {
         var confirmed = await MessageService.Confirm(
             $"{payment.Amount} paid by {payment.PaidByMemberName} on {payment.Date:O}",
