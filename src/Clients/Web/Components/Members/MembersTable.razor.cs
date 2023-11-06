@@ -22,4 +22,9 @@ public partial class MembersTable
 
         await base.OnInitializedAsync();
     }
+
+    private Task AddMember()
+    {
+        return ModalService.Show<CreateMemberModal>();
+    }
 }

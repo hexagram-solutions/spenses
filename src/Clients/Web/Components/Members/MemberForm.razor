@@ -1,0 +1,83 @@
+﻿@using Blazorise.FluentValidation
+<Validations @ref="Validations"
+             Mode="ValidationMode.Manual"
+             Model="@Member"
+             HandlerType="typeof(FluentValidationHandler)">
+    <Form>
+        <Fields>
+            <Validation>
+                <Field>
+                    <FieldLabel RequiredIndicator>
+                        Name
+                    </FieldLabel>
+                    <FieldBody>
+                        <TextEdit @bind-Text="Member.Name"
+                                  Placeholder="Hingle McCringleberry">
+                            <Feedback>
+                                <ValidationError/>
+                            </Feedback>
+                        </TextEdit>
+                        <FieldHelp>This member's name</FieldHelp>
+                    </FieldBody>
+                </Field>
+            </Validation>
+        </Fields>
+        <Fields>
+            <Validation>
+                <Field>
+                    <FieldLabel>
+                        Contact email
+                    </FieldLabel>
+                    <FieldBody>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">
+                                <AddonLabel>@@</AddonLabel>
+                            </Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <TextEdit @bind-Text="Member.ContactEmail" Placeholder="hmccringleberry@psu.edu">
+                                    <Feedback>
+                                        <ValidationError/>
+                                    </Feedback>
+                                </TextEdit>
+                            </Addon>
+                        </Addons>
+                        <FieldHelp>
+                            Add this member's email address if they should receive email notifications or reminders
+                        </FieldHelp>
+                    </FieldBody>
+                </Field>
+            </Validation>
+        </Fields>
+        <Fields>
+            <Validation Validator="ValidationRule.None">
+                <Field>
+                    <FieldLabel>
+                        Default split percentage
+                    </FieldLabel>
+                    <FieldBody>
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">
+                                <AddonLabel>%</AddonLabel>
+                            </Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <NumericPicker @bind-Value="DefaultSplitPercentage"
+                                               TValue="decimal"
+                                               Decimals="2"
+                                               Placeholder="50.00"
+                                               Min="0"
+                                               Max="100m">
+                                    <Feedback>
+                                        <ValidationError/>
+                                    </Feedback>
+                                </NumericPicker>
+                            </Addon>
+                        </Addons>
+                        <FieldHelp>
+                            The default ratio to use for splitting expenses with other members of the household
+                        </FieldHelp>
+                    </FieldBody>
+                </Field>
+            </Validation>
+        </Fields>
+    </Form>
+</Validations>

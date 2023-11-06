@@ -9,7 +9,7 @@ public class Member : AggregateRoot
 
     public string? ContactEmail { get; set; }
 
-    [Precision(3, 2)]
+    [Precision(5, 4)]
     [Range(0.00, 1.00)]
     public decimal DefaultSplitPercentage { get; set; }
 

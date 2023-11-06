@@ -27,7 +27,7 @@
                                     @member.ContactEmail
                                 </TableRowCell>
                                 <TableRowCell>
-                                    @member.DefaultSplitPercentage
+                                    <samp>@($"{member.DefaultSplitPercentage:P2}")</samp>
                                 </TableRowCell>
                                 <TableRowCell TextAlignment="TextAlignment.End">
                                     <Tooltip Text="Edit" Inline>
@@ -49,6 +49,13 @@
                         }
                     </TableBody>
                 </Table>
+                <Button Type="@ButtonType.Submit"
+                        Color="Color.Primary"
+                        Clicked="AddMember">
+                    <Icon Name="IconName.Add"
+                          Margin="Margin.Is2.FromEnd"/>
+                    Add member
+                </Button>
             </LoadingIndicator>
         </CardBody>
     </Card>

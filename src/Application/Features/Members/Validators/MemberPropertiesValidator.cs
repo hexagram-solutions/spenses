@@ -14,6 +14,7 @@ public class MemberPropertiesValidator : AbstractValidator<MemberProperties>
             .EmailAddress();
 
         RuleFor(x => x.DefaultSplitPercentage)
+            .PrecisionScale(5, 4, true)
             .InclusiveBetween(0.00m, 1.00m);
     }
 }

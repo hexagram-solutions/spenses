@@ -1,0 +1,24 @@
+﻿@inherits BlazorState.BlazorStateComponent
+
+<LoadingIndicator Visible="MembersState.MemberCreating">
+    <ModalHeader>
+        <ModalTitle>Add member</ModalTitle>
+        <CloseButton/>
+    </ModalHeader>
+    <ModalBody>
+        <MemberForm @ref="MemberFormRef"
+                    Member="Member"/>
+    </ModalBody>
+    <ModalFooter>
+        <Button Color="Color.Warning"
+                Clicked="Close">
+            Cancel
+        </Button>
+        <Button Color="Color.Primary"
+                Clicked="Save">
+            <Icon Name="IconName.Add"
+                  Margin="Margin.Is2.FromEnd"/>
+            Add member
+        </Button>
+    </ModalFooter>
+</LoadingIndicator>
