@@ -1,43 +1,31 @@
 ﻿@page "/homes/{homeId:guid}/settings"
+@using Spenses.Client.Web.Components.Homes
+@using Spenses.Client.Web.Components.Members
 @using Spenses.Client.Web.Layouts
-@using Blazorise.FluentValidation
 @inherits BlazorState.BlazorStateComponent
 
 @layout MainLayout
 
-<h3>@(Home.Name): Settings</h3>
+<h3>@(Home.Name)</h3>
 
 <Row>
-  <Column ColumnSize="ColumnSize.Is6.OnDesktop">
-    <Card Margin="Margin.Is4.FromBottom">
-      <CardHeader>
-        <CardTitle>Basic Settings</CardTitle>
-      </CardHeader>
-      <CardBody>
-        <Validations @ref="@Validations" Mode="ValidationMode.Manual" Model="@Home" HandlerType="typeof(FluentValidationHandler)">
-          <Validation>
-            <Field>
-              <FieldLabel>Name</FieldLabel>
-              <TextEdit @bind-Text="@Home.Name" Placeholder="Enter the name of this home">
-                <Feedback>
-                  <ValidationError/>
-                </Feedback>
-              </TextEdit>
-            </Field>
-          </Validation>
-          <Validation>
-            <Field>
-              <FieldLabel>Note</FieldLabel>
-              <TextEdit @bind-Text="@Home.Description" Placeholder="An optional description of this home.">
-                <Feedback>
-                  <ValidationError/>
-                </Feedback>
-              </TextEdit>
-            </Field>
-          </Validation>
-          <Button Color="Color.Primary" Clicked="Save">Save</Button>
-        </Validations>
-      </CardBody>
-    </Card>
-  </Column>
+    <Column ColumnSize="ColumnSize.Is12.OnDesktop">
+        <Card Margin="Margin.Is4.FromBottom">
+            <CardHeader>
+                <CardTitle>Settings</CardTitle>
+            </CardHeader>
+            <CardBody>
+                <LoadingIndicator Visible="HomeState.HomeRequesting || HomeState.HomeUpdating">
+                    <HomeForm @ref="HomeFormRef"
+                              Home="Home"/>
+                    <Button Color="Color.Primary" Clicked="Save">Save</Button>
+                </LoadingIndicator>
+            </CardBody>
+        </Card>
+    </Column>
+</Row>
+<Row>
+    <Column ColumnSize="ColumnSize.Is12.OnDesktop">
+        <MembersTable HomeId="HomeId"/>
+    </Column>
 </Row>

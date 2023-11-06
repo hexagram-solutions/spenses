@@ -22,9 +22,16 @@ public partial class HomeState
 
         public override async Task Handle(HomeUpdated aAction, CancellationToken aCancellationToken)
         {
-            var updated = await _homes.PutHome(aAction.HomeId, aAction.Props);
+            HomeState.HomeUpdating = true;
 
-            HomeState.CurrentHome = updated.Content;
+            var response = await _homes.PutHome(aAction.HomeId, aAction.Props);
+
+            if (!response.IsSuccessStatusCode)
+                throw new NotImplementedException();
+
+            HomeState.CurrentHome = response.Content;
+
+            HomeState.HomeUpdating = false;
         }
     }
 }

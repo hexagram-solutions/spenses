@@ -15,6 +15,8 @@ public partial class HomeState : State<HomeState>
 
     public bool HomeCreating { get; private set; }
 
+    public bool HomeUpdating { get; private set; }
+
     public override void Initialize()
     {
     }

@@ -1,49 +1,19 @@
-﻿@using Blazorise.FluentValidation
-@inherits BlazorState.BlazorStateComponent
+﻿@inherits BlazorState.BlazorStateComponent
 
-<ModalHeader>
-    <ModalTitle>New home</ModalTitle>
-    <CloseButton/>
-</ModalHeader>
-<ModalBody>
-    <Form>
-        <Validations @ref="Validations"
-                     Mode="ValidationMode.Manual"
-                     Model="@Home"
-                     HandlerType="typeof(FluentValidationHandler)">
-            <Validation>
-                <Field>
-                    <FieldLabel>Name</FieldLabel>
-                    <FieldBody>
-                        <TextEdit @bind-Text="Home.Name"
-                                  Placeholder="The name of the home">
-                            <Feedback>
-                                <ValidationError/>
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
-            </Validation>
-            <Validation>
-                <Field>
-                    <FieldLabel>Note</FieldLabel>
-                    <FieldBody>
-                        <TextEdit @bind-Text="@Home.Description"
-                                  Placeholder="An optional description of this home.">
-                            <Feedback>
-                                <ValidationError/>
-                            </Feedback>
-                        </TextEdit>
-                    </FieldBody>
-                </Field>
-            </Validation>
-        </Validations>
-    </Form>
-</ModalBody>
-<ModalFooter>
-    <Button Color="Color.Warning" Clicked="Close">Cancel</Button>
-    <Button Color="Color.Primary" Clicked="Create">
-        <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd" />
-        Create home
-    </Button>
-</ModalFooter>
+<LoadingIndicator Visible="HomeState.HomeCreating">
+    <ModalHeader>
+        <ModalTitle>New home</ModalTitle>
+        <CloseButton/>
+    </ModalHeader>
+    <ModalBody>
+        <HomeForm @ref="HomeFormRef"
+                  Home="Home"/>
+    </ModalBody>
+    <ModalFooter>
+        <Button Color="Color.Warning" Clicked="Close">Cancel</Button>
+        <Button Color="Color.Primary" Clicked="Save">
+            <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd"/>
+            Create home
+        </Button>
+    </ModalFooter>
+</LoadingIndicator>

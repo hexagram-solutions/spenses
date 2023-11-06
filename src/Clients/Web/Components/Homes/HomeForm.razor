@@ -1,0 +1,35 @@
+﻿@using Blazorise.FluentValidation
+
+<Validations @ref="Validations"
+             Mode="ValidationMode.Manual"
+             Model="@Home"
+             HandlerType="typeof(FluentValidationHandler)">
+    <Validation>
+        <Field>
+            <FieldLabel RequiredIndicator>Name</FieldLabel>
+            <FieldBody>
+                <TextEdit @bind-Text="Home.Name"
+                          Placeholder="My household">
+                    <Feedback>
+                        <ValidationError/>
+                    </Feedback>
+                </TextEdit>
+            </FieldBody>
+            <FieldHelp>The name of this home</FieldHelp>
+        </Field>
+    </Validation>
+    <Validation>
+        <Field>
+            <FieldLabel>Description</FieldLabel>
+            <FieldBody>
+                <TextEdit @bind-Text="@Home.Description"
+                          Placeholder="2411 4th St NW">
+                    <Feedback>
+                        <ValidationError/>
+                    </Feedback>
+                </TextEdit>
+            </FieldBody>
+            <FieldHelp>An optional description of this home</FieldHelp>
+        </Field>
+    </Validation>
+</Validations>
