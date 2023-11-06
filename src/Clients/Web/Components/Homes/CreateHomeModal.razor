@@ -1,5 +1,4 @@
 ﻿@using Blazorise.FluentValidation
-@using Spenses.Application.Models.Homes
 @inherits BlazorState.BlazorStateComponent
 
 <ModalHeader>
@@ -35,20 +34,6 @@
                                 <ValidationError/>
                             </Feedback>
                         </TextEdit>
-                    </FieldBody>
-                </Field>
-            </Validation>
-            <Validation>
-                <Field>
-                    <FieldLabel>Expense period</FieldLabel>
-                    <FieldBody>
-                        <Select @bind-SelectedValue="@Home.ExpensePeriod"
-                                TValue="ExpensePeriod">
-                            <SelectItem Value="ExpensePeriod.Weekly">Weekly</SelectItem>
-                            <SelectItem Value="ExpensePeriod.Monthly">Monthly</SelectItem>
-                        </Select>
-                        <ValidationNone>Enter the default expense period for this home.</ValidationNone>
-                        <ValidationError/>
                     </FieldBody>
                 </Field>
             </Validation>
