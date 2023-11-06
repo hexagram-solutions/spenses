@@ -15,7 +15,7 @@ public partial class MembersState : State<MembersState>
 
     public bool MemberDeleting { get; private set; }
 
-    public IEnumerable<Member>? Members { get; private set; }
+    public IEnumerable<Member> Members { get; private set; }
 
     public bool MembersRequesting { get; private set; }
 

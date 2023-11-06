@@ -24,12 +24,22 @@ public partial class HomeState
         {
             HomeState.HomeUpdating = true;
 
-            var response = await _homes.PutHome(aAction.HomeId, aAction.Props);
+            var (homeId, props) = aAction;
+
+            var response = await _homes.PutHome(homeId, props);
 
             if (!response.IsSuccessStatusCode)
                 throw new NotImplementedException();
 
-            HomeState.CurrentHome = response.Content;
+            var updatedHome = response.Content;
+
+            HomeState.CurrentHome = updatedHome;
+
+            // Update home in homes collection so that any references to this home in lists or headers (e.g.: the nav
+            // menu) are update.
+            var homesItem = HomeState.Homes.Single(x => x.Id == homeId);
+
+            homesItem.Name = updatedHome!.Name;
 
             HomeState.HomeUpdating = false;
         }

@@ -15,7 +15,7 @@ public partial class Settings : BlazorStateComponent
 
     public HomeForm HomeFormRef { get; set; } = null!;
 
-    private Home Home => HomeState.CurrentHome!;
+    private Home Home => HomeState.CurrentHome ?? new Home();
 
     protected override async Task OnInitializedAsync()
     {

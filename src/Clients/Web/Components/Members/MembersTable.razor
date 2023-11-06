@@ -1,0 +1,55 @@
+﻿@inherits BlazorState.BlazorStateComponent
+
+<Div Margin="Margin.IsAuto.OnX">
+    <Card>
+        <CardHeader>
+            <CardTitle>Members</CardTitle>
+        </CardHeader>
+        <CardBody>
+            <LoadingIndicator Visible="MembersState.MembersRequesting">
+                <Table Borderless>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>Name</TableHeaderCell>
+                            <TableHeaderCell>Contact Email</TableHeaderCell>
+                            <TableHeaderCell>Default Split %</TableHeaderCell>
+                            <TableHeaderCell>Actions</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach (var member in MembersState.Members)
+                        {
+                            <TableRow>
+                                <TableRowCell>
+                                    @member.Name
+                                </TableRowCell>
+                                <TableRowCell>
+                                    @member.ContactEmail
+                                </TableRowCell>
+                                <TableRowCell>
+                                    @member.DefaultSplitPercentage
+                                </TableRowCell>
+                                <TableRowCell TextAlignment="TextAlignment.End">
+                                    <Tooltip Text="Edit" Inline>
+                                        <Button Type="@ButtonType.Link"
+                                                Color="Color.Light"
+                                                Size="Size.Small">
+                                            <Icon Name="IconName.Edit"/>
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip Txt="Delete" Inline>
+                                        <Button Type="@ButtonType.Link"
+                                                Color="Color.Light"
+                                                Size="Size.Small">
+                                            <Icon Name="IconName.Delete"/>
+                                        </Button>
+                                    </Tooltip>
+                                </TableRowCell>
+                            </TableRow>
+                        }
+                    </TableBody>
+                </Table>
+            </LoadingIndicator>
+        </CardBody>
+    </Card>
+</Div>
