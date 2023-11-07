@@ -1,6 +1,7 @@
 using BlazorState;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Homes;
+using Spenses.Client.Web.Components.Homes;
 using Spenses.Client.Web.Features.Homes;
 
 namespace Spenses.Client.Web.Pages.Homes;
@@ -12,18 +13,20 @@ public partial class Settings : BlazorStateComponent
 
     private HomeState HomeState => GetState<HomeState>();
 
-    private Validations Validations { get; set; } = new();
+    public HomeForm HomeFormRef { get; set; } = null!;
 
-    private Home Home => HomeState.CurrentHome!;
+    private Home Home => HomeState.CurrentHome ?? new Home();
 
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        return Mediator.Send(new HomeState.HomeSelected(HomeId));
+        await Mediator.Send(new HomeState.HomeSelected(HomeId));
+
+        await base.OnInitializedAsync();
     }
 
     private async Task Save()
     {
-        if (!await Validations.ValidateAll())
+        if (!await HomeFormRef.Validations.ValidateAll())
             return;
 
         await Mediator.Send(new HomeState.HomeUpdated(HomeId, Home));

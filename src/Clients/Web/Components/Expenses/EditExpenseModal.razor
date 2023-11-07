@@ -1,5 +1,4 @@
-﻿@using Blazorise.FluentValidation
-@inherits BlazorState.BlazorStateComponent
+﻿@inherits BlazorState.BlazorStateComponent
 
 <LoadingIndicator Visible="ExpensesState.ExpenseRequesting || ExpensesState.ExpenseUpdating">
     <ModalHeader>
@@ -7,12 +6,8 @@
         <CloseButton />
     </ModalHeader>
     <ModalBody>
-        <Validations @ref="Validations"
-                     Mode="ValidationMode.Manual"
-                     Model="@Expense"
-                     HandlerType="typeof(FluentValidationHandler)">
-            <ExpenseForm Expense="Expense" />
-        </Validations>
+        <ExpenseForm @ref="ExpenseFormRef"
+                     Expense="Expense" />
     </ModalBody>
     <ModalFooter>
         <Button Color="Color.Warning" Clicked="Close">

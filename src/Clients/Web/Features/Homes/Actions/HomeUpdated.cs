@@ -22,9 +22,26 @@ public partial class HomeState
 
         public override async Task Handle(HomeUpdated aAction, CancellationToken aCancellationToken)
         {
-            var updated = await _homes.PutHome(aAction.HomeId, aAction.Props);
+            HomeState.HomeUpdating = true;
 
-            HomeState.CurrentHome = updated.Content;
+            var (homeId, props) = aAction;
+
+            var response = await _homes.PutHome(homeId, props);
+
+            if (!response.IsSuccessStatusCode)
+                throw new NotImplementedException();
+
+            var updatedHome = response.Content;
+
+            HomeState.CurrentHome = updatedHome;
+
+            // Update home in homes collection so that any references to this home in lists or headers (e.g.: the nav
+            // menu) are update.
+            var homesItem = HomeState.Homes.Single(x => x.Id == homeId);
+
+            homesItem.Name = updatedHome!.Name;
+
+            HomeState.HomeUpdating = false;
         }
     }
 }

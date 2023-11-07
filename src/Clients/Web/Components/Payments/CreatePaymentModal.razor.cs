@@ -16,7 +16,7 @@ public partial class CreatePaymentModal
     [Inject]
     public IModalService ModalService { get; init; } = null!;
 
-    private Validations Validations { get; set; } = null!;
+    private PaymentForm PaymentFormRef { get; set; } = null!;
 
     private Home Home => GetState<HomeState>().CurrentHome!;
 
@@ -45,7 +45,7 @@ public partial class CreatePaymentModal
 
     private async Task Save()
     {
-        if (!await Validations.ValidateAll())
+        if (!await PaymentFormRef.Validations.ValidateAll())
             return;
 
         await Mediator.Send(new PaymentsState.PaymentCreated(Home.Id, Payment));

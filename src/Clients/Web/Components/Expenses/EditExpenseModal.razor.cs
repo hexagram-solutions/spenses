@@ -17,18 +17,19 @@ public partial class EditExpenseModal
     [Inject]
     public IModalService ModalService { get; init; } = null!;
 
-    private Validations Validations { get; set; } = null!;
-
     private Home Home => GetState<HomeState>().CurrentHome!;
 
     private ExpensesState ExpensesState => GetState<ExpensesState>();
 
     private ExpenseProperties Expense { get; set; } = new();
 
+    private ExpenseForm ExpenseFormRef { get; set; } = null!;
+
     protected override async Task OnInitializedAsync()
     {
         await Mediator.Send(new ExpensesState.ExpenseSelected(Home.Id, ExpenseId));
 
+        // Direct mapping to new object to ensure correct type is passed to validator
         var currentExpense = ExpensesState.CurrentExpense!;
 
         Expense = new ExpenseProperties
@@ -51,7 +52,7 @@ public partial class EditExpenseModal
 
     private async Task Save()
     {
-        if (!await Validations.ValidateAll())
+        if (!await ExpenseFormRef.Validations.ValidateAll())
             return;
 
         await Mediator.Send(new ExpensesState.ExpenseUpdated(Home.Id, ExpenseId, Expense));

@@ -1,21 +1,21 @@
 ﻿@inherits BlazorState.BlazorStateComponent
 
-<LoadingIndicator Visible="PaymentsState.PaymentCreating">
+<LoadingIndicator Visible="MembersState.MemberRequesting || MembersState.MemberUpdating">
     <ModalHeader>
-        <ModalTitle>Add payment</ModalTitle>
+        <ModalTitle>Edit Member</ModalTitle>
         <CloseButton/>
     </ModalHeader>
     <ModalBody>
-        <PaymentForm @ref="PaymentFormRef"
-                     Payment="Payment"/>
+        <MemberForm @ref="MemberFormRef"
+                    Member="Member" />
     </ModalBody>
     <ModalFooter>
         <Button Color="Color.Warning" Clicked="Close">
             Cancel
         </Button>
         <Button Color="Color.Primary" Clicked="Save">
-            <Icon Name="IconName.Add" Margin="Margin.Is2.FromEnd"/>
-            Add payment
+            <Icon Name="IconName.Save" Margin="Margin.Is2.FromEnd"/>
+            Save member
         </Button>
     </ModalFooter>
 </LoadingIndicator>

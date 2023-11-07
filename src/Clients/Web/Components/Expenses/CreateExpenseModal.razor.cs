@@ -16,7 +16,7 @@ public partial class CreateExpenseModal
     [Inject]
     public IModalService ModalService { get; init; } = null!;
 
-    private Validations Validations { get; set; } = null!;
+    private ExpenseForm ExpensesFormRef { get; set; } = null!;
 
     private Home Home => GetState<HomeState>().CurrentHome!;
 
@@ -40,7 +40,7 @@ public partial class CreateExpenseModal
 
     private async Task Save()
     {
-        if (!await Validations.ValidateAll())
+        if (!await ExpensesFormRef.Validations.ValidateAll())
             return;
 
         await Mediator.Send(new ExpensesState.ExpenseCreated(Home.Id, Expense));

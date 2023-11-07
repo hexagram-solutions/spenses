@@ -82,8 +82,7 @@
 
     private Task ShowCreateHomeModal()
     {
-        return ModalService.Show<CreateHomeModal>(
-            p => p.Add(x => x.Home, new HomeProperties()));
+        return ModalService.Show<CreateHomeModal>();
     }
 
     RenderFragment _customIcon = @<img src="/brand-logo.png" style="width:32px; height: 32px"/>;

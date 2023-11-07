@@ -41,13 +41,16 @@ public class MemberPropertiesValidatorTests
         _validator.TestValidate(model with { DefaultSplitPercentage = 1.1m })
             .ShouldHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
+        _validator.TestValidate(model with { DefaultSplitPercentage = 0.55555m })
+            .ShouldHaveValidationErrorFor(x => x.DefaultSplitPercentage);
+
         _validator.TestValidate(model with { DefaultSplitPercentage = 0 })
             .ShouldNotHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
-        _validator.TestValidate(model with { DefaultSplitPercentage = 1 })
+        _validator.TestValidate(model with { DefaultSplitPercentage = 1.00m })
             .ShouldNotHaveValidationErrorFor(x => x.DefaultSplitPercentage);
 
-        _validator.TestValidate(model with { DefaultSplitPercentage = 0.5m })
+        _validator.TestValidate(model with { DefaultSplitPercentage = 0.5555m })
             .ShouldNotHaveValidationErrorFor(x => x.DefaultSplitPercentage);
     }
 }

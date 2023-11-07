@@ -1,104 +1,110 @@
-﻿@inherits BlazorState.BlazorStateComponent
+﻿@using Blazorise.FluentValidation
+@inherits BlazorState.BlazorStateComponent
 
-<Fields>
-    <Validation>
-        <Field>
-            <FieldLabel RequiredIndicator>
-                Amount
-            </FieldLabel>
-            <FieldBody>
-                <NumericPicker @bind-Value="Payment.Amount"
-                               TValue="decimal"
-                               CurrencySymbol="$"
-                               Placeholder="$1.23"
-                               Min="0.00m"
-                               Max="999999.99m">
-                    <Feedback>
-                        <ValidationError/>
-                    </Feedback>
-                </NumericPicker>
-                <FieldHelp>The Payment amount</FieldHelp>
-            </FieldBody>
-        </Field>
-    </Validation>
-    <Validation>
-        <Field>
-            <FieldLabel RequiredIndicator>
-                Date
-            </FieldLabel>
-            <FieldBody>
-                <DatePicker @bind-Date="Payment.Date" TValue="DateOnly" StaticPicker="false">
-                    <Feedback>
-                        <ValidationError/>
-                    </Feedback>
-                </DatePicker>
-                <FieldHelp>The date that the payment was made</FieldHelp>
-            </FieldBody>
-        </Field>
-    </Validation>
-</Fields>
-<Fields>
-    <Validation>
-        <Field>
-            <FieldLabel RequiredIndicator>
-                Paid by
-            </FieldLabel>
-            <FieldBody>
-                <Select TValue="Guid" @bind-SelectedValue="Payment.PaidByMemberId">
-                    <ChildContent>
-                        @foreach (var member in Home.Members.OrderBy(m => m.Name))
-                        {
-                            <SelectItem Value="@member.Id">
-                                @member.Name
-                            </SelectItem>
-                        }
-                    </ChildContent>
-                    <Feedback>
-                        <ValidationError/>
-                    </Feedback>
-                </Select>
-                <FieldHelp>The paying home member</FieldHelp>
-            </FieldBody>
-        </Field>
-    </Validation>
-    <Validation>
-        <Field>
-            <FieldLabel RequiredIndicator>
-                Paid to
-            </FieldLabel>
-            <FieldBody>
-                <Select TValue="Guid" @bind-SelectedValue="Payment.PaidToMemberId">
-                    <ChildContent>
-                        @foreach (var member in Home.Members.OrderBy(m => m.Name))
-                        {
-                            <SelectItem Value="@member.Id">
-                                @member.Name
-                            </SelectItem>
-                        }
-                    </ChildContent>
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </Select>
-                <FieldHelp>The home member that the payment was made to</FieldHelp>
-            </FieldBody>
-        </Field>
-    </Validation>
-</Fields>
-<Fields>
-    <Validation>
-        <Field>
-            <FieldLabel>
-                Note
-            </FieldLabel>
-            <FieldBody>
-                <TextEdit @bind-Text="Payment.Note">
-                    <Feedback>
-                        <ValidationError/>
-                    </Feedback>
-                </TextEdit>
-                <FieldHelp>Optional details for this payment</FieldHelp>
-            </FieldBody>
-        </Field>
-    </Validation>
-</Fields>
+<Validations @ref="Validations"
+             Mode="ValidationMode.Manual"
+             Model="@Payment"
+             HandlerType="typeof(FluentValidationHandler)">
+    <Fields>
+        <Validation>
+            <Field>
+                <FieldLabel RequiredIndicator>
+                    Amount
+                </FieldLabel>
+                <FieldBody>
+                    <NumericPicker @bind-Value="Payment.Amount"
+                                   TValue="decimal"
+                                   CurrencySymbol="$"
+                                   Placeholder="$1.23"
+                                   Min="0.00m"
+                                   Max="999999.99m">
+                        <Feedback>
+                            <ValidationError/>
+                        </Feedback>
+                    </NumericPicker>
+                    <FieldHelp>The payment amount</FieldHelp>
+                </FieldBody>
+            </Field>
+        </Validation>
+        <Validation>
+            <Field>
+                <FieldLabel RequiredIndicator>
+                    Date
+                </FieldLabel>
+                <FieldBody>
+                    <DatePicker @bind-Date="Payment.Date" TValue="DateOnly" StaticPicker="false">
+                        <Feedback>
+                            <ValidationError/>
+                        </Feedback>
+                    </DatePicker>
+                    <FieldHelp>The date that the payment was made</FieldHelp>
+                </FieldBody>
+            </Field>
+        </Validation>
+    </Fields>
+    <Fields>
+        <Validation>
+            <Field>
+                <FieldLabel RequiredIndicator>
+                    Paid by
+                </FieldLabel>
+                <FieldBody>
+                    <Select TValue="Guid" @bind-SelectedValue="Payment.PaidByMemberId">
+                        <ChildContent>
+                            @foreach (var member in Home.Members.OrderBy(m => m.Name))
+                            {
+                                <SelectItem Value="@member.Id">
+                                    @member.Name
+                                </SelectItem>
+                            }
+                        </ChildContent>
+                        <Feedback>
+                            <ValidationError/>
+                        </Feedback>
+                    </Select>
+                    <FieldHelp>The paying home member</FieldHelp>
+                </FieldBody>
+            </Field>
+        </Validation>
+        <Validation>
+            <Field>
+                <FieldLabel RequiredIndicator>
+                    Paid to
+                </FieldLabel>
+                <FieldBody>
+                    <Select TValue="Guid" @bind-SelectedValue="Payment.PaidToMemberId">
+                        <ChildContent>
+                            @foreach (var member in Home.Members.OrderBy(m => m.Name))
+                            {
+                                <SelectItem Value="@member.Id">
+                                    @member.Name
+                                </SelectItem>
+                            }
+                        </ChildContent>
+                        <Feedback>
+                            <ValidationError/>
+                        </Feedback>
+                    </Select>
+                    <FieldHelp>The home member that the payment was made to</FieldHelp>
+                </FieldBody>
+            </Field>
+        </Validation>
+    </Fields>
+    <Fields>
+        <Validation>
+            <Field>
+                <FieldLabel>
+                    Note
+                </FieldLabel>
+                <FieldBody>
+                    <TextEdit @bind-Text="Payment.Note">
+                        <Feedback>
+                            <ValidationError/>
+                        </Feedback>
+                    </TextEdit>
+                    <FieldHelp>Optional details for this payment</FieldHelp>
+                </FieldBody>
+            </Field>
+        </Validation>
+    </Fields>
+</Validations>
