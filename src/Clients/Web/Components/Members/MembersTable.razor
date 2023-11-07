@@ -31,16 +31,18 @@
                                 </TableRowCell>
                                 <TableRowCell TextAlignment="TextAlignment.End">
                                     <Tooltip Text="Edit" Inline>
-                                        <Button Type="@ButtonType.Link"
+                                        <Button Type="@ButtonType.Button"
                                                 Color="Color.Light"
-                                                Size="Size.Small">
+                                                Size="Size.Small"
+                                                Clicked="@(args => OnEditClicked(args, member.Id))">
                                             <Icon Name="IconName.Edit"/>
                                         </Button>
                                     </Tooltip>
                                     <Tooltip Txt="Delete" Inline>
-                                        <Button Type="@ButtonType.Link"
+                                        <Button Type="@ButtonType.Button"
                                                 Color="Color.Light"
-                                                Size="Size.Small">
+                                                Size="Size.Small"
+                                                Clicked="@(args => OnDeleteClicked(args, member))">
                                             <Icon Name="IconName.Delete"/>
                                         </Button>
                                     </Tooltip>

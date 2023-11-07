@@ -1,4 +1,6 @@
 ﻿@using Blazorise.FluentValidation
+@inherits BlazorState.BlazorStateComponent
+
 <Validations @ref="Validations"
              Mode="ValidationMode.Manual"
              Model="@Member"
@@ -81,3 +83,15 @@
         </Fields>
     </Form>
 </Validations>
+<MemberSplitPercentageAlert @bind-Visible="IsTotalHomeSplitPercentageInvalid"/>
+@* <Alert Color="Color.Warning"
+       @bind-Visible="IsTotalHomeSplitPercentageInvalid">
+    <Heading Size="HeadingSize.Is5" TextWeight="TextWeight.Bold">
+        The total split percentages among members of this home is not equal to 100%.
+    </Heading>
+    <AlertDescription>
+        This could cause issues when creating expenses in this home. If the total split percentage is <i>greater</i>
+        than 100%, <b>you will not be able to add expenses at all</b>. Ensure that you adjust the default split
+        percentages of this or other home members such that default split percentages add up to exactly 100%.
+    </AlertDescription>
+</Alert> *@

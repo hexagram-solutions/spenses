@@ -28,7 +28,7 @@ public partial class MembersState
             if (!membersResponse.IsSuccessStatusCode)
                 throw new NotImplementedException();
 
-            MemberState.Members = membersResponse.Content;
+            MemberState.Members = membersResponse.Content!;
 
             MemberState.MembersRequesting = false;
         }

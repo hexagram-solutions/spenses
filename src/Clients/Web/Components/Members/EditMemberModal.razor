@@ -1,0 +1,21 @@
+﻿@inherits BlazorState.BlazorStateComponent
+
+<LoadingIndicator Visible="MembersState.MemberRequesting || MembersState.MemberUpdating">
+    <ModalHeader>
+        <ModalTitle>Edit Member</ModalTitle>
+        <CloseButton/>
+    </ModalHeader>
+    <ModalBody>
+        <MemberForm @ref="MemberFormRef"
+                    Member="Member" />
+    </ModalBody>
+    <ModalFooter>
+        <Button Color="Color.Warning" Clicked="Close">
+            Cancel
+        </Button>
+        <Button Color="Color.Primary" Clicked="Save">
+            <Icon Name="IconName.Save" Margin="Margin.Is2.FromEnd"/>
+            Save member
+        </Button>
+    </ModalFooter>
+</LoadingIndicator>

@@ -1,4 +1,5 @@
 using BlazorState;
+using MediatR;
 using Spenses.Application.Models.Members;
 using Spenses.Client.Http;
 
@@ -11,11 +12,13 @@ public partial class MembersState
     public class MemberCreatedHandler : ActionHandler<MemberCreated>
     {
         private readonly IMembersApi _members;
+        private readonly IMediator _mediator;
 
-        public MemberCreatedHandler(IStore aStore, IMembersApi members)
+        public MemberCreatedHandler(IStore aStore, IMembersApi members, IMediator mediator)
             : base(aStore)
         {
             _members = members;
+            _mediator = mediator;
         }
 
         private MembersState MembersState => Store.GetState<MembersState>();
@@ -32,6 +35,9 @@ public partial class MembersState
                 throw new NotImplementedException();
 
             MembersState.MemberCreating = false;
+
+            // todo: sagas or something?
+            await _mediator.Send(new MembersRequested(homeId), aCancellationToken);
         }
     }
 }

@@ -29,6 +29,7 @@ public partial class EditExpenseModal
     {
         await Mediator.Send(new ExpensesState.ExpenseSelected(Home.Id, ExpenseId));
 
+        // Direct mapping to new object to ensure correct type is passed to validator
         var currentExpense = ExpensesState.CurrentExpense!;
 
         Expense = new ExpenseProperties

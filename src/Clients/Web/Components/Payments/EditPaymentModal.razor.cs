@@ -29,6 +29,7 @@ public partial class EditPaymentModal
     {
         await Mediator.Send(new PaymentsState.PaymentSelected(Home.Id, PaymentId));
 
+        // Direct mapping to new object to ensure correct type is passed to validator
         var currentPayment = PaymentsState.CurrentPayment!;
 
         Payment = new PaymentProperties

@@ -8,7 +8,7 @@ namespace Spenses.Client.Web.Components.Members;
 
 public partial class CreateMemberModal
 {
-    private MemberProperties Member { get; } = new();
+    private Member Member { get; } = new();
 
     [Inject]
     public IModalService ModalService { get; init; } = null!;
@@ -28,10 +28,6 @@ public partial class CreateMemberModal
     {
         if (!await MemberFormRef.Validations.ValidateAll())
             return;
-
-        // Hack necessary because of inability to convert numeric input to a percentage display. Validation on the
-        // input control has been disabled accordingly.
-        //Member.DefaultSplitPercentage /= 100;
 
         await Mediator.Send(new MembersState.MemberCreated(Home.Id, Member));
 
