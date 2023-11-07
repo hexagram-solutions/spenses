@@ -1,4 +1,10 @@
-﻿<Alert Color="Color.Warning" @bind-Visible="Visible">
+﻿<Alert Color="Color.Success" @bind-Visible="IsValid">
+    <AlertMessage>
+        <Icon Name="IconName.Check" />
+        The total split percentages among members of this home is equal to 100%.
+    </AlertMessage>
+</Alert>
+<Alert Color="Color.Warning" @bind-Visible="IsNotValid">
     <Heading Size="HeadingSize.Is5" TextWeight="TextWeight.Bold">
         The total split percentages among members of this home is not equal to 100%.
     </Heading>
@@ -10,10 +16,18 @@
 </Alert>
 
 @code{
+    
+    [Parameter]
+    public bool IsValid { get; set; }
 
     [Parameter]
-    public bool Visible { get; set; }
+    public EventCallback<bool> IsValidChanged { get; set; }
 
-    [Parameter]
-    public EventCallback<bool> VisibleChanged { get; set; }
+
+    public bool IsNotValid
+    {
+        get => !IsValid;
+        set => IsValid = !value;
+    }
+
 }

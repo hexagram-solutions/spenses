@@ -18,6 +18,16 @@ public partial class MembersTable
 
     private MembersState MembersState => GetState<MembersState>();
 
+    public bool IsTotalHomeSplitPercentageValid
+    {
+        get
+        {
+            var totalHomeSplitPercentages = MembersState.Members.Sum(x => x.DefaultSplitPercentage);
+
+            return totalHomeSplitPercentages == 1m;
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         await Mediator.Send(new MembersState.MembersRequested(HomeId));

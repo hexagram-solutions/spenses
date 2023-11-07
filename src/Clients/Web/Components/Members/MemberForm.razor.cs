@@ -31,7 +31,7 @@ public partial class MemberForm
         return base.OnInitializedAsync();
     }
 
-    private bool IsTotalHomeSplitPercentageInvalid { get; set; }
+    private bool IsTotalHomeSplitPercentageValid { get; set; }
 
     // TODO: Good candidate for a reactive model
     private void CheckTotalSplitPercentage()
@@ -43,6 +43,6 @@ public partial class MemberForm
         var totalHomeSplitPercentages =
             otherHomeMembers.Sum(x => x.DefaultSplitPercentage) + Member.DefaultSplitPercentage;
 
-        IsTotalHomeSplitPercentageInvalid = totalHomeSplitPercentages != 1m;
+        IsTotalHomeSplitPercentageValid = totalHomeSplitPercentages == 1m;
     }
 }
