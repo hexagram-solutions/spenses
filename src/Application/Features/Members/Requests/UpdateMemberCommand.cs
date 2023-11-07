@@ -39,6 +39,17 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, M
         var memberToUpdate = homeMembers
             .FirstOrDefault(h => h.Id == memberId) ?? throw new ResourceNotFoundException(memberId);
 
+        var otherMembersSplitPercentageTotal = homeMembers
+            .Where(m => m.Id != memberId)
+            .Sum(m => m.DefaultSplitPercentage);
+
+        if (otherMembersSplitPercentageTotal + props.DefaultSplitPercentage > 1)
+        {
+            throw new InvalidRequestException(
+                new ValidationFailure(nameof(MemberProperties.DefaultSplitPercentage),
+                    "Total split percentage among home members cannot exceed 100%"));
+        }
+
         _mapper.Map(props, memberToUpdate);
 
         await _db.SaveChangesAsync(cancellationToken);
