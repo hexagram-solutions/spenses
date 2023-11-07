@@ -25,7 +25,19 @@
                                     @member.Name
                                 </TableRowCell>
                                 <TableRowCell>
-                                    @member.ContactEmail
+                                    @if (!string.IsNullOrEmpty(member.ContactEmail))
+                                    {
+                                        @member.ContactEmail
+                                    }
+                                    else
+                                    {
+                                        <Blazorise.Text
+                                            TextWeight="TextWeight.Light"
+                                            TextColor="TextColor.Secondary"
+                                            Italic>
+                                            None
+                                        </Blazorise.Text>
+                                    }
                                 </TableRowCell>
                                 <TableRowCell>
                                     <samp>@($"{member.DefaultSplitPercentage:P2}")</samp>

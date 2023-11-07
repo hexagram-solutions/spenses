@@ -1,7 +1,7 @@
 ﻿<Alert Color="Color.Success" @bind-Visible="IsValid">
     <AlertMessage>
         <Icon Name="IconName.Check" />
-        The total split percentages among members of this home is equal to 100%.
+        The total split percentages among members of this home is 100%.
     </AlertMessage>
 </Alert>
 <Alert Color="Color.Warning" @bind-Visible="IsNotValid">
@@ -9,7 +9,7 @@
         The total split percentages among members of this home is not equal to 100%.
     </Heading>
     <AlertDescription>
-        This could cause issues when creating expenses in this home. If the total split percentage is <i>greater</i>
+        This could cause issues when creating expenses in this home. If the total split percentages are <i>greater</i>
         than 100%, <b>you will not be able to add expenses at all</b>. Ensure that you adjust the default split
         percentages of this or other home members such that default split percentages add up to exactly 100%.
     </AlertDescription>
@@ -22,7 +22,6 @@
 
     [Parameter]
     public EventCallback<bool> IsValidChanged { get; set; }
-
 
     public bool IsNotValid
     {
