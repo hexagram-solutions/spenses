@@ -8,7 +8,7 @@ namespace Spenses.Client.Web.Components.Members;
 
 public partial class CreateMemberModal
 {
-    private Member Member { get; } = new();
+    private Member Member { get; } = new() { DefaultSplitPercentage = 0.5m };
 
     [Inject]
     public IModalService ModalService { get; init; } = null!;
