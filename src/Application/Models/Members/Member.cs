@@ -6,6 +6,9 @@ public record Member : MemberProperties
 {
     [Required]
     public Guid Id { get; set; }
+
+    [Required]
+    public bool IsActive { get; set; }
 }
 
 public record MemberProperties

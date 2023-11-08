@@ -13,6 +13,6 @@ public partial class MembersIntegrationTests
 
         membersResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        membersResponse.Content.Should().BeInDescendingOrder(x => x.Name);
+        membersResponse.Content.Should().BeInAscendingOrder(x => x.Name, StringComparer.InvariantCulture);
     }
 }

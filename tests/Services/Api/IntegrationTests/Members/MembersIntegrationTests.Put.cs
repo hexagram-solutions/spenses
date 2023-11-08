@@ -23,11 +23,13 @@ public partial class MembersIntegrationTests
 
         updatedMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var updatedMember = updatedMemberResponse.Content;
+        var updatedMember = updatedMemberResponse.Content!;
 
         updatedMember.Should().BeEquivalentTo(properties, opts =>
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
+
+        updatedMember.IsActive.Should().BeTrue();
 
         var fetchedMember = (await _members.GetMember(home.Id, member.Id)).Content;
         fetchedMember.Should().BeEquivalentTo(updatedMember);

@@ -21,11 +21,13 @@ public partial class MembersIntegrationTests
 
         createdMemberResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var createdMember = createdMemberResponse.Content;
+        var createdMember = createdMemberResponse.Content!;
 
         createdMember.Should().BeEquivalentTo(properties, opts =>
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
+
+        createdMember.IsActive.Should().BeTrue();
 
         var members = (await _members.GetMembers(home.Id)).Content;
         members.Should().ContainEquivalentOf(createdMember);

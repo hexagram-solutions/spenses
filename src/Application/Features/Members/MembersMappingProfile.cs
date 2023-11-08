@@ -11,6 +11,8 @@ public class MembersMappingProfile : Profile
         CreateMap<DbModels.Member, Member>();
 
         CreateMap<MemberProperties, DbModels.Member>()
+            // The only way IsActive can be set to false is by deleting/deactivating the member.
+            .ForMember(dest => dest.IsActive, opts => opts.MapFrom(x => true))
             .ForMember(dest => dest.Id, opts => opts.Ignore())
             .ForMember(dest => dest.Home, opts => opts.Ignore())
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())

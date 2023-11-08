@@ -13,6 +13,8 @@ public class Member : AggregateRoot
     [Range(0.00, 1.00)]
     public decimal DefaultSplitPercentage { get; set; }
 
+    public bool IsActive { get; set; } = true;
+
     public Guid HomeId { get; set; }
 
     public Home Home { get; set; } = null!;
