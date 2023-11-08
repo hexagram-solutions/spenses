@@ -40,8 +40,9 @@ public partial class MemberForm
             .Where(x => x.Id != Member.Id)
             .ToList();
 
-        var totalHomeSplitPercentages =
-            otherHomeMembers.Sum(x => x.DefaultSplitPercentage) + Member.DefaultSplitPercentage;
+        var totalHomeSplitPercentages = otherHomeMembers
+            .Where(m => m.IsActive)
+            .Sum(x => x.DefaultSplitPercentage) + Member.DefaultSplitPercentage;
 
         IsTotalHomeSplitPercentageValid = totalHomeSplitPercentages == 1m;
     }

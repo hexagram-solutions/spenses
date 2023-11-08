@@ -1,4 +1,5 @@
 using System.Net;
+using Spenses.Application.Models.Expenses;
 using Spenses.Application.Models.Payments;
 
 namespace Spenses.Api.IntegrationTests.Payments;
@@ -81,5 +82,26 @@ public partial class PaymentsIntegrationTests
         var createdPaymentResponse = await _payments.PostPayment(home.Id, properties);
 
         createdPaymentResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+
+
+    [Fact]
+    public async Task Post_payment_with_invalid_identifiers_yields_not_found()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var properties = new PaymentProperties
+        {
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Note = "foobar",
+            PaidByMemberId = home.Members[0].Id,
+            PaidToMemberId = Guid.NewGuid()
+        };
+
+        var homeNotFoundResult = await _payments.PostPayment(Guid.NewGuid(), properties);
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

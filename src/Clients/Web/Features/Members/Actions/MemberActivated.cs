@@ -1,20 +1,19 @@
 using BlazorState;
 using MediatR;
-using Spenses.Application.Models.Members;
 using Spenses.Client.Http;
 
 namespace Spenses.Client.Web.Features.Members;
 
 public partial class MembersState
 {
-    public record MemberUpdated(Guid HomeId, Guid MemberId, MemberProperties Props) : IAction;
+    public record MemberActivated(Guid HomeId, Guid MemberId) : IAction;
 
-    public class MemberUpdatedHandler : ActionHandler<MemberUpdated>
+    public class MemberActivatedHandler : ActionHandler<MemberActivated>
     {
         private readonly IMembersApi _members;
         private readonly IMediator _mediator;
 
-        public MemberUpdatedHandler(IStore aStore, IMembersApi members, IMediator mediator)
+        public MemberActivatedHandler(IStore aStore, IMembersApi members, IMediator mediator)
             : base(aStore)
         {
             _members = members;
@@ -23,18 +22,18 @@ public partial class MembersState
 
         private MembersState MembersState => Store.GetState<MembersState>();
 
-        public override async Task Handle(MemberUpdated aAction, CancellationToken aCancellationToken)
+        public override async Task Handle(MemberActivated aAction, CancellationToken aCancellationToken)
         {
-            MembersState.MemberUpdating = true;
+            MembersState.MemberActivating = true;
 
-            var (homeId, memberId, props) = aAction;
+            var (homeId, memberId) = aAction;
 
-            var response = await _members.PutMember(homeId, memberId, props);
+            var response = await _members.ActivateMember(homeId, memberId);
 
             if (!response.IsSuccessStatusCode)
                 throw new NotImplementedException();
 
-            MembersState.MemberUpdating = false;
+            MembersState.MemberActivating = false;
 
             //TODO: Sagas
             await _mediator.Send(new MembersRequested(homeId), aCancellationToken);

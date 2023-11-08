@@ -30,8 +30,8 @@ public class MembersQueryHandler : IRequestHandler<MembersQuery, IEnumerable<Mem
     {
         var members = await _db.Members
             .Where(m => m.HomeId == request.HomeId)
+            .OrderBy(m => m.Name)
             .ProjectTo<Member>(_mapper.ConfigurationProvider)
-            .OrderBy(h => h.Name)
             .ToListAsync(cancellationToken);
 
         return members;

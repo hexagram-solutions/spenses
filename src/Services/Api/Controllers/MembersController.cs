@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Members.Requests;
+using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Members;
 
 namespace Spenses.Api.Controllers;
@@ -80,16 +81,33 @@ public class MembersController : ControllerBase
     }
 
     /// <summary>
-    /// Remove a member from a home.
+    /// Attempt to remove a member from a home. If the member has anything associated with them, they will be
+    /// deactivated instead.
     /// </summary>
     /// <param name="homeId">The home identifier.</param>
     /// <param name="memberId">the member identifier.</param>
+    /// <returns>The result of the operation.</returns>
     [HttpDelete("{memberId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
-    public async Task<ActionResult> DeleteMember(Guid homeId, Guid memberId)
+    public async Task<ActionResult<DeletionResult<Member>>> DeleteMember(Guid homeId, Guid memberId)
     {
-        await _mediator.Send(new DeleteMemberCommand(homeId, memberId));
+        var result = await _mediator.Send(new DeleteMemberCommand(homeId, memberId));
 
-        return NoContent();
+        return Ok(result);
+    }
+
+    /// <summary>
+    /// Re-activate an inactive member.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">the member identifier.</param>
+    /// <returns>The activated member.</returns>
+    [HttpPut("{memberId:guid}/activate")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
+    public async Task<ActionResult<Member>> ActivateMember(Guid homeId, Guid memberId)
+    {
+        var result = await _mediator.Send(new ActivateMemberCommand(homeId, memberId));
+
+        return Ok(result);
     }
 }

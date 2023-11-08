@@ -1,3 +1,4 @@
+using System.Net;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Payments;
 
@@ -6,7 +7,15 @@ namespace Spenses.Api.IntegrationTests.Payments;
 public partial class PaymentsIntegrationTests
 {
     [Fact]
-    public async Task Get_payments_with_period_filters_yields_Payments_in_range()
+    public async Task Get_payments_with_invalid_identifiers_yields_not_found()
+    {
+        var homeNotFoundResult = await _payments.GetPayments(Guid.NewGuid(), new FilteredPaymentQuery());
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Get_payments_with_period_filters_yields_payments_in_range()
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
@@ -37,7 +46,7 @@ public partial class PaymentsIntegrationTests
     }
 
     [Fact]
-    public async Task Get_payments_ordered_by_amount_yields_ordered_Payments()
+    public async Task Get_payments_ordered_by_amount_yields_ordered_payments()
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
