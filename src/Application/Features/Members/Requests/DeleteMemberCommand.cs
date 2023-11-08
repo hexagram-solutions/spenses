@@ -5,6 +5,7 @@ using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Resources.Relational;
+using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Members.Requests;
 
@@ -35,6 +36,20 @@ public class DeleteMemberCommandHandler : IRequestHandler<DeleteMemberCommand>
 
         _db.Members.Remove(member);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        try
+        {
+            await _db.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateException ex)
+            when (ex.Entries.SingleOrDefault(e => (e.Entity as DbModels.Member)?.Id == memberId) is not null)
+        {
+            // The member has associated entities and can't be deleted, so we'll deactivate the member instead.
+            member.IsActive = false;
+
+            // "Undo" the prior removal
+            _db.Members.Entry(member).State = EntityState.Modified;
+
+            await _db.SaveChangesAsync(cancellationToken);
+        }
     }
 }

@@ -32,7 +32,7 @@ public partial class MembersIntegrationTests
         var members = (await _members.GetMembers(home.Id)).Content;
         members.Should().ContainEquivalentOf(createdMember);
 
-        await _members.DeleteMember(home.Id, createdMember!.Id);
+        await _members.DeleteMember(home.Id, createdMember.Id);
     }
 
     [Fact]
@@ -50,9 +50,9 @@ public partial class MembersIntegrationTests
     {
         var homeNotFoundResult = await _members.PostMember(Guid.NewGuid(), new MemberProperties
         {
-            Name = "Bob",
+            Name = "Grunky Peep",
             DefaultSplitPercentage = 0.0m,
-            ContactEmail = "bob@example.com"
+            ContactEmail = "grunky.peep@georgiasouthern.edu"
         });
 
         homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
