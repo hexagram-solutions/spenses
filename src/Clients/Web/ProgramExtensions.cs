@@ -4,6 +4,7 @@ using Blazorise.FluentValidation;
 using Blazorise.Icons.FontAwesome;
 using BlazorState;
 using FluentValidation;
+using Fluxor;
 using Hexagrams.Extensions.Authentication.OAuth;
 using Hexagrams.Extensions.Common.Http;
 using Refit;
@@ -77,6 +78,12 @@ public static class ProgramExtensions
                 options.UseReduxDevTools();
 
             options.Assemblies = new[] { typeof(Program).GetTypeInfo().Assembly };
+        });
+
+        services.AddFluxor(opts =>
+        {
+            opts.ScanAssemblies(typeof(Program).Assembly);
+            // todo: redux dev tools
         });
 
         return services;
