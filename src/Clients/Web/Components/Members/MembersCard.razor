@@ -1,0 +1,104 @@
+﻿@using Spenses.Application.Models.Members;
+@inherits BlazorState.BlazorStateComponent
+
+<Div Margin="Margin.IsAuto.OnX">
+    <Card>
+        <CardHeader>
+            <CardTitle>Members</CardTitle>
+        </CardHeader>
+        <CardBody>
+            <LoadingIndicator Visible="MembersState.MembersRequesting">
+                <MemberSplitPercentageAlert IsValid="IsTotalHomeSplitPercentageValid"/>
+                <Table Striped>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHeaderCell>Name</TableHeaderCell>
+                            <TableHeaderCell>Contact Email</TableHeaderCell>
+                            <TableHeaderCell>Default Split %</TableHeaderCell>
+                            <TableHeaderCell TextAlignment="TextAlignment.End">Actions</TableHeaderCell>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        @foreach (var member in MembersState.Members.Where(m => m.IsActive))
+                        {
+                            @TableRow(member)
+                        }
+
+                        @if (MembersState.Members.Any(m => !m.IsActive))
+                        {
+                            <TableRowGroup Title="Inactive" Expanded>
+                                @foreach (var member in MembersState.Members.Where(m => !m.IsActive))
+                                {
+                                    @TableRow(member)
+                                }
+                            </TableRowGroup>
+                        }
+                    </TableBody>
+                </Table>
+                <Button Type="@ButtonType.Submit"
+                        Color="Color.Primary"
+                        Clicked="AddMember">
+                    <Icon Name="IconName.Add"
+                          Margin="Margin.Is2.FromEnd"/>
+                    Add member
+                </Button>
+            </LoadingIndicator>
+        </CardBody>
+    </Card>
+</Div>
+@* ReSharper disable once InconsistentNaming *@
+@code {
+    // ReSharper disable once UnusedParameter.Local
+    private RenderFragment TableRow(Member member) => __builder =>
+    {
+        <TableRow>
+            <TableRowCell>
+                <Text Italic="!member.IsActive">@member.Name</Text>
+            </TableRowCell>
+            <TableRowCell>
+                @if (!string.IsNullOrEmpty(member.ContactEmail))
+                {
+                    <Blazorise.Text Italic="!member.IsActive">
+                        @member.ContactEmail
+                    </Blazorise.Text>
+                    
+                }
+                else
+                {
+                    <Blazorise.Text
+                        TextWeight="TextWeight.Light"
+                        TextColor="TextColor.Secondary"
+                        Italic>
+                        None
+                    </Blazorise.Text>
+                }
+            </TableRowCell>
+            <TableRowCell>
+                <Text Italic="!member.IsActive">
+                    <samp>
+                        @($"{member.DefaultSplitPercentage:P2}")
+                    </samp>
+                </Text>
+            </TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.End">
+                <Tooltip Text="Edit" Inline>
+                    <Button Type="@ButtonType.Button"
+                            Color="Color.Info"
+                            Size="Size.Small"
+                            Clicked="@(args => OnEditClicked(args, member.Id))">
+                        <Icon Name="IconName.Edit"/>
+                    </Button>
+                </Tooltip>
+                <Tooltip Txt="Delete" Inline>
+                    <Button Type="@ButtonType.Button"
+                            Color="Color.Warning"
+                            Size="Size.Small"
+                            Clicked="@(args => OnDeleteClicked(args, member))">
+                        <Icon Name="IconName.Delete"/>
+                    </Button>
+                </Tooltip>
+            </TableRowCell>
+        </TableRow>
+    };
+
+}

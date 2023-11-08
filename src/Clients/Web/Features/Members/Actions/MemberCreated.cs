@@ -36,7 +36,7 @@ public partial class MembersState
 
             MembersState.MemberCreating = false;
 
-            // todo: sagas or something?
+            //TODO: Sagas
             await _mediator.Send(new MembersRequested(homeId), aCancellationToken);
         }
     }

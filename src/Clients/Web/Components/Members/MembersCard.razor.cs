@@ -5,7 +5,7 @@ using Spenses.Client.Web.Features.Members;
 
 namespace Spenses.Client.Web.Components.Members;
 
-public partial class MembersTable
+public partial class MembersCard
 {
     [Parameter]
     public Guid HomeId { get; set; }
@@ -51,8 +51,10 @@ public partial class MembersTable
     private async Task OnDeleteClicked(MouseEventArgs _, Member member)
     {
         var confirmed = await MessageService.Confirm(
-            $"{member.Name} will be permanently removed from this home. This can't be undone.",
-            "Are you sure you want to delete this member?");
+            "If this member has no expenses or payments associated with them, they be permanently removed from " +
+            "this home. Otherwise, the member will be be deactivated with any existing payments or expenses " +
+            "remaining associated with the member.",
+            $"Are you sure you want to remove this {member.Name} from this home?");
 
         if (!confirmed)
             return;
