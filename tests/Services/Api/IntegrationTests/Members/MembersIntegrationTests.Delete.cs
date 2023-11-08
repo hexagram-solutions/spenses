@@ -56,7 +56,7 @@ public partial class MembersIntegrationTests
         var home = (await _homes.GetHomes()).Content!.First();
 
         var member = home.Members.First();
-        
+
         var deleteMemberResponse = await _members.DeleteMember(home.Id, member.Id);
 
         deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);

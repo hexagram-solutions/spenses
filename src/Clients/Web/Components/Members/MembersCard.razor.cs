@@ -18,11 +18,15 @@ public partial class MembersCard
 
     private MembersState MembersState => GetState<MembersState>();
 
+    private IEnumerable<Member> Members => MembersState.Members;
+
     public bool IsTotalHomeSplitPercentageValid
     {
         get
         {
-            var totalHomeSplitPercentages = MembersState.Members.Sum(x => x.DefaultSplitPercentage);
+            var totalHomeSplitPercentages = MembersState.Members
+                .Where(m => m.IsActive)
+                .Sum(x => x.DefaultSplitPercentage);
 
             return totalHomeSplitPercentages == 1m;
         }
@@ -60,5 +64,10 @@ public partial class MembersCard
             return;
 
         await Mediator.Send(new MembersState.MemberDeleted(HomeId, member.Id));
+    }
+
+    private Task OnActivateClicked(MouseEventArgs _, Guid memberId)
+    {
+        return Mediator.Send(new MembersState.MemberActivated(HomeId, memberId));
     }
 }

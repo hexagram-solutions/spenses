@@ -61,7 +61,6 @@ public partial class MembersState
                         (int) deletionResult.Type,
                         typeof(DeletionType));
             }
-            
 
             //TODO: Sagas
             await _mediator.Send(new MembersRequested(homeId), aCancellationToken);

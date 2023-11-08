@@ -1,4 +1,4 @@
-﻿@using Spenses.Application.Models.Members;
+﻿@using Spenses.Application.Models.Members
 @inherits BlazorState.BlazorStateComponent
 
 <Div Margin="Margin.IsAuto.OnX">
@@ -9,7 +9,7 @@
         <CardBody>
             <LoadingIndicator Visible="MembersState.MembersRequesting">
                 <MemberSplitPercentageAlert IsValid="IsTotalHomeSplitPercentageValid"/>
-                <Table Striped>
+                <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHeaderCell>Name</TableHeaderCell>
@@ -19,15 +19,15 @@
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        @foreach (var member in MembersState.Members.Where(m => m.IsActive))
+                        @foreach (var member in Members.Where(m => m.IsActive))
                         {
                             @TableRow(member)
                         }
 
-                        @if (MembersState.Members.Any(m => !m.IsActive))
+                        @if (Members.Any(m => !m.IsActive))
                         {
                             <TableRowGroup Title="Inactive" Expanded>
-                                @foreach (var member in MembersState.Members.Where(m => !m.IsActive))
+                                @foreach (var member in Members.Where(m => !m.IsActive))
                                 {
                                     @TableRow(member)
                                 }
@@ -47,6 +47,7 @@
     </Card>
 </Div>
 @* ReSharper disable once InconsistentNaming *@
+
 @code {
     // ReSharper disable once UnusedParameter.Local
     private RenderFragment TableRow(Member member) => __builder =>
@@ -61,7 +62,6 @@
                     <Blazorise.Text Italic="!member.IsActive">
                         @member.ContactEmail
                     </Blazorise.Text>
-                    
                 }
                 else
                 {
@@ -81,22 +81,36 @@
                 </Text>
             </TableRowCell>
             <TableRowCell TextAlignment="TextAlignment.End">
-                <Tooltip Text="Edit" Inline>
-                    <Button Type="@ButtonType.Button"
-                            Color="Color.Info"
-                            Size="Size.Small"
-                            Clicked="@(args => OnEditClicked(args, member.Id))">
-                        <Icon Name="IconName.Edit"/>
-                    </Button>
-                </Tooltip>
-                <Tooltip Txt="Delete" Inline>
-                    <Button Type="@ButtonType.Button"
-                            Color="Color.Warning"
-                            Size="Size.Small"
-                            Clicked="@(args => OnDeleteClicked(args, member))">
-                        <Icon Name="IconName.Delete"/>
-                    </Button>
-                </Tooltip>
+                @if (member.IsActive)
+                {
+                    <Tooltip Text="Edit" Inline>
+                        <Button Type="@ButtonType.Button"
+                                Color="Color.Info"
+                                Size="Size.Small"
+                                Clicked="@(args => OnEditClicked(args, member.Id))">
+                            <Icon Name="IconName.Edit"/>
+                        </Button>
+                    </Tooltip>
+                    <Tooltip Text="Delete" Inline>
+                        <Button Type="@ButtonType.Button"
+                                Color="Color.Warning"
+                                Size="Size.Small"
+                                Clicked="@(args => OnDeleteClicked(args, member))">
+                            <Icon Name="IconName.Delete"/>
+                        </Button>
+                    </Tooltip>
+                }
+                else
+                {
+                    <Tooltip Text="Rectivate" Inline>
+                        <Button Type="@ButtonType.Button"
+                                Color="Color.Info"
+                                Size="Size.Small"
+                                Clicked="@(args => OnActivateClicked(args, member.Id))">
+                            <Icon Name="IconName.Undo"/>
+                        </Button>
+                    </Tooltip>
+                }
             </TableRowCell>
         </TableRow>
     };
