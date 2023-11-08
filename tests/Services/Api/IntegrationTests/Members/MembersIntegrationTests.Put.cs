@@ -62,4 +62,24 @@ public partial class MembersIntegrationTests
 
         memberNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
+
+    [Fact]
+    public async Task Put_home_inactive_home_does_not_change_is_active_property()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var memberId = home.Members.First().Id;
+
+        var member = (await _members.DeleteMember(home.Id, memberId)).Content!.Model;
+
+        var updatedMemberResponse = await _members.PutMember(home.Id, memberId, member);
+
+        updatedMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var updatedMember = updatedMemberResponse.Content!;
+
+        updatedMember.Should().BeEquivalentTo(member);
+
+        await _members.ActivateMember(home.Id, member.Id);
+    }
 }
