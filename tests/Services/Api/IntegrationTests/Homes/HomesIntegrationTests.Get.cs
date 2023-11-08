@@ -11,7 +11,7 @@ public partial class HomesIntegrationTests
     [Fact]
     public async Task Get_non_existent_home_yields_not_found_result()
     {
-        var result = await _homes.GetHome(Guid.Empty);
+        var result = await _homes.GetHome(Guid.NewGuid());
 
         result.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }

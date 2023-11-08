@@ -15,4 +15,12 @@ public partial class MembersIntegrationTests
 
         membersResponse.Content.Should().BeInAscendingOrder(x => x.Name, StringComparer.InvariantCulture);
     }
+
+    [Fact]
+    public async Task Get_all_members_with_invalid_identifiers_yields_not_found()
+    {
+        var homeNotFoundResult = await _members.GetMembers(Guid.NewGuid());
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }

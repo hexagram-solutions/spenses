@@ -44,4 +44,17 @@ public partial class MembersIntegrationTests
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task Post_home_member_with_invalid_identifiers_yields_not_found()
+    {
+        var homeNotFoundResult = await _members.PostMember(Guid.NewGuid(), new MemberProperties
+        {
+            Name = "Bob",
+            DefaultSplitPercentage = 0.0m,
+            ContactEmail = "bob@example.com"
+        });
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }

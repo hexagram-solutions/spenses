@@ -19,12 +19,18 @@ public partial class MembersIntegrationTests
     }
 
     [Fact]
-    public async Task Get_home_member_with_invalid_id_returns_not_found()
+    public async Task Get_home_member_with_invalid_identifiers_yields_not_found()
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var result = await _members.GetMember(home.Id, Guid.Empty);
+        var member = home.Members.First();
 
-        result.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        var homeNotFoundResult = await _members.GetMember(Guid.NewGuid(), member.Id);
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        var memberNotFoundResult = await _members.GetMember(home.Id, Guid.NewGuid());
+
+        memberNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

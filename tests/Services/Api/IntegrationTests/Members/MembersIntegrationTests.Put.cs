@@ -46,4 +46,20 @@ public partial class MembersIntegrationTests
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task Put_home_member_with_invalid_identifiers_yields_not_found()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var member = home.Members.First();
+
+        var homeNotFoundResult = await _members.PutMember(Guid.NewGuid(), member.Id, member);
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        var memberNotFoundResult = await _members.PutMember(home.Id, Guid.NewGuid(), member);
+
+        memberNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }

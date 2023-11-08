@@ -90,4 +90,29 @@ public partial class PaymentsIntegrationTests
 
         updatedPaymentResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task Put_expense_with_invalid_identifiers_yields_not_found()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var paymentId = (await _payments.GetPayments(home.Id, new FilteredPaymentQuery())).Content!.Items.First().Id;
+
+        var properties = new PaymentProperties
+        {
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Note = "foobar",
+            PaidByMemberId = home.Members[0].Id,
+            PaidToMemberId = Guid.NewGuid()
+        };
+
+        var homeNotFoundResult = await _payments.PutPayment(Guid.NewGuid(), paymentId, properties);
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        var paymentNotFoundResult = await _payments.PutPayment(home.Id, Guid.NewGuid(), properties);
+
+        paymentNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }

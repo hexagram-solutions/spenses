@@ -1,3 +1,4 @@
+using System.Net;
 using Hexagrams.Extensions.Common;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Expenses;
@@ -6,6 +7,14 @@ namespace Spenses.Api.IntegrationTests.Expenses;
 
 public partial class ExpensesIntegrationTests
 {
+    [Fact]
+    public async Task Get_expenses_with_invalid_identifiers_yields_not_found()
+    {
+        var homeNotFoundResult = await _expenses.GetExpenses(Guid.NewGuid(), new FilteredExpensesQuery());
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
     [Fact]
     public async Task Get_filters_yields_filterable_values()
     {

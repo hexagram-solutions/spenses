@@ -64,4 +64,21 @@ public partial class ExpensesIntegrationTests
 
         createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task Post_expense_with_invalid_identifiers_yields_not_found()
+    {
+        var properties = new ExpenseProperties
+        {
+            Note = "Foo",
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Tags = new[] { "groceries" },
+            PaidByMemberId = Guid.NewGuid()
+        };
+
+        var homeNotFoundResult = await _expenses.PostExpense(Guid.NewGuid(), properties);
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }

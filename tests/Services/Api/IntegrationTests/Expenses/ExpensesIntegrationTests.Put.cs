@@ -65,4 +65,29 @@ public partial class ExpensesIntegrationTests
 
         updatedExpenseResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
+
+    [Fact]
+    public async Task Put_expense_with_invalid_identifiers_yields_not_found()
+    {
+        var homeId = (await _homes.GetHomes()).Content!.First().Id;
+
+        var expenseId = (await _expenses.GetExpenses(homeId, new FilteredExpensesQuery())).Content!.Items.First().Id;
+
+        var properties = new ExpenseProperties
+        {
+            Note = "Bar",
+            Amount = 1234.56m,
+            Date = DateOnly.FromDateTime(DateTime.UtcNow),
+            Tags = new[] { "household" },
+            PaidByMemberId = Guid.NewGuid()
+        };
+
+        var homeNotFoundResult = await _expenses.PutExpense(Guid.NewGuid(), expenseId, properties);
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+
+        var expenseNotFoundResult = await _expenses.PutExpense(homeId, Guid.NewGuid(), properties);
+
+        expenseNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
 }
