@@ -1,4 +1,5 @@
 using Refit;
+using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Members;
 
 namespace Spenses.Client.Http;
@@ -18,5 +19,8 @@ public interface IMembersApi
     Task<IApiResponse<Member>> PutMember(Guid homeId, Guid memberId, MemberProperties props);
 
     [Delete("/homes/{homeId}/members/{memberId}")]
-    Task<IApiResponse> DeleteMember(Guid homeId, Guid memberId);
+    Task<IApiResponse<DeletionResult<Member>>> DeleteMember(Guid homeId, Guid memberId);
+
+    [Put("/homes/{homeId}/members/{memberId}/activate")]
+    Task<IApiResponse<Member>> ActivateMember(Guid homeId, Guid memberId);
 }
