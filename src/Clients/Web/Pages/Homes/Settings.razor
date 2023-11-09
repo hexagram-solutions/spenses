@@ -2,11 +2,10 @@
 @using Spenses.Client.Web.Components.Homes
 @using Spenses.Client.Web.Components.Members
 @using Spenses.Client.Web.Layouts
-@inherits BlazorState.BlazorStateComponent
-
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 @layout MainLayout
 
-<h3>@(Home.Name)</h3>
+<h3>Settings: @(Home?.Name ?? "Loading...")</h3>
 
 <Row>
     <Column ColumnSize="ColumnSize.Is12.OnDesktop">
@@ -15,7 +14,7 @@
                 <CardTitle>Settings</CardTitle>
             </CardHeader>
             <CardBody>
-                <LoadingIndicator Visible="HomeState.HomeRequesting || HomeState.HomeUpdating">
+                <LoadingIndicator Visible="HomesState.Value.HomeRequesting || HomesState.Value.HomeUpdating">
                     <HomeForm @ref="HomeFormRef"
                               Home="Home"/>
                     <Button Color="Color.Primary" Clicked="Save">Save</Button>

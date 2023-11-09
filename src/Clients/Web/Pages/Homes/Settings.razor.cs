@@ -1,27 +1,34 @@
-using BlazorState;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Homes;
 using Spenses.Client.Web.Components.Homes;
-using Spenses.Client.Web.Features.Homes;
+using Spenses.Client.Web.Store.Homes;
 
 namespace Spenses.Client.Web.Pages.Homes;
 
-public partial class Settings : BlazorStateComponent
+public partial class Settings
 {
     [Parameter]
     public Guid HomeId { get; set; }
 
-    private HomeState HomeState => GetState<HomeState>();
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
 
     public HomeForm HomeFormRef { get; set; } = null!;
 
-    private Home Home => HomeState.CurrentHome ?? new Home();
+    private Home Home => HomesState.Value.CurrentHome ?? new Home();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Mediator.Send(new HomeState.HomeSelected(HomeId));
+        base.OnInitialized();
 
-        await base.OnInitializedAsync();
+        if (HomesState.Value.CurrentHome?.Id == HomeId)
+            return;
+
+        Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
     }
 
     private async Task Save()
@@ -29,6 +36,6 @@ public partial class Settings : BlazorStateComponent
         if (!await HomeFormRef.Validations.ValidateAll())
             return;
 
-        await Mediator.Send(new HomeState.HomeUpdated(HomeId, Home));
+        Dispatcher.Dispatch(new HomeUpdatedAction(HomeId, Home!));
     }
 }

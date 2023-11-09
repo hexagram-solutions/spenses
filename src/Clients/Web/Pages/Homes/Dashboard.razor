@@ -1,12 +1,11 @@
 ﻿@page "/homes/{homeId:guid}/dashboard"
-@using Spenses.Client.Web.Features.Homes
 @using Spenses.Client.Web.Layouts
-
-@inherits BlazorState.BlazorStateComponent
+@using Spenses.Client.Web.Store.Homes
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @layout MainLayout
 
-<h3>Dashboard: @(HomeState.CurrentHome?.Name ?? "Loading...")</h3>
+<h3>Dashboard: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</h3>
 
 <iframe style="overflow: hidden; width: 100%;" height="720" src="https://www.youtube.com/embed/yNxPVj0hejg?si=pGCFIKb45vItwkPx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
@@ -15,10 +14,19 @@
     [Parameter]
     public Guid HomeId { get; set; }
 
-    HomeState HomeState => GetState<HomeState>();
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
 
-    protected override Task OnParametersSetAsync()
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
+
+    protected override void OnInitialized()
     {
-        return Mediator.Send(new HomeState.HomeSelected(HomeId));
+        base.OnInitialized();
+
+        if (HomesState.Value.CurrentHome?.Id == HomeId)
+            return;
+
+        Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
     }
 }
