@@ -73,6 +73,21 @@ public class Effects
     }
 
     [EffectMethod]
+    public async Task HandleExpenseDeleted(ExpenseDeletedAction action, IDispatcher dispatcher)
+    {
+        var response = await _expenses.DeleteExpense(action.HomeId, action.ExpenseId);
+
+        if (response.Error is not null)
+        {
+            dispatcher.Dispatch(new ExpenseDeletionFailedAction(response.Error));
+
+            return;
+        }
+
+        dispatcher.Dispatch(new ExpenseDeletionSucceededAction());
+    }
+
+    [EffectMethod]
     public async Task HandleExpenseFiltersRequested(ExpenseFiltersRequestedAction action, IDispatcher dispatcher)
     {
         var response = await _expenses.GetExpenseFilters(action.HomeId);

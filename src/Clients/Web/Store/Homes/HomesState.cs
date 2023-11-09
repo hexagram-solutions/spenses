@@ -14,7 +14,7 @@ public record HomesState
 
     public Home? CurrentHome { get; init; }
 
-    public IEnumerable<Home> Homes { get; init; } = Enumerable.Empty<Home>();
+    public Home[] Homes { get; init; } = Array.Empty<Home>();
 
     public bool HomesRequesting { get; init; }
 
@@ -23,6 +23,6 @@ public record HomesState
     public bool HomeCreating { get; init; }
 
     public bool HomeUpdating { get; init; }
-    
+
     public ApiException? Error { get; init; }
 }

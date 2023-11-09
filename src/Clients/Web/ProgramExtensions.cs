@@ -2,7 +2,6 @@ using System.Reflection;
 using Blazorise.Bootstrap5;
 using Blazorise.FluentValidation;
 using Blazorise.Icons.FontAwesome;
-using BlazorState;
 using FluentValidation;
 using Fluxor;
 using Hexagrams.Extensions.Authentication.OAuth;
@@ -72,14 +71,6 @@ public static class ProgramExtensions
 
     public static IServiceCollection AddStateManagement(this IServiceCollection services, bool useDevTools)
     {
-        services.AddBlazorState(options =>
-        {
-            if (useDevTools)
-                options.UseReduxDevTools();
-
-            options.Assemblies = new[] { typeof(Program).GetTypeInfo().Assembly };
-        });
-
         services.AddFluxor(opts =>
         {
             opts.ScanAssemblies(typeof(Program).Assembly);

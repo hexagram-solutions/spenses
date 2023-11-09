@@ -1,8 +1,9 @@
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Homes;
 using Spenses.Application.Models.Members;
-using Spenses.Client.Web.Features.Homes;
-using Spenses.Client.Web.Features.Members;
+using Spenses.Client.Web.Store.Homes;
+using Spenses.Client.Web.Store.Members;
 
 namespace Spenses.Client.Web.Components.Members;
 
@@ -12,33 +13,44 @@ public partial class EditMemberModal
     public Guid MemberId { get; set; }
 
     [Inject]
+    private IState<MembersState> MembersState { get; set; } = null!;
+
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
+
+    [Inject]
     public IModalService ModalService { get; init; } = null!;
+
+    private Home Home => HomesState.Value.CurrentHome!;
 
     private MemberForm MemberFormRef { get; set; } = null!;
 
-    private Home Home => GetState<HomeState>().CurrentHome!;
-
-    private MembersState MembersState => GetState<MembersState>();
-
-    private Member Member => MembersState.CurrentMember ?? new Member();
-
-    protected override async Task OnInitializedAsync()
+    private Member Member
     {
-        await Mediator.Send(new MembersState.MemberSelected(Home.Id, MemberId));
+        get
+        {
+            var currentMember = MembersState.Value.CurrentMember;
 
-        // Direct mapping to new object ensure correct type is passed to validator
-        //var currentMember = MembersState.CurrentMember!;
+            if (currentMember is null)
+                return new Member { DefaultSplitPercentage = 0.5m };
 
-        //Member = new MemberProperties
-        //{
-        //    Name = currentMember.Name,
-        //    ContactEmail = currentMember.ContactEmail,
-        //    DefaultSplitPercentage = currentMember.DefaultSplitPercentage
-        //};
+            return new Member
+            {
+                Name = currentMember.Name,
+                ContactEmail = currentMember.ContactEmail,
+                DefaultSplitPercentage = currentMember.DefaultSplitPercentage
+            };
+        }
+    }
 
-        //Member = MembersState.CurrentMember!;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
 
-        await base.OnInitializedAsync();
+        Dispatcher.Dispatch(new MemberRequestedAction(Home.Id, MemberId));
     }
 
     private Task Close()
@@ -51,7 +63,7 @@ public partial class EditMemberModal
         if (!await MemberFormRef.Validations.ValidateAll())
             return;
 
-        await Mediator.Send(new MembersState.MemberUpdated(Home.Id, MemberId, Member));
+        Dispatcher.Dispatch(new MemberUpdatedAction(Home.Id, MemberId, MemberFormRef.Member));
 
         await Close();
     }

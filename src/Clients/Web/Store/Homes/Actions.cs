@@ -5,7 +5,7 @@ namespace Spenses.Client.Web.Store.Homes;
 
 public record HomesRequestedAction;
 
-public record HomesReceivedAction(IEnumerable<Home> Homes);
+public record HomesReceivedAction(Home[] Homes);
 
 public record HomesRequestFailedAction(ApiException Error);
 

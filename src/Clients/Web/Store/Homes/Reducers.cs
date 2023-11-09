@@ -1,4 +1,6 @@
+using DynamicData;
 using Fluxor;
+using Spenses.Application.Models.Homes;
 
 namespace Spenses.Client.Web.Store.Homes;
 
@@ -67,7 +69,13 @@ public static class Reducers
     [ReducerMethod]
     public static HomesState ReduceHomeUpdateSucceeded(HomesState state, HomeUpdateSucceededAction action)
     {
-        return state with { HomeUpdating = false, CurrentHome = action.Home };
+        var homes = new List<Home>(state.Homes);
+
+        var originalHome = homes.Single(h => h.Id == action.Home.Id);
+
+        homes.Replace(originalHome, action.Home);
+
+        return state with { HomeUpdating = false, CurrentHome = action.Home, Homes = homes.ToArray() };
     }
 
     [ReducerMethod]

@@ -27,7 +27,5 @@ public record PaymentsState
 
     public bool PaymentDeleting { get; init; }
 
-    public bool PaymentFiltersRequesting { get; init; }
-
     public ApiException? Error { get; init; }
 }

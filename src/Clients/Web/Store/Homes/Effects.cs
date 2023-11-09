@@ -27,7 +27,7 @@ public class Effects
             return;
         }
 
-        dispatcher.Dispatch(new HomesReceivedAction(response.Content!));
+        dispatcher.Dispatch(new HomesReceivedAction(response.Content!.ToArray()));
     }
 
     [EffectMethod]
@@ -59,7 +59,7 @@ public class Effects
 
         dispatcher.Dispatch(new HomeCreationSucceededAction(response.Content!));
     }
-    
+
     [EffectMethod]
     public Task HandleHomeCreationSucceeded(HomeCreationSucceededAction action, IDispatcher dispatcher)
     {

@@ -71,4 +71,19 @@ public class Effects
 
         dispatcher.Dispatch(new PaymentUpdateSucceededAction(response.Content!));
     }
+
+    [EffectMethod]
+    public async Task HandlePaymentDeleted(PaymentDeletedAction action, IDispatcher dispatcher)
+    {
+        var response = await _payments.DeletePayment(action.HomeId, action.PaymentId);
+
+        if (response.Error is not null)
+        {
+            dispatcher.Dispatch(new PaymentDeletionFailedAction(response.Error));
+
+            return;
+        }
+
+        dispatcher.Dispatch(new PaymentDeletionSucceededAction());
+    }
 }

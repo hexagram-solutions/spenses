@@ -1,5 +1,5 @@
 ﻿@using Spenses.Application.Models.Members
-@inherits BlazorState.BlazorStateComponent
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <Div Margin="Margin.IsAuto.OnX">
     <Card>
@@ -7,7 +7,7 @@
             <CardTitle>Members</CardTitle>
         </CardHeader>
         <CardBody>
-            <LoadingIndicator Visible="MembersState.MembersRequesting">
+            <LoadingIndicator Visible="MembersState.Value.MembersRequesting">
                 <MemberSplitPercentageAlert IsValid="IsTotalHomeSplitPercentageValid"/>
                 <Table>
                     <TableHeader>

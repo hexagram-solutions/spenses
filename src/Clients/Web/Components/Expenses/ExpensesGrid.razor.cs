@@ -50,7 +50,7 @@ public partial class ExpensesGrid
         {
             await DataGridRef.Reload();
         });
-        
+
         SubscribeToAction<ExpenseUpdateSucceededAction>(async _ =>
         {
             await DataGridRef.Reload();
