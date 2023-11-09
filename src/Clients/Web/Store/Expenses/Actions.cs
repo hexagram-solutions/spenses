@@ -30,7 +30,7 @@ public record ExpenseUpdateFailedAction(ApiException Error);
 
 public record ExpenseDeletedAction(Guid HomeId, Guid ExpenseId);
 
-public record ExpenseDeletionSucceededAction();
+public record ExpenseDeletionSucceededAction;
 
 public record ExpenseDeletionFailedAction(ApiException Error);
 

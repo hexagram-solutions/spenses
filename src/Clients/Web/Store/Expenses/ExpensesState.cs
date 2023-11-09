@@ -31,6 +31,5 @@ public record ExpensesState
 
     public bool ExpenseFiltersRequesting { get; init; }
 
-    // TODO: enhanced error model
     public ApiException? Error { get; init; }
 }

@@ -1,47 +1,65 @@
+using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Spenses.Application.Models.Homes;
 using Spenses.Application.Models.Payments;
-using Spenses.Client.Web.Features.Homes;
-using Spenses.Client.Web.Features.Payments;
+using Spenses.Application.Models.Homes;
+using Spenses.Client.Web.Store.Payments;
+using Spenses.Client.Web.Store.Homes;
 
 namespace Spenses.Client.Web.Components.Payments;
 
 public partial class EditPaymentModal
 {
     [Parameter]
-    public Guid PaymentId { get; set; }
+    public Guid PaymentId { get; init; }
 
-    [Parameter]
-    public Func<Task> OnSave { get; set; } = null!;
+    [Inject]
+    private IState<PaymentsState> PaymentsState { get; init; } = null!;
+
+    [Inject]
+    private IState<HomesState> HomesState { get; init; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; } = null!;
 
     [Inject]
     public IModalService ModalService { get; init; } = null!;
 
+    private Home Home => HomesState.Value.CurrentHome!;
+
+    private PaymentProperties Payment
+    {
+        get
+        {
+            var currentPayment = PaymentsState.Value.CurrentPayment;
+
+            if (currentPayment is null)
+            {
+                return new PaymentProperties
+                {
+                    Date = DateOnly.FromDateTime(DateTime.Today),
+                    PaidByMemberId = Home.Members.OrderBy(m => m.Name).First().Id,
+                    PaidToMemberId = Home.Members.OrderBy(m => m.Name).First().Id
+                };
+            }
+
+            return new PaymentProperties
+            {
+                Note = currentPayment.Note,
+                Date = currentPayment.Date,
+                Amount = currentPayment.Amount,
+                PaidByMemberId = currentPayment.PaidByMember.Id,
+                PaidToMemberId = currentPayment.PaidToMember.Id
+            };
+        }
+    }
+
     private PaymentForm PaymentFormRef { get; set; } = null!;
 
-    private Home Home => GetState<HomeState>().CurrentHome!;
-
-    private PaymentsState PaymentsState => GetState<PaymentsState>();
-
-    private PaymentProperties Payment { get; set; } = new();
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Mediator.Send(new PaymentsState.PaymentSelected(Home.Id, PaymentId));
+        base.OnInitialized();
 
-        // Direct mapping to new object to ensure correct type is passed to validator
-        var currentPayment = PaymentsState.CurrentPayment!;
-
-        Payment = new PaymentProperties
-        {
-            Amount = currentPayment.Amount,
-            Date = currentPayment.Date,
-            Note = currentPayment.Note,
-            PaidByMemberId = currentPayment.PaidByMember.Id,
-            PaidToMemberId = currentPayment.PaidToMember.Id,
-        };
-
-        await base.OnInitializedAsync();
+        Dispatcher.Dispatch(new PaymentRequestedAction(Home.Id, PaymentId));
     }
 
     private Task Close()
@@ -54,10 +72,8 @@ public partial class EditPaymentModal
         if (!await PaymentFormRef.Validations.ValidateAll())
             return;
 
-        await Mediator.Send(new PaymentsState.PaymentUpdated(Home.Id, PaymentId, Payment));
+        Dispatcher.Dispatch(new PaymentUpdatedAction(Home.Id, PaymentId, PaymentFormRef.Payment));
 
         await Close();
-
-        await OnSave();
     }
 }

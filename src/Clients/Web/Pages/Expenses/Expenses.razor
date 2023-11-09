@@ -7,11 +7,12 @@
 
 @layout MainLayout
 
-<h3>Expenses</h3>
+<h3>Expenses: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</h3>
 
 <ExpensesGrid HomeId="HomeId"/>
 
 @code {
+
     [Parameter]
     public Guid HomeId { get; set; }
 
