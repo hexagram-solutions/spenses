@@ -4,6 +4,7 @@ using Spenses.Application.Models.Payments;
 
 namespace Spenses.Client.Web.Features.Payments;
 
+[Obsolete("Use Fluxor")]
 public partial class PaymentsState : State<PaymentsState>
 {
     public Payment? CurrentPayment { get; private set; }

@@ -9,9 +9,6 @@ namespace Spenses.Client.Web.Components.Expenses;
 
 public partial class CreateExpenseModal
 {
-    [Parameter]
-    public Func<Task> OnSave { get; set; } = null!;
-
     [Inject]
     private IState<ExpensesState> ExpensesState { get; set; } = null!;
 
@@ -55,7 +52,5 @@ public partial class CreateExpenseModal
         Dispatcher.Dispatch(new ExpenseCreatedAction(Home.Id, ExpenseFormRef.Expense));
 
         await Close();
-
-        await OnSave();
     }
 }

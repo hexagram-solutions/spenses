@@ -88,13 +88,14 @@
                 <Row>
                     <DataGrid @ref="DataGridRef"
                               TItem="ExpenseDigest"
-                              Data="ExpensesState.Value.Expenses.Items"
+                              Data="Expenses"
                               ReadData="OnDataGridReadData"
                               SortChanged="OnDataGridSortChanged"
                               Responsive
                               Sortable
                               Striped
                               Virtualize
+                              FixedHeader
                               LoadingTemplate="_loadingIcon"
                               EmptyTemplate="_loadingIcon"
                               TotalItems="ExpensesState.Value.Expenses.TotalCount"

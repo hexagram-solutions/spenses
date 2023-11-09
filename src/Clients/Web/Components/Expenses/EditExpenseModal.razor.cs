@@ -12,9 +12,6 @@ public partial class EditExpenseModal
     [Parameter]
     public Guid ExpenseId { get; init; }
 
-    [Parameter]
-    public Func<Task> OnSave { get; init; } = null!;
-
     [Inject]
     private IState<ExpensesState> ExpensesState { get; init; } = null!;
 
@@ -79,7 +76,5 @@ public partial class EditExpenseModal
         Dispatcher.Dispatch(new ExpenseUpdatedAction(Home.Id, ExpenseId, ExpenseFormRef.Expense));
 
         await Close();
-
-        await OnSave();
     }
 }

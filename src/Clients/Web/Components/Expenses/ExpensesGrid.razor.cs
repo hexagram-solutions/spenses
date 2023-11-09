@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using Blazorise.DataGrid;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
@@ -11,19 +13,21 @@ namespace Spenses.Client.Web.Components.Expenses;
 public partial class ExpensesGrid
 {
     [Parameter]
-    public Guid HomeId { get; set; }
+    public Guid HomeId { get; init; }
 
     [Inject]
-    private IState<ExpensesState> ExpensesState { get; set; } = null!;
+    private IState<ExpensesState> ExpensesState { get; init; } = null!;
 
     [Inject]
-    private IDispatcher Dispatcher { get; set; } = null!;
+    private IDispatcher Dispatcher { get; init; } = null!;
 
     [Inject]
-    public IModalService ModalService { get; set; } = null!;
+    public IModalService ModalService { get; init; } = null!;
 
     [Inject]
-    public IMessageService MessageService { get; set; } = null!;
+    public IMessageService MessageService { get; init; } = null!;
+
+    private IEnumerable<ExpenseDigest> Expenses => ExpensesState.Value.Expenses.Items;
 
     private DataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
 
@@ -40,6 +44,22 @@ public partial class ExpensesGrid
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
+        //todo: investigate manual read mode
+        SubscribeToAction<ExpenseCreationSucceededAction>(async _ =>
+        {
+            await DataGridRef.Reload();
+        });
+        
+        SubscribeToAction<ExpenseUpdateSucceededAction>(async _ =>
+        {
+            await DataGridRef.Reload();
+        });
+
+        SubscribeToAction<ExpenseDeletionSucceededAction>(async _ =>
+        {
+            await DataGridRef.Reload();
+        });
 
         Dispatcher.Dispatch(new ExpenseFiltersRequestedAction(HomeId));
     }
@@ -114,7 +134,7 @@ public partial class ExpensesGrid
 
     private Task OnAddExpenseClicked()
     {
-        return ModalService.Show<CreateExpenseModal>(p => p.Add(x => x.OnSave, OnExpenseSaved));
+        return ModalService.Show<CreateExpenseModal>();
     }
 
     private Task OnEditClicked(MouseEventArgs _, Guid expenseId)
@@ -122,7 +142,6 @@ public partial class ExpensesGrid
         return ModalService.Show<EditExpenseModal>(p =>
         {
             p.Add(x => x.ExpenseId, expenseId);
-            p.Add(x => x.OnSave, OnExpenseSaved);
         });
     }
 
@@ -136,8 +155,5 @@ public partial class ExpensesGrid
             return;
 
         Dispatcher.Dispatch(new ExpenseDeletedAction(HomeId, expense.Id));
-
-        // TODO: there could be a race condition here
-        await DataGridRef.Reload();
     }
 }

@@ -3,6 +3,7 @@ using Spenses.Application.Models.Members;
 
 namespace Spenses.Client.Web.Features.Members;
 
+[Obsolete("Use Fluxor")]
 public partial class MembersState : State<MembersState>
 {
     public Member? CurrentMember { get; private set; }
