@@ -1,4 +1,5 @@
 using Fluxor;
+using Refit;
 using Spenses.Application.Models.Homes;
 
 namespace Spenses.Client.Web.Store.Homes;
@@ -22,7 +23,6 @@ public record HomesState
     public bool HomeCreating { get; init; }
 
     public bool HomeUpdating { get; init; }
-
-    // TODO: enhanced error model
-    public string? Error { get; init; }
+    
+    public ApiException? Error { get; init; }
 }

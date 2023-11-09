@@ -1,8 +1,7 @@
 ﻿@using Spenses.Client.Web.Infrastructure
 @using Spenses.Application.Models.ExpenseCategories
 @using Spenses.Application.Models.Expenses
-@using System.Globalization
-@inherits BlazorState.BlazorStateComponent
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <Row>
     <Column ColumnSize="ColumnSize.Is12">
@@ -26,12 +25,12 @@
                                     <DropdownList
                                         TItem="ExpenseCategory"
                                         TValue="Guid"
-                                        Data="@ExpensesState.ExpenseFilters?.Categories"
+                                        Data="@ExpensesState.Value.ExpenseFilters.Categories"
                                         TextField="@(item => item.Name)"
                                         ValueField="@(item => item.Id)"
                                         SelectionMode="DropdownListSelectionMode.Checkbox"
                                         Color="Color.Info"
-                                        Disabled="@(ExpensesState.ExpenseFiltersRequesting)"
+                                        Disabled="@(ExpensesState.Value.ExpenseFiltersRequesting)"
                                         SelectedValuesChanged="OnCategoryFilter"
                                         SelectedValues="@(Query.Categories?.ToList())">
                                         Categories
@@ -43,12 +42,12 @@
                                     <DropdownList
                                         TItem="string"
                                         TValue="string"
-                                        Data="@ExpensesState.ExpenseFilters?.Tags"
+                                        Data="@ExpensesState.Value.ExpenseFilters.Tags"
                                         TextField="@(item => item)"
                                         ValueField="@(item => item)"
                                         SelectionMode="DropdownListSelectionMode.Checkbox"
                                         Color="Color.Info"
-                                        Disabled="@(ExpensesState.ExpenseFiltersRequesting)"
+                                        Disabled="@(ExpensesState.Value.ExpenseFiltersRequesting)"
                                         SelectedValuesChanged="OnTagFilter">
                                         Tags
                                     </DropdownList>
@@ -67,7 +66,7 @@
                                                 InputMode="DateInputMode.Date"
                                                 SelectionMode="DateInputSelectionMode.Range"
                                                 DatesChanged="OnDatesFilterChanged"
-                                                Placeholder="Select a date range" />
+                                                Placeholder="Select a date range"/>
                                         </Addon>
                                     </Addons>
                                 </Div>
@@ -80,7 +79,7 @@
                                     Color="Color.Warning"
                                     Margin="Margin.Is2.FromBottom"
                                     Clicked="@ClearFilters">
-                                <Icon Name="IconName.Clear" Margin="Margin.Is2.FromEnd" />
+                                <Icon Name="IconName.Clear" Margin="Margin.Is2.FromEnd"/>
                                 Clear filters
                             </Button>
                         </Div>
@@ -89,7 +88,7 @@
                 <Row>
                     <DataGrid @ref="DataGridRef"
                               TItem="ExpenseDigest"
-                              Data="ExpensesState.Expenses?.Items"
+                              Data="ExpensesState.Value.Expenses.Items"
                               ReadData="OnDataGridReadData"
                               SortChanged="OnDataGridSortChanged"
                               Responsive
@@ -98,7 +97,7 @@
                               Virtualize
                               LoadingTemplate="_loadingIcon"
                               EmptyTemplate="_loadingIcon"
-                              TotalItems="ExpensesState.Expenses?.TotalCount"
+                              TotalItems="ExpensesState.Value.Expenses.TotalCount"
                               SortMode="DataGridSortMode.Single"
                               VirtualizeOptions="VirtualizeOptions">
                         <DataGridColumns>
@@ -165,5 +164,7 @@
 </Row>
 
 @code {
-    RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="width:32px; height:32px"/>;
+
+    RenderFragment _loadingIcon = @<img src="/brand-logo.png" style="height: 32px; width: 32px;"/>;
+
 }

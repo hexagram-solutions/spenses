@@ -1,6 +1,6 @@
-﻿@inherits BlazorState.BlazorStateComponent
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<LoadingIndicator Visible="ExpensesState.ExpenseRequesting || ExpensesState.ExpenseUpdating">
+<LoadingIndicator Visible="ExpensesState.Value.ExpenseRequesting || ExpensesState.Value.ExpenseUpdating">
     <ModalHeader>
         <ModalTitle>Edit expense</ModalTitle>
         <CloseButton />

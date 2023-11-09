@@ -1,9 +1,9 @@
 ﻿@page "/homes/{homeId:guid}/expenses"
 @using Spenses.Client.Web.Components.Expenses
-@using Spenses.Client.Web.Features.Homes
 @using Spenses.Client.Web.Layouts
+@using Spenses.Client.Web.Store.Homes
 
-@inherits BlazorState.BlazorStateComponent
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @layout MainLayout
 
@@ -15,8 +15,19 @@
     [Parameter]
     public Guid HomeId { get; set; }
 
-    protected override Task OnParametersSetAsync()
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
+
+    protected override void OnInitialized()
     {
-        return Mediator.Send(new HomeState.HomeSelected(HomeId));
+        base.OnInitialized();
+
+        if (HomesState.Value.CurrentHome?.Id == HomeId)
+            return;
+
+        Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
     }
 }

@@ -17,6 +17,9 @@ public class ExpensePropertiesValidator : AbstractValidator<ExpenseProperties>
         RuleFor(x => x.PaidByMemberId)
             .NotEmpty();
 
+        RuleFor(x => x.CategoryId)
+            .NotEmpty();
+
         RuleFor(x => x.Tags)
             .Must(tags => tags.Select(t => t.ToLower()).Distinct().Count() == tags.Length)
             .WithMessage("Tags must be unique, ignoring case");

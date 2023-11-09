@@ -3,6 +3,7 @@ using Spenses.Application.Models.Homes;
 
 namespace Spenses.Client.Web.Features.Homes;
 
+[Obsolete("Use Fluxor")]
 public partial class HomeState : State<HomeState>
 {
     public Home? CurrentHome { get; private set; }

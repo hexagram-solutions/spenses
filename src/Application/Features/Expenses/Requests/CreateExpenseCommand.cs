@@ -40,7 +40,7 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
         if (home.Members.All(m => m.Id != props.PaidByMemberId))
             throw new InvalidRequestException($"Member {props.PaidByMemberId} is not a member of home {homeId}");
 
-        if (props.CategoryId.HasValue && home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
+        if (home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
             throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
 
         var expense = _mapper.Map<DbModels.Expense>(props);

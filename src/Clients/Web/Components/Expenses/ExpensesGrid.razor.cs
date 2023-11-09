@@ -1,8 +1,9 @@
 using Blazorise.DataGrid;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Expenses;
-using Spenses.Client.Web.Features.Expenses;
+using Spenses.Client.Web.Store.Expenses;
 using SortDirection = Spenses.Application.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Expenses;
@@ -11,6 +12,12 @@ public partial class ExpensesGrid
 {
     [Parameter]
     public Guid HomeId { get; set; }
+
+    [Inject]
+    private IState<ExpensesState> ExpensesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
 
     [Inject]
     public IModalService ModalService { get; set; } = null!;
@@ -24,19 +31,17 @@ public partial class ExpensesGrid
 
     private VirtualizeOptions VirtualizeOptions { get; set; } = new() { DataGridHeight = "750px" };
 
-    private ExpensesState ExpensesState => GetState<ExpensesState>();
-
     private FilteredExpensesQuery Query { get; set; } = new()
     {
         OrderBy = nameof(ExpenseDigest.Date),
         SortDirection = SortDirection.Desc
     };
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Mediator.Send(new ExpensesState.ExpenseFiltersRequested(HomeId));
+        base.OnInitialized();
 
-        await base.OnInitializedAsync();
+        Dispatcher.Dispatch(new ExpenseFiltersRequestedAction(HomeId));
     }
 
     private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
@@ -97,7 +102,9 @@ public partial class ExpensesGrid
         Query.Skip = args.VirtualizeOffset;
         Query.Take = args.VirtualizeCount;
 
-        return Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query), args.CancellationToken);
+        Dispatcher.Dispatch(new ExpensesRequestedAction(HomeId, Query));
+
+        return Task.CompletedTask;
     }
 
     private Task OnExpenseSaved()
@@ -128,8 +135,9 @@ public partial class ExpensesGrid
         if (!confirmed)
             return;
 
-        await Mediator.Send(new ExpensesState.ExpenseDeleted(HomeId, expense.Id));
+        Dispatcher.Dispatch(new ExpenseDeletedAction(HomeId, expense.Id));
 
+        // TODO: there could be a race condition here
         await DataGridRef.Reload();
     }
 }

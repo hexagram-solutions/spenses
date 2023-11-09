@@ -1,48 +1,69 @@
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Expenses;
 using Spenses.Application.Models.Homes;
-using Spenses.Client.Web.Features.Expenses;
-using Spenses.Client.Web.Features.Homes;
+using Spenses.Client.Web.Store.Expenses;
+using Spenses.Client.Web.Store.Homes;
 
 namespace Spenses.Client.Web.Components.Expenses;
 
 public partial class EditExpenseModal
 {
     [Parameter]
-    public Guid ExpenseId { get; set; }
+    public Guid ExpenseId { get; init; }
 
     [Parameter]
-    public Func<Task> OnSave { get; set; } = null!;
+    public Func<Task> OnSave { get; init; } = null!;
+
+    [Inject]
+    private IState<ExpensesState> ExpensesState { get; init; } = null!;
+
+    [Inject]
+    private IState<HomesState> HomesState { get; init; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; } = null!;
 
     [Inject]
     public IModalService ModalService { get; init; } = null!;
 
-    private Home Home => GetState<HomeState>().CurrentHome!;
+    private Home Home => HomesState.Value.CurrentHome!;
 
-    private ExpensesState ExpensesState => GetState<ExpensesState>();
+    private ExpenseProperties Expense
+    {
+        get
+        {
+            var currentExpense = ExpensesState.Value.CurrentExpense;
 
-    private ExpenseProperties Expense { get; set; } = new();
+            if (currentExpense is null)
+            {
+                return new ExpenseProperties
+                {
+                    Date = DateOnly.FromDateTime(DateTime.Today),
+                    PaidByMemberId = Home.Members.OrderBy(m => m.Name).First().Id,
+                    CategoryId = ExpensesState.Value.ExpenseFilters.Categories.First().Id
+                };
+            }
+
+            return new ExpenseProperties
+            {
+                Note = currentExpense.Note,
+                Date = currentExpense.Date,
+                Amount = currentExpense.Amount,
+                Tags = currentExpense.Tags,
+                PaidByMemberId = currentExpense.PaidByMember.Id,
+                CategoryId = currentExpense.Category.Id
+            };
+        }
+    }
 
     private ExpenseForm ExpenseFormRef { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Mediator.Send(new ExpensesState.ExpenseSelected(Home.Id, ExpenseId));
+        base.OnInitialized();
 
-        // Direct mapping to new object to ensure correct type is passed to validator
-        var currentExpense = ExpensesState.CurrentExpense!;
-
-        Expense = new ExpenseProperties
-        {
-            Amount = currentExpense.Amount,
-            Date = currentExpense.Date,
-            Note = currentExpense.Note,
-            CategoryId = currentExpense.Category?.Id,
-            PaidByMemberId = currentExpense.PaidByMember.Id,
-            Tags = currentExpense.Tags
-        };
-
-        await base.OnInitializedAsync();
+        Dispatcher.Dispatch(new ExpenseRequestedAction(Home.Id, ExpenseId));
     }
 
     private Task Close()
@@ -55,7 +76,7 @@ public partial class EditExpenseModal
         if (!await ExpenseFormRef.Validations.ValidateAll())
             return;
 
-        await Mediator.Send(new ExpensesState.ExpenseUpdated(Home.Id, ExpenseId, Expense));
+        Dispatcher.Dispatch(new ExpenseUpdatedAction(Home.Id, ExpenseId, ExpenseFormRef.Expense));
 
         await Close();
 

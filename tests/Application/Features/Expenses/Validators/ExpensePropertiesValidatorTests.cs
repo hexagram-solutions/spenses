@@ -94,4 +94,16 @@ public class ExpensePropertiesValidatorTests
         _validator.TestValidate(model with { Tags = new[] { "foo", "bar", "baz" } })
             .ShouldNotHaveValidationErrorFor(x => x.Tags);
     }
+
+    [Fact]
+    public void Category_id_must_have_value()
+    {
+        var model = new ExpenseProperties();
+
+        _validator.TestValidate(model with { CategoryId = Guid.Empty })
+            .ShouldHaveValidationErrorFor(x => x.PaidByMemberId);
+
+        _validator.TestValidate(model with { PaidByMemberId = Guid.NewGuid() })
+            .ShouldNotHaveValidationErrorFor(x => x.PaidByMemberId);
+    }
 }
