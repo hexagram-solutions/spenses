@@ -1,4 +1,5 @@
 using System.Net;
+using System.Xml.Linq;
 using Hexagrams.Extensions.Common;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Expenses;
@@ -38,7 +39,9 @@ public partial class ExpensesIntegrationTests
         filterValues.Tags.Should().BeInAscendingOrder();
 
         filterValues.Categories.Should().BeEquivalentTo(categories);
-        filterValues.Categories.Should().BeInAscendingOrder(cat => cat.Name);
+        filterValues.Categories.Should()
+            .BeInDescendingOrder(cat => cat.IsDefault)
+            .And.ThenBeInAscendingOrder(cat => cat.Name);
     }
 
     [Fact]
