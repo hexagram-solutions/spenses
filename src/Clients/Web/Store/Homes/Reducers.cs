@@ -1,6 +1,5 @@
-using DynamicData;
 using Fluxor;
-using Spenses.Application.Models.Homes;
+using Hexagrams.Extensions.Common;
 
 namespace Spenses.Client.Web.Store.Homes;
 
@@ -57,7 +56,7 @@ public static class Reducers
     [ReducerMethod]
     public static HomesState ReduceHomeCreationFailed(HomesState state, HomeCreationFailedAction action)
     {
-        return state with { HomesRequesting = false, Error = action.Error };
+        return state with { HomeCreating = false, Error = action.Error };
     }
 
     [ReducerMethod]
@@ -69,18 +68,19 @@ public static class Reducers
     [ReducerMethod]
     public static HomesState ReduceHomeUpdateSucceeded(HomesState state, HomeUpdateSucceededAction action)
     {
-        var homes = new List<Home>(state.Homes);
+        var originalHome = state.Homes.Single(h => h.Id == action.Home.Id);
 
-        var originalHome = homes.Single(h => h.Id == action.Home.Id);
-
-        homes.Replace(originalHome, action.Home);
-
-        return state with { HomeUpdating = false, CurrentHome = action.Home, Homes = homes.ToArray() };
+        return state with
+        {
+            HomeUpdating = false,
+            CurrentHome = action.Home,
+            Homes = state.Homes.Replace(originalHome, action.Home).ToArray()
+        };
     }
 
     [ReducerMethod]
     public static HomesState ReduceHomeUpdateFailed(HomesState state, HomeUpdateFailedAction action)
     {
-        return state with { HomesRequesting = false, Error = action.Error };
+        return state with { HomeUpdating = false, Error = action.Error };
     }
 }

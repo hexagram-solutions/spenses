@@ -2,7 +2,6 @@ using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Members;
-using Spenses.Client.Web.Store.Homes;
 using Spenses.Client.Web.Store.Members;
 
 namespace Spenses.Client.Web.Components.Members;
@@ -14,9 +13,6 @@ public partial class MembersCard
 
     [Inject]
     private IState<MembersState> MembersState { get; set; } = null!;
-
-    [Inject]
-    private IState<HomesState> HomesState { get; set; } = null!;
 
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
@@ -67,7 +63,7 @@ public partial class MembersCard
             "If this member has no expenses or payments associated with them, they be permanently removed from " +
             "this home. Otherwise, the member will be be deactivated with any existing payments or expenses " +
             "remaining associated with the member.",
-            $"Are you sure you want to remove this {member.Name} from this home?");
+            $"Are you sure you want to remove {member.Name} from this home?");
 
         if (!confirmed)
             return;

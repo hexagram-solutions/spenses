@@ -61,9 +61,10 @@ public static class ProgramExtensions
                 clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
         }
 
+        AddApiClient<IExpenseCategoriesApi>();
+        AddApiClient<IExpensesApi>();
         AddApiClient<IHomesApi>();
         AddApiClient<IMembersApi>();
-        AddApiClient<IExpensesApi>();
         AddApiClient<IPaymentsApi>();
 
         return services;
@@ -73,7 +74,9 @@ public static class ProgramExtensions
     {
         services.AddFluxor(opts =>
         {
-            opts.ScanAssemblies(typeof(Program).Assembly);
+            opts.ScanAssemblies(typeof(Program).Assembly)
+                .UseRouting()
+                .UseReduxDevTools();
             // TODO: redux dev tools
             // TODO: routing
         });

@@ -56,7 +56,7 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMemberCreationFailed(MembersState state, MemberCreationFailedAction action)
     {
-        return state with { MembersRequesting = false, Error = action.Error };
+        return state with { MemberCreating = false, Error = action.Error };
     }
 
     [ReducerMethod]
@@ -74,7 +74,7 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMemberUpdateFailed(MembersState state, MemberUpdateFailedAction action)
     {
-        return state with { MembersRequesting = false, Error = action.Error };
+        return state with { MemberUpdating = false, Error = action.Error };
     }
 
     [ReducerMethod]
