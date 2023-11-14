@@ -1,6 +1,5 @@
 using Fluxor;
 using Hexagrams.Extensions.Common;
-using Spenses.Application.Models.Homes;
 
 namespace Spenses.Client.Web.Store.Homes;
 
@@ -69,17 +68,13 @@ public static class Reducers
     [ReducerMethod]
     public static HomesState ReduceHomeUpdateSucceeded(HomesState state, HomeUpdateSucceededAction action)
     {
-        var homes = new List<Home>(state.Homes);
-
-        var originalHome = homes.Single(h => h.Id == action.Home.Id);
-
-        homes.Replace(originalHome, action.Home);
+        var originalHome = state.Homes.Single(h => h.Id == action.Home.Id);
 
         return state with
         {
             HomeUpdating = false,
             CurrentHome = action.Home,
-            Homes = homes.ToArray()
+            Homes = state.Homes.Replace(originalHome, action.Home).ToArray()
         };
     }
 

@@ -23,12 +23,14 @@ public partial class ExpenseCategoriesCard
     [Inject]
     public IMessageService MessageService { get; set; } = null!;
 
-    private IEnumerable<ExpenseCategory> ExpenseCategories => ExpenseCategoriesState.Value.ExpenseCategories;
-
     private bool IsLoading => ExpenseCategoriesState.Value.ExpenseCategoriesRequesting ||
         ExpenseCategoriesState.Value.ExpenseCategoryCreating ||
         ExpenseCategoriesState.Value.ExpenseCategoryUpdating ||
         ExpenseCategoriesState.Value.ExpenseCategoryDeleting;
+
+    private IEnumerable<ExpenseCategory> ExpenseCategories =>
+        ExpenseCategoriesState.Value.ExpenseCategories
+            .Where(ec => !ec.IsDefault);
 
     protected override void OnInitialized()
     {
@@ -39,17 +41,15 @@ public partial class ExpenseCategoriesCard
 
     private Task AddExpenseCategory()
     {
-        throw new NotImplementedException();
-        //return ModalService.Show<CreateExpenseCategoryModal>();
+        return ModalService.Show<CreateExpenseCategoryModal>();
     }
 
     private Task OnEditClicked(MouseEventArgs _, Guid expenseCategoryId)
     {
-        throw new NotImplementedException();
-        //return ModalService.Show<EditExpenseCategoryModal>(p =>
-        //{
-        //    p.Add(x => x.ExpenseCategoryId, expenseCategoryId);
-        //});
+        return ModalService.Show<EditExpenseCategoryModal>(p =>
+        {
+            p.Add(x => x.ExpenseCategoryId, expenseCategoryId);
+        });
     }
 
     private async Task OnDeleteClicked(MouseEventArgs _, ExpenseCategory expenseCategory)

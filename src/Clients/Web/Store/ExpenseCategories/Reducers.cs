@@ -89,18 +89,18 @@ public static class Reducers
     public static ExpenseCategoriesState ReduceExpenseCategoryUpdateSucceeded(ExpenseCategoriesState state,
         ExpenseCategoryUpdateSucceededAction action)
     {
-        var categories = new List<ExpenseCategory>(state.ExpenseCategories);
-
-        var originalCategory = categories.Single(c => c.Id == action.ExpenseCategory.Id);
-
-        categories.Replace(originalCategory, action.ExpenseCategory);
+        var originalCategory = state.ExpenseCategories.Single(c => c.Id == action.ExpenseCategory.Id);
 
         return state with
         {
             ExpenseCategoryUpdating = false,
             CurrentExpenseCategory = action.ExpenseCategory,
-            ExpenseCategories = categories.ToArray()
-        };
+            ExpenseCategories = state.ExpenseCategories
+                .Replace(originalCategory, action.ExpenseCategory)
+                .OrderByDescending(ec => ec.IsDefault)
+                .ThenBy(ec => ec.Name)
+                .ToArray()
+    };
     }
 
     [ReducerMethod]
