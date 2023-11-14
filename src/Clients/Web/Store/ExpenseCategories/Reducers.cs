@@ -100,7 +100,7 @@ public static class Reducers
                 .OrderByDescending(ec => ec.IsDefault)
                 .ThenBy(ec => ec.Name)
                 .ToArray()
-    };
+        };
     }
 
     [ReducerMethod]
