@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Spenses.Resources.Relational.Migrations
 {
     /// <inheritdoc />
-    public partial class MandatoryExpenseCategory : Migration
+    public partial class DefaultExpenseCategory : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,6 +14,13 @@ namespace Spenses.Resources.Relational.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Expense_ExpenseCategory_CategoryId",
                 table: "Expense");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsDefault",
+                table: "ExpenseCategory",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "CategoryId",
@@ -40,6 +47,10 @@ namespace Spenses.Resources.Relational.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Expense_ExpenseCategory_CategoryId",
                 table: "Expense");
+
+            migrationBuilder.DropColumn(
+                name: "IsDefault",
+                table: "ExpenseCategory");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "CategoryId",

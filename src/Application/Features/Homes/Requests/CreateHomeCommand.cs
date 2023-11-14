@@ -37,6 +37,14 @@ public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, Home>
             UserId = currentUser.GetId()
         });
 
+        home.ExpenseCategories.Add(new DbModels.ExpenseCategory
+        {
+            Name = "General (uncategorized)",
+            Description = "Catch-all category for expenses that don't fit another category. This category cannot be " +
+                "changed or removed.",
+            IsDefault = true
+        });
+
         var entry = await _db.Homes.AddAsync(home, cancellationToken);
 
         await _db.SaveChangesAsync(cancellationToken);

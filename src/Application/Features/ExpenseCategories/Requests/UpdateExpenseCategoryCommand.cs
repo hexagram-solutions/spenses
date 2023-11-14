@@ -39,6 +39,9 @@ public class UpdateExpenseCategoryCommandHandler : IRequestHandler<UpdateExpense
         if (category is null)
             throw new ResourceNotFoundException(categoryId);
 
+        if (category.IsDefault)
+            throw new InvalidRequestException("A home's default expense category cannot be modified.");
+
         _mapper.Map(props, category);
 
         await _db.SaveChangesAsync(cancellationToken);

@@ -12,6 +12,7 @@ public class ExpenseCategoriesMappingProfile : Profile
 
         CreateMap<ExpenseCategoryProperties, DbModels.ExpenseCategory>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())
+            .ForMember(dest => dest.IsDefault, opts => opts.Ignore())
             .ForMember(dest => dest.Home, opts => opts.Ignore())
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())
             .ForMember(dest => dest.Expenses, opts => opts.Ignore())

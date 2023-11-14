@@ -31,7 +31,8 @@ public class ExpenseCategoriesQueryHandler : IRequestHandler<ExpenseCategoriesQu
     {
         var categories = await _db.ExpenseCategories
             .Where(ec => ec.HomeId == request.HomeId)
-            .OrderBy(ec => ec.Name)
+            .OrderByDescending(ec => ec.IsDefault)
+            .ThenBy(ec => ec.Name)
             .ProjectTo<ExpenseCategory>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 

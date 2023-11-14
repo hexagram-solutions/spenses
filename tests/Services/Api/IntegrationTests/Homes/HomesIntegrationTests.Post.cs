@@ -40,4 +40,22 @@ public partial class HomesIntegrationTests
 
         validationErrors.Should().ContainKey(nameof(Home.Name));
     }
+
+    [Fact]
+    public async Task Post_home_creates_home_with_default_expense_category()
+    {
+        var properties = new HomeProperties
+        {
+            Name = "sut",
+            Description = "baz"
+        };
+
+        var createdHome = (await _homes.PostHome(properties)).Content!;
+
+        var categories = (await _expenseCategories.GetExpenseCategories(createdHome.Id)).Content!;
+
+        categories.Single().IsDefault.Should().BeTrue();
+
+        await _homes.DeleteHome(createdHome.Id);
+    }
 }
