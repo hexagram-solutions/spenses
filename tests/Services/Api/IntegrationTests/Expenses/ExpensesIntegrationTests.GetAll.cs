@@ -46,6 +46,8 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
+        var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
+
         var tags = new[] { "bills", "groceries" };
 
         var expense = (await _expenses.PostExpense(home.Id, new ExpenseProperties
@@ -54,6 +56,7 @@ public partial class ExpensesIntegrationTests
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = tags,
+            CategoryId = category.Id,
             PaidByMemberId = home.Members.First().Id
         })).Content!;
 
