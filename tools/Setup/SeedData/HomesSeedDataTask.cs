@@ -27,6 +27,11 @@ public class HomesSeedDataTask : ISeedDataTask
                 {
                     new ExpenseCategory
                     {
+                        Name = "General (uncategorized)",
+                        IsDefault = true
+                    },
+                    new ExpenseCategory
+                    {
                         Name = "groceries",
                     },
                     new ExpenseCategory

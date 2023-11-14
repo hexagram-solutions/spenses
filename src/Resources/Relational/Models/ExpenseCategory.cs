@@ -6,6 +6,8 @@ public class ExpenseCategory : AggregateRoot
 
     public string? Description { get; set; }
 
+    public bool IsDefault { get; set; }
+
     public Guid HomeId { get; set; }
 
     public Home Home { get; set; } = null!;

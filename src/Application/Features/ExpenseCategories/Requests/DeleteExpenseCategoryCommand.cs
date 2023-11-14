@@ -26,14 +26,17 @@ public class DeleteExpenseCategoryCommandHandler : IRequestHandler<DeleteExpense
     {
         var (homeId, expenseId) = request;
 
-        var expense = await _db.ExpenseCategories
+        var category = await _db.ExpenseCategories
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);
 
-        if (expense is null)
+        if (category is null)
             throw new ResourceNotFoundException(expenseId);
 
-        _db.ExpenseCategories.Remove(expense);
+        if (category.IsDefault)
+            throw new InvalidRequestException("A home's default expense category cannot be deleted.");
+
+        _db.ExpenseCategories.Remove(category);
 
         await _db.SaveChangesAsync(cancellationToken);
     }

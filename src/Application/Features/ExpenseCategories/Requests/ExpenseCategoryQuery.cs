@@ -29,14 +29,14 @@ public class ExpenseCategoryQueryCommandHandler : IRequestHandler<ExpenseCategor
 
     public async Task<ExpenseCategory> Handle(ExpenseCategoryQuery request, CancellationToken cancellationToken)
     {
-        var (homeId, expenseId) = request;
+        var (homeId, categoryId) = request;
 
-        var expense = await _db.ExpenseCategories
+        var category = await _db.ExpenseCategories
             .Where(e => e.Home.Id == homeId)
             .ProjectTo<ExpenseCategory>(_mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(h => h.Id == expenseId, cancellationToken);
+            .FirstOrDefaultAsync(h => h.Id == categoryId, cancellationToken);
 
-        return expense ?? throw new ResourceNotFoundException(expenseId);
+        return category ?? throw new ResourceNotFoundException(categoryId);
     }
 }
 

@@ -12,8 +12,8 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231109181703_MandatoryExpenseCategory")]
-    partial class MandatoryExpenseCategory
+    [Migration("20231114153424_DefaultExpenseCategory")]
+    partial class DefaultExpenseCategory
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -201,6 +201,9 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");

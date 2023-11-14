@@ -10,7 +10,9 @@ public partial class ExpenseCategoriesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var category = (await _categories.GetExpenseCategories(home.Id)).Content!.First();
+        var categories = (await _categories.GetExpenseCategories(home.Id)).Content!;
+
+        var categoryId = categories.First(x => !x.IsDefault).Id;
 
         var properties = new ExpenseCategoryProperties
         {
@@ -18,7 +20,7 @@ public partial class ExpenseCategoriesIntegrationTests
             Description = "Provisions for the coming war"
         };
 
-        var updatedCategoryResponse = await _categories.PutExpenseCategory(home.Id, category.Id, properties);
+        var updatedCategoryResponse = await _categories.PutExpenseCategory(home.Id, categoryId, properties);
 
         updatedCategoryResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -37,7 +39,9 @@ public partial class ExpenseCategoriesIntegrationTests
     {
         var homeId = (await _homes.GetHomes()).Content!.First().Id;
 
-        var categoryId = (await _categories.GetExpenseCategories(homeId)).Content!.First().Id;
+        var categories = (await _categories.GetExpenseCategories(homeId)).Content!;
+
+        var categoryId = categories.First(x => !x.IsDefault).Id;
 
         var properties = new ExpenseCategoryProperties
         {
@@ -52,5 +56,19 @@ public partial class ExpenseCategoriesIntegrationTests
         var categoryNotFoundResult = await _categories.PutExpenseCategory(homeId, Guid.NewGuid(), properties);
 
         categoryNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Put_expense_category_yields_error_when_updating_default_category()
+    {
+        var homeId = (await _homes.GetHomes()).Content!.First().Id;
+
+        var categories = (await _categories.GetExpenseCategories(homeId)).Content!;
+
+        var categoryId = categories.First(x => x.IsDefault).Id;
+
+        var homeNotFoundResult = await _categories.DeleteExpenseCategory(homeId, categoryId);
+
+        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 }

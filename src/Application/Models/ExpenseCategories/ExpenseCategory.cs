@@ -3,6 +3,8 @@ namespace Spenses.Application.Models.ExpenseCategories;
 public record ExpenseCategory : ExpenseCategoryProperties
 {
     public Guid Id { get; set; }
+
+    public bool IsDefault { get; set; }
 }
 
 public record ExpenseCategoryProperties
