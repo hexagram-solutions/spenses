@@ -1,0 +1,71 @@
+﻿@using Spenses.Application.Models.ExpenseCategories
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<Card Margin="Margin.Is4.FromBottom">
+    <CardHeader>
+        <CardTitle>Expense categories</CardTitle>
+    </CardHeader>
+    <CardBody>
+        <LoadingIndicator Visible="IsLoading">
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHeaderCell>Name</TableHeaderCell>
+                        <TableHeaderCell>Description</TableHeaderCell>
+                        <TableHeaderCell TextAlignment="TextAlignment.End">Actions</TableHeaderCell>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    @foreach (var category in ExpenseCategories)
+                    {
+                        @TableRow(category)
+                    }
+                </TableBody>
+            </Table>
+            <Button Type="@ButtonType.Submit"
+                    Color="Color.Primary"
+                    Clicked="AddExpenseCategory">
+                <Icon Name="IconName.Add"
+                      Margin="Margin.Is2.FromEnd"/>
+                Add expense category
+            </Button>
+        </LoadingIndicator>
+    </CardBody>
+</Card>
+
+@* ReSharper disable once InconsistentNaming *@
+@code {
+    // ReSharper disable once UnusedParameter.Local
+    private RenderFragment TableRow(ExpenseCategory category) => __builder =>
+    {
+        <TableRow>
+            <TableRowCell
+                Overflow="Overflow.Hidden">
+                @category.Name
+            </TableRowCell>
+            <TableRowCell
+                Overflow="Overflow.Hidden">
+                @category.Description
+            </TableRowCell>
+            <TableRowCell TextAlignment="TextAlignment.End">
+                <Tooltip Text="Edit" Inline>
+                    <Button Type="@ButtonType.Button"
+                            Color="Color.Info"
+                            Size="Size.Small"
+                            Clicked="@(args => OnEditClicked(args, category.Id))">
+                        <Icon Name="IconName.Edit"/>
+                    </Button>
+                </Tooltip>
+                <Tooltip Text="Delete" Inline>
+                    <Button Type="@ButtonType.Button"
+                            Color="Color.Warning"
+                            Size="Size.Small"
+                            Clicked="@(args => OnDeleteClicked(args, category))">
+                        <Icon Name="IconName.Delete"/>
+                    </Button>
+                </Tooltip>
+            </TableRowCell>
+        </TableRow>
+    };
+
+}

@@ -56,7 +56,7 @@ public static class Reducers
     [ReducerMethod]
     public static PaymentsState ReducePaymentCreationFailed(PaymentsState state, PaymentCreationFailedAction action)
     {
-        return state with { PaymentsRequesting = false, Error = action.Error };
+        return state with { PaymentCreating = false, Error = action.Error };
     }
 
     [ReducerMethod]
@@ -74,7 +74,7 @@ public static class Reducers
     [ReducerMethod]
     public static PaymentsState ReducePaymentUpdateFailed(PaymentsState state, PaymentUpdateFailedAction action)
     {
-        return state with { PaymentsRequesting = false, Error = action.Error };
+        return state with { PaymentUpdating = false, Error = action.Error };
     }
 
     [ReducerMethod]

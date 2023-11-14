@@ -1,4 +1,5 @@
 ﻿@page "/homes/{homeId:guid}/settings"
+@using Spenses.Client.Web.Components.ExpenseCategories
 @using Spenses.Client.Web.Components.Homes
 @using Spenses.Client.Web.Components.Members
 @using Spenses.Client.Web.Layouts
@@ -8,7 +9,7 @@
 <h3>Settings: @(Home?.Name ?? "Loading...")</h3>
 
 <Row>
-    <Column ColumnSize="ColumnSize.Is12.OnDesktop">
+    <Column ColumnSize="ColumnSize.Is6.OnTablet">
         <Card Margin="Margin.Is4.FromBottom">
             <CardHeader>
                 <CardTitle>Settings</CardTitle>
@@ -21,6 +22,9 @@
                 </LoadingIndicator>
             </CardBody>
         </Card>
+    </Column>
+    <Column ColumnSize="ColumnSize.Is6.OnTablet">
+        <ExpenseCategoriesCard HomeId="HomeId" />
     </Column>
 </Row>
 <Row>

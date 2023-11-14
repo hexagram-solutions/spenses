@@ -61,9 +61,10 @@ public static class ProgramExtensions
                 clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
         }
 
+        AddApiClient<IExpenseCategoriesApi>();
+        AddApiClient<IExpensesApi>();
         AddApiClient<IHomesApi>();
         AddApiClient<IMembersApi>();
-        AddApiClient<IExpensesApi>();
         AddApiClient<IPaymentsApi>();
 
         return services;

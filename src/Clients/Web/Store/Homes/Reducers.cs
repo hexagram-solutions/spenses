@@ -57,7 +57,7 @@ public static class Reducers
     [ReducerMethod]
     public static HomesState ReduceHomeCreationFailed(HomesState state, HomeCreationFailedAction action)
     {
-        return state with { HomesRequesting = false, Error = action.Error };
+        return state with { HomeCreating = false, Error = action.Error };
     }
 
     [ReducerMethod]
@@ -75,12 +75,17 @@ public static class Reducers
 
         homes.Replace(originalHome, action.Home);
 
-        return state with { HomeUpdating = false, CurrentHome = action.Home, Homes = homes.ToArray() };
+        return state with
+        {
+            HomeUpdating = false,
+            CurrentHome = action.Home,
+            Homes = homes.ToArray()
+        };
     }
 
     [ReducerMethod]
     public static HomesState ReduceHomeUpdateFailed(HomesState state, HomeUpdateFailedAction action)
     {
-        return state with { HomesRequesting = false, Error = action.Error };
+        return state with { HomeUpdating = false, Error = action.Error };
     }
 }
