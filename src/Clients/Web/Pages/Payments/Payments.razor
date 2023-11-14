@@ -1,21 +1,34 @@
 ﻿@page "/homes/{homeId:guid}/payments"
 @using Spenses.Client.Web.Components.Payments
 @using Spenses.Client.Web.Layouts
-@using Spenses.Client.Web.Features.Homes
-@inherits BlazorState.BlazorStateComponent
+@using Spenses.Client.Web.Store.Homes
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @layout MainLayout
 
-<h3>Expenses</h3>
+<h3>Payments: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</h3>
 
 <PaymentsGrid HomeId="HomeId"/>
 
 @code {
+
     [Parameter]
     public Guid HomeId { get; set; }
 
-    protected override Task OnInitializedAsync()
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
+
+    protected override void OnInitialized()
     {
-        return Mediator.Send(new HomeState.HomeSelected(HomeId));
+        base.OnInitialized();
+
+        if (HomesState.Value.CurrentHome?.Id == HomeId)
+            return;
+
+        Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
     }
 }

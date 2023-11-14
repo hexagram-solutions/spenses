@@ -10,12 +10,15 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
+        var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
+
         var properties = new ExpenseProperties
         {
             Note = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = new[] { "groceries" },
+            CategoryId = category.Id,
             PaidByMemberId = home.Members.First().Id
         };
 

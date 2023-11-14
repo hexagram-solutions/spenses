@@ -1,6 +1,4 @@
-using System.Net;
 using Refit;
-using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.ExpenseCategories;

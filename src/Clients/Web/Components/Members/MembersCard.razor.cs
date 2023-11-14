@@ -1,7 +1,9 @@
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Members;
-using Spenses.Client.Web.Features.Members;
+using Spenses.Client.Web.Store.Homes;
+using Spenses.Client.Web.Store.Members;
 
 namespace Spenses.Client.Web.Components.Members;
 
@@ -11,20 +13,27 @@ public partial class MembersCard
     public Guid HomeId { get; set; }
 
     [Inject]
-    public IModalService ModalService { get; set; } = null!;
+    private IState<MembersState> MembersState { get; set; } = null!;
+
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
+
+    [Inject]
+    public IModalService ModalService { get; init; } = null!;
 
     [Inject]
     public IMessageService MessageService { get; set; } = null!;
 
-    private MembersState MembersState => GetState<MembersState>();
-
-    private IEnumerable<Member> Members => MembersState.Members;
+    private IEnumerable<Member> Members => MembersState.Value.Members;
 
     public bool IsTotalHomeSplitPercentageValid
     {
         get
         {
-            var totalHomeSplitPercentages = MembersState.Members
+            var totalHomeSplitPercentages = MembersState.Value.Members
                 .Where(m => m.IsActive)
                 .Sum(x => x.DefaultSplitPercentage);
 
@@ -32,11 +41,11 @@ public partial class MembersCard
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Mediator.Send(new MembersState.MembersRequested(HomeId));
+        base.OnInitialized();
 
-        await base.OnInitializedAsync();
+        Dispatcher.Dispatch(new MembersRequestedAction(HomeId));
     }
 
     private Task AddMember()
@@ -63,11 +72,11 @@ public partial class MembersCard
         if (!confirmed)
             return;
 
-        await Mediator.Send(new MembersState.MemberDeleted(HomeId, member.Id));
+        Dispatcher.Dispatch(new MemberDeletedAction(HomeId, member.Id));
     }
 
-    private Task OnActivateClicked(MouseEventArgs _, Guid memberId)
+    private void OnActivateClicked(MouseEventArgs _, Guid memberId)
     {
-        return Mediator.Send(new MembersState.MemberActivated(HomeId, memberId));
+        Dispatcher.Dispatch(new MemberActivatedAction(HomeId, memberId));
     }
 }

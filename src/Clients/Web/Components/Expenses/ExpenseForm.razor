@@ -1,5 +1,5 @@
 ﻿@using Blazorise.FluentValidation
-@inherits BlazorState.BlazorStateComponent
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <Validations @ref="Validations"
              Mode="ValidationMode.Manual"
@@ -87,14 +87,11 @@
                     Category
                 </FieldLabel>
                 <FieldBody>
-                    <Select TValue="Guid?" @bind-SelectedValue="Expense.CategoryId">
+                    <Select TValue="Guid" @bind-SelectedValue="Expense.CategoryId">
                         <ChildContent>
-                            <SelectItem TValue="Guid?" Value="@(null)" Style="font-style: italic;">
-                                None
-                            </SelectItem>
                             @foreach (var category in Categories)
                             {
-                                <SelectItem TValue="Guid?" Value="@category.Id">
+                                <SelectItem TValue="Guid" Value="@category.Id">
                                     @category.Name
                                 </SelectItem>
                             }

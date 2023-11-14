@@ -1,5 +1,8 @@
 ﻿@using Spenses.Client.Web.Layouts
 @using Spenses.Client.Web.Components.Authentication
+
+<Fluxor.Blazor.Web.StoreInitializer />
+
 <CascadingAuthenticationState>
   <Blazorise.ThemeProvider Theme="@_theme">
     <Router AppAssembly="@typeof(App).Assembly">

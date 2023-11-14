@@ -1,6 +1,6 @@
-﻿@inherits BlazorState.BlazorStateComponent
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<LoadingIndicator Visible="MembersState.MemberRequesting || MembersState.MemberUpdating">
+<LoadingIndicator Visible="MembersState.Value.MemberRequesting || MembersState.Value.MemberUpdating">
     <ModalHeader>
         <ModalTitle>Edit Member</ModalTitle>
         <CloseButton/>

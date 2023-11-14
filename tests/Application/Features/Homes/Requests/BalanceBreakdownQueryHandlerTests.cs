@@ -148,6 +148,11 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                             OwedAmount = 66.66m,
                             OwedPercentage = 66.66m
                         }
+                    },
+                    Category = new DbModels.ExpenseCategory
+                    {
+                        Name = Guid.NewGuid().ToString(),
+                        HomeId = homeEntry.Entity.Id
                     }
                 });
 

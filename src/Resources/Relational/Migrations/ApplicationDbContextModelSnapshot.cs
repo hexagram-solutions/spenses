@@ -137,7 +137,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .HasPrecision(8, 2)
                         .HasColumnType("decimal(8,2)");
 
-                    b.Property<Guid?>("CategoryId")
+                    b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
@@ -430,7 +430,9 @@ namespace Spenses.Resources.Relational.Migrations
                 {
                     b.HasOne("Spenses.Resources.Relational.Models.ExpenseCategory", "Category")
                         .WithMany("Expenses")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
                         .WithMany("CreatedExpenses")

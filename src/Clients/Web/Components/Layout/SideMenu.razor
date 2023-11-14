@@ -1,8 +1,8 @@
-﻿@using Spenses.Client.Web.Features.Homes
-@using Spenses.Client.Web.Infrastructure
+﻿@using Spenses.Client.Web.Infrastructure
 @using Spenses.Application.Models.Homes
 @using Spenses.Client.Web.Components.Homes
-@inherits BlazorState.BlazorStateComponent
+@using Spenses.Client.Web.Store.Homes
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <Bar Breakpoint="Breakpoint.Desktop" NavigationBreakpoint="Breakpoint.Tablet" ThemeContrast="ThemeContrast.Dark"
      Mode="BarMode.VerticalInline" CollapseMode="BarCollapseMode.Small">
@@ -16,13 +16,13 @@
     <BarMenu>
         <BarStart>
             <BarItem>
-                @if (HomeState.HomesRequesting)
+                @if (HomesState.Value.HomesRequesting)
                 {
                     <BarLabel>Loading...</BarLabel>
                 }
                 else
                 {
-                    @foreach (var home in HomeState.Homes)
+                    @foreach (var home in HomesState.Value.Homes)
                     {
                         <BarDropdown Visible>
                             <BarDropdownToggle>
@@ -70,14 +70,19 @@
 @code
 {
     [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
+
+    [Inject]
     public IModalService ModalService { get; set; } = null!;
 
-    HomeState HomeState => GetState<HomeState>();
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Mediator.Send(new HomeState.HomesRequested());
-        await base.OnInitializedAsync();
+        base.OnInitialized();
+
+        Dispatcher.Dispatch(new HomesRequestedAction());
     }
 
     private Task ShowCreateHomeModal()

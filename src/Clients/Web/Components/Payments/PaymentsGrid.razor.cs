@@ -1,10 +1,10 @@
 using Blazorise.DataGrid;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Payments;
 using Spenses.Client.Http;
-using Spenses.Client.Web.Features.Payments;
 using SortDirection = Spenses.Application.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Payments;
@@ -81,23 +81,17 @@ public partial class PaymentsGrid
 
         return DataGridRef.Reload();
     }
-    private Task OnPaymentSaved()
-    {
-        return DataGridRef.Reload();
-    }
 
     private Task OnAddPaymentClicked()
     {
-        return ModalService.Show<CreatePaymentModal>(p => p.Add(x => x.OnSave, OnPaymentSaved));
+        return ModalService.Show<CreatePaymentModal>();
     }
-
 
     private Task OnEditClicked(MouseEventArgs _, Guid paymentId)
     {
         return ModalService.Show<EditPaymentModal>(p =>
         {
             p.Add(x => x.PaymentId, paymentId);
-            p.Add(x => x.OnSave, OnPaymentSaved);
         });
     }
 
@@ -110,7 +104,7 @@ public partial class PaymentsGrid
         if (!confirmed)
             return;
 
-        await Mediator.Send(new PaymentsState.PaymentDeleted(HomeId, payment.Id));
+        await PaymentsApi.DeletePayment(HomeId, payment.Id);
 
         await DataGridRef.Reload();
     }

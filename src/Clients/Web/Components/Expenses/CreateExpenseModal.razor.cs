@@ -1,36 +1,42 @@
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Expenses;
 using Spenses.Application.Models.Homes;
-using Spenses.Client.Web.Features.Expenses;
-using Spenses.Client.Web.Features.Homes;
+using Spenses.Client.Web.Store.Expenses;
+using Spenses.Client.Web.Store.Homes;
 
 namespace Spenses.Client.Web.Components.Expenses;
 
 public partial class CreateExpenseModal
 {
-    [Parameter]
-    public Func<Task> OnSave { get; set; } = null!;
+    [Inject]
+    private IState<ExpensesState> ExpensesState { get; set; } = null!;
 
-    public ExpenseProperties Expense { get; set; } = new();
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
 
     [Inject]
     public IModalService ModalService { get; init; } = null!;
 
-    private ExpenseForm ExpensesFormRef { get; set; } = null!;
+    private Home Home => HomesState.Value.CurrentHome!;
 
-    private Home Home => GetState<HomeState>().CurrentHome!;
+    public ExpenseProperties Expense { get; set; } = new();
 
-    private ExpensesState ExpensesState => GetState<ExpensesState>();
+    private ExpenseForm ExpenseFormRef { get; set; } = null!;
 
-    protected override Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
+        base.OnInitialized();
+
         Expense = new ExpenseProperties
         {
             Date = DateOnly.FromDateTime(DateTime.Today),
-            PaidByMemberId = Home.Members.OrderBy(m => m.Name).First().Id
+            PaidByMemberId = Home.Members.OrderBy(m => m.Name).First().Id,
+            CategoryId = ExpensesState.Value.ExpenseFilters.Categories.First().Id
         };
-
-        return base.OnInitializedAsync();
     }
 
     private Task Close()
@@ -40,13 +46,11 @@ public partial class CreateExpenseModal
 
     private async Task Save()
     {
-        if (!await ExpensesFormRef.Validations.ValidateAll())
+        if (!await ExpenseFormRef.Validations.ValidateAll())
             return;
 
-        await Mediator.Send(new ExpensesState.ExpenseCreated(Home.Id, Expense));
+        Dispatcher.Dispatch(new ExpenseCreatedAction(Home.Id, ExpenseFormRef.Expense));
 
         await Close();
-
-        await OnSave();
     }
 }

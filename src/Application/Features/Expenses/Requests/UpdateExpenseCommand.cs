@@ -49,7 +49,7 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
         if (expense.Home.Members.All(m => m.Id != props.PaidByMemberId))
             throw new InvalidRequestException($"Member {props.PaidByMemberId} is not a member of home {homeId}");
 
-        if (props.CategoryId.HasValue && expense.Home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
+        if (expense.Home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
             throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
 
         _mapper.Map(request.Props, expense);

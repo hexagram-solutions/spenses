@@ -1,8 +1,11 @@
+using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using Blazorise.DataGrid;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Expenses;
-using Spenses.Client.Web.Features.Expenses;
+using Spenses.Client.Web.Store.Expenses;
 using SortDirection = Spenses.Application.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Expenses;
@@ -10,13 +13,21 @@ namespace Spenses.Client.Web.Components.Expenses;
 public partial class ExpensesGrid
 {
     [Parameter]
-    public Guid HomeId { get; set; }
+    public Guid HomeId { get; init; }
 
     [Inject]
-    public IModalService ModalService { get; set; } = null!;
+    private IState<ExpensesState> ExpensesState { get; init; } = null!;
 
     [Inject]
-    public IMessageService MessageService { get; set; } = null!;
+    private IDispatcher Dispatcher { get; init; } = null!;
+
+    [Inject]
+    public IModalService ModalService { get; init; } = null!;
+
+    [Inject]
+    public IMessageService MessageService { get; init; } = null!;
+
+    private IEnumerable<ExpenseDigest> Expenses => ExpensesState.Value.Expenses.Items;
 
     private DataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
 
@@ -24,19 +35,33 @@ public partial class ExpensesGrid
 
     private VirtualizeOptions VirtualizeOptions { get; set; } = new() { DataGridHeight = "750px" };
 
-    private ExpensesState ExpensesState => GetState<ExpensesState>();
-
     private FilteredExpensesQuery Query { get; set; } = new()
     {
         OrderBy = nameof(ExpenseDigest.Date),
         SortDirection = SortDirection.Desc
     };
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await Mediator.Send(new ExpensesState.ExpenseFiltersRequested(HomeId));
+        base.OnInitialized();
 
-        await base.OnInitializedAsync();
+        //todo: investigate manual read mode
+        SubscribeToAction<ExpenseCreationSucceededAction>(async _ =>
+        {
+            await DataGridRef.Reload();
+        });
+
+        SubscribeToAction<ExpenseUpdateSucceededAction>(async _ =>
+        {
+            await DataGridRef.Reload();
+        });
+
+        SubscribeToAction<ExpenseDeletionSucceededAction>(async _ =>
+        {
+            await DataGridRef.Reload();
+        });
+
+        Dispatcher.Dispatch(new ExpenseFiltersRequestedAction(HomeId));
     }
 
     private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
@@ -97,7 +122,9 @@ public partial class ExpensesGrid
         Query.Skip = args.VirtualizeOffset;
         Query.Take = args.VirtualizeCount;
 
-        return Mediator.Send(new ExpensesState.ExpensesRequested(HomeId, Query), args.CancellationToken);
+        Dispatcher.Dispatch(new ExpensesRequestedAction(HomeId, Query));
+
+        return Task.CompletedTask;
     }
 
     private Task OnExpenseSaved()
@@ -107,7 +134,7 @@ public partial class ExpensesGrid
 
     private Task OnAddExpenseClicked()
     {
-        return ModalService.Show<CreateExpenseModal>(p => p.Add(x => x.OnSave, OnExpenseSaved));
+        return ModalService.Show<CreateExpenseModal>();
     }
 
     private Task OnEditClicked(MouseEventArgs _, Guid expenseId)
@@ -115,7 +142,6 @@ public partial class ExpensesGrid
         return ModalService.Show<EditExpenseModal>(p =>
         {
             p.Add(x => x.ExpenseId, expenseId);
-            p.Add(x => x.OnSave, OnExpenseSaved);
         });
     }
 
@@ -128,8 +154,6 @@ public partial class ExpensesGrid
         if (!confirmed)
             return;
 
-        await Mediator.Send(new ExpensesState.ExpenseDeleted(HomeId, expense.Id));
-
-        await DataGridRef.Reload();
+        Dispatcher.Dispatch(new ExpenseDeletedAction(HomeId, expense.Id));
     }
 }

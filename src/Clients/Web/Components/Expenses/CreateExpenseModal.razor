@@ -1,12 +1,12 @@
-﻿@inherits BlazorState.BlazorStateComponent
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<LoadingIndicator Visible="ExpensesState.ExpenseCreating">
+<LoadingIndicator Visible="ExpensesState.Value.ExpenseCreating">
     <ModalHeader>
         <ModalTitle>Add expense</ModalTitle>
         <CloseButton/>
     </ModalHeader>
     <ModalBody>
-        <ExpenseForm @ref="ExpensesFormRef"
+        <ExpenseForm @ref="ExpenseFormRef"
                      Expense="Expense"/>
     </ModalBody>
     <ModalFooter>

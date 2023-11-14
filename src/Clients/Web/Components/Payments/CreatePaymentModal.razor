@@ -1,6 +1,6 @@
-﻿@inherits BlazorState.BlazorStateComponent
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<LoadingIndicator Visible="PaymentsState.PaymentCreating">
+<LoadingIndicator Visible="PaymentsState.Value.PaymentCreating">
     <ModalHeader>
         <ModalTitle>Add payment</ModalTitle>
         <CloseButton/>

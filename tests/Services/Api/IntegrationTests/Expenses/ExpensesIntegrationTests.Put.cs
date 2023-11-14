@@ -10,6 +10,8 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
+        var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
+
         var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
             Skip = 0,
@@ -22,6 +24,7 @@ public partial class ExpensesIntegrationTests
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = new[] { "household" },
+            CategoryId = category.Id,
             PaidByMemberId = home.Members.First().Id
         };
 
@@ -71,6 +74,8 @@ public partial class ExpensesIntegrationTests
     {
         var homeId = (await _homes.GetHomes()).Content!.First().Id;
 
+        var category = (await _expenseCategories.GetExpenseCategories(homeId)).Content!.First();
+
         var expenseId = (await _expenses.GetExpenses(homeId, new FilteredExpensesQuery())).Content!.Items.First().Id;
 
         var properties = new ExpenseProperties
@@ -79,6 +84,7 @@ public partial class ExpensesIntegrationTests
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
             Tags = new[] { "household" },
+            CategoryId = category.Id,
             PaidByMemberId = Guid.NewGuid()
         };
 
