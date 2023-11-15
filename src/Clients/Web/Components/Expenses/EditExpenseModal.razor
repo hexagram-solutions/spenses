@@ -1,5 +1,4 @@
-﻿@using Spenses.Client.Web.Components.Shared
-@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <LoadingIndicator Visible="ExpensesState.Value.ExpenseRequesting || ExpensesState.Value.ExpenseUpdating">
     <ModalHeader>
@@ -9,7 +8,6 @@
     <ModalBody>
         <ExpenseForm @ref="ExpenseFormRef"
                      Expense="Expense" />
-        <ErrorAlert ErrorMessage="ExpensesState.Value.Error"/>
     </ModalBody>
     <ModalFooter>
         <Button Color="Color.Warning" Clicked="Close">

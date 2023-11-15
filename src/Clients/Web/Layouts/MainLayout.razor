@@ -1,4 +1,5 @@
 ﻿@using Spenses.Client.Web.Components.Layout
+@using Spenses.Client.Web.Components.Shared
 @inherits LayoutComponentBase
 
 <Layout Sider>
@@ -13,6 +14,7 @@
     </LayoutHeader>
     <LayoutContent Padding="Padding.Is4.OnAll">
       @Body
+      <NotificationStack/>
     </LayoutContent>
   </Layout>
 </Layout>

@@ -32,7 +32,7 @@ public static class ProgramExtensions
     }
 
     public static IServiceCollection AddApiClients(this IServiceCollection services, string baseUrl, string[] scopes,
-        TimeSpan? delay = null)
+        bool retry, TimeSpan? delay = null)
     {
         services.AddAccessTokenProvider(options =>
         {
@@ -55,9 +55,13 @@ public static class ProgramExtensions
                     CollectionFormat = CollectionFormat.Multi
                 })
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
-                .AddTransientHttpErrorPolicy(builder =>
-                    builder.WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(Math.Pow(1.5, attempt))))
                 .AddHttpMessageHandler<BearerTokenAuthenticationHandler>();
+
+            if (retry)
+            {
+                clientBuilder.AddTransientHttpErrorPolicy(builder =>
+                    builder.WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(Math.Pow(1.5, attempt))));
+            }
 
             if (delay.HasValue)
                 clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();

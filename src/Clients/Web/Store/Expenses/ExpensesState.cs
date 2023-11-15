@@ -1,7 +1,6 @@
 using Fluxor;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Expenses;
-using Spenses.Client.Web.Infrastructure;
 
 namespace Spenses.Client.Web.Store.Expenses;
 
@@ -30,6 +29,4 @@ public record ExpensesState
     public bool ExpenseDeleting { get; init; }
 
     public bool ExpenseFiltersRequesting { get; init; }
-
-    public ErrorMessage? Error { get; init; }
 }

@@ -1,18 +1,17 @@
 using Fluxor;
 using Spenses.Client.Http;
 using Spenses.Client.Web.Infrastructure;
+using Spenses.Client.Web.Store.Shared;
 
 namespace Spenses.Client.Web.Store.Expenses;
 
 public class Effects
 {
     private readonly IExpensesApi _expenses;
-    private readonly IModalService _modalService;
 
-    public Effects(IExpensesApi expenses, IModalService modalService)
+    public Effects(IExpensesApi expenses)
     {
         _expenses = expenses;
-        _modalService = modalService;
     }
 
     [EffectMethod]
@@ -22,7 +21,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpensesRequestFailedAction(response.Error.ToErrorMessage()));
+            dispatcher.Dispatch(new ExpensesRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -37,7 +37,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseRequestFailedAction(response.Error.ToErrorMessage()));
+            dispatcher.Dispatch(new ExpenseRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -52,7 +53,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseCreationFailedAction(response.Error.ToErrorMessage()));
+            dispatcher.Dispatch(new ExpenseCreationFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -67,7 +69,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseUpdateFailedAction(response.Error.ToErrorMessage()));
+            dispatcher.Dispatch(new ExpenseUpdateFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -82,7 +85,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseDeletionFailedAction(response.Error.ToErrorMessage()));
+            dispatcher.Dispatch(new ExpenseDeletionFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -97,7 +101,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseFiltersRequestFailedAction(response.Error.ToErrorMessage()));
+            dispatcher.Dispatch(new ExpenseFiltersRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
