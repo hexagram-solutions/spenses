@@ -1,15 +1,18 @@
 using Fluxor;
 using Spenses.Client.Http;
+using Spenses.Client.Web.Infrastructure;
 
 namespace Spenses.Client.Web.Store.Expenses;
 
 public class Effects
 {
     private readonly IExpensesApi _expenses;
+    private readonly IModalService _modalService;
 
-    public Effects(IExpensesApi expenses)
+    public Effects(IExpensesApi expenses, IModalService modalService)
     {
         _expenses = expenses;
+        _modalService = modalService;
     }
 
     [EffectMethod]
@@ -19,7 +22,7 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpensesRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpensesRequestFailedAction(response.Error.ToErrorMessage()));
 
             return;
         }
@@ -34,7 +37,7 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseRequestFailedAction(response.Error.ToErrorMessage()));
 
             return;
         }
@@ -49,12 +52,19 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseCreationFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseCreationFailedAction(response.Error.ToErrorMessage()));
 
             return;
         }
 
         dispatcher.Dispatch(new ExpenseCreationSucceededAction(response.Content!));
+    }
+
+    [EffectMethod]
+    public async Task HandleExpenseCreationSucceeded(ExpenseCreationSucceededAction _, IDispatcher __)
+    {
+        // TODO: How to tie this in with component state?
+        await _modalService.Hide();
     }
 
     [EffectMethod]
@@ -64,7 +74,7 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseUpdateFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseUpdateFailedAction(response.Error.ToErrorMessage()));
 
             return;
         }
@@ -79,7 +89,7 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseDeletionFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseDeletionFailedAction(response.Error.ToErrorMessage()));
 
             return;
         }
@@ -94,7 +104,7 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseFiltersRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseFiltersRequestFailedAction(response.Error.ToErrorMessage()));
 
             return;
         }
