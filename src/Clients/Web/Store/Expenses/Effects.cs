@@ -61,13 +61,6 @@ public class Effects
     }
 
     [EffectMethod]
-    public async Task HandleExpenseCreationSucceeded(ExpenseCreationSucceededAction _, IDispatcher __)
-    {
-        // TODO: How to tie this in with component state?
-        await _modalService.Hide();
-    }
-
-    [EffectMethod]
     public async Task HandleExpenseUpdated(ExpenseUpdatedAction action, IDispatcher dispatcher)
     {
         var response = await _expenses.PutExpense(action.HomeId, action.ExpenseId, action.Props);

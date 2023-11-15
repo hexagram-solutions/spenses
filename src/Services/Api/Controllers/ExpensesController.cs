@@ -29,14 +29,6 @@ public class ExpensesController : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<Expense>> PostExpense(Guid homeId, ExpenseProperties props)
     {
-        //TODO: temporary
-        if (Random.Shared.Next() % 2 > 0)
-        {
-            return Problem(
-                "OOPSIE WOOPSIE!! Uwu We made a fucky wucky!! A wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this!",
-                statusCode: 500, title: "Oh no!");
-        }
-
         var expense = await _mediator.Send(new CreateExpenseCommand(homeId, props));
 
         return CreatedAtAction(nameof(GetExpense), new { homeId, expenseId = expense.Id }, expense);

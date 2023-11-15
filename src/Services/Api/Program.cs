@@ -1,6 +1,8 @@
 using Hexagrams.Extensions.Configuration;
+using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
+using Spenses.Api.Infrastructure;
 using Spenses.Application;
 using Spenses.Application.Common;
 using Spenses.Resources.Relational;
@@ -57,7 +59,12 @@ app.UseAuthorization();
 app.MapControllers()
     .RequireAuthorization();
 
-app.MapCustomHealthChecks("/healthz");
+app.MapCustomHealthChecks("/health");
+
+if (await app.Services.GetRequiredService<IFeatureManager>().IsEnabledAsync(FeatureNames.ErrorGeneration))
+{
+    app.UseMiddleware<ErrorGenerationMiddleware>();
+}
 
 app.Run();
 

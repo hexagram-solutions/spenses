@@ -48,11 +48,13 @@ public partial class ExpensesGrid
         //todo: investigate manual read mode
         SubscribeToAction<ExpenseCreationSucceededAction>(async _ =>
         {
+            await ModalService.Hide();
             await DataGridRef.Reload();
         });
 
         SubscribeToAction<ExpenseUpdateSucceededAction>(async _ =>
         {
+            await ModalService.Hide();
             await DataGridRef.Reload();
         });
 
