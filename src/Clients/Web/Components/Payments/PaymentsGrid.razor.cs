@@ -1,10 +1,10 @@
 using Blazorise.DataGrid;
-using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Payments;
 using Spenses.Client.Http;
+using Spenses.Client.Web.Store.Payments;
 using SortDirection = Spenses.Application.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Payments;
@@ -36,6 +36,28 @@ public partial class PaymentsGrid
         OrderBy = nameof(PaymentDigest.Date),
         SortDirection = SortDirection.Desc
     };
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        SubscribeToAction<PaymentCreationSucceededAction>(async _ =>
+        {
+            await ModalService.Hide();
+            await DataGridRef.Reload();
+        });
+
+        SubscribeToAction<PaymentUpdateSucceededAction>(async _ =>
+        {
+            await ModalService.Hide();
+            await DataGridRef.Reload();
+        });
+
+        SubscribeToAction<PaymentDeletionSucceededAction>(async _ =>
+        {
+            await DataGridRef.Reload();
+        });
+    }
 
     private Task OnDataGridSortChanged(DataGridSortChangedEventArgs args)
     {

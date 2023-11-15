@@ -2,7 +2,6 @@ using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.Homes;
 using Spenses.Client.Web.Components.Homes;
-using Spenses.Client.Web.Store.ExpenseCategories;
 using Spenses.Client.Web.Store.Homes;
 
 namespace Spenses.Client.Web.Pages.Homes;

@@ -38,7 +38,5 @@ public partial class CreateExpenseCategoryModal
             return;
 
         Dispatcher.Dispatch(new ExpenseCategoryCreatedAction(Home.Id, ExpenseCategoryFormRef.ExpenseCategory));
-
-        await Close();
     }
 }

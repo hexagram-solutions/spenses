@@ -38,7 +38,5 @@ public partial class CreateMemberModal
             return;
 
         Dispatcher.Dispatch(new MemberCreatedAction(Home.Id, MemberFormRef.Member));
-
-        await Close();
     }
 }

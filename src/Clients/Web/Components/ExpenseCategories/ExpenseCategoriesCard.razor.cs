@@ -36,6 +36,16 @@ public partial class ExpenseCategoriesCard
     {
         base.OnInitialized();
 
+        SubscribeToAction<ExpenseCategoryCreationSucceededAction>(async _ =>
+        {
+            await ModalService.Hide();
+        });
+
+        SubscribeToAction<ExpenseCategoryUpdateSucceededAction>(async _ =>
+        {
+            await ModalService.Hide();
+        });
+
         Dispatcher.Dispatch(new ExpenseCategoriesRequestedAction(HomeId));
     }
 

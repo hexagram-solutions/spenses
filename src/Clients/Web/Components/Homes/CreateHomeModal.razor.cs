@@ -31,7 +31,5 @@ public partial class CreateHomeModal
             return;
 
         Dispatcher.Dispatch(new HomeCreatedAction(Home));
-
-        await Close();
     }
 }

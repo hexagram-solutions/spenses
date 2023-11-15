@@ -1,6 +1,5 @@
 using Refit;
 using Spenses.Application.Models.ExpenseCategories;
-using Spenses.Application.Models.Expenses;
 
 namespace Spenses.Client.Web.Store.ExpenseCategories;
 

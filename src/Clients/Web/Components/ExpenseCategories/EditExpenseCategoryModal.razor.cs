@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Application.Models.Homes;
 using Spenses.Client.Web.Store.ExpenseCategories;
-using Spenses.Client.Web.Store.Expenses;
 using Spenses.Client.Web.Store.Homes;
-using Spenses.Client.Web.Store.Members;
 
 namespace Spenses.Client.Web.Components.ExpenseCategories;
 
@@ -66,7 +64,5 @@ public partial class EditExpenseCategoryModal
 
         Dispatcher.Dispatch(new ExpenseCategoryUpdatedAction(Home.Id, ExpenseCategoryId,
             ExpenseCategoryFormRef.ExpenseCategory));
-
-        await Close();
     }
 }
