@@ -5,6 +5,7 @@ using FluentValidation;
 using Fluxor;
 using Hexagrams.Extensions.Authentication.OAuth;
 using Hexagrams.Extensions.Common.Http;
+using Polly;
 using Refit;
 using Spenses.Application.Features.Homes.Validators;
 using Spenses.Client.Http;
@@ -54,6 +55,8 @@ public static class ProgramExtensions
                     CollectionFormat = CollectionFormat.Multi
                 })
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
+                .AddTransientHttpErrorPolicy(builder =>
+                    builder.WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(Math.Pow(1.5, attempt))))
                 .AddHttpMessageHandler<BearerTokenAuthenticationHandler>();
 
             if (delay.HasValue)
