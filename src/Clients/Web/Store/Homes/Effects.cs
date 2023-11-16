@@ -1,5 +1,5 @@
 using Fluxor;
-using Microsoft.AspNetCore.Components;
+using Fluxor.Blazor.Web.Middlewares.Routing;
 using Spenses.Client.Http;
 using Spenses.Client.Web.Infrastructure;
 using Spenses.Client.Web.Store.Shared;
@@ -9,12 +9,10 @@ namespace Spenses.Client.Web.Store.Homes;
 public class Effects
 {
     private readonly IHomesApi _homes;
-    private readonly NavigationManager _navigationManager;
 
-    public Effects(IHomesApi homes, NavigationManager navigationManager)
+    public Effects(IHomesApi homes)
     {
         _homes = homes;
-        _navigationManager = navigationManager;
     }
 
     [EffectMethod]
@@ -69,8 +67,7 @@ public class Effects
     public Task HandleHomeCreationSucceeded(HomeCreationSucceededAction action, IDispatcher dispatcher)
     {
         dispatcher.Dispatch(new HomesRequestedAction());
-
-        _navigationManager.NavigateTo($"homes/{action.Home.Id}/dashboard");
+        dispatcher.Dispatch(new GoAction($"homes/{action.Home.Id}/dashboard"));
 
         return Task.CompletedTask;
     }

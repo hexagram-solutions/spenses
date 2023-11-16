@@ -83,8 +83,6 @@ public static class ProgramExtensions
             opts.ScanAssemblies(typeof(Program).Assembly)
                 .UseRouting()
                 .UseReduxDevTools();
-            // TODO: redux dev tools
-            // TODO: routing
         });
 
         return services;
