@@ -16,24 +16,16 @@ public record ExpenseCategoryQuery(Guid HomeId, Guid ExpenseCategoryId) : IAutho
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class ExpenseCategoryQueryCommandHandler : IRequestHandler<ExpenseCategoryQuery, ExpenseCategory>
+public class ExpenseCategoryQueryCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<ExpenseCategoryQuery, ExpenseCategory>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public ExpenseCategoryQueryCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<ExpenseCategory> Handle(ExpenseCategoryQuery request, CancellationToken cancellationToken)
     {
         var (homeId, categoryId) = request;
 
-        var category = await _db.ExpenseCategories
+        var category = await db.ExpenseCategories
             .Where(e => e.Home.Id == homeId)
-            .ProjectTo<ExpenseCategory>(_mapper.ConfigurationProvider)
+            .ProjectTo<ExpenseCategory>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == categoryId, cancellationToken);
 
         return category ?? throw new ResourceNotFoundException(categoryId);

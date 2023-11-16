@@ -12,42 +12,33 @@ namespace Spenses.Application.Features.Users.Requests;
 
 public record SyncCurrentUserCommand : IRequest<User>;
 
-public class SyncCurrentUserCommandHandler : IRequestHandler<SyncCurrentUserCommand, User>
+public class SyncCurrentUserCommandHandler(ApplicationDbContext db, ICurrentUserService currentUserService,
+        IMapper mapper)
+    : IRequestHandler<SyncCurrentUserCommand, User>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly ICurrentUserService _currentUserService;
-    private readonly IMapper _mapper;
-
-    public SyncCurrentUserCommandHandler(ApplicationDbContext db, ICurrentUserService currentUserService, IMapper mapper)
-    {
-        _db = db;
-        _currentUserService = currentUserService;
-        _mapper = mapper;
-    }
-
     public async Task<User> Handle(SyncCurrentUserCommand request, CancellationToken cancellationToken)
     {
-        var currentUser = _currentUserService.CurrentUser;
+        var currentUser = currentUserService.CurrentUser;
         var currentUserId = currentUser.GetId();
 
-        var userIdentity = await _db.Users.FirstOrDefaultAsync(c => c.Id == currentUserId, cancellationToken);
+        var userIdentity = await db.Users.FirstOrDefaultAsync(c => c.Id == currentUserId, cancellationToken);
 
         if (userIdentity is null)
         {
-            userIdentity = _mapper.Map<UserIdentity>(currentUser);
+            userIdentity = mapper.Map<UserIdentity>(currentUser);
 
-            var currentUserEntry = await _db.Users.AddAsync(userIdentity, cancellationToken);
+            var currentUserEntry = await db.Users.AddAsync(userIdentity, cancellationToken);
 
             userIdentity = currentUserEntry.Entity;
         }
         else
         {
-            _mapper.Map(currentUser, userIdentity);
+            mapper.Map(currentUser, userIdentity);
         }
 
         try
         {
-            await _db.SaveChangesAsync(cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
         }
         // Handle the scenario where the current user was added moments ago on a parallel request. In this case, there
         // is no need to update the user since they were just created, so do nothing.
@@ -58,6 +49,6 @@ public class SyncCurrentUserCommandHandler : IRequestHandler<SyncCurrentUserComm
             // https://docs.microsoft.com/en-us/sql/relational-databases/errors-events/database-engine-events-and-errors#errors-2000-to-2999
         }
 
-        return _mapper.Map<User>(userIdentity);
+        return mapper.Map<User>(userIdentity);
     }
 }

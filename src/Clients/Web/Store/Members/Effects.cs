@@ -5,19 +5,12 @@ using Spenses.Client.Web.Store.Shared;
 
 namespace Spenses.Client.Web.Store.Members;
 
-public class Effects
+public class Effects(IMembersApi members)
 {
-    private readonly IMembersApi _members;
-
-    public Effects(IMembersApi members)
-    {
-        _members = members;
-    }
-
     [EffectMethod]
     public async Task HandleMembersRequested(MembersRequestedAction action, IDispatcher dispatcher)
     {
-        var response = await _members.GetMembers(action.HomeId);
+        var response = await members.GetMembers(action.HomeId);
 
         if (response.Error is not null)
         {
@@ -33,7 +26,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleMemberRequested(MemberRequestedAction action, IDispatcher dispatcher)
     {
-        var response = await _members.GetMember(action.HomeId, action.MemberId);
+        var response = await members.GetMember(action.HomeId, action.MemberId);
 
         if (response.Error is not null)
         {
@@ -49,7 +42,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleMemberCreated(MemberCreatedAction action, IDispatcher dispatcher)
     {
-        var response = await _members.PostMember(action.HomeId, action.Props);
+        var response = await members.PostMember(action.HomeId, action.Props);
 
         if (response.Error is not null)
         {
@@ -66,7 +59,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleMemberUpdated(MemberUpdatedAction action, IDispatcher dispatcher)
     {
-        var response = await _members.PutMember(action.HomeId, action.MemberId, action.Props);
+        var response = await members.PutMember(action.HomeId, action.MemberId, action.Props);
 
         if (response.Error is not null)
         {
@@ -83,7 +76,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleMemberDeleted(MemberDeletedAction action, IDispatcher dispatcher)
     {
-        var response = await _members.DeleteMember(action.HomeId, action.MemberId);
+        var response = await members.DeleteMember(action.HomeId, action.MemberId);
 
         if (response.Error is not null)
         {
@@ -100,7 +93,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleMemberActivated(MemberActivatedAction action, IDispatcher dispatcher)
     {
-        var response = await _members.ActivateMember(action.HomeId, action.MemberId);
+        var response = await members.ActivateMember(action.HomeId, action.MemberId);
 
         if (response.Error is not null)
         {

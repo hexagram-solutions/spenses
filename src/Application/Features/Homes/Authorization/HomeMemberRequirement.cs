@@ -8,19 +8,12 @@ namespace Spenses.Application.Features.Homes.Authorization;
 
 public record HomeMemberRequirement(Guid HomeId) : IAuthorizationRequirement;
 
-public class HomeMemberAuthorizationHandler : AuthorizationHandler<HomeMemberRequirement>
+public class HomeMemberAuthorizationHandler(ApplicationDbContext db) : AuthorizationHandler<HomeMemberRequirement>
 {
-    private readonly ApplicationDbContext _db;
-
-    public HomeMemberAuthorizationHandler(ApplicationDbContext db)
-    {
-        _db = db;
-    }
-
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
         HomeMemberRequirement requirement)
     {
-        var home = await _db.Homes
+        var home = await db.Homes
             .Include(m => m.Members)
             .ThenInclude(m => m.User)
             .SingleOrDefaultAsync(h => h.Id == requirement.HomeId);

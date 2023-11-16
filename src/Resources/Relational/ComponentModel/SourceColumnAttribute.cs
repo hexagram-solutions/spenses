@@ -1,15 +1,9 @@
 namespace Spenses.Resources.Relational.ComponentModel;
 
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class SourceColumnAttribute : Attribute
+public sealed class SourceColumnAttribute(string tableAlias, params string[] columnNameParts) : Attribute
 {
-    public SourceColumnAttribute(string tableAlias, params string[] columnNameParts)
-    {
-        TableAlias = tableAlias;
-        ColumnName = columnNameParts.Length > 0 ? string.Join("_", columnNameParts) : null;
-    }
+    public string TableAlias { get; } = tableAlias;
 
-    public string TableAlias { get; }
-
-    public string? ColumnName { get; }
+    public string? ColumnName { get; } = columnNameParts.Length > 0 ? string.Join("_", columnNameParts) : null;
 }

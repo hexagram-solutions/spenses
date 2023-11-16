@@ -3,14 +3,7 @@ using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api.Infrastructure;
 
-public class HttpContextCurrentUserService : ICurrentUserService
+public class HttpContextCurrentUserService(IHttpContextAccessor httpContext) : ICurrentUserService
 {
-    private readonly IHttpContextAccessor _httpContext;
-
-    public HttpContextCurrentUserService(IHttpContextAccessor httpContext)
-    {
-        _httpContext = httpContext;
-    }
-
-    public ClaimsPrincipal CurrentUser => _httpContext.HttpContext!.User;
+    public ClaimsPrincipal CurrentUser => httpContext.HttpContext!.User;
 }

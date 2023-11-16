@@ -17,22 +17,14 @@ public record CreatePaymentCommand(Guid HomeId, PaymentProperties Props) : IAuth
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand, Payment>
+public class CreatePaymentCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<CreatePaymentCommand, Payment>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public CreatePaymentCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Payment> Handle(CreatePaymentCommand request, CancellationToken cancellationToken)
     {
         var (homeId, props) = request;
 
-        var home = await _db.Homes
+        var home = await db.Homes
             .Include(h => h.Members)
             .FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
 
@@ -45,7 +37,7 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
         if (home.Members.All(m => m.Id != props.PaidToMemberId))
             throw new InvalidRequestException($"Member {props.PaidToMemberId} is not a member of home {homeId}");
 
-        var payment = _mapper.Map<DbModels.Payment>(props);
+        var payment = mapper.Map<DbModels.Payment>(props);
 
         payment.HomeId = homeId;
         payment.PaidByMemberId = props.PaidByMemberId;
@@ -53,10 +45,10 @@ public class CreatePaymentCommandHandler : IRequestHandler<CreatePaymentCommand,
 
         home.Payments.Add(payment);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        var createdPayment = await _db.Payments
-            .ProjectTo<Payment>(_mapper.ConfigurationProvider)
+        var createdPayment = await db.Payments
+            .ProjectTo<Payment>(mapper.ConfigurationProvider)
             .FirstAsync(e => e.Id == payment.Id, cancellationToken);
 
         return createdPayment;

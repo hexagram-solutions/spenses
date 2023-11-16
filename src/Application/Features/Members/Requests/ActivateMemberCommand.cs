@@ -16,22 +16,14 @@ public record ActivateMemberCommand(Guid HomeId, Guid MemberId) : IAuthorizedReq
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class ActivateMemberCommandHandler : IRequestHandler<ActivateMemberCommand, Member>
+public class ActivateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<ActivateMemberCommand, Member>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public ActivateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Member> Handle(ActivateMemberCommand request, CancellationToken cancellationToken)
     {
         var (homeId, memberId) = request;
 
-        var homeMember = await _db.Members
+        var homeMember = await db.Members
             .SingleOrDefaultAsync(m => m.HomeId == homeId && m.Id == memberId, cancellationToken);
 
         if (homeMember is null)
@@ -39,10 +31,10 @@ public class ActivateMemberCommandHandler : IRequestHandler<ActivateMemberComman
 
         homeMember.IsActive = true;
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        var updatedMember = await _db.Members
-            .ProjectTo<Member>(_mapper.ConfigurationProvider)
+        var updatedMember = await db.Members
+            .ProjectTo<Member>(mapper.ConfigurationProvider)
             .FirstAsync(x => x.Id == memberId, cancellationToken);
 
         return updatedMember;

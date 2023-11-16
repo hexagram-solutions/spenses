@@ -21,7 +21,7 @@ public partial class HomesIntegrationTests
     {
         async Task<Guid> SetUp()
         {
-            await using var scope = _fixture.WebApplicationFactory.Services.CreateAsyncScope();
+            await using var scope = fixture.WebApplicationFactory.Services.CreateAsyncScope();
 
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
@@ -45,7 +45,7 @@ public partial class HomesIntegrationTests
 
         async Task TearDown(Guid homeId)
         {
-            await using var scope = _fixture.WebApplicationFactory.Services.CreateAsyncScope();
+            await using var scope = fixture.WebApplicationFactory.Services.CreateAsyncScope();
 
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 

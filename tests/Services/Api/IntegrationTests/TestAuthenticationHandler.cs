@@ -18,18 +18,11 @@ public class TestAuthenticationHandlerOptions : AuthenticationSchemeOptions
     public string DefaultUserIssuer { get; set; } = null!;
 }
 
-public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticationHandlerOptions>
+public class TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationHandlerOptions> options,
+        ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
+    : AuthenticationHandler<TestAuthenticationHandlerOptions>(options, logger, encoder, clock)
 {
     public const string AuthenticationScheme = "Test";
-
-    private readonly IOptionsMonitor<TestAuthenticationHandlerOptions> _options;
-
-    public TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationHandlerOptions> options, ILoggerFactory logger,
-        UrlEncoder encoder, ISystemClock clock)
-        : base(options, logger, encoder, clock)
-    {
-        _options = options;
-    }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
@@ -45,10 +38,10 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
     public ClaimsPrincipal GetClaimsPrincipal()
     {
         var claims = new List<Claim> {
-            new (ApplicationClaimTypes.Identifier, _options.CurrentValue.DefaultUserIdentifier),
-            new(ApplicationClaimTypes.NickName, _options.CurrentValue.DefaultUserNickName),
-            new(ApplicationClaimTypes.Issuer, _options.CurrentValue.DefaultUserIssuer),
-            new(ApplicationClaimTypes.Email, _options.CurrentValue.DefaultUserEmail),
+            new (ApplicationClaimTypes.Identifier, options.CurrentValue.DefaultUserIdentifier),
+            new(ApplicationClaimTypes.NickName, options.CurrentValue.DefaultUserNickName),
+            new(ApplicationClaimTypes.Issuer, options.CurrentValue.DefaultUserIssuer),
+            new(ApplicationClaimTypes.Email, options.CurrentValue.DefaultUserEmail),
         };
 
         var identity = new ClaimsIdentity(claims, AuthenticationScheme);

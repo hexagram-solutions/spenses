@@ -17,22 +17,14 @@ public record UpdateExpenseCategoryCommand(Guid HomeId, Guid ExpenseCategoryId, 
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class UpdateExpenseCategoryCommandHandler : IRequestHandler<UpdateExpenseCategoryCommand, ExpenseCategory>
+public class UpdateExpenseCategoryCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<UpdateExpenseCategoryCommand, ExpenseCategory>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public UpdateExpenseCategoryCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<ExpenseCategory> Handle(UpdateExpenseCategoryCommand request, CancellationToken cancellationToken)
     {
         var (homeId, categoryId, props) = request;
 
-        var category = await _db.ExpenseCategories
+        var category = await db.ExpenseCategories
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == categoryId, cancellationToken);
 
@@ -42,12 +34,12 @@ public class UpdateExpenseCategoryCommandHandler : IRequestHandler<UpdateExpense
         if (category.IsDefault)
             throw new InvalidRequestException("A home's default expense category cannot be modified.");
 
-        _mapper.Map(props, category);
+        mapper.Map(props, category);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        var updatedCategory = await _db.ExpenseCategories
-            .ProjectTo<ExpenseCategory>(_mapper.ConfigurationProvider)
+        var updatedCategory = await db.ExpenseCategories
+            .ProjectTo<ExpenseCategory>(mapper.ConfigurationProvider)
             .FirstAsync(ec => ec.Id == categoryId, cancellationToken);
 
         return updatedCategory;

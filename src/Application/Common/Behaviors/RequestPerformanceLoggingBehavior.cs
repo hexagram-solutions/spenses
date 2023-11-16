@@ -7,26 +7,14 @@ using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Application.Common.Behaviors;
 
-public class RequestPerformanceLoggingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TRequest> logger,
+    ICurrentUserService currentUserService, IConfiguration configuration)
+    : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
-    private readonly ILogger<TRequest> _logger;
-    private readonly ICurrentUserService _currentUserService;
-
-    private readonly int _longRunningRequestThreshold;
-    private readonly Stopwatch _timer;
-
-    public RequestPerformanceLoggingBehavior(ILogger<TRequest> logger, ICurrentUserService currentUserService,
-        IConfiguration configuration)
-    {
-        _logger = logger;
-        _currentUserService = currentUserService;
-
-        _longRunningRequestThreshold =
+    private readonly int _longRunningRequestThreshold =
             int.Parse(configuration[ConfigConstants.SpensesLoggingLongRunningRequestThreshold]!);
 
-        _timer = new Stopwatch();
-
-    }
+    private readonly Stopwatch _timer = new();
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
@@ -42,9 +30,9 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse> : IPipelineB
             return response;
 
         var requestName = typeof(TRequest).Name;
-        var userId = _currentUserService.CurrentUser.GetId();
+        var userId = currentUserService.CurrentUser.GetId();
 
-        _logger.LogWarning(
+        logger.LogWarning(
             "Request {Name} took {ElapsedMilliseconds}ms to complete for user {@UserId} (threshold: {Threshold})",
             requestName, elapsedMilliseconds, userId, _longRunningRequestThreshold);
 

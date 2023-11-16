@@ -4,14 +4,10 @@ using Spenses.Client.Http;
 namespace Spenses.Api.IntegrationTests.Payments;
 
 [Collection(WebApplicationCollection.CollectionName)]
-public partial class PaymentsIntegrationTests
+public partial class PaymentsIntegrationTests(WebApplicationFixture<Program> fixture)
 {
-    private readonly IHomesApi _homes;
-    private readonly IPaymentsApi _payments;
+    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
 
-    public PaymentsIntegrationTests(WebApplicationFixture<Program> fixture)
-    {
-        _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
-        _payments = RestService.For<IPaymentsApi>(fixture.WebApplicationFactory.CreateClient());
-    }
+    private readonly IPaymentsApi _payments =
+        RestService.For<IPaymentsApi>(fixture.WebApplicationFactory.CreateClient());
 }

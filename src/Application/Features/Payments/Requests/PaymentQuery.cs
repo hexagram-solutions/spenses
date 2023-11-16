@@ -16,24 +16,16 @@ public record PaymentQuery(Guid HomeId, Guid PaymentId) : IAuthorizedRequest<Pay
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class PaymentQueryHandler : IRequestHandler<PaymentQuery, Payment>
+public class PaymentQueryHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<PaymentQuery, Payment>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public PaymentQueryHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Payment> Handle(PaymentQuery request, CancellationToken cancellationToken)
     {
         var (homeId, paymentId) = request;
 
-        var payment = await _db.Payments
+        var payment = await db.Payments
             .Where(e => e.Home.Id == homeId)
-            .ProjectTo<Payment>(_mapper.ConfigurationProvider)
+            .ProjectTo<Payment>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == paymentId, cancellationToken);
 
         return payment ?? throw new ResourceNotFoundException(paymentId);

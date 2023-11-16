@@ -17,22 +17,14 @@ public record CreateMemberCommand(Guid HomeId, MemberProperties Props) : IAuthor
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, Member>
+public class CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<CreateMemberCommand, Member>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Member> Handle(CreateMemberCommand request, CancellationToken cancellationToken)
     {
         var (homeId, props) = request;
 
-        var home = await _db.Homes
+        var home = await db.Homes
             .Include(h => h.Members)
             .FirstAsync(h => h.Id == homeId, cancellationToken);
 
@@ -45,12 +37,12 @@ public class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, M
                     "Total split percentage among home members cannot exceed 100%"));
         }
 
-        var member = _mapper.Map<DbModels.Member>(props);
+        var member = mapper.Map<DbModels.Member>(props);
 
         home.Members.Add(member);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<Member>(_db.Entry(member).Entity);
+        return mapper.Map<Member>(db.Entry(member).Entity);
     }
 }

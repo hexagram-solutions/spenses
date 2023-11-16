@@ -4,20 +4,11 @@ using Spenses.Application.Common;
 
 namespace Spenses.Api.Infrastructure;
 
-public class ErrorGenerationMiddleware
+public class ErrorGenerationMiddleware(RequestDelegate next, IConfiguration configuration)
 {
-    private readonly RequestDelegate _next;
-    private readonly IConfiguration _configuration;
-
-    public ErrorGenerationMiddleware(RequestDelegate next, IConfiguration configuration)
-    {
-        _next = next;
-        _configuration = configuration;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
-        var frequency = _configuration.Require<double>(ConfigConstants.SpensesFeaturesErrorGenerationFrequency);
+        var frequency = configuration.Require<double>(ConfigConstants.SpensesFeaturesErrorGenerationFrequency);
 
         var shouldError = Random.Shared.NextDouble() <= frequency;
 
@@ -37,6 +28,6 @@ public class ErrorGenerationMiddleware
             return;
         }
 
-        await _next(context);
+        await next(context);
     }
 }

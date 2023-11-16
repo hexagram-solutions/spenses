@@ -18,19 +18,10 @@ public interface IAuthorizedRequest<out TResponse> : IRequest<TResponse>, IBaseA
 {
 }
 
-public class RequestAuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IBaseAuthorizedRequest
-{
-    private readonly IAuthorizationService _authorizationService;
-    private readonly ICurrentUserService _currentUserService;
-
-    public RequestAuthorizationBehavior(IAuthorizationService authorizationService,
+public class RequestAuthorizationBehavior<TRequest, TResponse>(IAuthorizationService authorizationService,
         ICurrentUserService currentUserService)
-    {
-        _authorizationService = authorizationService;
-        _currentUserService = currentUserService;
-    }
-
+    : IPipelineBehavior<TRequest, TResponse> where TRequest : IBaseAuthorizedRequest
+{
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
@@ -42,9 +33,9 @@ public class RequestAuthorizationBehavior<TRequest, TResponse> : IPipelineBehavi
 
         var authorizedRequest = request as IBaseAuthorizedRequest;
 
-        var currentUser = _currentUserService.CurrentUser;
+        var currentUser = currentUserService.CurrentUser;
 
-        var authorizationResult = await _authorizationService.AuthorizeAsync(currentUser, authorizedRequest.Policy);
+        var authorizationResult = await authorizationService.AuthorizeAsync(currentUser, authorizedRequest.Policy);
 
         if (authorizationResult.Succeeded)
             return await next();

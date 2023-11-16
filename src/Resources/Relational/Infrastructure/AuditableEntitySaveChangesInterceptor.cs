@@ -7,15 +7,8 @@ using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Resources.Relational.Infrastructure;
 
-public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
+public class AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUserService) : SaveChangesInterceptor
 {
-    private readonly ICurrentUserService _currentUserService;
-
-    public AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUserService)
-    {
-        _currentUserService = currentUserService;
-    }
-
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
         UpdateEntities(eventData.Context);
@@ -37,7 +30,7 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
             return;
 
         var utcNow = DateTime.UtcNow;
-        var currentUserId = _currentUserService.CurrentUser.GetId();
+        var currentUserId = currentUserService.CurrentUser.GetId();
 
         foreach (var entry in context.ChangeTracker.Entries<AggregateRoot>())
         {

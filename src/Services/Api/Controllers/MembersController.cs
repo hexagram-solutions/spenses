@@ -11,14 +11,8 @@ namespace Spenses.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/members")]
-public class MembersController : ControllerBase
+public class MembersController(IMediator mediator) : ControllerBase
 {
-    private readonly IMediator _mediator;
-
-    public MembersController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
 
     /// <summary>
     /// Add a new member to a home.
@@ -30,7 +24,7 @@ public class MembersController : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
     {
-        var member = await _mediator.Send(new CreateMemberCommand(homeId, props));
+        var member = await mediator.Send(new CreateMemberCommand(homeId, props));
 
         return CreatedAtAction(nameof(GetMember), new { homeId, memberId = member.Id }, member);
     }
@@ -44,7 +38,7 @@ public class MembersController : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<Member>>> GetMembers(Guid homeId)
     {
-        var members = await _mediator.Send(new MembersQuery(homeId));
+        var members = await mediator.Send(new MembersQuery(homeId));
 
         return Ok(members);
     }
@@ -59,7 +53,7 @@ public class MembersController : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<Member>> GetMember(Guid homeId, Guid memberId)
     {
-        var member = await _mediator.Send(new MemberQuery(homeId, memberId));
+        var member = await mediator.Send(new MemberQuery(homeId, memberId));
 
         return Ok(member);
     }
@@ -75,7 +69,7 @@ public class MembersController : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
     public async Task<ActionResult<Member>> PutMember(Guid homeId, Guid memberId, MemberProperties props)
     {
-        var member = await _mediator.Send(new UpdateMemberCommand(homeId, memberId, props));
+        var member = await mediator.Send(new UpdateMemberCommand(homeId, memberId, props));
 
         return Ok(member);
     }
@@ -91,7 +85,7 @@ public class MembersController : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
     public async Task<ActionResult<DeletionResult<Member>>> DeleteMember(Guid homeId, Guid memberId)
     {
-        var result = await _mediator.Send(new DeleteMemberCommand(homeId, memberId));
+        var result = await mediator.Send(new DeleteMemberCommand(homeId, memberId));
 
         return Ok(result);
     }
@@ -106,7 +100,7 @@ public class MembersController : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
     public async Task<ActionResult<Member>> ActivateMember(Guid homeId, Guid memberId)
     {
-        var result = await _mediator.Send(new ActivateMemberCommand(homeId, memberId));
+        var result = await mediator.Send(new ActivateMemberCommand(homeId, memberId));
 
         return Ok(result);
     }

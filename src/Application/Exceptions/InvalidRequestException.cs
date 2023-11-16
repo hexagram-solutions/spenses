@@ -2,17 +2,11 @@ using FluentValidation.Results;
 
 namespace Spenses.Application.Exceptions;
 
-public class InvalidRequestException : Exception
+public class InvalidRequestException(string message) : Exception(message)
 {
     public InvalidRequestException()
         : this("One or more validation failures have occurred.")
     {
-    }
-
-    public InvalidRequestException(string message)
-        : base(message)
-    {
-        Errors = new Dictionary<string, string[]>();
     }
 
     public InvalidRequestException(params ValidationFailure[] failures)
@@ -28,5 +22,5 @@ public class InvalidRequestException : Exception
             .ToDictionary(failureGroup => failureGroup.Key, failureGroup => failureGroup.ToArray());
     }
 
-    public IDictionary<string, string[]> Errors { get; }
+    public IDictionary<string, string[]> Errors { get; } = new Dictionary<string, string[]>();
 }

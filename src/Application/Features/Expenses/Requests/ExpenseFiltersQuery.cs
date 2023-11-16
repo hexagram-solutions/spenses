@@ -16,30 +16,22 @@ public record ExpenseFiltersQuery(Guid HomeId) : IAuthorizedRequest<ExpenseFilte
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class ExpenseFiltersQueryHandler : IRequestHandler<ExpenseFiltersQuery, ExpenseFilters>
+public class ExpenseFiltersQueryHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<ExpenseFiltersQuery, ExpenseFilters>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public ExpenseFiltersQueryHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<ExpenseFilters> Handle(ExpenseFiltersQuery request, CancellationToken cancellationToken)
     {
-        var uniqueTags = await _db.Expenses
+        var uniqueTags = await db.Expenses
             .Where(e => e.HomeId == request.HomeId)
             .SelectMany(e => e.Tags.Select(t => t.Name))
             .Distinct()
             .ToArrayAsync(cancellationToken);
 
-        var categories = await _db.ExpenseCategories
+        var categories = await db.ExpenseCategories
             .Where(e => e.HomeId == request.HomeId)
             .OrderByDescending(ec => ec.IsDefault)
             .ThenBy(ec => ec.Name)
-            .ProjectTo<ExpenseCategory>(_mapper.ConfigurationProvider)
+            .ProjectTo<ExpenseCategory>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         return new ExpenseFilters { Tags = uniqueTags.OrderBy(x => x).ToArray(), Categories = categories };

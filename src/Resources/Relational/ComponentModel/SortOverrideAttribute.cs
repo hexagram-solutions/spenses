@@ -1,12 +1,7 @@
 namespace Spenses.Resources.Relational.ComponentModel;
 
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class SortOverrideAttribute : Attribute
+public sealed class SortOverrideAttribute(params string[] paths) : Attribute
 {
-    public SortOverrideAttribute(params string[] paths)
-    {
-        Paths = paths;
-    }
-
-    public string[] Paths { get; }
+    public string[] Paths { get; } = paths;
 }
