@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.AspNetCore;
@@ -94,6 +95,8 @@ public static class ProgramExtensions
                         .AllowCredentials();
                 });
         });
+
+        services.AddFeatureManagement();
 
         return services;
     }

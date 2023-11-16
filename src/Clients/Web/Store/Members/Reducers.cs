@@ -19,7 +19,7 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMembersRequestFailed(MembersState state, MembersRequestFailedAction action)
     {
-        return state with { MembersRequesting = false, Error = action.Error };
+        return state with { MembersRequesting = false };
     }
 
     [ReducerMethod]
@@ -37,7 +37,7 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMemberRequestedFailed(MembersState state, MemberRequestFailedAction action)
     {
-        return state with { MemberRequesting = false, Error = action.Error };
+        return state with { MemberRequesting = false };
     }
 
     [ReducerMethod]
@@ -56,7 +56,7 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMemberCreationFailed(MembersState state, MemberCreationFailedAction action)
     {
-        return state with { MemberCreating = false, Error = action.Error };
+        return state with { MemberCreating = false };
     }
 
     [ReducerMethod]
@@ -74,7 +74,7 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMemberUpdateFailed(MembersState state, MemberUpdateFailedAction action)
     {
-        return state with { MemberUpdating = false, Error = action.Error };
+        return state with { MemberUpdating = false };
     }
 
     [ReducerMethod]
@@ -92,7 +92,7 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMemberDeleteFailed(MembersState state, MemberDeletionFailedAction action)
     {
-        return state with { MemberDeleting = false, Error = action.Error };
+        return state with { MemberDeleting = false };
     }
 
     [ReducerMethod]
@@ -110,6 +110,6 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMemberActivationFailed(MembersState state, MemberDeletionFailedAction action)
     {
-        return state with { MemberActivating = false, Error = action.Error };
+        return state with { MemberActivating = false };
     }
 }

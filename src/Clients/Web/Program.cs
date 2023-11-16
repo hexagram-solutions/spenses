@@ -23,9 +23,9 @@ var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
 var scopes = new[] { "openid", "profile", "email", "offline_access" };
 
 if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local))
-    builder.Services.AddApiClients(baseUrl, scopes, TimeSpan.FromMilliseconds(500));
+    builder.Services.AddApiClients(baseUrl, scopes, false, TimeSpan.FromMilliseconds(500));
 else
-    builder.Services.AddApiClients(baseUrl, scopes);
+    builder.Services.AddApiClients(baseUrl, scopes, true);
 
 var isLocalOrTestEnvironment =
     builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local) ||

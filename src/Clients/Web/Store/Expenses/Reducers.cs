@@ -17,9 +17,9 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static ExpensesState ReduceExpensesRequestFailed(ExpensesState state, ExpensesRequestFailedAction action)
+    public static ExpensesState ReduceExpensesRequestFailed(ExpensesState state, ExpensesRequestFailedAction _)
     {
-        return state with { ExpensesRequesting = false, Error = action.Error };
+        return state with { ExpensesRequesting = false };
     }
 
     [ReducerMethod]
@@ -35,9 +35,9 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static ExpensesState ReduceExpenseRequestedFailed(ExpensesState state, ExpenseRequestFailedAction action)
+    public static ExpensesState ReduceExpenseRequestedFailed(ExpensesState state, ExpenseRequestFailedAction _)
     {
-        return state with { ExpenseRequesting = false, Error = action.Error };
+        return state with { ExpenseRequesting = false };
     }
 
     [ReducerMethod]
@@ -54,9 +54,9 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static ExpensesState ReduceExpenseCreationFailed(ExpensesState state, ExpenseCreationFailedAction action)
+    public static ExpensesState ReduceExpenseCreationFailed(ExpensesState state, ExpenseCreationFailedAction _)
     {
-        return state with { ExpenseCreating = false, Error = action.Error };
+        return state with { ExpenseCreating = false };
     }
 
     [ReducerMethod]
@@ -72,9 +72,9 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static ExpensesState ReduceExpenseUpdateFailed(ExpensesState state, ExpenseUpdateFailedAction action)
+    public static ExpensesState ReduceExpenseUpdateFailed(ExpensesState state, ExpenseUpdateFailedAction _)
     {
-        return state with { ExpenseUpdating = false, Error = action.Error };
+        return state with { ExpenseUpdating = false };
     }
 
     [ReducerMethod]
@@ -90,9 +90,9 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static ExpensesState ReduceExpenseDeletionFailed(ExpensesState state, ExpenseDeletionFailedAction action)
+    public static ExpensesState ReduceExpenseDeletionFailed(ExpensesState state, ExpenseDeletionFailedAction _)
     {
-        return state with { ExpenseDeleting = false, Error = action.Error };
+        return state with { ExpenseDeleting = false };
     }
 
     [ReducerMethod]
@@ -112,6 +112,6 @@ public static class Reducers
     public static ExpensesState ReduceExpenseFiltersRequestFailed(ExpensesState state,
         ExpenseFiltersRequestFailedAction action)
     {
-        return state with { ExpenseFiltersRequesting = false, Error = action.Error };
+        return state with { ExpenseFiltersRequesting = false };
     }
 }

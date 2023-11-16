@@ -1,6 +1,8 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Spenses.Client.Http;
+using Spenses.Client.Web.Infrastructure;
+using Spenses.Client.Web.Store.Shared;
 
 namespace Spenses.Client.Web.Store.Homes;
 
@@ -22,7 +24,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new HomesRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new HomesRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -37,7 +40,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new HomeRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new HomeRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -52,7 +56,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new HomeCreationFailedAction(response.Error));
+            dispatcher.Dispatch(new HomeCreationFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -77,7 +82,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new HomeUpdateFailedAction(response.Error));
+            dispatcher.Dispatch(new HomeUpdateFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }

@@ -50,7 +50,5 @@ public partial class CreateExpenseModal
             return;
 
         Dispatcher.Dispatch(new ExpenseCreatedAction(Home.Id, ExpenseFormRef.Expense));
-
-        await Close();
     }
 }

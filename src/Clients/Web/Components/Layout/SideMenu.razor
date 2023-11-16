@@ -82,6 +82,11 @@
     {
         base.OnInitialized();
 
+        SubscribeToAction<HomeCreationSucceededAction>(async _ =>
+        {
+            await ModalService.Hide();
+        });
+
         Dispatcher.Dispatch(new HomesRequestedAction());
     }
 

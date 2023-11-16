@@ -19,7 +19,7 @@ public static class Reducers
     [ReducerMethod]
     public static PaymentsState ReducePaymentsRequestFailed(PaymentsState state, PaymentsRequestFailedAction action)
     {
-        return state with { PaymentsRequesting = false, Error = action.Error };
+        return state with { PaymentsRequesting = false };
     }
 
     [ReducerMethod]
@@ -37,7 +37,7 @@ public static class Reducers
     [ReducerMethod]
     public static PaymentsState ReducePaymentRequestedFailed(PaymentsState state, PaymentRequestFailedAction action)
     {
-        return state with { PaymentRequesting = false, Error = action.Error };
+        return state with { PaymentRequesting = false };
     }
 
     [ReducerMethod]
@@ -56,7 +56,7 @@ public static class Reducers
     [ReducerMethod]
     public static PaymentsState ReducePaymentCreationFailed(PaymentsState state, PaymentCreationFailedAction action)
     {
-        return state with { PaymentCreating = false, Error = action.Error };
+        return state with { PaymentCreating = false };
     }
 
     [ReducerMethod]
@@ -74,7 +74,7 @@ public static class Reducers
     [ReducerMethod]
     public static PaymentsState ReducePaymentUpdateFailed(PaymentsState state, PaymentUpdateFailedAction action)
     {
-        return state with { PaymentUpdating = false, Error = action.Error };
+        return state with { PaymentUpdating = false };
     }
 
     [ReducerMethod]
@@ -92,6 +92,6 @@ public static class Reducers
     [ReducerMethod]
     public static PaymentsState ReducePaymentDeleteFailed(PaymentsState state, PaymentDeletionFailedAction action)
     {
-        return state with { PaymentDeleting = false, Error = action.Error };
+        return state with { PaymentDeleting = false };
     }
 }

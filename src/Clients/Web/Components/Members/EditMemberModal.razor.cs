@@ -64,7 +64,5 @@ public partial class EditMemberModal
             return;
 
         Dispatcher.Dispatch(new MemberUpdatedAction(Home.Id, MemberId, MemberFormRef.Member));
-
-        await Close();
     }
 }

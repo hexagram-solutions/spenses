@@ -1,5 +1,4 @@
 using Fluxor;
-using Refit;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Expenses;
 
@@ -30,6 +29,4 @@ public record ExpensesState
     public bool ExpenseDeleting { get; init; }
 
     public bool ExpenseFiltersRequesting { get; init; }
-
-    public ApiException? Error { get; init; }
 }

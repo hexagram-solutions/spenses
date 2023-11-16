@@ -1,5 +1,4 @@
 using Fluxor;
-using Refit;
 using Spenses.Application.Models.Members;
 
 namespace Spenses.Client.Web.Store.Members;
@@ -27,6 +26,4 @@ public record MembersState
     public bool MemberDeleting { get; init; }
 
     public bool MemberActivating { get; init; }
-
-    public ApiException? Error { get; init; }
 }

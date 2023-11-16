@@ -52,7 +52,5 @@ public partial class CreatePaymentModal
             return;
 
         Dispatcher.Dispatch(new PaymentCreatedAction(Home.Id, PaymentFormRef.Payment));
-
-        await Close();
     }
 }

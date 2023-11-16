@@ -1,5 +1,7 @@
 using Fluxor;
 using Spenses.Client.Http;
+using Spenses.Client.Web.Infrastructure;
+using Spenses.Client.Web.Store.Shared;
 
 namespace Spenses.Client.Web.Store.Members;
 
@@ -19,7 +21,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new MembersRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new MembersRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -34,7 +37,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new MemberRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new MemberRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -49,7 +53,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new MemberCreationFailedAction(response.Error));
+            dispatcher.Dispatch(new MemberCreationFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -65,7 +70,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new MemberUpdateFailedAction(response.Error));
+            dispatcher.Dispatch(new MemberUpdateFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -81,7 +87,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new MemberDeletionFailedAction(response.Error));
+            dispatcher.Dispatch(new MemberDeletionFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -97,7 +104,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new MemberUpdateFailedAction(response.Error));
+            dispatcher.Dispatch(new MemberUpdateFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }

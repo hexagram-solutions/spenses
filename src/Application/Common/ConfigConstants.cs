@@ -15,4 +15,6 @@ public static class ConfigConstants
     public const string SpensesOpenIdAuthority = "Spenses:OpenId:Authority";
     public const string SpensesOpenIdAudience = "Spenses:OpenId:Audience";
     public const string SpensesOpenIdClientId = "Spenses:OpenId:ClientId";
+
+    public const string SpensesFeaturesErrorGenerationFrequency = "Spenses:Features:ErrorGeneration:Frequency";
 }

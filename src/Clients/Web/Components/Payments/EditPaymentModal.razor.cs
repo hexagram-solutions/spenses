@@ -73,7 +73,5 @@ public partial class EditPaymentModal
             return;
 
         Dispatcher.Dispatch(new PaymentUpdatedAction(Home.Id, PaymentId, PaymentFormRef.Payment));
-
-        await Close();
     }
 }

@@ -41,6 +41,16 @@ public partial class MembersCard
     {
         base.OnInitialized();
 
+        SubscribeToAction<MemberCreationSucceededAction>(async _ =>
+        {
+            await ModalService.Hide();
+        });
+
+        SubscribeToAction<MemberUpdateSucceededAction>(async _ =>
+        {
+            await ModalService.Hide();
+        });
+
         Dispatcher.Dispatch(new MembersRequestedAction(HomeId));
     }
 

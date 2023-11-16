@@ -1,5 +1,4 @@
 using Fluxor;
-using Refit;
 using Spenses.Application.Models.Common;
 using Spenses.Application.Models.Payments;
 
@@ -26,6 +25,4 @@ public record PaymentsState
     public bool PaymentUpdating { get; init; }
 
     public bool PaymentDeleting { get; init; }
-
-    public ApiException? Error { get; init; }
 }

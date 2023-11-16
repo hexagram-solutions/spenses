@@ -1,5 +1,4 @@
 using Fluxor;
-using Refit;
 using Spenses.Application.Models.ExpenseCategories;
 
 namespace Spenses.Client.Web.Store.ExpenseCategories;
@@ -25,6 +24,4 @@ public record ExpenseCategoriesState
     public bool ExpenseCategoryUpdating { get; init; }
 
     public bool ExpenseCategoryDeleting { get; init; }
-
-    public ApiException? Error { get; init; }
 }

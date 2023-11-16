@@ -18,9 +18,9 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static HomesState ReduceHomesRequestFailed(HomesState state, HomesRequestFailedAction action)
+    public static HomesState ReduceHomesRequestFailed(HomesState state, HomesRequestFailedAction _)
     {
-        return state with { HomesRequesting = false, Error = action.Error };
+        return state with { HomesRequesting = false };
     }
 
     [ReducerMethod]
@@ -36,9 +36,9 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static HomesState ReduceHomeRequestedFailed(HomesState state, HomeRequestFailedAction action)
+    public static HomesState ReduceHomeRequestedFailed(HomesState state, HomeRequestFailedAction _)
     {
-        return state with { HomeRequesting = false, Error = action.Error };
+        return state with { HomeRequesting = false };
     }
 
     [ReducerMethod]
@@ -54,9 +54,9 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static HomesState ReduceHomeCreationFailed(HomesState state, HomeCreationFailedAction action)
+    public static HomesState ReduceHomeCreationFailed(HomesState state, HomeCreationFailedAction _)
     {
-        return state with { HomeCreating = false, Error = action.Error };
+        return state with { HomeCreating = false };
     }
 
     [ReducerMethod]
@@ -79,8 +79,8 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static HomesState ReduceHomeUpdateFailed(HomesState state, HomeUpdateFailedAction action)
+    public static HomesState ReduceHomeUpdateFailed(HomesState state, HomeUpdateFailedAction _)
     {
-        return state with { HomeUpdating = false, Error = action.Error };
+        return state with { HomeUpdating = false };
     }
 }

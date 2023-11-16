@@ -1,5 +1,7 @@
 using Fluxor;
 using Spenses.Client.Http;
+using Spenses.Client.Web.Infrastructure;
+using Spenses.Client.Web.Store.Shared;
 
 namespace Spenses.Client.Web.Store.Payments;
 
@@ -19,7 +21,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new PaymentsRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new PaymentsRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -34,7 +37,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new PaymentRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new PaymentRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -49,7 +53,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new PaymentCreationFailedAction(response.Error));
+            dispatcher.Dispatch(new PaymentCreationFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -64,7 +69,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new PaymentUpdateFailedAction(response.Error));
+            dispatcher.Dispatch(new PaymentUpdateFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -79,7 +85,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new PaymentDeletionFailedAction(response.Error));
+            dispatcher.Dispatch(new PaymentDeletionFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
