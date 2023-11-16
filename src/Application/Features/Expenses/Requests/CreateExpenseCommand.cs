@@ -17,22 +17,14 @@ public record CreateExpenseCommand(Guid HomeId, ExpenseProperties Props) : IAuth
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand, Expense>
+public class CreateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<CreateExpenseCommand, Expense>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public CreateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Expense> Handle(CreateExpenseCommand request, CancellationToken cancellationToken)
     {
         var (homeId, props) = request;
 
-        var home = await _db.Homes
+        var home = await db.Homes
             .Include(h => h.Members)
             .Include(h => h.ExpenseCategories)
             .FirstAsync(h => h.Id == homeId, cancellationToken);
@@ -43,7 +35,7 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
         if (home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
             throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
 
-        var expense = _mapper.Map<DbModels.Expense>(props);
+        var expense = mapper.Map<DbModels.Expense>(props);
 
         expense.HomeId = homeId;
         expense.PaidByMemberId = props.PaidByMemberId;
@@ -64,10 +56,10 @@ public class CreateExpenseCommandHandler : IRequestHandler<CreateExpenseCommand,
 
         home.Expenses.Add(expense);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        var createdExpense = await _db.Expenses
-            .ProjectTo<Expense>(_mapper.ConfigurationProvider)
+        var createdExpense = await db.Expenses
+            .ProjectTo<Expense>(mapper.ConfigurationProvider)
             .FirstAsync(e => e.Id == expense.Id, cancellationToken);
 
         return createdExpense;

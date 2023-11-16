@@ -14,30 +14,22 @@ public record UpdateHomeCommand(Guid HomeId, HomeProperties Props) : IAuthorized
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class UpdateHomeCommandHandler : IRequestHandler<UpdateHomeCommand, Home>
+public class UpdateHomeCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<UpdateHomeCommand, Home>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public UpdateHomeCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Home> Handle(UpdateHomeCommand request, CancellationToken cancellationToken)
     {
-        var home = await _db.Homes
+        var home = await db.Homes
             .Include(h => h.Members)
                 .ThenInclude(m => m.User)
             .Include(h => h.CreatedBy)
             .Include(h => h.ModifiedBy)
             .FirstOrDefaultAsync(h => h.Id == request.HomeId, cancellationToken);
 
-        _mapper.Map(request.Props, home);
+        mapper.Map(request.Props, home);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<Home>(home);
+        return mapper.Map<Home>(home);
     }
 }

@@ -16,24 +16,16 @@ public record ExpenseQuery(Guid HomeId, Guid ExpenseId) : IAuthorizedRequest<Exp
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class ExpenseQueryCommandHandler : IRequestHandler<ExpenseQuery, Expense>
+public class ExpenseQueryCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<ExpenseQuery, Expense>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public ExpenseQueryCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Expense> Handle(ExpenseQuery request, CancellationToken cancellationToken)
     {
         var (homeId, expenseId) = request;
 
-        var expense = await _db.Expenses
+        var expense = await db.Expenses
             .Where(e => e.Home.Id == homeId)
-            .ProjectTo<Expense>(_mapper.ConfigurationProvider)
+            .ProjectTo<Expense>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == expenseId, cancellationToken);
 
         return expense ?? throw new ResourceNotFoundException(expenseId);

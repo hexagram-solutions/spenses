@@ -104,7 +104,7 @@ partial class Build
                 .SetFileVersion(GitVersion.AssemblySemFileVer));
 
             Npx($"@azure/static-web-apps-cli@1.1.4 deploy " +
-                $"{WebProject.Directory / "bin" / "Release" / "net7.0" / "publish" / "wwwroot"} " +
+                $"{WebProject.Directory / "bin" / "Release" / "net8.0" / "publish" / "wwwroot"} " +
                 $"--deployment-token {AzureStaticWebAppsApiToken} " +
                 $"--env Production");
         });

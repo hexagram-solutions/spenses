@@ -37,7 +37,7 @@ public partial class ExpenseForm
     private List<string> ExpenseTags
     {
         get => Expense.Tags.ToList();
-        set => Expense.Tags = value.ToArray();
+        set => Expense.Tags = [.. value];
     }
 
     protected override void OnInitialized()

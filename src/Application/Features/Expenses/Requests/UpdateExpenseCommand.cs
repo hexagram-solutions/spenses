@@ -18,22 +18,14 @@ public record UpdateExpenseCommand(Guid HomeId, Guid ExpenseId, ExpensePropertie
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand, Expense>
+public class UpdateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<UpdateExpenseCommand, Expense>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public UpdateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Expense> Handle(UpdateExpenseCommand request, CancellationToken cancellationToken)
     {
         var (homeId, expenseId, props) = request;
 
-        var expense = await _db.Expenses
+        var expense = await db.Expenses
             .Include(e => e.Home)
                 .ThenInclude(h => h.Members)
             .Include(e => e.Home)
@@ -52,7 +44,7 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
         if (expense.Home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
             throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
 
-        _mapper.Map(request.Props, expense);
+        mapper.Map(request.Props, expense);
 
         expense.PaidByMemberId = props.PaidByMemberId;
         expense.CategoryId = props.CategoryId;
@@ -69,10 +61,10 @@ public class UpdateExpenseCommandHandler : IRequestHandler<UpdateExpenseCommand,
             });
         }
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        var updatedExpense = await _db.Expenses
-            .ProjectTo<Expense>(_mapper.ConfigurationProvider)
+        var updatedExpense = await db.Expenses
+            .ProjectTo<Expense>(mapper.ConfigurationProvider)
             .FirstAsync(e => e.Id == expense.Id, cancellationToken);
 
         return updatedExpense;

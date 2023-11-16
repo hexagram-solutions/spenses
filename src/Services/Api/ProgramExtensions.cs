@@ -84,6 +84,8 @@ public static class ProgramExtensions
             options.AssumeDefaultVersionWhenUnspecified = true;
         });
 
+        services.AddHttpLogging(_ => { });
+
         services.AddCors(opts =>
         {
             opts.AddPolicy(corsPolicyName,
@@ -129,8 +131,6 @@ public static class ProgramExtensions
         services.AddOpenApiDocument(document =>
         {
             document.Title = OpenApiDocumentTitle;
-            document.FlattenInheritanceHierarchy = true;
-            document.AllowReferencesWithProperties = true;
 
             var authorityUri = new Uri(authority);
             var authorizationUrl = new Uri(authorityUri, $"authorize?audience={audience}").ToString();
@@ -181,7 +181,7 @@ public static class ProgramExtensions
     {
         app.UseOpenApi();
 
-        app.UseSwaggerUi3(config =>
+        app.UseSwaggerUi(config =>
         {
             config.DocumentTitle = OpenApiDocumentTitle;
 

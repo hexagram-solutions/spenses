@@ -18,27 +18,19 @@ public record ExpensesQuery(Guid HomeId) : FilteredExpensesQuery, IAuthorizedReq
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class ExpensesQueryHandler : IRequestHandler<ExpensesQuery, PagedResult<ExpenseDigest>>
+public class ExpensesQueryHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<ExpensesQuery, PagedResult<ExpenseDigest>>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public ExpensesQueryHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<PagedResult<ExpenseDigest>> Handle(ExpensesQuery request,
         CancellationToken cancellationToken)
     {
-        var query = _db.ExpenseDigests
+        var query = db.ExpenseDigests
             .Where(e => e.HomeId == request.HomeId)
-            .ProjectTo<ExpenseDigest>(_mapper.ConfigurationProvider);
+            .ProjectTo<ExpenseDigest>(mapper.ConfigurationProvider);
 
         query = !string.IsNullOrEmpty(request.OrderBy) && request.SortDirection.HasValue
-            ? query.OrderBy(new[] { request.OrderBy!.ToUpperCamelCase() }, request.SortDirection!.Value, true)
-            : query.OrderBy(new[] { nameof(ExpenseDigest.Date) }, SortDirection.Desc, true);
+            ? query.OrderBy([request.OrderBy!.ToUpperCamelCase()], request.SortDirection!.Value, true)
+            : query.OrderBy([nameof(ExpenseDigest.Date)], SortDirection.Desc, true);
 
         query = request.MinDate.HasValue
             ? query.Where(e => e.Date >= request.MinDate)

@@ -15,25 +15,17 @@ public record ExpenseCategoriesQuery(Guid HomeId) : IAuthorizedRequest<IEnumerab
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class ExpenseCategoriesQueryHandler : IRequestHandler<ExpenseCategoriesQuery, IEnumerable<ExpenseCategory>>
+public class ExpenseCategoriesQueryHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<ExpenseCategoriesQuery, IEnumerable<ExpenseCategory>>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public ExpenseCategoriesQueryHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<IEnumerable<ExpenseCategory>> Handle(ExpenseCategoriesQuery request,
         CancellationToken cancellationToken)
     {
-        var categories = await _db.ExpenseCategories
+        var categories = await db.ExpenseCategories
             .Where(ec => ec.HomeId == request.HomeId)
             .OrderByDescending(ec => ec.IsDefault)
             .ThenBy(ec => ec.Name)
-            .ProjectTo<ExpenseCategory>(_mapper.ConfigurationProvider)
+            .ProjectTo<ExpenseCategory>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         return categories;

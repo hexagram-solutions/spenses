@@ -10,22 +10,14 @@ namespace Spenses.Application.Features.Homes.Requests;
 
 public record BalanceBreakdownQuery(Guid HomeId, DateOnly PeriodStart, DateOnly PeriodEnd) : IRequest<BalanceBreakdown>;
 
-public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuery, BalanceBreakdown>
+public class BalanceBreakdownQueryHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<BalanceBreakdownQuery, BalanceBreakdown>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public BalanceBreakdownQueryHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<BalanceBreakdown> Handle(BalanceBreakdownQuery request, CancellationToken cancellationToken)
     {
         var (homeId, periodStart, periodEnd) = request;
 
-        var home = await _db.Homes
+        var home = await db.Homes
             .Include(h => h.Expenses.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
                 .ThenInclude(e => e.ExpenseShares)
             .Include(h => h.Payments.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
@@ -58,7 +50,7 @@ public class BalanceBreakdownQueryHandler : IRequestHandler<BalanceBreakdownQuer
 
                 return new MemberBalance
                 {
-                    Member = _mapper.Map<Member>(m),
+                    Member = mapper.Map<Member>(m),
                     TotalOwed = owedByMember,
                     TotalPaid = paidByMember,
                     Balance = owedByMember - paidByMember

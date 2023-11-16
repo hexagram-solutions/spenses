@@ -1,12 +1,7 @@
 namespace Spenses.Resources.Relational.ComponentModel;
 
 [AttributeUsage(AttributeTargets.Property)]
-public sealed class CalculatedColumnAttribute : Attribute
+public sealed class CalculatedColumnAttribute(string sql) : Attribute
 {
-    public CalculatedColumnAttribute(string sql)
-    {
-        Sql = sql;
-    }
-
-    public string Sql { get; }
+    public string Sql { get; } = sql;
 }

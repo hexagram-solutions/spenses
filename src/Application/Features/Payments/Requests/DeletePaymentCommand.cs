@@ -13,28 +13,22 @@ public record DeletePaymentCommand(Guid HomeId, Guid PaymentId) : IAuthorizedReq
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class DeletePaymentCommandHandler : IRequestHandler<DeletePaymentCommand>
+public class DeletePaymentCommandHandler(ApplicationDbContext db)
+    : IRequestHandler<DeletePaymentCommand>
 {
-    private readonly ApplicationDbContext _db;
-
-    public DeletePaymentCommandHandler(ApplicationDbContext db)
-    {
-        _db = db;
-    }
-
     public async Task Handle(DeletePaymentCommand request, CancellationToken cancellationToken)
     {
         var (homeId, paymentId) = request;
 
-        var payment = await _db.Payments
+        var payment = await db.Payments
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == paymentId, cancellationToken);
 
         if (payment is null)
             throw new ResourceNotFoundException(paymentId);
 
-        _db.Payments.Remove(payment);
+        db.Payments.Remove(payment);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

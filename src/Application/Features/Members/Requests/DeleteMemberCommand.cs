@@ -17,35 +17,27 @@ public record DeleteMemberCommand(Guid HomeId, Guid MemberId) : IAuthorizedReque
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class DeleteMemberCommandHandler : IRequestHandler<DeleteMemberCommand, DeletionResult<Member>>
+public class DeleteMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<DeleteMemberCommand, DeletionResult<Member>>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public DeleteMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<DeletionResult<Member>> Handle(DeleteMemberCommand request, CancellationToken cancellationToken)
     {
         var (homeId, memberId) = request;
 
-        var member = await _db.Members
+        var member = await db.Members
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == memberId, cancellationToken);
 
         if (member is null)
             throw new ResourceNotFoundException(memberId);
 
-        _db.Members.Remove(member);
+        db.Members.Remove(member);
 
         try
         {
-            await _db.SaveChangesAsync(cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
 
-            return new DeletionResult<Member>(DeletionType.Deleted, _mapper.Map<Member>(member));
+            return new DeletionResult<Member>(DeletionType.Deleted, mapper.Map<Member>(member));
         }
         catch (DbUpdateException ex)
             when (ex.Entries.SingleOrDefault(e => (e.Entity as DbModels.Member)?.Id == memberId) is not null)
@@ -54,11 +46,11 @@ public class DeleteMemberCommandHandler : IRequestHandler<DeleteMemberCommand, D
             member.IsActive = false;
 
             // "Undo" the prior removal
-            _db.Members.Entry(member).State = EntityState.Modified;
+            db.Members.Entry(member).State = EntityState.Modified;
 
-            await _db.SaveChangesAsync(cancellationToken);
+            await db.SaveChangesAsync(cancellationToken);
 
-            return new DeletionResult<Member>(DeletionType.Deactivated, _mapper.Map<Member>(member));
+            return new DeletionResult<Member>(DeletionType.Deactivated, mapper.Map<Member>(member));
         }
     }
 }

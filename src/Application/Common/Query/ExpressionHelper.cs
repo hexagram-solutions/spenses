@@ -9,13 +9,12 @@ public static class ExpressionHelper
 {
     public static PropertyInfo FindProperty(Type type, string memberName)
     {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
+        ArgumentNullException.ThrowIfNull(type);
 
         var property = type.GetProperty(memberName,
             BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
 
-        if (property == null)
+        if (property is null)
             throw new InvalidOperationException(
                 $"The property '{memberName}' was not found on type '{type.FullName}'");
 
@@ -24,11 +23,8 @@ public static class ExpressionHelper
 
     public static Expression BuildMemberAccessForPath(Expression parameter, string path)
     {
-        if (parameter == null)
-            throw new ArgumentNullException(nameof(parameter));
-
-        if (path == null)
-            throw new ArgumentNullException(nameof(path));
+        ArgumentNullException.ThrowIfNull(parameter);
+        ArgumentNullException.ThrowIfNull(path);
 
         var result = parameter;
 
@@ -100,16 +96,14 @@ public static class ExpressionHelper
 
     public static string GetPath(LambdaExpression pathExpression)
     {
-        if (pathExpression == null)
-            throw new ArgumentNullException(nameof(pathExpression));
+        ArgumentNullException.ThrowIfNull(pathExpression);
 
         return GetPathInternal(pathExpression.Body);
     }
 
     public static string GetPath<T>(Expression<Func<T, object>> pathExpression)
     {
-        if (pathExpression == null)
-            throw new ArgumentNullException(nameof(pathExpression));
+        ArgumentNullException.ThrowIfNull(pathExpression);
 
         return GetPathInternal(pathExpression.Body);
     }
@@ -196,8 +190,7 @@ public static class ExpressionHelper
 
     public static object? Evaluate(Expression expression)
     {
-        if (expression == null)
-            throw new ArgumentNullException(nameof(expression));
+        ArgumentNullException.ThrowIfNull(expression);
 
         if (!IsParameterless(expression))
             throw new ArgumentException("expression can not contain a ParameterExpression.", nameof(expression));
@@ -241,7 +234,7 @@ public static class ExpressionHelper
 
         visitor.Visit(expression);
 
-        return visitor.Parameters.ToArray();
+        return [.. visitor.Parameters];
     }
 
     public static LambdaExpression ExtractLambdaExpression(Expression expression)
@@ -269,7 +262,7 @@ public static class ExpressionHelper
 
     private sealed class ParameterExpressionVisitor : ExpressionVisitor
     {
-        public HashSet<ParameterExpression> Parameters { get; } = new();
+        public HashSet<ParameterExpression> Parameters { get; } = [];
 
         protected override Expression VisitParameter(ParameterExpression node)
         {

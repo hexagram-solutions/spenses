@@ -15,23 +15,15 @@ public record MembersQuery(Guid HomeId) : IAuthorizedRequest<IEnumerable<Member>
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class MembersQueryHandler : IRequestHandler<MembersQuery, IEnumerable<Member>>
+public class MembersQueryHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<MembersQuery, IEnumerable<Member>>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public MembersQueryHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<IEnumerable<Member>> Handle(MembersQuery request, CancellationToken cancellationToken)
     {
-        var members = await _db.Members
+        var members = await db.Members
             .Where(m => m.HomeId == request.HomeId)
             .OrderBy(m => m.Name)
-            .ProjectTo<Member>(_mapper.ConfigurationProvider)
+            .ProjectTo<Member>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
         return members;

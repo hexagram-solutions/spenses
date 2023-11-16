@@ -39,12 +39,7 @@ public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEnt
     }
 }
 
-public class MockCurrentUserService : ICurrentUserService
+public class MockCurrentUserService(ClaimsPrincipal currentUser) : ICurrentUserService
 {
-    public MockCurrentUserService(ClaimsPrincipal currentUser)
-    {
-        CurrentUser = currentUser;
-    }
-
-    public ClaimsPrincipal CurrentUser { get; }
+    public ClaimsPrincipal CurrentUser { get; } = currentUser;
 }

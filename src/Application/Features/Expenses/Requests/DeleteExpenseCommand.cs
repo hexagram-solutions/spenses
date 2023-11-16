@@ -13,28 +13,21 @@ public record DeleteExpenseCommand(Guid HomeId, Guid ExpenseId) : IAuthorizedReq
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class DeleteExpenseCommandHandler : IRequestHandler<DeleteExpenseCommand>
+public class DeleteExpenseCommandHandler(ApplicationDbContext db) : IRequestHandler<DeleteExpenseCommand>
 {
-    private readonly ApplicationDbContext _db;
-
-    public DeleteExpenseCommandHandler(ApplicationDbContext db)
-    {
-        _db = db;
-    }
-
     public async Task Handle(DeleteExpenseCommand request, CancellationToken cancellationToken)
     {
         var (homeId, expenseId) = request;
 
-        var expense = await _db.Expenses
+        var expense = await db.Expenses
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);
 
         if (expense is null)
             throw new ResourceNotFoundException(expenseId);
 
-        _db.Expenses.Remove(expense);
+        db.Expenses.Remove(expense);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

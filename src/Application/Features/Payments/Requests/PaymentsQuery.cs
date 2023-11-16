@@ -18,27 +18,19 @@ public record PaymentsQuery(Guid HomeId) : FilteredPaymentQuery, IAuthorizedRequ
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class PaymentsQueryHandler : IRequestHandler<PaymentsQuery, PagedResult<PaymentDigest>>
+public class PaymentsQueryHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<PaymentsQuery, PagedResult<PaymentDigest>>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public PaymentsQueryHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<PagedResult<PaymentDigest>> Handle(PaymentsQuery request,
         CancellationToken cancellationToken)
     {
-        var query = _db.PaymentDigests
+        var query = db.PaymentDigests
             .Where(e => e.HomeId == request.HomeId)
-            .ProjectTo<PaymentDigest>(_mapper.ConfigurationProvider);
+            .ProjectTo<PaymentDigest>(mapper.ConfigurationProvider);
 
         query = !string.IsNullOrEmpty(request.OrderBy) && request.SortDirection.HasValue
-            ? query.OrderBy(new[] { request.OrderBy!.ToUpperCamelCase() }, request.SortDirection!.Value, true)
-            : query.OrderBy(new[] { nameof(PaymentDigest.Date) }, SortDirection.Desc, true);
+            ? query.OrderBy([request.OrderBy!.ToUpperCamelCase()], request.SortDirection!.Value, true)
+            : query.OrderBy([nameof(PaymentDigest.Date)], SortDirection.Desc, true);
 
         query = request.MinDate.HasValue
             ? query.Where(e => e.Date >= request.MinDate)

@@ -15,21 +15,12 @@ public record HomeQuery(Guid HomeId) : IAuthorizedRequest<Home>
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class HomeQueryCommandHandler : IRequestHandler<HomeQuery, Home>
+public class HomeQueryCommandHandler(ApplicationDbContext db, IMapper mapper) : IRequestHandler<HomeQuery, Home>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public HomeQueryCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Home> Handle(HomeQuery request, CancellationToken cancellationToken)
     {
-        var home = await _db.Homes
-            .ProjectTo<Home>(_mapper.ConfigurationProvider)
+        var home = await db.Homes
+            .ProjectTo<Home>(mapper.ConfigurationProvider)
             .FirstAsync(h => h.Id == request.HomeId, cancellationToken);
 
         return home;

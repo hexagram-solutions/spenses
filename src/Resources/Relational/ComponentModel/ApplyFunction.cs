@@ -6,18 +6,11 @@ public enum ApplyFunctionType
 }
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public sealed class ApplyFunction : Attribute
+public sealed class ApplyFunction(ApplyFunctionType applyFunctionType, string alias, string function) : Attribute
 {
-    public ApplyFunction(ApplyFunctionType applyFunctionType, string alias, string function)
-    {
-        ApplyFunctionType = applyFunctionType;
-        Alias = alias;
-        Function = function;
-    }
+    public ApplyFunctionType ApplyFunctionType { get; } = applyFunctionType;
 
-    public ApplyFunctionType ApplyFunctionType { get; }
+    public string Alias { get; } = alias;
 
-    public string Alias { get; }
-
-    public string Function { get; }
+    public string Function { get; } = function;
 }

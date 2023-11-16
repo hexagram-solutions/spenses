@@ -6,19 +6,12 @@ using Spenses.Client.Web.Store.Shared;
 
 namespace Spenses.Client.Web.Store.Homes;
 
-public class Effects
+public class Effects(IHomesApi homes)
 {
-    private readonly IHomesApi _homes;
-
-    public Effects(IHomesApi homes)
-    {
-        _homes = homes;
-    }
-
     [EffectMethod]
     public async Task HandleHomesRequested(HomesRequestedAction _, IDispatcher dispatcher)
     {
-        var response = await _homes.GetHomes();
+        var response = await homes.GetHomes();
 
         if (response.Error is not null)
         {
@@ -34,7 +27,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleHomeRequested(HomeRequestedAction action, IDispatcher dispatcher)
     {
-        var response = await _homes.GetHome(action.HomeId);
+        var response = await homes.GetHome(action.HomeId);
 
         if (response.Error is not null)
         {
@@ -50,7 +43,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleHomeCreated(HomeCreatedAction action, IDispatcher dispatcher)
     {
-        var response = await _homes.PostHome(action.Props);
+        var response = await homes.PostHome(action.Props);
 
         if (response.Error is not null)
         {
@@ -75,7 +68,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleHomeUpdated(HomeUpdatedAction action, IDispatcher dispatcher)
     {
-        var response = await _homes.PutHome(action.HomeId, action.Props);
+        var response = await homes.PutHome(action.HomeId, action.Props);
 
         if (response.Error is not null)
         {

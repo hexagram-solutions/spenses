@@ -12,21 +12,15 @@ public record DeleteHomeCommand(Guid HomeId) : IAuthorizedRequest
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class DeleteHomeCommandHandler : IRequestHandler<DeleteHomeCommand>
+public class DeleteHomeCommandHandler(ApplicationDbContext db)
+    : IRequestHandler<DeleteHomeCommand>
 {
-    private readonly ApplicationDbContext _db;
-
-    public DeleteHomeCommandHandler(ApplicationDbContext db)
-    {
-        _db = db;
-    }
-
     public async Task Handle(DeleteHomeCommand request, CancellationToken cancellationToken)
     {
-        var home = await _db.Homes.FirstAsync(h => h.Id == request.HomeId, cancellationToken);
+        var home = await db.Homes.FirstAsync(h => h.Id == request.HomeId, cancellationToken);
 
-        _db.Homes.Remove(home);
+        db.Homes.Remove(home);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

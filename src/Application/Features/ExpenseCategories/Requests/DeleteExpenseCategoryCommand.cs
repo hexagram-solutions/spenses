@@ -13,20 +13,14 @@ public record DeleteExpenseCategoryCommand(Guid HomeId, Guid ExpenseCategoryId) 
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class DeleteExpenseCategoryCommandHandler : IRequestHandler<DeleteExpenseCategoryCommand>
+public class DeleteExpenseCategoryCommandHandler(ApplicationDbContext db)
+    : IRequestHandler<DeleteExpenseCategoryCommand>
 {
-    private readonly ApplicationDbContext _db;
-
-    public DeleteExpenseCategoryCommandHandler(ApplicationDbContext db)
-    {
-        _db = db;
-    }
-
     public async Task Handle(DeleteExpenseCategoryCommand request, CancellationToken cancellationToken)
     {
         var (homeId, expenseId) = request;
 
-        var category = await _db.ExpenseCategories
+        var category = await db.ExpenseCategories
             .Where(e => e.Home.Id == homeId)
             .FirstOrDefaultAsync(e => e.Id == expenseId, cancellationToken);
 
@@ -36,8 +30,8 @@ public class DeleteExpenseCategoryCommandHandler : IRequestHandler<DeleteExpense
         if (category.IsDefault)
             throw new InvalidRequestException("A home's default expense category cannot be deleted.");
 
-        _db.ExpenseCategories.Remove(category);
+        db.ExpenseCategories.Remove(category);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
     }
 }

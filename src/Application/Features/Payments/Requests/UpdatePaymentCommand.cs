@@ -17,22 +17,14 @@ public record UpdatePaymentCommand(Guid HomeId, Guid PaymentId, PaymentPropertie
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class UpdatePaymentCommandHandler : IRequestHandler<UpdatePaymentCommand, Payment>
+public class UpdatePaymentCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<UpdatePaymentCommand, Payment>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public UpdatePaymentCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Payment> Handle(UpdatePaymentCommand request, CancellationToken cancellationToken)
     {
         var (homeId, paymentId, props) = request;
 
-        var payment = await _db.Payments
+        var payment = await db.Payments
             .Include(e => e.Home)
                 .ThenInclude(h => h.Members)
             .Where(e => e.Home.Id == homeId)
@@ -47,15 +39,15 @@ public class UpdatePaymentCommandHandler : IRequestHandler<UpdatePaymentCommand,
         if (payment.Home.Members.All(m => m.Id != props.PaidToMemberId))
             throw new InvalidRequestException($"Member {props.PaidToMemberId} is not a member of home {homeId}");
 
-        _mapper.Map(request.Props, payment);
+        mapper.Map(request.Props, payment);
 
         payment.PaidByMemberId = props.PaidByMemberId;
         payment.PaidToMemberId = props.PaidToMemberId;
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        var updatedPayment = await _db.Payments
-            .ProjectTo<Payment>(_mapper.ConfigurationProvider)
+        var updatedPayment = await db.Payments
+            .ProjectTo<Payment>(mapper.ConfigurationProvider)
             .FirstAsync(e => e.Id == payment.Id, cancellationToken);
 
         return updatedPayment;

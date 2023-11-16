@@ -57,9 +57,10 @@ public static class QueryableExtensions
         methodInfo = methodInfo.MakeGenericMethod(source.ElementType, currentType);
 
         return (IOrderedQueryable<T>) source.Provider.CreateQuery(
-            Expression.Call(null, methodInfo, new[]
-            {
-                    source.Expression, Expression.Quote(keySelector)
-            }));
+            Expression.Call(null, methodInfo,
+            [
+                    source.Expression,
+                Expression.Quote(keySelector)
+            ]));
     }
 }

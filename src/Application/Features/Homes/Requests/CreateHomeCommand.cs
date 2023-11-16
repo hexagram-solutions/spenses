@@ -10,24 +10,14 @@ namespace Spenses.Application.Features.Homes.Requests;
 
 public record CreateHomeCommand(HomeProperties Props) : IRequest<Home>;
 
-public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, Home>
+public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, ICurrentUserService currentUserService)
+    : IRequestHandler<CreateHomeCommand, Home>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-    private readonly ICurrentUserService _currentUserService;
-
-    public CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, ICurrentUserService currentUserService)
-    {
-        _db = db;
-        _mapper = mapper;
-        _currentUserService = currentUserService;
-    }
-
     public async Task<Home> Handle(CreateHomeCommand request, CancellationToken cancellationToken)
     {
-        var home = _mapper.Map<DbModels.Home>(request.Props);
+        var home = mapper.Map<DbModels.Home>(request.Props);
 
-        var currentUser = _currentUserService.CurrentUser;
+        var currentUser = currentUserService.CurrentUser;
 
         home.Members.Add(new DbModels.Member
         {
@@ -45,10 +35,10 @@ public class CreateHomeCommandHandler : IRequestHandler<CreateHomeCommand, Home>
             IsDefault = true
         });
 
-        var entry = await _db.Homes.AddAsync(home, cancellationToken);
+        var entry = await db.Homes.AddAsync(home, cancellationToken);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<Home>(entry.Entity);
+        return mapper.Map<Home>(entry.Entity);
     }
 }

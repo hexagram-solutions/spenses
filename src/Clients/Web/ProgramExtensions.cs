@@ -81,8 +81,10 @@ public static class ProgramExtensions
         services.AddFluxor(opts =>
         {
             opts.ScanAssemblies(typeof(Program).Assembly)
-                .UseRouting()
-                .UseReduxDevTools();
+                .UseRouting();
+
+            if (useDevTools)
+                opts.UseReduxDevTools();
         });
 
         return services;

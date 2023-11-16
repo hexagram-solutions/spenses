@@ -5,19 +5,12 @@ using Spenses.Client.Web.Store.Shared;
 
 namespace Spenses.Client.Web.Store.ExpenseCategories;
 
-public class Effects
+public class Effects(IExpenseCategoriesApi expenseCategories)
 {
-    private readonly IExpenseCategoriesApi _expenseCategories;
-
-    public Effects(IExpenseCategoriesApi expenseCategories)
-    {
-        _expenseCategories = expenseCategories;
-    }
-
     [EffectMethod]
     public async Task HandleExpenseCategoriesRequested(ExpenseCategoriesRequestedAction action, IDispatcher dispatcher)
     {
-        var response = await _expenseCategories.GetExpenseCategories(action.HomeId);
+        var response = await expenseCategories.GetExpenseCategories(action.HomeId);
 
         if (response.Error is not null)
         {
@@ -34,7 +27,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleExpenseCategoryRequested(ExpenseCategoryRequestedAction action, IDispatcher dispatcher)
     {
-        var response = await _expenseCategories.GetExpenseCategory(action.HomeId, action.ExpenseCategoryId);
+        var response = await expenseCategories.GetExpenseCategory(action.HomeId, action.ExpenseCategoryId);
 
         if (response.Error is not null)
         {
@@ -50,7 +43,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleExpenseCategoryCreated(ExpenseCategoryCreatedAction action, IDispatcher dispatcher)
     {
-        var response = await _expenseCategories.PostExpenseCategory(action.HomeId, action.Props);
+        var response = await expenseCategories.PostExpenseCategory(action.HomeId, action.Props);
 
         if (response.Error is not null)
         {
@@ -66,7 +59,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleExpenseCategoryUpdated(ExpenseCategoryUpdatedAction action, IDispatcher dispatcher)
     {
-        var response = await _expenseCategories.PutExpenseCategory(action.HomeId, action.ExpenseCategoryId, action.Props);
+        var response = await expenseCategories.PutExpenseCategory(action.HomeId, action.ExpenseCategoryId, action.Props);
 
         if (response.Error is not null)
         {
@@ -82,7 +75,7 @@ public class Effects
     [EffectMethod]
     public async Task HandleExpenseCategoryDeleted(ExpenseCategoryDeletedAction action, IDispatcher dispatcher)
     {
-        var response = await _expenseCategories.DeleteExpenseCategory(action.HomeId, action.ExpenseCategoryId);
+        var response = await expenseCategories.DeleteExpenseCategory(action.HomeId, action.ExpenseCategoryId);
 
         if (response.Error is not null)
         {

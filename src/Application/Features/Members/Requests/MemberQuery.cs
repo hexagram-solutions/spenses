@@ -16,23 +16,15 @@ public record MemberQuery(Guid HomeId, Guid MemberId) : IAuthorizedRequest<Membe
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class MemberQueryHandler : IRequestHandler<MemberQuery, Member>
+public class MemberQueryHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<MemberQuery, Member>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public MemberQueryHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Member> Handle(MemberQuery request, CancellationToken cancellationToken)
     {
         var (_, memberId) = request;
 
-        var member = await _db.Members
-            .ProjectTo<Member>(_mapper.ConfigurationProvider)
+        var member = await db.Members
+            .ProjectTo<Member>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
 
         return member ?? throw new ResourceNotFoundException(memberId);

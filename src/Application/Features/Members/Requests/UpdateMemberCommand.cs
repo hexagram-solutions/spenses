@@ -17,22 +17,14 @@ public record UpdateMemberCommand(Guid HomeId, Guid MemberId, MemberProperties P
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, Member>
+public class UpdateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
+    : IRequestHandler<UpdateMemberCommand, Member>
 {
-    private readonly ApplicationDbContext _db;
-    private readonly IMapper _mapper;
-
-    public UpdateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
-    {
-        _db = db;
-        _mapper = mapper;
-    }
-
     public async Task<Member> Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
     {
         var (homeId, memberId, props) = request;
 
-        var homeMembers = await _db.Members
+        var homeMembers = await db.Members
             .Where(m => m.HomeId == homeId)
             .ToListAsync(cancellationToken);
 
@@ -50,10 +42,10 @@ public class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand, M
                     "Total split percentage among home members cannot exceed 100%"));
         }
 
-        _mapper.Map(props, memberToUpdate);
+        mapper.Map(props, memberToUpdate);
 
-        await _db.SaveChangesAsync(cancellationToken);
+        await db.SaveChangesAsync(cancellationToken);
 
-        return _mapper.Map<Member>(memberToUpdate);
+        return mapper.Map<Member>(memberToUpdate);
     }
 }
