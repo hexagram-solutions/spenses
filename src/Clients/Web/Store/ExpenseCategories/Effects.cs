@@ -1,5 +1,7 @@
 using Fluxor;
 using Spenses.Client.Http;
+using Spenses.Client.Web.Infrastructure;
+using Spenses.Client.Web.Store.Shared;
 
 namespace Spenses.Client.Web.Store.ExpenseCategories;
 
@@ -19,7 +21,9 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseCategoriesRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseCategoriesRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
+
 
             return;
         }
@@ -34,7 +38,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseCategoryRequestFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseCategoryRequestFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -49,7 +54,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseCategoryCreationFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseCategoryCreationFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -64,7 +70,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseCategoryUpdateFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseCategoryUpdateFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }
@@ -79,7 +86,8 @@ public class Effects
 
         if (response.Error is not null)
         {
-            dispatcher.Dispatch(new ExpenseCategoryDeletionFailedAction(response.Error));
+            dispatcher.Dispatch(new ExpenseCategoryDeletionFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }

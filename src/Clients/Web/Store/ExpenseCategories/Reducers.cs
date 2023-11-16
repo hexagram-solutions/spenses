@@ -22,9 +22,9 @@ public static class Reducers
 
     [ReducerMethod]
     public static ExpenseCategoriesState ReduceExpenseCategoriesRequestFailed(ExpenseCategoriesState state,
-        ExpenseCategoriesRequestFailedAction action)
+        ExpenseCategoriesRequestFailedAction _)
     {
-        return state with { ExpenseCategoriesRequesting = false, Error = action.Error };
+        return state with { ExpenseCategoriesRequesting = false };
     }
 
     [ReducerMethod]
@@ -43,9 +43,9 @@ public static class Reducers
 
     [ReducerMethod]
     public static ExpenseCategoriesState ReduceExpenseCategoryRequestFailed(ExpenseCategoriesState state,
-        ExpenseCategoryRequestFailedAction action)
+        ExpenseCategoryRequestFailedAction _)
     {
-        return state with { ExpenseCategoryRequesting = false, Error = action.Error };
+        return state with { ExpenseCategoryRequesting = false };
     }
 
     [ReducerMethod]
@@ -73,9 +73,9 @@ public static class Reducers
 
     [ReducerMethod]
     public static ExpenseCategoriesState ReduceExpenseCategoryCreationFailed(ExpenseCategoriesState state,
-        ExpenseCategoryCreationFailedAction action)
+        ExpenseCategoryCreationFailedAction _)
     {
-        return state with { ExpenseCategoryCreating = false, Error = action.Error };
+        return state with { ExpenseCategoryCreating = false };
     }
 
     [ReducerMethod]
@@ -105,9 +105,9 @@ public static class Reducers
 
     [ReducerMethod]
     public static ExpenseCategoriesState ReduceExpenseCategoryUpdateFailed(ExpenseCategoriesState state,
-        ExpenseCategoryUpdateFailedAction action)
+        ExpenseCategoryUpdateFailedAction _)
     {
-        return state with { ExpenseCategoryUpdating = false, Error = action.Error };
+        return state with { ExpenseCategoryUpdating = false };
     }
 
     [ReducerMethod]
@@ -126,8 +126,8 @@ public static class Reducers
 
     [ReducerMethod]
     public static ExpenseCategoriesState ReduceExpenseCategoryDeletionFailed(ExpenseCategoriesState state,
-        ExpenseCategoryDeletionFailedAction action)
+        ExpenseCategoryDeletionFailedAction _)
     {
-        return state with { ExpenseCategoryDeleting = false, Error = action.Error };
+        return state with { ExpenseCategoryDeleting = false };
     }
 }
