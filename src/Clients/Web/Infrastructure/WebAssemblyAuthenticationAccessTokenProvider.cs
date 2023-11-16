@@ -18,7 +18,7 @@ public class WebAssemblyAuthenticationAccessTokenProvider(IAccessTokenProviderAc
 
         return new AccessTokenResponse
         {
-            AccessToken = accessToken.Value,
+            AccessToken = accessToken!.Value,
             ExpiresIn = (int) accessToken.Expires.Subtract(utcNow).TotalSeconds,
             Scope = string.Join(' ', accessToken.GrantedScopes)
         };

@@ -64,12 +64,10 @@ public static class Reducers
         return state with
         {
             ExpenseCategoryCreating = false,
-            ExpenseCategories =
-            [
-                .. categories
-                    .OrderByDescending(c => c.IsDefault)
-                    .ThenBy(c => c.Name)
-            ]
+            ExpenseCategories = categories
+                .OrderByDescending(c => c.IsDefault)
+                .ThenBy(c => c.Name)
+                .ToArray()
         };
     }
 
@@ -97,13 +95,11 @@ public static class Reducers
         {
             ExpenseCategoryUpdating = false,
             CurrentExpenseCategory = action.ExpenseCategory,
-            ExpenseCategories =
-            [
-                .. state.ExpenseCategories
-                    .Replace(originalCategory, action.ExpenseCategory)
-                    .OrderByDescending(ec => ec.IsDefault)
-                    .ThenBy(ec => ec.Name)
-            ]
+            ExpenseCategories = state.ExpenseCategories
+                .Replace(originalCategory, action.ExpenseCategory)
+                .OrderByDescending(ec => ec.IsDefault)
+                .ThenBy(ec => ec.Name)
+                .ToArray()
         };
     }
 
