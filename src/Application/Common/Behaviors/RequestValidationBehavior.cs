@@ -20,11 +20,11 @@ public class RequestValidationBehaviour<TRequest, TResponse>(IEnumerable<IValida
                 v.ValidateAsync(context, cancellationToken)));
 
         var failures = validationResults
-            .Where(r => r.Errors.Any())
+            .Where(r => r.Errors.Count != 0)
             .SelectMany(r => r.Errors)
             .ToList();
 
-        if (!failures.Any())
+        if (failures.Count == 0)
             return await next();
 
         // Remove first level of nested property names. For example, a validation error for property "Foo.Bar.Baz" will

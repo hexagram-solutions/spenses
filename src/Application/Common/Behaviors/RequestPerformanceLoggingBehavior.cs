@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Hexagrams.Extensions.Configuration;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -12,7 +13,7 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TReq
     : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly int _longRunningRequestThreshold =
-            int.Parse(configuration[ConfigConstants.SpensesLoggingLongRunningRequestThreshold]!);
+            configuration.Require<int>(ConfigConstants.SpensesLoggingLongRunningRequestThreshold);
 
     private readonly Stopwatch _timer = new();
 

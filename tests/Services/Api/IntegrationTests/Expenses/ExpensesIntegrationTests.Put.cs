@@ -23,7 +23,7 @@ public partial class ExpensesIntegrationTests
             Note = "Bar",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new[] { "household" },
+            Tags = ["household"],
             CategoryId = category.Id,
             PaidByMemberId = home.Members.First().Id
         };
@@ -60,7 +60,7 @@ public partial class ExpensesIntegrationTests
             Note = "Bar",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new[] { "household" },
+            Tags = ["household"],
             PaidByMemberId = Guid.NewGuid()
         };
 
@@ -83,7 +83,7 @@ public partial class ExpensesIntegrationTests
             Note = "Bar",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new[] { "household" },
+            Tags = ["household"],
             CategoryId = category.Id,
             PaidByMemberId = Guid.NewGuid()
         };

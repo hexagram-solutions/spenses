@@ -234,7 +234,7 @@ public static class ExpressionHelper
 
         visitor.Visit(expression);
 
-        return visitor.Parameters.ToArray();
+        return [.. visitor.Parameters];
     }
 
     public static LambdaExpression ExtractLambdaExpression(Expression expression)
@@ -262,7 +262,7 @@ public static class ExpressionHelper
 
     private sealed class ParameterExpressionVisitor : ExpressionVisitor
     {
-        public HashSet<ParameterExpression> Parameters { get; } = new();
+        public HashSet<ParameterExpression> Parameters { get; } = [];
 
         protected override Expression VisitParameter(ParameterExpression node)
         {

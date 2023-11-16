@@ -29,8 +29,8 @@ public class PaymentsQueryHandler(ApplicationDbContext db, IMapper mapper)
             .ProjectTo<PaymentDigest>(mapper.ConfigurationProvider);
 
         query = !string.IsNullOrEmpty(request.OrderBy) && request.SortDirection.HasValue
-            ? query.OrderBy(new[] { request.OrderBy!.ToUpperCamelCase() }, request.SortDirection!.Value, true)
-            : query.OrderBy(new[] { nameof(PaymentDigest.Date) }, SortDirection.Desc, true);
+            ? query.OrderBy([request.OrderBy!.ToUpperCamelCase()], request.SortDirection!.Value, true)
+            : query.OrderBy([nameof(PaymentDigest.Date)], SortDirection.Desc, true);
 
         query = request.MinDate.HasValue
             ? query.Where(e => e.Date >= request.MinDate)

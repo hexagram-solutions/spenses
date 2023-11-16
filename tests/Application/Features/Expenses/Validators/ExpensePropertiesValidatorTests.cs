@@ -87,11 +87,11 @@ public class ExpensePropertiesValidatorTests
     [Fact]
     public void Tags_values_must_be_distinct()
     {
-        var model = new ExpenseProperties { Tags = new[] { "foo", "Foo", "bar" } };
+        var model = new ExpenseProperties { Tags = ["foo", "Foo", "bar"] };
 
         _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.Tags);
 
-        _validator.TestValidate(model with { Tags = new[] { "foo", "bar", "baz" } })
+        _validator.TestValidate(model with { Tags = ["foo", "bar", "baz"] })
             .ShouldNotHaveValidationErrorFor(x => x.Tags);
     }
 

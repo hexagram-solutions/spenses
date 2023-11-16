@@ -17,7 +17,7 @@ public partial class ExpensesIntegrationTests
             Note = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new[] { "groceries" },
+            Tags = ["groceries"],
             CategoryId = category.Id,
             PaidByMemberId = home.Members.First().Id
         };
@@ -59,7 +59,7 @@ public partial class ExpensesIntegrationTests
             Note = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new[] { "groceries" },
+            Tags = ["groceries"],
             PaidByMemberId = Guid.NewGuid()
         };
 
@@ -76,7 +76,7 @@ public partial class ExpensesIntegrationTests
             Note = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = new[] { "groceries" },
+            Tags = ["groceries"],
             PaidByMemberId = Guid.NewGuid()
         };
 

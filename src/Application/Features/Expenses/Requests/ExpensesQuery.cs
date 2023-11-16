@@ -29,8 +29,8 @@ public class ExpensesQueryHandler(ApplicationDbContext db, IMapper mapper)
             .ProjectTo<ExpenseDigest>(mapper.ConfigurationProvider);
 
         query = !string.IsNullOrEmpty(request.OrderBy) && request.SortDirection.HasValue
-            ? query.OrderBy(new[] { request.OrderBy!.ToUpperCamelCase() }, request.SortDirection!.Value, true)
-            : query.OrderBy(new[] { nameof(ExpenseDigest.Date) }, SortDirection.Desc, true);
+            ? query.OrderBy([request.OrderBy!.ToUpperCamelCase()], request.SortDirection!.Value, true)
+            : query.OrderBy([nameof(ExpenseDigest.Date)], SortDirection.Desc, true);
 
         query = request.MinDate.HasValue
             ? query.Where(e => e.Date >= request.MinDate)
