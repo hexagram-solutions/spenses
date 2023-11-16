@@ -31,7 +31,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.x
+          global-json-file: global.json
 
       - name: "Deploy API"
         run: ./build.cmd deploy-api
@@ -70,7 +70,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.x
+          global-json-file: global.json
 
       - name: "Deploy web app"
         run: ./build.cmd deploy-web-app
