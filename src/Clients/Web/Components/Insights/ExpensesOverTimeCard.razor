@@ -1,0 +1,14 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<Div Margin="Margin.IsAuto.OnX">
+    <Card>
+        <CardHeader>
+            <CardTitle>Expenses over time</CardTitle>
+        </CardHeader>
+        <CardBody>
+            <LoadingIndicator Visible="InsightsState.Value.ExpensesOverTimeRequesting">
+                <BarChart @ref="@ChartRef" TItem="decimal" Options="@Options" />
+            </LoadingIndicator>
+        </CardBody>
+    </Card>
+</Div>
