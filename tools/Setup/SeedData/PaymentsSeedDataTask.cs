@@ -16,7 +16,7 @@ public class PaymentsSeedDataTask : ISeedDataTask
 
         var homes = await db.Homes
             .Include(h => h.Members)
-        .ToListAsync();
+            .ToListAsync();
 
         foreach (var home in homes)
         {
@@ -27,7 +27,7 @@ public class PaymentsSeedDataTask : ISeedDataTask
 
                 home.Payments.Add(new Payment
                 {
-                    Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-10, 0)),
+                    Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-180, 0)),
                     Amount = Random.Shared.NextDecimal(5, 200, 2),
                     PaidByMember = paidByMember,
                     PaidToMember = paidToMember,
