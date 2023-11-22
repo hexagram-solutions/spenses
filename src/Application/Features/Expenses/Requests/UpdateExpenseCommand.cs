@@ -38,11 +38,7 @@ public class UpdateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper
         if (expense is null)
             throw new ResourceNotFoundException(expenseId);
 
-        if (expense.Home.Members.All(m => m.Id != props.PaidByMemberId))
-            throw new InvalidRequestException($"Member {props.PaidByMemberId} is not a member of home {homeId}");
-
-        if (expense.Home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
-            throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
+        ValidateProperties(props, expense.Home);
 
         mapper.Map(request.Props, expense);
 
@@ -51,13 +47,13 @@ public class UpdateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper
 
         expense.ExpenseShares.Clear();
 
-        foreach (var member in expense.Home.Members)
+        foreach (var expenseShare in props.ExpenseShares)
         {
             expense.ExpenseShares.Add(new DbModels.ExpenseShare
             {
-                OwedByMemberId = member.Id,
-                OwedPercentage = member.DefaultSplitPercentage,
-                OwedAmount = expense.Amount * member.DefaultSplitPercentage
+                OwedByMemberId = expenseShare.OwedByMemberId,
+                OwedAmount = expenseShare.OwedAmount,
+                OwedPercentage = decimal.Divide(expenseShare.OwedAmount, expense.Amount)
             });
         }
 
@@ -68,5 +64,26 @@ public class UpdateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper
             .FirstAsync(e => e.Id == expense.Id, cancellationToken);
 
         return updatedExpense;
+    }
+
+    private static void ValidateProperties(ExpenseProperties props, DbModels.Home home)
+    {
+        if (home.Members.All(m => m.Id != props.PaidByMemberId))
+            throw new InvalidRequestException($"Member {props.PaidByMemberId} is not a member of home {home.Id}");
+
+        if (home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
+            throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
+
+        var invalidExpenseShareMemberIds = home.Members
+            .Select(es => es.Id)
+            .Except(props.ExpenseShares
+                .Select(es => es.OwedByMemberId))
+            .ToList();
+
+        if (invalidExpenseShareMemberIds.Count != 0)
+        {
+            throw new InvalidRequestException($"Members {string.Join(", ", invalidExpenseShareMemberIds)} are not " +
+                $"members of home {home.Id}");
+        }
     }
 }

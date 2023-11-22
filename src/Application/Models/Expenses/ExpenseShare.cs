@@ -9,6 +9,10 @@ public record ExpenseShare : ExpenseShareBase
 
     [Required]
     public Member OwedByMember { get; set; } = null!;
+
+    [Required]
+    [Range(0.00, 1.00)]
+    public decimal OwedPercentage { get; set; }
 }
 
 public record ExpenseShareBase
@@ -16,13 +20,9 @@ public record ExpenseShareBase
     [Required]
     [Range(0, 999_999.99)]
     public decimal OwedAmount { get; set; }
-
-    [Required]
-    [Range(0.00, 1.00)]
-    public decimal OwedPercentage { get; set; }
 }
 
-public record ExpenseShareProperties : ExpenseBase
+public record ExpenseShareProperties : ExpenseShareBase
 {
     [Required]
     public Guid OwedByMemberId { get; set; }

@@ -29,6 +29,9 @@ public record ExpenseProperties : ExpenseBase
 
     [Required]
     public Guid CategoryId { get; set; }
+
+    [Required]
+    public ExpenseShareProperties[] ExpenseShares { get; set; } = Array.Empty<ExpenseShareProperties>();
 }
 
 public record Expense : ExpenseBase

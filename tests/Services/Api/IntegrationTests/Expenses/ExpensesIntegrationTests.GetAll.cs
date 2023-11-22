@@ -52,15 +52,11 @@ public partial class ExpensesIntegrationTests
 
         var tags = new[] { "bills", "groceries" };
 
-        var expense = (await _expenses.PostExpense(home.Id, new ExpenseProperties
-        {
-            Note = "Foo",
-            Amount = 1234.56m,
-            Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = tags,
-            CategoryId = category.Id,
-            PaidByMemberId = home.Members.First().Id
-        })).Content!;
+        var expenseProperties = GetValidExpenseProperties(home.Members, category.Id);
+
+        expenseProperties.Tags = tags;
+
+        var expense = (await _expenses.PostExpense(home.Id, expenseProperties)).Content!;
 
         var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {

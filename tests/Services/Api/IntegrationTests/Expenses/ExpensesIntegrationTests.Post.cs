@@ -12,27 +12,21 @@ public partial class ExpensesIntegrationTests
 
         var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
 
-        var properties = new ExpenseProperties
-        {
-            Note = "Foo",
-            Amount = 1234.56m,
-            Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = ["groceries"],
-            CategoryId = category.Id,
-            PaidByMemberId = home.Members.First().Id
-        };
+        var properties = GetValidExpenseProperties(home.Members, category.Id);
 
         var createdExpenseResponse = await _expenses.PostExpense(home.Id, properties);
 
         createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        var createdExpense = createdExpenseResponse.Content;
+        var createdExpense = createdExpenseResponse.Content!;
 
         createdExpense.Should().BeEquivalentTo(properties, opts =>
-            opts.ExcludingNestedObjects()
+            opts.Excluding(x => x.ExpenseShares)
                 .ExcludingMissingMembers());
 
-        var fetchedExpense = (await _expenses.GetExpense(home.Id, createdExpense!.Id)).Content!;
+        createdExpense.ExpenseShares.Select(es => es.OwedByMember).Should().BeEquivalentTo(home.Members);
+
+        var fetchedExpense = (await _expenses.GetExpense(home.Id, createdExpense.Id)).Content!;
         fetchedExpense.Should().BeEquivalentTo(createdExpense);
         fetchedExpense.ExpenseShares.Select(es => es.OwedByMember).Should().BeEquivalentTo(home.Members);
 
@@ -54,14 +48,43 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var properties = new ExpenseProperties
-        {
-            Note = "Foo",
-            Amount = 1234.56m,
-            Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = ["groceries"],
-            PaidByMemberId = Guid.NewGuid()
-        };
+        var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
+
+        var properties = GetValidExpenseProperties(home.Members, category.Id);
+
+        properties.PaidByMemberId = Guid.NewGuid();
+
+        var createdExpenseResponse = await _expenses.PostExpense(home.Id, properties);
+
+        createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Post_expense_with_invalid_category_id_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
+
+        var properties = GetValidExpenseProperties(home.Members, category.Id);
+
+        properties.CategoryId = Guid.NewGuid();
+
+        var createdExpenseResponse = await _expenses.PostExpense(home.Id, properties);
+
+        createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task Post_expense_with_invalid_expense_share_owed_by_member_id_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
+
+        var properties = GetValidExpenseProperties(home.Members, category.Id);
+
+        properties.ExpenseShares.First().OwedByMemberId = Guid.NewGuid();
 
         var createdExpenseResponse = await _expenses.PostExpense(home.Id, properties);
 
@@ -71,17 +94,14 @@ public partial class ExpensesIntegrationTests
     [Fact]
     public async Task Post_expense_with_invalid_identifiers_yields_not_found()
     {
-        var properties = new ExpenseProperties
-        {
-            Note = "Foo",
-            Amount = 1234.56m,
-            Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = ["groceries"],
-            PaidByMemberId = Guid.NewGuid()
-        };
+        var home = (await _homes.GetHomes()).Content!.First();
 
-        var homeNotFoundResult = await _expenses.PostExpense(Guid.NewGuid(), properties);
+        var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
 
-        homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        var properties = GetValidExpenseProperties(home.Members, category.Id);
+
+        var createdExpenseResponse = await _expenses.PostExpense(Guid.NewGuid(), properties);
+
+        createdExpenseResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
