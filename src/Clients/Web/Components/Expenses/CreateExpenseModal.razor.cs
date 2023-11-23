@@ -35,7 +35,12 @@ public partial class CreateExpenseModal
         {
             Date = DateOnly.FromDateTime(DateTime.Today),
             PaidByMemberId = Home.Members.OrderBy(m => m.Name).First().Id,
-            CategoryId = ExpensesState.Value.ExpenseFilters.Categories.First().Id
+            CategoryId = ExpensesState.Value.ExpenseFilters.Categories.First().Id,
+            ExpenseShares = Home.Members.OrderBy(m => m.Name).Select(m => new ExpenseShareProperties
+            {
+                OwedAmount = 0.00m,
+                OwedByMemberId = m.Id
+            }).ToArray()
         };
     }
 

@@ -21,14 +21,11 @@ public class ExpenseQueryCommandHandler(ApplicationDbContext db, IMapper mapper)
 {
     public async Task<Expense> Handle(ExpenseQuery request, CancellationToken cancellationToken)
     {
-        var (homeId, expenseId) = request;
-
         var expense = await db.Expenses
-            .Where(e => e.Home.Id == homeId)
             .ProjectTo<Expense>(mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(h => h.Id == expenseId, cancellationToken);
+            .FirstOrDefaultAsync(h => h.Id == request.ExpenseId, cancellationToken);
 
-        return expense ?? throw new ResourceNotFoundException(expenseId);
+        return expense ?? throw new ResourceNotFoundException(request.ExpenseId);
     }
 }
 

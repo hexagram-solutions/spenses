@@ -10,6 +10,8 @@ public class ExpensesMappingProfile : Profile
     public ExpensesMappingProfile()
     {
         CreateMap<DbModels.Expense, Expense>()
+            .ForMember(dest => dest.ExpenseShares,
+                opts => opts.MapFrom(src => src.ExpenseShares.OrderBy(es => es.OwedByMember.Name)))
             .ForMember(dest => dest.Tags, opts => opts.MapFrom(src => src.Tags.Select(t => t.Name)));
 
         CreateMap<ExpenseProperties, DbModels.Expense>()

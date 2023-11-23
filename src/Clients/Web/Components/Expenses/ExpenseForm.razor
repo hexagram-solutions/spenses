@@ -65,6 +65,42 @@
             </Field>
         </Validation>
     </Fields>
+    <Div Margin="Margin.IsAuto.OnAll">
+        <Heading Size="HeadingSize.Is4">Splitting options</Heading>
+    </Div>
+    <Div Margin="Margin.Is1.OnY">
+            @foreach (var expenseShare in Expense.ExpenseShares)
+            {
+                <Row>
+                    <Column ColumnSize="ColumnSize.Is6">
+                        <Text>@Home.Members.Single(m => m.Id == expenseShare.OwedByMemberId).Name</Text>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is3">
+                        <NumericPicker @bind-Value="expenseShare.OwedAmount"
+                                       TValue="decimal"
+                                       CurrencySymbol="$"
+                                       Placeholder="$1.23"
+                                       Min="0.00m"
+                                       Max="Expense.Amount"/>
+                    </Column>
+                    <Column ColumnSize="ColumnSize.Is3">
+                        <Addons>
+                            <Addon AddonType="AddonType.Start">
+                                <AddonLabel>%</AddonLabel>
+                            </Addon>
+                            <Addon AddonType="AddonType.Body">
+                                <NumericPicker Value="@(Expense.Amount > 0 ? (expenseShare.OwedAmount / Expense.Amount) * 100 : 0.00m)"
+                                               TValue="decimal"
+                                               CurrencySymbol="$"
+                                               Decimals="2"
+                                               ShowStepButtons="false"
+                                               Disabled/>
+                            </Addon>
+                        </Addons>
+                    </Column>
+                </Row>
+            }
+    </Div>
     <Fields>
         <Validation>
             <Field>

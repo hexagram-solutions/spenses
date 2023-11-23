@@ -49,7 +49,12 @@ public partial class EditExpenseModal
                 Amount = currentExpense.Amount,
                 Tags = currentExpense.Tags,
                 PaidByMemberId = currentExpense.PaidByMember.Id,
-                CategoryId = currentExpense.Category.Id
+                CategoryId = currentExpense.Category.Id,
+                ExpenseShares = currentExpense.ExpenseShares.Select(es => new ExpenseShareProperties
+                {
+                    OwedByMemberId = es.OwedByMember.Id,
+                    OwedAmount = es.OwedAmount
+                }).ToArray()
             };
         }
     }
