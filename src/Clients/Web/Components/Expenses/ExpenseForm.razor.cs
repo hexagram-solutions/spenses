@@ -28,6 +28,8 @@ public partial class ExpenseForm
 
     public Validations Validations { get; set; } = null!;
 
+    public ExpenseSplittingOptions ExpenseSplittingOptionsRef { get; set; } = null!;
+
     private Home Home => HomesState.Value.CurrentHome!;
 
     private IEnumerable<ExpenseCategory> Categories => ExpenseCategoriesState.Value.ExpenseCategories;
@@ -37,7 +39,7 @@ public partial class ExpenseForm
     private List<string> ExpenseTags
     {
         get => Expense.Tags.ToList();
-        set => Expense.Tags = [.. value];
+        set => Expense.Tags = value.ToArray();
     }
 
     protected override void OnInitialized()
@@ -45,5 +47,12 @@ public partial class ExpenseForm
         base.OnInitialized();
 
         Dispatcher.Dispatch(new ExpenseCategoriesRequestedAction(Home.Id));
+    }
+
+    private void OnExpenseAmountChanged(decimal amount)
+    {
+        Expense.Amount = amount;
+
+        ExpenseSplittingOptionsRef.UpdateExpenseShareAmounts();
     }
 }

@@ -9,10 +9,6 @@ public class ExpenseShare : Entity
     [Range(0, 999_999.99)]
     public decimal OwedAmount { get; set; }
 
-    [Precision(5, 4)]
-    [Range(0.00, 1.00)]
-    public decimal OwedPercentage { get; set; }
-
     public Guid ExpenseId { get; set; }
 
     public Expense Expense { get; set; } = null!;

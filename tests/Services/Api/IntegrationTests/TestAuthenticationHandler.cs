@@ -19,8 +19,10 @@ public class TestAuthenticationHandlerOptions : AuthenticationSchemeOptions
 }
 
 public class TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationHandlerOptions> options,
-        ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock)
-    : AuthenticationHandler<TestAuthenticationHandlerOptions>(options, logger, encoder, clock)
+        ILoggerFactory logger, UrlEncoder encoder)
+#pragma warning disable CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
+    : AuthenticationHandler<TestAuthenticationHandlerOptions>(options, logger, encoder)
+#pragma warning restore CS9107 // Parameter is captured into the state of the enclosing type and its value is also passed to the base constructor. The value might be captured by the base class as well.
 {
     public const string AuthenticationScheme = "Test";
 

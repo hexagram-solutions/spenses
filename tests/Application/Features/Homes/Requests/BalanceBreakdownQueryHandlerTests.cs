@@ -139,14 +139,12 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                         new DbModels.ExpenseShare
                         {
                             OwedByMemberId = oneThirdMember.Id,
-                            OwedAmount = 33.34m,
-                            OwedPercentage = 33.34m
+                            OwedAmount = 33.34m
                         },
                         new DbModels.ExpenseShare
                         {
                             OwedByMemberId = twoThirdsMember.Id,
-                            OwedAmount = 66.66m,
-                            OwedPercentage = 66.66m
+                            OwedAmount = 66.66m
                         }
                     },
                     Category = new DbModels.ExpenseCategory

@@ -17,7 +17,8 @@
                             <AddonLabel>$</AddonLabel>
                         </Addon>
                         <Addon AddonType="AddonType.Body">
-                            <NumericPicker @bind-Value="Expense.Amount"
+                            <NumericPicker Value="Expense.Amount"
+                                           ValueChanged="OnExpenseAmountChanged"
                                            TValue="decimal"
                                            Placeholder="1.23"
                                            Min="0.00m"
@@ -71,19 +72,8 @@
             </Field>
         </Validation>
     </Fields>
-    <Div Margin="Margin.IsAuto.OnAll">
-        <Heading Size="HeadingSize.Is4">Splitting options</Heading>
-        <Table Narrow Borderless FullWidth>
-            <TableBody>
-                @foreach (var expenseShare in Expense.ExpenseShares)
-                {
-                    <ExpenseShareRow ExpenseShare="expenseShare"
-                                     Expense="Expense"
-                                     Member="Home.Members.Single(m => m.Id == expenseShare.OwedByMemberId)"/>
-                }
-            </TableBody>
-        </Table>
-    </Div>
+    <ExpenseSplittingOptions @ref="ExpenseSplittingOptionsRef"
+                             Expense="Expense"/>
     <Fields>
         <Validation>
             <Field>

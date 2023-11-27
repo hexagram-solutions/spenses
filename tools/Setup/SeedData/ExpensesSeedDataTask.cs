@@ -43,7 +43,6 @@ public class ExpensesSeedDataTask : ISeedDataTask
                     expense.ExpenseShares.Add(new ExpenseShare
                     {
                         OwedByMemberId = member.Id,
-                        OwedPercentage = member.DefaultSplitPercentage,
                         // Only add owing amounts for the other members; the member that paid the expense owes nothing.
                         OwedAmount = member.Id != expense.PaidByMemberId
                             ? expense.Amount * member.DefaultSplitPercentage

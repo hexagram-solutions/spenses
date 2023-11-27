@@ -52,8 +52,7 @@ public class UpdateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper
             expense.ExpenseShares.Add(new DbModels.ExpenseShare
             {
                 OwedByMemberId = expenseShare.OwedByMemberId,
-                OwedAmount = expenseShare.OwedAmount,
-                OwedPercentage = decimal.Divide(expenseShare.OwedAmount, expense.Amount)
+                OwedAmount = expenseShare.OwedAmount
             });
         }
 

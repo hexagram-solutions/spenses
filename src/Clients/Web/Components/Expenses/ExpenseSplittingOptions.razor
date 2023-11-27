@@ -1,0 +1,13 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<Div Margin="Margin.IsAuto.OnAll">
+    <Heading Size="HeadingSize.Is4">Splitting options</Heading>
+    <Table Narrow Borderless FullWidth>
+        <TableBody>
+            @foreach (var row in RowModels)
+            {
+                <ExpenseShareRow Model="row"/>
+            }
+        </TableBody>
+    </Table>
+</Div>

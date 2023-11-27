@@ -2,7 +2,7 @@
 
 <TableRow>
     <TableRowCell VerticalAlignment="VerticalAlignment.Middle">
-        @Member.Name
+        @Model.Member.Name
     </TableRowCell>
     <TableRowCell>
         <Addons>
@@ -10,11 +10,10 @@
                 <AddonLabel>$</AddonLabel>
             </Addon>
             <Addon AddonType="AddonType.Body">
-                <NumericPicker @bind-Value="OwedAmount"
+                <NumericPicker @bind-Value="Model.OwedAmount"
                                TValue="decimal"
-                               Min="0.00m"
-                               Max="Expense.Amount"
-                               Disabled="@(Expense.Amount == 0)" />
+                               Decimals="2"
+                               Min="0.00m"/>
             </Addon>
         </Addons>
     </TableRowCell>
@@ -24,13 +23,10 @@
                 <AddonLabel>%</AddonLabel>
             </Addon>
             <Addon AddonType="AddonType.Body">
-                <NumericPicker @bind-Value="OwedPercentage"
+                <NumericPicker @bind-Value="Model.OwedPercentage"
                                TValue="decimal"
                                Decimals="2"
-                               Min="0.00m"
-                               Max="100.00m"
-                               Step="0.01m"
-                               Disabled="@(Expense.Amount == 0)" />
+                               Min="0.00m"/>
             </Addon>
         </Addons>
     </TableRowCell>
