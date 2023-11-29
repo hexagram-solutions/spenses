@@ -131,6 +131,8 @@ public static class ProgramExtensions
         services.AddOpenApiDocument(document =>
         {
             document.Title = OpenApiDocumentTitle;
+            document.SchemaSettings.FlattenInheritanceHierarchy = true;
+            document.SchemaSettings.AllowReferencesWithProperties = true;
 
             var authorityUri = new Uri(authority);
             var authorizationUrl = new Uri(authorityUri, $"authorize?audience={audience}").ToString();
