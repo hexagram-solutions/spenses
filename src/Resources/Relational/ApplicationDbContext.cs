@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Resources.Relational.DigestModels;
 using Spenses.Resources.Relational.Infrastructure;
@@ -5,7 +6,7 @@ using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Resources.Relational;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {
     private readonly AuditableEntitySaveChangesInterceptor? _auditableEntitySaveChangesInterceptor;
 
@@ -41,49 +42,47 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Payment> Payments => Set<Payment>();
 
-    public DbSet<UserIdentity> Users => Set<UserIdentity>();
-
     public DbSet<PaymentDigest> PaymentDigests => Set<PaymentDigest>();
 
     public DbSet<ExpenseDigest> ExpenseDigests => Set<ExpenseDigest>();
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
 
-        ConfigureTableNames(modelBuilder);
-        ConfigureAuditingNavigationProperties(modelBuilder);
+        ConfigureTableNames(builder);
+        ConfigureAuditingNavigationProperties(builder);
 
-        modelBuilder.Entity<Expense>()
+        builder.Entity<Expense>()
             .HasOne(x => x.PaidByMember)
             .WithMany(x => x.ExpensesPaid)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Expense>()
+        builder.Entity<Expense>()
             .HasOne(x => x.Category)
             .WithMany(x => x.Expenses)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<ExpenseShare>()
+        builder.Entity<ExpenseShare>()
             .HasOne(x => x.OwedByMember)
             .WithMany(x => x.ExpenseShares)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<ExpenseTag>()
+        builder.Entity<ExpenseTag>()
             .HasKey(e => new { e.Name, e.ExpenseId });
 
-        modelBuilder.Entity<Payment>()
+        builder.Entity<Payment>()
             .HasOne(x => x.PaidByMember)
             .WithMany(x => x.PaymentsPaid)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<Payment>()
+        builder.Entity<Payment>()
             .HasOne(x => x.PaidToMember)
             .WithMany(x => x.PaymentsReceived)
             .OnDelete(DeleteBehavior.Restrict);
 
-        ConfigureDigestModel<PaymentDigest>(modelBuilder);
-        ConfigureDigestModel<ExpenseDigest>(modelBuilder);
+        ConfigureDigestModel<PaymentDigest>(builder);
+        ConfigureDigestModel<ExpenseDigest>(builder);
     }
 
     private static void ConfigureTableNames(ModelBuilder modelBuilder)
@@ -100,12 +99,12 @@ public class ApplicationDbContext : DbContext
 
     private static void ConfigureAuditingNavigationProperties(ModelBuilder modelBuilder)
     {
-        var auditableNavigationProperties = typeof(UserIdentity).GetProperties()
+        var auditableNavigationProperties = typeof(ApplicationUser).GetProperties()
             .Where(np => np.PropertyType.IsGenericType &&
                 np.PropertyType.GetGenericTypeDefinition() == typeof(ICollection<>) &&
                 np.PropertyType.GenericTypeArguments.Single().IsSubclassOf(typeof(AggregateRoot)));
 
-        modelBuilder.Entity<UserIdentity>(builder =>
+        modelBuilder.Entity<ApplicationUser>(builder =>
         {
             foreach (var navigationProperty in auditableNavigationProperties)
             {

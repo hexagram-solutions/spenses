@@ -25,7 +25,7 @@ public class SyncCurrentUserCommandHandler(ApplicationDbContext db, ICurrentUser
 
         if (userIdentity is null)
         {
-            userIdentity = mapper.Map<UserIdentity>(currentUser);
+            userIdentity = mapper.Map<ApplicationUser>(currentUser);
 
             var currentUserEntry = await db.Users.AddAsync(userIdentity, cancellationToken);
 

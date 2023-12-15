@@ -8,8 +8,8 @@ namespace Spenses.Resources.Relational.DigestModels;
 [BaseTable(nameof(Expense), "e")]
 [JoinedTable(JoinType.Left, nameof(Member), "pbm", $"pbm.Id = e.{nameof(Expense.PaidByMemberId)}")]
 [JoinedTable(JoinType.Left, nameof(ExpenseCategory), "ec", $"ec.Id = e.{nameof(Expense.CategoryId)}")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", $"cui.Id = e.{nameof(Expense.CreatedById)}")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", $"mui.Id = e.{nameof(Expense.ModifiedById)}")]
+[JoinedTable(JoinType.Left, nameof(ApplicationUser), "cui", $"cui.Id = e.{nameof(Expense.CreatedById)}")]
+[JoinedTable(JoinType.Left, nameof(ApplicationUser), "mui", $"mui.Id = e.{nameof(Expense.ModifiedById)}")]
 public class ExpenseDigest
 {
     public Guid Id { get; set; }
@@ -39,12 +39,12 @@ public class ExpenseDigest
     [CalculatedColumn("SELECT STRING_AGG(t.Name, ' ') FROM ExpenseTag t WHERE t.ExpenseId = e.Id")]
     public string? Tags { get; set; }
 
-    [SourceColumn("cui", nameof(UserIdentity.NickName))]
+    [SourceColumn("cui", nameof(ApplicationUser.UserName))]
     public string CreatedByUserName { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 
-    [SourceColumn("mui", nameof(UserIdentity.NickName))]
+    [SourceColumn("mui", nameof(ApplicationUser.UserName))]
     public string ModifiedByUserName { get; set; } = null!;
 
     public DateTime ModifiedAt { get; set; }

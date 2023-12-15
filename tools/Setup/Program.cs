@@ -2,6 +2,8 @@ using System.CommandLine;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Spenses.Resources.Relational;
+using Spenses.Resources.Relational.Models;
 using Spenses.Tools.Setup;
 using Spenses.Tools.Setup.SeedData;
 using Spenses.Utilities.Security.Services;
@@ -11,7 +13,7 @@ var config = new ConfigurationManager()
     .AddEnvironmentVariables()
     .Build();
 
-await using var serviceProvider = new ServiceCollection()
+var services = new ServiceCollection()
     .AddLogging(builder => builder
         .AddConsole()
         .AddConfiguration(config))
@@ -23,8 +25,14 @@ await using var serviceProvider = new ServiceCollection()
         .FromAssemblyOf<ISeedDataTask>()
         .AddClasses(classes => classes.AssignableTo<ISeedDataTask>())
         .AsImplementedInterfaces()
-        .WithTransientLifetime())
-    .BuildServiceProvider();
+        .WithTransientLifetime());
+
+services
+    .AddDbContext<ApplicationDbContext>()
+    .AddIdentityCore<ApplicationUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+await using var serviceProvider = services.BuildServiceProvider();
 
 var command = serviceProvider.GetRequiredService<DbSetupCommand>();
 

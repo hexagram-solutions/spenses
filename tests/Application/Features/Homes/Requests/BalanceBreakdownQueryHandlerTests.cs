@@ -96,12 +96,11 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
         var today = DateOnly.FromDateTime(DateTime.Today);
 
-        await db.Users.AddAsync(new DbModels.UserIdentity
+        await db.Users.AddAsync(new DbModels.ApplicationUser
         {
             Id = TestUserId,
             Email = "test@example.com",
-            NickName = "test",
-            Issuer = "self"
+            UserName = "test"
         });
 
         var homeEntry = await db.Homes.AddAsync(new DbModels.Home { Name = "Test home" });

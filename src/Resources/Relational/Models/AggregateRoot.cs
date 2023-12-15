@@ -8,9 +8,9 @@ public abstract class AggregateRoot : Entity
 
     public string CreatedById { get; set; } = null!;
 
-    public UserIdentity CreatedBy { get; set; } = null!;
+    public ApplicationUser CreatedBy { get; set; } = null!;
 
     public string ModifiedById { get; set; } = null!;
 
-    public UserIdentity ModifiedBy { get; set; } = null!;
+    public ApplicationUser ModifiedBy { get; set; } = null!;
 }

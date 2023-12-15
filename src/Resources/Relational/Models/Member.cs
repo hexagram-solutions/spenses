@@ -21,7 +21,7 @@ public class Member : AggregateRoot
 
     public string? UserId { get; set; }
 
-    public UserIdentity? User { get; set; }
+    public ApplicationUser? User { get; set; }
 
     public ICollection<Expense> ExpensesPaid { get; set; } = new HashSet<Expense>();
 

@@ -23,9 +23,11 @@ builder.Services.AddAuthenticatedOpenApiDocument(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
 
-builder.Services.AddAuth0Authentication(
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
+//builder.Services.AddAuth0Authentication(
+//    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
+//    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
+
+builder.Services.AddIdentity("spenses");
 
 var app = builder.Build();
 
@@ -73,7 +75,6 @@ namespace Spenses.Api
     // ReSharper disable once PartialTypeWithSinglePart
     // This allows this class to be used in as an entry point for integration tests.
     // See: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0#basic-tests-with-the-default-webapplicationfactory
-    public partial class Program
-    {
-    }
+    public partial class Program;
+}
 }

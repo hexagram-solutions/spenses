@@ -1,20 +1,21 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace Spenses.Resources.Relational.Models;
 
-public class UserIdentity
+public class ApplicationUser : IdentityUser
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public string Id { get; set; } = null!;
+    //[Key]
+    //[DatabaseGenerated(DatabaseGeneratedOption.None)]
+    //public string Id { get; set; } = null!;
 
-    public string NickName { get; set; } = null!;
+    //public string NickName { get; set; } = null!;
 
-    public string Issuer { get; set; } = null!;
+    //public string Issuer { get; set; } = null!;
 
-    [EmailAddress]
-    public string Email { get; set; } = null!;
+    //[EmailAddress]
+    //public string Email { get; set; } = null!;
 
     public ICollection<Payment> CreatedPayments { get; set; } = new HashSet<Payment>();
 

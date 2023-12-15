@@ -19,7 +19,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Description = "Test home for integration testing",
                 Members = userIdentities.Select(u => new Member
                 {
-                    Name = u.NickName,
+                    Name = u.UserName!,
                     DefaultSplitPercentage = 1m / userIdentities.Count,
                     UserId = u.Id
                 }).ToList(),
@@ -46,7 +46,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Description = "Second test home",
                 Members = userIdentities.Select(u => new Member
                 {
-                    Name = u.NickName,
+                    Name = u.UserName!,
                     DefaultSplitPercentage = 1m / userIdentities.Count,
                     UserId = u.Id
                 }).ToList(),

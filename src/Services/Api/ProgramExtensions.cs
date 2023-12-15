@@ -5,9 +5,12 @@ using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Azure.Identity;
 using Hexagrams.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
@@ -17,6 +20,8 @@ using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Common;
 using Spenses.Application.Features.Homes.Authorization;
+using Spenses.Resources.Relational;
+using Spenses.Resources.Relational.Models;
 using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api;
@@ -119,6 +124,34 @@ public static class ProgramExtensions
                     ValidIssuer = authority
                 };
             });
+
+        return services;
+    }
+
+    public static IServiceCollection AddIdentity(this IServiceCollection services, string applicationName)
+    {
+        // TODO: Store in blob storage and protect with key vault when deployed
+        // https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-7.0#protectkeyswithazurekeyvault
+        services.AddDataProtection()
+            .SetApplicationName(applicationName);
+
+        services.AddAuthentication(IdentityConstants.ApplicationScheme)
+            .AddIdentityCookies()
+            .ApplicationCookie!.Configure(opt => opt.Events = new CookieAuthenticationEvents
+            {
+                OnRedirectToLogin = ctx =>
+                {
+                    ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                }
+            });
+
+        services.AddAuthorizationBuilder();
+
+        services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
 
         return services;
     }

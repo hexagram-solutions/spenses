@@ -24,6 +24,11 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Api.IntegrationTests", "tests\Services\Api\IntegrationTests\Spenses.Api.IntegrationTests.csproj", "{3EEACE69-58F5-41B0-8122-4DE13CEDC4BF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{2CC847A1-00C7-4125-847E-C3F331E19CF6}"
+	ProjectSection(SolutionItems) = preProject
+		tools\Get-AccessToken.ps1 = tools\Get-AccessToken.ps1
+		tools\requests.http = tools\requests.http
+		tools\Reset-InitialMigration.ps1 = tools\Reset-InitialMigration.ps1
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Tools.Setup", "tools\Setup\Spenses.Tools.Setup.csproj", "{EF370862-A709-457C-993B-A2610A68774E}"
 EndProject
