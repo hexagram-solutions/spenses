@@ -1,5 +1,6 @@
 using Hexagrams.Extensions.Configuration;
 using Spenses.Application.Common;
+using Spenses.Web.Client;
 using Spenses.Web.Client.Components.Pages;
 using Spenses.Web.Server;
 using Spenses.Web.Server.Components;
@@ -15,6 +16,13 @@ builder.Services.AddRazorComponents()
 builder.Services
     .AddDatabaseServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString))
     .AddIdentityServices(ConfigConstants.SpensesDataProtectionApplicationName);
+
+var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
+
+if (builder.Environment.IsEnvironment(EnvironmentNames.Local))
+    builder.Services.AddApiClients(baseUrl, false, TimeSpan.FromMilliseconds(500));
+else
+    builder.Services.AddApiClients(baseUrl, true);
 
 var app = builder.Build();
 

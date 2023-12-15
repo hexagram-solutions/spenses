@@ -1,0 +1,24 @@
+﻿@page "/homes"
+
+<PageTitle>Homes</PageTitle>
+
+<h1>Homes</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in HomesItems)
+    {
+        <tr>
+            <td>@item.Name</td>
+            <td>@item.Description</td>
+        </tr>
+    }
+
+    </tbody>
+</table>

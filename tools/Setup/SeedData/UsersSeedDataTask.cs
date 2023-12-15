@@ -30,6 +30,8 @@ public class UsersSeedDataTask(IUserStore<ApplicationUser> users) : ISeedDataTas
         {
             UserName = "Eric Sondergard",
             Email = "ericsondergard+spensesuser@fastmail.com",
+            NormalizedUserName = "ericsondergard+spensesuser@fastmail.com".ToUpperInvariant(),
+            NormalizedEmail = "ericsondergard+spensesuser@fastmail.com".ToUpperInvariant(),
             EmailConfirmed = true
         };
 
