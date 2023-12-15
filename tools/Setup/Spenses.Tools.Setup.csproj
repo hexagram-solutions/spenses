@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="34.0.2" />
+    <PackageReference Include="Bogus" Version="35.0.1" />
     <PackageReference Include="Hexagrams.Extensions.Common" Version="0.5.0" />
     <PackageReference Include="Hexagrams.Extensions.Configuration" Version="0.5.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
