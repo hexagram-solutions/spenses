@@ -1,6 +1,6 @@
-using Spenses.Web.Client;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Spenses.Web.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

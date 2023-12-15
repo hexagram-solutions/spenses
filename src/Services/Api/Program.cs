@@ -27,7 +27,7 @@ builder.Services.AddAuthenticatedOpenApiDocument(
 //    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
 //    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
 
-builder.Services.AddIdentity("spenses");
+builder.Services.AddIdentity(ConfigConstants.SpensesDataProtectionApplicationName);
 
 var app = builder.Build();
 

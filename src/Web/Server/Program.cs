@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Spenses.Resources.Relational;
-using Spenses.Resources.Relational.Models;
+using Hexagrams.Extensions.Configuration;
+using Spenses.Application.Common;
 using Spenses.Web.Client.Components.Pages;
+using Spenses.Web.Server;
 using Spenses.Web.Server.Components;
 using Spenses.Web.Server.Components.Account;
 
@@ -14,37 +12,21 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<IdentityUserAccessor>();
-builder.Services.AddScoped<IdentityRedirectManager>();
-builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
-
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = IdentityConstants.ApplicationScheme;
-        options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-    })
-    .AddIdentityCookies();
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddSignInManager()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services
+    .AddDatabaseServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString))
+    .AddIdentityServices(ConfigConstants.SpensesDataProtectionApplicationName);
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsEnvironment(EnvironmentNames.Local))
 {
     app.UseWebAssemblyDebugging();
+    // TODO: Investigate. Necessary? Useful?
     app.UseMigrationsEndPoint();
+
+    // https://github.com/dotnet/aspnetcore/issues/28174
+    builder.WebHost.UseStaticWebAssets();
 }
 else
 {
