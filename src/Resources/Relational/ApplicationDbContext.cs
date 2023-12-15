@@ -87,8 +87,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     private static void ConfigureTableNames(ModelBuilder modelBuilder)
     {
+        var entityTypes = modelBuilder.Model.GetEntityTypes()
+            .Where(met => !met.ClrType.Namespace!.Contains("Microsoft.AspNetCore.Identity"));
+
         //Sets table names for entities to their CLR type name, bypassing rule to use the name of the DbSet.
-        foreach (var mutableEntityType in modelBuilder.Model.GetEntityTypes())
+        foreach (var mutableEntityType in entityTypes)
         {
             if (mutableEntityType.IsOwned())
                 continue;

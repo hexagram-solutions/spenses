@@ -10,35 +10,28 @@ public class UsersSeedDataTask(IUserStore<ApplicationUser> users) : ISeedDataTas
 
     public async Task SeedData(ApplicationDbContext db)
     {
-        await db.Users.AddAsync(new ApplicationUser
+        Task<IdentityResult> AddUser(string id, string email)
         {
-            Id = SystemCurrentUserService.SystemUserId,
-            Email = "system@spenses.ca",
-            UserName = "George Costanza",
-        });
+            var user = new ApplicationUser
+            {
+                Id = id,
+                UserName = email,
+                Email = email,
+                NormalizedUserName = email.ToUpperInvariant(),
+                NormalizedEmail = email.ToUpperInvariant(),
+                EmailConfirmed = true
+            };
 
-        await db.Users.AddAsync(new ApplicationUser
-        {
-            Id = "integration-test-user",
-            Email = "george@vandelayindustries.com",
-            UserName = "George Costanza",
-        });
+            var hashedPassword = new PasswordHasher<ApplicationUser>().HashPassword(user, "Password1!");
 
-        await db.SaveChangesAsync();
+            user.PasswordHash = hashedPassword;
 
-        var user = new ApplicationUser
-        {
-            UserName = "Eric Sondergard",
-            Email = "ericsondergard+spensesuser@fastmail.com",
-            NormalizedUserName = "ericsondergard+spensesuser@fastmail.com".ToUpperInvariant(),
-            NormalizedEmail = "ericsondergard+spensesuser@fastmail.com".ToUpperInvariant(),
-            EmailConfirmed = true
-        };
+            return users.CreateAsync(user, CancellationToken.None);
+        }
 
-        var hashedPassword = new PasswordHasher<ApplicationUser>().HashPassword(user, "Password1!");
-
-        user.PasswordHash = hashedPassword;
-
-        await users.CreateAsync(user, CancellationToken.None);
+        await Task.WhenAll(
+            AddUser(SystemCurrentUserService.SystemUserId, "system@spenses.ca"),
+            AddUser(Guid.NewGuid().ToString(), "george@vandelayindustries.com"),
+            AddUser(Guid.NewGuid().ToString(), "ericsondergard+spensesuser@fastmail.com"));
     }
 }

@@ -4,17 +4,6 @@ namespace Spenses.Resources.Relational.Models;
 
 public class ApplicationUser : IdentityUser
 {
-    //[Key]
-    //[DatabaseGenerated(DatabaseGeneratedOption.None)]
-    //public string Id { get; set; } = null!;
-
-    //public string NickName { get; set; } = null!;
-
-    //public string Issuer { get; set; } = null!;
-
-    //[EmailAddress]
-    //public string Email { get; set; } = null!;
-
     public ICollection<Payment> CreatedPayments { get; set; } = new HashSet<Payment>();
 
     public ICollection<Payment> ModifiedPayments { get; set; } = new HashSet<Payment>();
