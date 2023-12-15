@@ -1,8 +1,11 @@
+using Fluxor;
 using Hexagrams.Extensions.Common.Http;
 using Polly;
 using Refit;
 using Spenses.Client.Http;
 using Spenses.Web.Client.Infrastructure;
+using Spenses.Web.Client.Store.Homes;
+using Spenses.Web.Client.Store.Shared;
 
 namespace Spenses.Web.Client;
 
@@ -43,6 +46,20 @@ public static class ProgramExtensions
         AddApiClient<IInsightsApi>();
         AddApiClient<IMembersApi>();
         AddApiClient<IPaymentsApi>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddStateManagement(this IServiceCollection services, bool useDevTools)
+    {
+        services.AddFluxor(opts =>
+        {
+            opts.ScanAssemblies(typeof(HomesState).Assembly)
+                .UseRouting();
+
+            if (useDevTools)
+                opts.UseReduxDevTools();
+        });
 
         return services;
     }

@@ -24,6 +24,12 @@ if (builder.Environment.IsEnvironment(EnvironmentNames.Local))
 else
     builder.Services.AddApiClients(baseUrl, true);
 
+var isLocalOrTestEnvironment =
+    builder.Environment.IsEnvironment(EnvironmentNames.Local) ||
+    builder.Environment.IsEnvironment(EnvironmentNames.Test);
+
+builder.Services.AddStateManagement(isLocalOrTestEnvironment);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

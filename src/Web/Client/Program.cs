@@ -17,4 +17,10 @@ if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local))
 else
     builder.Services.AddApiClients(baseUrl, true);
 
+var isLocalOrTestEnvironment =
+    builder.HostEnvironment.IsEnvironment(EnvironmentNames.Local) ||
+    builder.HostEnvironment.IsEnvironment(EnvironmentNames.Test);
+
+builder.Services.AddStateManagement(isLocalOrTestEnvironment);
+
 await builder.Build().RunAsync();

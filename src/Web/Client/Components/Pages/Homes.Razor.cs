@@ -1,21 +1,30 @@
+using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Spenses.Client.Http;
+using Spenses.Web.Client.Store.Homes;
 
 namespace Spenses.Web.Client.Components.Pages;
 
 public partial class Homes
 {
+    //[Inject]
+    //private IHomesApi HomesApi { get; set; } = null!;
+
     [Inject]
-    private IHomesApi HomesApi { get; set; } = null!;
+    private IState<HomesState> HomesState { get; set; } = null!;
 
-    private Application.Models.Homes.Home[] HomesItems { get; set; } = [];
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+    //private Application.Models.Homes.Home[] HomesItems { get; set; } = [];
+
+    protected override void OnInitialized()
     {
-        await base.OnInitializedAsync();
+        base.OnInitialized();
 
-        var response = await HomesApi.GetHomes();
+        Dispatcher.Dispatch(new HomesRequestedAction());
 
-        HomesItems = response.Content!.ToArray();
+        //var response = await HomesApi.GetHomes();
+
+        //HomesItems = response.Content!.ToArray();
     }
 }
