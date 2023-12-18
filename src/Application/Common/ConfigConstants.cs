@@ -17,4 +17,6 @@ public static class ConfigConstants
     public const string SpensesOpenIdClientId = "Spenses:OpenId:ClientId";
 
     public const string SpensesFeaturesErrorGenerationFrequency = "Spenses:Features:ErrorGeneration:Frequency";
+
+    public const string SpensesDataProtectionApplicationName = "spenses";
 }

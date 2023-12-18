@@ -8,8 +8,8 @@ namespace Spenses.Resources.Relational.DigestModels;
 [BaseTable(nameof(Payment), "p")]
 [JoinedTable(JoinType.Left, nameof(Member), "pbm", $"pbm.Id = p.{nameof(Payment.PaidByMemberId)}")]
 [JoinedTable(JoinType.Left, nameof(Member), "ptm", $"ptm.Id = p.{nameof(Payment.PaidToMemberId)}")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "cui", $"cui.Id = p.{nameof(Payment.CreatedById)}")]
-[JoinedTable(JoinType.Left, nameof(UserIdentity), "mui", $"mui.Id = p.{nameof(Payment.ModifiedById)}")]
+[JoinedTable(JoinType.Left, nameof(ApplicationUser), "cui", $"cui.Id = p.{nameof(Payment.CreatedById)}")]
+[JoinedTable(JoinType.Left, nameof(ApplicationUser), "mui", $"mui.Id = p.{nameof(Payment.ModifiedById)}")]
 public class PaymentDigest
 {
     public Guid Id { get; set; }
@@ -36,12 +36,12 @@ public class PaymentDigest
     [SourceColumn("ptm", nameof(Member.Name))]
     public string PaidToMemberName { get; set; } = null!;
 
-    [SourceColumn("cui", nameof(UserIdentity.NickName))]
+    [SourceColumn("cui", nameof(ApplicationUser.UserName))]
     public string CreatedByUserName { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
 
-    [SourceColumn("mui", nameof(UserIdentity.NickName))]
+    [SourceColumn("mui", nameof(ApplicationUser.UserName))]
     public string ModifiedByUserName { get; set; } = null!;
 
     public DateTime ModifiedAt { get; set; }

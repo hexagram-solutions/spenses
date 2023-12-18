@@ -3,12 +3,16 @@ name: continuous
 on:
   push:
     branches:
-      - "main"
+      - main
+      # TODO: Remove when frontend/identity rewrite is finished
+      - dev
     paths-ignore:
       - "README.md"
   pull_request:
     branches:
       - main
+      # TODO: Remove when frontend/identity rewrite is finished
+      - dev
   release:
     types:
       - released

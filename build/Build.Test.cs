@@ -48,8 +48,13 @@ partial class Build
     Target IntegrationTestSetup => _ => _
         .DependsOn(MigrateDatabase)
         .Requires(() => SqlServerConnectionString)
+        .Requires(() => IntegrationTestDefaultUserPassword)
         .Executes(() =>
         {
+            DotNet("user-secrets " +
+                $"set DefaultUserPassword {IntegrationTestDefaultUserPassword} " +
+                $"--project {RelationalSetupTool}");
+
             DotNetRun(s => s
                 .SetProjectFile(RelationalSetupTool)
                 .SetApplicationArguments($"seed --connection \"{SqlServerConnectionString}\""));

@@ -5,6 +5,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>3b353fc7-f263-47b9-b0f9-47bc87981ea0</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,11 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Bogus" Version="34.0.2" />
-    <PackageReference Include="Hexagrams.Extensions.Common" Version="0.5.0" />
-    <PackageReference Include="Hexagrams.Extensions.Configuration" Version="0.5.0" />
+    <PackageReference Include="Bogus" Version="35.0.1" />
+    <PackageReference Include="Hexagrams.Extensions.Common" Version="0.5.1" />
+    <PackageReference Include="Hexagrams.Extensions.Configuration" Version="0.5.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="Microsoft.SqlServer.SqlManagementObjects" Version="170.18.0" />
     <PackageReference Include="Scrutor" Version="4.2.2" />

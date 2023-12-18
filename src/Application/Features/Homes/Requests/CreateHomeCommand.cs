@@ -1,5 +1,7 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Models.Homes;
 using Spenses.Resources.Relational;
 using Spenses.Utilities.Security;
@@ -39,6 +41,10 @@ public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, I
 
         await db.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<Home>(entry.Entity);
+        var createdHome = await db.Homes
+            .ProjectTo<Home>(mapper.ConfigurationProvider)
+            .SingleAsync(h => h.Id == entry.Entity.Id, cancellationToken);
+
+        return mapper.Map<Home>(createdHome);
     }
 }
