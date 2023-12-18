@@ -47,7 +47,8 @@ partial class Build
 
     Target IntegrationTestSetup => _ => _
         .DependsOn(MigrateDatabase)
-        .Requires(() => SqlServerConnectionString, () => IntegrationTestDefaultUserPassword)
+        .Requires(() => SqlServerConnectionString)
+        .Requires(() => IntegrationTestDefaultUserPassword)
         .Executes(() =>
         {
             DotNet("user-secrets " +
