@@ -16,6 +16,7 @@ const string corsPolicyName = "AllowSpecificOrigins";
 builder.Services
     .AddWebApiServices(builder.Configuration, corsPolicyName)
     .AddApplicationServices()
+    .AddIdentity(ConfigConstants.SpensesDataProtectionApplicationName)
     .AddAuthorizationServices()
     .AddRelationalServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString));
 
@@ -23,11 +24,9 @@ builder.Services.AddAuthenticatedOpenApiDocument(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
 
-//builder.Services.AddAuth0Authentication(
-//    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
-//    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
-
-builder.Services.AddIdentity(ConfigConstants.SpensesDataProtectionApplicationName);
+builder.Services.AddAuth0Authentication(
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
+    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
 
 var app = builder.Build();
 

@@ -1,15 +1,28 @@
+using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Tools.Setup.SeedData;
 
-public class UsersSeedDataTask(IUserStore<ApplicationUser> users) : ISeedDataTask
+public class UsersSeedDataTask(UserManager<ApplicationUser> users, IConfiguration configuration) : ISeedDataTask
 {
     public int Order => 0;
 
     public async Task SeedData(ApplicationDbContext db)
     {
+        const string defaultUserPasswordSettingKey = "DefaultUserPassword";
+
+        var defaultPassword = configuration.Require(defaultUserPasswordSettingKey,
+            $"A value for {defaultUserPasswordSettingKey} must be set in user secrets.");
+
+        await AddUser(SystemCurrentUserService.SystemUserId, "system@spenses.ca");
+        await AddUser(Guid.NewGuid().ToString(), "george@vandelayindustries.com");
+        await AddUser(Guid.NewGuid().ToString(), "ericsondergard+spensesuser@fastmail.com");
+
+        return;
+
         Task<IdentityResult> AddUser(string id, string email)
         {
             var user = new ApplicationUser
@@ -17,21 +30,10 @@ public class UsersSeedDataTask(IUserStore<ApplicationUser> users) : ISeedDataTas
                 Id = id,
                 UserName = email,
                 Email = email,
-                NormalizedUserName = email.ToUpperInvariant(),
-                NormalizedEmail = email.ToUpperInvariant(),
                 EmailConfirmed = true
             };
 
-            var hashedPassword = new PasswordHasher<ApplicationUser>().HashPassword(user, "Password1!");
-
-            user.PasswordHash = hashedPassword;
-
-            return users.CreateAsync(user, CancellationToken.None);
+            return users.CreateAsync(user, defaultPassword);
         }
-
-        await Task.WhenAll(
-            AddUser(SystemCurrentUserService.SystemUserId, "system@spenses.ca"),
-            AddUser(Guid.NewGuid().ToString(), "george@vandelayindustries.com"),
-            AddUser(Guid.NewGuid().ToString(), "ericsondergard+spensesuser@fastmail.com"));
     }
 }

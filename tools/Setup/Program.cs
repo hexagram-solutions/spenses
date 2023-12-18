@@ -11,6 +11,7 @@ using Spenses.Utilities.Security.Services;
 var config = new ConfigurationManager()
     .AddJsonFile("appsettings.json")
     .AddEnvironmentVariables()
+    .AddUserSecrets<Program>()
     .Build();
 
 var services = new ServiceCollection()
