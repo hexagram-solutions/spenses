@@ -16,15 +16,13 @@ public class UsersMappingProfile : Profile
                 opts => opts.MapFrom(src => src.FindFirst(ApplicationClaimTypes.Identifier)!.Value))
             .ForMember(dest => dest.UserName,
                 opts => opts.MapFrom(src => src.FindFirst(ApplicationClaimTypes.UserName)!.Value))
-            //.ForMember(dest => dest.Issuer,
-            //    opts => opts.MapFrom(src => src.FindFirst(ApplicationClaimTypes.Issuer)!.Value))
             .ForMember(dest => dest.Email,
                 opts => opts.MapFrom(src => src.FindFirst(ApplicationClaimTypes.Email)!.Value))
             .ForAllOtherMembers(opts => opts.Ignore());
 
         CreateMap<DbModels.ApplicationUser, User>()
             .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-            //.ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.NickName))
+            .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.UserName))
             .ForAllOtherMembers(opts => opts.Ignore());
     }
 }

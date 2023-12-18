@@ -64,7 +64,6 @@ public static class ProgramExtensions
         services
             .AddControllers(options =>
             {
-                options.Filters.Add<UserSyncFilter>();
                 options.Filters.Add<ApplicationExceptionFilter>();
             })
             .AddJsonOptions(options =>

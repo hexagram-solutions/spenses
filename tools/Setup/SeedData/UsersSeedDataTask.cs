@@ -18,7 +18,7 @@ public class UsersSeedDataTask(UserManager<ApplicationUser> users, IConfiguratio
             $"A value for {defaultUserPasswordSettingKey} must be set in user secrets.");
 
         await AddUser(SystemCurrentUserService.SystemUserId, "system@spenses.ca");
-        await AddUser(Guid.NewGuid().ToString(), "george@vandelayindustries.com");
+        await AddUser("integration-test-user", "george@vandelayindustries.com");
         await AddUser(Guid.NewGuid().ToString(), "ericsondergard+spensesuser@fastmail.com");
 
         return;
