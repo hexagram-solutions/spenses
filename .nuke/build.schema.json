@@ -76,6 +76,10 @@
           "type": "boolean",
           "description": "Ignore unreachable sources during Restore"
         },
+        "IntegrationTestDefaultUserPassword": {
+          "type": "string",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
         "NoLogo": {
           "type": "boolean",
           "description": "Disables displaying the NUKE logo"
