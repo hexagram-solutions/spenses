@@ -1,4 +1,5 @@
 using Hexagrams.Extensions.Configuration;
+using Microsoft.FluentUI.AspNetCore.Components;
 using Spenses.Application.Common;
 using Spenses.Web.Client;
 using Spenses.Web.Client.Components.Pages;
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
+
+builder.Services.AddFluentUIComponents();
 
 builder.Services
     .AddDatabaseServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString))

@@ -2,27 +2,11 @@
 
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-@rendermode InteractiveWebAssembly
-
 <PageTitle>Homes</PageTitle>
 
 <h1>Homes</h1>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in HomesState.Value.Homes)
-    {
-        <tr>
-            <td>@item.Name</td>
-            <td>@item.Description</td>
-        </tr>
-    }
-
-    </tbody>
-</table>
+<FluentDataGrid Id="weathergrid" Items="HomeItems" GridTemplateColumns="1fr 1fr 1fr 2fr" TGridItem=Application.Models.Homes.Home>
+    <PropertyColumn Title="Date" Property="@(c => c!.Name)" Sortable="true" Align=Align.Start/>
+    <PropertyColumn Title="Temp. (C)" Property="@(c => c!.Description)" Sortable="true" Align=Align.Start/>
+</FluentDataGrid>

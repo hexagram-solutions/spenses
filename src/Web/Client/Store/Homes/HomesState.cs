@@ -13,7 +13,7 @@ public record HomesState
 
     public Home? CurrentHome { get; init; }
 
-    public Home[] Homes { get; init; } = Array.Empty<Home>();
+    public Home[] Homes { get; init; } = [];
 
     public bool HomesRequesting { get; init; }
 

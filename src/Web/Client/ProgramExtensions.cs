@@ -5,7 +5,6 @@ using Refit;
 using Spenses.Client.Http;
 using Spenses.Web.Client.Infrastructure;
 using Spenses.Web.Client.Store.Homes;
-using Spenses.Web.Client.Store.Shared;
 
 namespace Spenses.Web.Client;
 
