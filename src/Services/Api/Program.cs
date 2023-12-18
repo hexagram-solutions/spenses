@@ -24,10 +24,6 @@ builder.Services.AddAuthenticatedOpenApiDocument(
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
     builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
 
-builder.Services.AddAuth0Authentication(
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
-
 var app = builder.Build();
 
 app.UseHttpLogging();
