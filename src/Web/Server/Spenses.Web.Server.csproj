@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Application\Spenses.Application.csproj" />
+    <ProjectReference Include="..\..\Resources\Communication\Spenses.Resources.Communication.csproj" />
     <ProjectReference Include="..\..\Resources\Relational\Spenses.Resources.Relational.csproj" />
     <ProjectReference Include="..\Client\Spenses.Web.Client.csproj" />
   </ItemGroup>
