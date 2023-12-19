@@ -11,24 +11,23 @@
 
 <PageTitle>Recovery code verification</PageTitle>
 
-<h1>Recovery code verification</h1>
-<hr />
+<h2>Recovery code verification</h2>
+
 <StatusMessage Message="@_message" />
+
 <p>
     You have requested to log in with a recovery code. This login will not be remembered until you provide
     an authenticator app code at log in or disable 2FA and log in again.
 </p>
-<FluentGrid>
-    <FluentGridItem xs="8" sm="4">
-        <EditForm Model="Input" FormName="login-with-recovery-code" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-            <FluentTextField Name="Input.RecoveryCode" @bind-Value="Input.RecoveryCode" class="form-control" AutoComplete="off" Placeholder="Recovery code" Label="Recovery code" Style="width: 100%;" />
-            <ValidationMessage For="() => Input.RecoveryCode" class="text-danger" />
-            <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%;">Log in</FluentButton>
-        </EditForm>
-    </FluentGridItem>
-</FluentGrid>
+
+<EditForm Model="Input" FormName="login-with-recovery-code" OnValidSubmit="OnValidSubmitAsync" method="post">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" role="alert" />
+    <FluentTextField Name="Input.RecoveryCode" @bind-Value="Input.RecoveryCode" class="form-control" AutoComplete="off" Placeholder="Recovery code" Label="Recovery code" Style="width: 100%;" />
+    <ValidationMessage For="() => Input.RecoveryCode" class="text-danger" />
+    <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%;">Log in</FluentButton>
+</EditForm>
+
 @code {
     private string? _message;
     private ApplicationUser _user = default!;

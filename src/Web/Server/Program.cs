@@ -16,9 +16,9 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddFluentUIComponents();
 
-builder.Services
-    .AddDatabaseServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString))
-    .AddIdentityServices(ConfigConstants.SpensesDataProtectionApplicationName);
+builder
+    .AddDatabaseServices()
+    .AddIdentityServices();
 
 var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
 
@@ -27,11 +27,7 @@ if (builder.Environment.IsEnvironment(EnvironmentNames.Local))
 else
     builder.Services.AddApiClients(baseUrl, true);
 
-var isLocalOrTestEnvironment =
-    builder.Environment.IsEnvironment(EnvironmentNames.Local) ||
-    builder.Environment.IsEnvironment(EnvironmentNames.Test);
-
-builder.Services.AddStateManagement(isLocalOrTestEnvironment);
+builder.Services.AddStateManagement(builder.Environment.IsLocalOrIntegrationTestEnvironment());
 
 var app = builder.Build();
 
