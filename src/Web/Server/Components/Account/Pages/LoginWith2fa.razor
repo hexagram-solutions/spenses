@@ -1,13 +1,17 @@
 ﻿@page "/Account/LoginWith2fa"
 
 @using System.ComponentModel.DataAnnotations
+@using Hexagrams.Extensions.Common.Serialization
 @using Microsoft.AspNetCore.Identity
+@using Spenses.Application.Models.Authentication
+@using Spenses.Client.Http
 @using Spenses.Resources.Relational.Models
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager RedirectManager
 @inject ILogger<LoginWith2fa> Logger
+@inject IAuthApi AuthApi
 
 <PageTitle>Two-factor authentication</PageTitle>
 
@@ -22,7 +26,7 @@
     <ValidationSummary class="text-danger" role="alert" />
     <FluentTextField Name="Input.TwoFactorCode" @bind-Value="Input.TwoFactorCode" class="form-control" AutoComplete="off" Label="Authenticator code" Style="width: 100%;"/>
     <ValidationMessage For="() => Input.TwoFactorCode" class="text-danger" />
-    <FluentCheckbox Name="Input.RememberMachine" @bind-Value="@Input.RememberMachine" Label="Remember this machine" Style="width: 100%;"/>
+    <FluentCheckbox Name="Input.RememberMachine" @bind-Value="Input.RememberMachine" Label="Remember this machine" Style="width: 100%;"/>
     <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%;">Log in</FluentButton>
 </EditForm>
 
@@ -33,7 +37,7 @@
 
 @code {
     private string? _message;
-    private ApplicationUser _user = default!;
+    // private ApplicationUser _user = default!;
 
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
@@ -44,29 +48,42 @@
     protected override async Task OnInitializedAsync()
     {
         // Ensure the user has gone through the username & password screen first
-        _user = await SignInManager.GetTwoFactorAuthenticationUserAsync() ??
-            throw new InvalidOperationException("Unable to load two-factor authentication user.");
+        // _user = await SignInManager.GetTwoFactorAuthenticationUserAsync() ??
+        //     throw new InvalidOperationException("Unable to load two-factor authentication user.");
     }
 
     private async Task OnValidSubmitAsync()
     {
         var authenticatorCode = Input.TwoFactorCode!.Replace(" ", string.Empty).Replace("-", string.Empty);
-        var result = await SignInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, true, Input.RememberMachine);
-        var userId = await UserManager.GetUserIdAsync(_user);
+        // var result = await SignInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, true, Input.RememberMachine);
+        // var userId = await UserManager.GetUserIdAsync(_user);
+
+        // var user = await SignInManager.GetTwoFactorAuthenticationUserAsync();
+
+        var loginResult = await AuthApi.TwoFactorLogin(new TwoFactorLoginRequest
+        {
+            TwoFactorCode = authenticatorCode,
+            TwoFactorRememberClient = Input.RememberMachine
+        });
+
+        if (loginResult.IsSuccessStatusCode)
+        {
+            Logger.LogInformation("User logged in.");
+            RedirectManager.RedirectTo(ReturnUrl);
+        }
+
+        var result = loginResult.Error.Content!.FromJson<LoginResult>()!;
 
         if (result.Succeeded)
         {
-            Logger.LogInformation("User with ID '{UserId}' logged in with 2fa.", userId);
             RedirectManager.RedirectTo(ReturnUrl);
         }
         else if (result.IsLockedOut)
         {
-            Logger.LogWarning("User with ID '{UserId}' account locked out.", userId);
             RedirectManager.RedirectTo("Account/Lockout");
         }
         else
         {
-            Logger.LogWarning("Invalid authenticator code entered for user with ID '{UserId}'.", userId);
             _message = "Error: Invalid authenticator code.";
         }
     }

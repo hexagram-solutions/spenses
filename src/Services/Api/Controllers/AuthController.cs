@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Models.Authentication;
 using Spenses.Resources.Relational.Models;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Spenses.Api.Controllers;
 
@@ -25,20 +26,35 @@ public class AuthController(SignInManager<ApplicationUser> signInManager) : Cont
     {
         signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
 
-        var (email, password, twoFactorCode, twoFactorRecoveryCode) = request;
+        var (email, password) = request;
 
         var result = await signInManager.PasswordSignInAsync(email, password, true, true);
 
-        if (result.RequiresTwoFactor)
+        if (!result.Succeeded)
         {
-            if (!string.IsNullOrEmpty(twoFactorCode))
-            {
-                result = await signInManager.TwoFactorAuthenticatorSignInAsync(twoFactorCode, true, true);
-            }
-            else if (!string.IsNullOrEmpty(twoFactorRecoveryCode))
-            {
-                result = await signInManager.TwoFactorRecoveryCodeSignInAsync(twoFactorRecoveryCode);
-            }
+            return StatusCode(StatusCodes.Status401Unauthorized,
+                new LoginResult(result.Succeeded, result.RequiresTwoFactor, result.IsNotAllowed, result.IsLockedOut));
+        }
+
+        return Ok(new LoginResult(result.Succeeded));
+    }
+
+    [HttpPost("login-with-2fa")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
+    public async Task<ActionResult<LoginResult>> TwoFactorLogin(TwoFactorLoginRequest request)
+    {
+        signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
+
+        var result = new SignInResult();
+
+        if (!string.IsNullOrEmpty(request.TwoFactorCode))
+        {
+            result = await signInManager.TwoFactorAuthenticatorSignInAsync(request.TwoFactorCode, true,
+                request.TwoFactorRememberClient);
+        }
+        else if (!string.IsNullOrEmpty(request.TwoFactorRecoveryCode))
+        {
+            result = await signInManager.TwoFactorRecoveryCodeSignInAsync(request.TwoFactorRecoveryCode);
         }
 
         if (!result.Succeeded)
@@ -49,5 +65,32 @@ public class AuthController(SignInManager<ApplicationUser> signInManager) : Cont
 
         return Ok(new LoginResult(result.Succeeded));
     }
+
+    [HttpPost("logout")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
+    public async Task<ActionResult> Logout()
+    {
+        throw new NotImplementedException();
+    }
+
+    // confirm email
+     
+    // resend confirmation
+
+    // forgot password
+
+    // reset password
+}
+
+[ApiController]
+[ApiVersion("1.0")]
+[Route("me")]
+public class MeController(SignInManager<ApplicationUser> signInManager) : ControllerBase
+{
+    // get info
+
+    // post info
+
+    // manage 2fa
 }
 

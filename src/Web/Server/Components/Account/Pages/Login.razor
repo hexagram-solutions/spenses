@@ -3,11 +3,15 @@
 @using Spenses.Resources.Relational.Models
 @using Microsoft.AspNetCore.Identity
 @using System.ComponentModel.DataAnnotations
+@using Hexagrams.Extensions.Common.Serialization
+@using Spenses.Application.Models.Authentication
+@using Spenses.Client.Http
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject ILogger<Login> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IAuthApi AuthApi 
 
 <PageTitle>Log in</PageTitle>
 
@@ -58,13 +62,19 @@
     {
         // This doesn't count login failures towards account lockout
         // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-        var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, true, false);
-        if (result.Succeeded)
+        // var result = await SignInManager.PasswordSignInAsync(Input.Email, Input.Password, true, false);
+
+        var loginResult = await AuthApi.Login(new LoginRequest(Input.Email, Input.Password));
+
+        if (loginResult.IsSuccessStatusCode)
         {
             Logger.LogInformation("User logged in.");
             RedirectManager.RedirectTo(ReturnUrl);
         }
-        else if (result.RequiresTwoFactor)
+
+        var result = loginResult.Error.Content!.FromJson<LoginResult>()!;
+
+        if (result.RequiresTwoFactor)
         {
             RedirectManager.RedirectTo(
                 "Account/LoginWith2fa",
