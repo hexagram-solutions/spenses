@@ -30,17 +30,22 @@ public static class ProgramExtensions
 {
     private const string OpenApiDocumentTitle = "Spenses API";
 
-    public static ConfigurationManager BuildConfiguration(this ConfigurationManager configuration)
+    public static bool IsLocalOrIntegrationTestEnvironment(this IWebHostEnvironment environment)
     {
-        var environment = configuration.Require(ConfigConstants.AspNetCoreEnvironment);
+        return environment.IsEnvironment(EnvironmentNames.Local) ||
+            environment.IsEnvironment(EnvironmentNames.IntegrationTest);
+    }
 
-        if (environment != EnvironmentNames.Local &&
-            environment != EnvironmentNames.IntegrationTest)
+    public static WebApplicationBuilder BuildConfiguration(this WebApplicationBuilder builder)
+    {
+        var environment = builder.Configuration.Require(ConfigConstants.AspNetCoreEnvironment);
+
+        if (!builder.Environment.IsLocalOrIntegrationTestEnvironment())
         {
             var appConfigurationConnectionString =
-                configuration.Require(ConfigConstants.SpensesAppConfigurationConnectionString);
+                builder.Configuration.Require(ConfigConstants.SpensesAppConfigurationConnectionString);
 
-            configuration.AddAzureAppConfiguration(options =>
+            builder.Configuration.AddAzureAppConfiguration(options =>
             {
                 options.Connect(appConfigurationConnectionString)
                     .ConfigureKeyVault(kv => { kv.SetCredential(new DefaultAzureCredential()); })
@@ -50,18 +55,18 @@ public static class ProgramExtensions
         }
         else
         {
-            configuration.AddUserSecrets<Program>();
+            builder.Configuration.AddUserSecrets<Program>();
         }
 
-        configuration.SetKeyDelimiters(":", "_", "-", ".");
+        builder.Configuration.SetKeyDelimiters(":", "_", "-", ".");
 
-        return configuration;
+        return builder;
     }
 
-    public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration,
+    public static WebApplicationBuilder AddWebApiServices(this WebApplicationBuilder builder,
         string corsPolicyName)
     {
-        services
+        builder.Services
             .AddControllers(options =>
             {
                 options.Filters.Add<ApplicationExceptionFilter>();
@@ -71,40 +76,40 @@ public static class ProgramExtensions
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-        services.AddRouting(opts =>
+        builder.Services.AddRouting(opts =>
         {
             opts.LowercaseUrls = true;
             opts.LowercaseQueryStrings = true;
         });
 
         // Disables data annotations model validation, we only want to use FluentValidation
-        services.Configure<ApiBehaviorOptions>(options =>
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
             options.SuppressModelStateInvalidFilter = true);
 
-        services.AddApiVersioning(options =>
+        builder.Services.AddApiVersioning(options =>
         {
             options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
             options.DefaultApiVersion = new ApiVersion(1, 0);
             options.AssumeDefaultVersionWhenUnspecified = true;
         });
 
-        services.AddHttpLogging(_ => { });
+        builder.Services.AddHttpLogging(_ => { });
 
-        services.AddCors(opts =>
+        builder.Services.AddCors(opts =>
         {
             opts.AddPolicy(corsPolicyName,
                 policy =>
                 {
-                    policy.WithOrigins(configuration.Collection(ConfigConstants.SpensesApiAllowedOrigins))
+                    policy.WithOrigins(builder.Configuration.Collection(ConfigConstants.SpensesApiAllowedOrigins))
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();
                 });
         });
 
-        services.AddFeatureManagement();
+        builder.Services.AddFeatureManagement();
 
-        return services;
+        return builder;
     }
 
     public static IServiceCollection AddAuth0Authentication(this IServiceCollection services, string authority,
@@ -127,14 +132,14 @@ public static class ProgramExtensions
         return services;
     }
 
-    public static IServiceCollection AddIdentity(this IServiceCollection services, string applicationName)
+    public static WebApplicationBuilder AddIdentity(this WebApplicationBuilder builder)
     {
         // TODO: Store in blob storage and protect with key vault when deployed
         // https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-7.0#protectkeyswithazurekeyvault
-        services.AddDataProtection()
-            .SetApplicationName(applicationName);
+        builder.Services.AddDataProtection()
+            .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName));
 
-        services.AddAuthentication(IdentityConstants.ApplicationScheme)
+        builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
             .AddIdentityCookies()
             .ApplicationCookie!.Configure(opt => opt.Events = new CookieAuthenticationEvents
             {
@@ -145,14 +150,14 @@ public static class ProgramExtensions
                 }
             });
 
-        services.AddAuthorizationBuilder();
+        builder.Services.AddAuthorizationBuilder();
 
-        services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
 
-        return services;
+        return builder;
     }
 
     public static IServiceCollection AddAuthenticatedOpenApiDocument(this IServiceCollection services, string authority,
@@ -195,20 +200,20 @@ public static class ProgramExtensions
         return services;
     }
 
-    public static IServiceCollection AddAuthorizationServices(this IServiceCollection services)
+    public static WebApplicationBuilder AddAuthorizationServices(this WebApplicationBuilder builder)
     {
-        services.AddAuthorization();
-        services.AddHttpContextAccessor();
-        services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
-        services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
+        builder.Services.AddAuthorization();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
+        builder.Services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
 
-        services.Scan(scan => scan
+        builder.Services.Scan(scan => scan
             .FromAssemblyOf<HomeMemberRequirement>()
             .AddClasses(classes => classes.AssignableTo<IAuthorizationHandler>())
             .AsImplementedInterfaces()
             .WithTransientLifetime());
 
-        return services;
+        return builder;
     }
 
     public static IApplicationBuilder AddSwaggerUi(this IApplicationBuilder app, string clientId)
