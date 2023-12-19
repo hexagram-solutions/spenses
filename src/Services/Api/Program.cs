@@ -13,10 +13,6 @@ builder.BuildConfiguration();
 
 const string corsPolicyName = "AllowSpecificOrigins";
 
-builder.Services
-    .AddApplicationServices()
-    .AddRelationalServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString));
-
 builder
     .AddWebApiServices(corsPolicyName)
     .AddIdentity()
