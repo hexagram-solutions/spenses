@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{2CC847A1
 		tools\Get-AccessToken.ps1 = tools\Get-AccessToken.ps1
 		tools\requests.http = tools\requests.http
 		tools\Reset-InitialMigration.ps1 = tools\Reset-InitialMigration.ps1
+		tools\Start-LocalDependencies.ps1 = tools\Start-LocalDependencies.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Tools.Setup", "tools\Setup\Spenses.Tools.Setup.csproj", "{EF370862-A709-457C-993B-A2610A68774E}"
@@ -50,7 +51,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Web.Client", "src\W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Web.Server", "src\Web\Server\Spenses.Web.Server.csproj", "{DB86D00A-47DD-4151-9391-10792CD45D64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Resources.Communication", "src\Resources\Communication\Spenses.Resources.Communication.csproj", "{398B4C55-B7C8-4F81-AEEB-149BC97B0625}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Resources.Communication", "src\Resources\Communication\Spenses.Resources.Communication.csproj", "{398B4C55-B7C8-4F81-AEEB-149BC97B0625}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
