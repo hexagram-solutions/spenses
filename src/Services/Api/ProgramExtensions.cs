@@ -38,8 +38,6 @@ public static class ProgramExtensions
 
     public static WebApplicationBuilder BuildConfiguration(this WebApplicationBuilder builder)
     {
-        var environment = builder.Configuration.Require(ConfigConstants.AspNetCoreEnvironment);
-
         if (!builder.Environment.IsLocalOrIntegrationTestEnvironment())
         {
             var appConfigurationConnectionString =
@@ -134,10 +132,20 @@ public static class ProgramExtensions
 
     public static WebApplicationBuilder AddIdentity(this WebApplicationBuilder builder)
     {
-        // TODO: Store in blob storage and protect with key vault when deployed
-        // https://learn.microsoft.com/en-us/aspnet/core/security/data-protection/configuration/overview?view=aspnetcore-7.0#protectkeyswithazurekeyvault
-        builder.Services.AddDataProtection()
+        var dataProtectionBuilder = builder.Services.AddDataProtection()
             .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName));
+
+        if (!builder.Environment.IsLocalOrIntegrationTestEnvironment())
+        {
+            var blobStorageUri =
+                new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageSasUri));
+            var keyIdentifier =
+                new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionKeyIdentifier));
+
+            dataProtectionBuilder
+                .PersistKeysToAzureBlobStorage(blobStorageUri)
+                .ProtectKeysWithAzureKeyVault(keyIdentifier, new DefaultAzureCredential());
+        }
 
         builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
             .AddIdentityCookies()

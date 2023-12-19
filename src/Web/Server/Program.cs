@@ -9,7 +9,8 @@ using Spenses.Web.Server.Components.Account;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.BuildConfiguration();
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();

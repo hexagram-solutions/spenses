@@ -1,13 +1,14 @@
 {
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "profiles": {
     "Spenses.Api": {
       "commandName": "Project",
       "launchUrl": "swagger",
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:8081;http://localhost:8080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Local"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:8081;http://localhost:8080"
+      }
     },
     "Docker": {
       "commandName": "Docker",
@@ -21,6 +22,5 @@
       "httpPort": 8080,
       "sslPort": 8081
     }
-  },
-  "$schema": "https://json.schemastore.org/launchsettings.json"
+  }
 }

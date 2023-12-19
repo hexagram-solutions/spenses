@@ -1,3 +1,4 @@
+using Azure.Identity;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -17,6 +18,31 @@ public static class ProgramExtensions
     {
         return environment.IsEnvironment(EnvironmentNames.Local) ||
             environment.IsEnvironment(EnvironmentNames.IntegrationTest);
+    }
+
+    public static WebApplicationBuilder BuildConfiguration(this WebApplicationBuilder builder)
+    {
+        if (!builder.Environment.IsLocalOrIntegrationTestEnvironment())
+        {
+            var appConfigurationConnectionString =
+                builder.Configuration.Require(ConfigConstants.SpensesAppConfigurationConnectionString);
+
+            builder.Configuration.AddAzureAppConfiguration(options =>
+            {
+                options.Connect(appConfigurationConnectionString)
+                    .ConfigureKeyVault(kv => { kv.SetCredential(new DefaultAzureCredential()); })
+                    .ConfigureRefresh(refresh =>
+                        refresh.Register(ConfigConstants.SpensesAppConfigurationSentinel, true));
+            });
+        }
+        else
+        {
+            builder.Configuration.AddUserSecrets<Program>();
+        }
+
+        builder.Configuration.SetKeyDelimiters(":", "_", "-", ".");
+
+        return builder;
     }
 
     public static WebApplicationBuilder AddDatabaseServices(this WebApplicationBuilder builder)
@@ -65,7 +91,7 @@ public static class ProgramExtensions
                 builder.Configuration.Require(ConfigConstants.AzureCommunicationServicesConnectionString));
         }
 
-        
+
         builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityEmailSender>();
 
         return builder;
