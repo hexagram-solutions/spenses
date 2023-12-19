@@ -11,23 +11,21 @@
 
 <PageTitle>Two-factor authentication</PageTitle>
 
-<h1>Two-factor authentication</h1>
-<hr />
+<h2>Two-factor authentication</h2>
+
 <StatusMessage Message="@_message" />
 <p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
-<FluentGrid>
-    <FluentGridItem xs="8" sm="4">
-        <EditForm Model="Input" FormName="login-with-2fa" OnValidSubmit="OnValidSubmitAsync" method="post">
-            <input type="hidden" name="ReturnUrl" value="@ReturnUrl" />
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert" />
-                <FluentTextField Name="Input.TwoFactorCode" @bind-Value="Input.TwoFactorCode" class="form-control" AutoComplete="off" Label="Authenticator code" Style="width: 100%;"/>
-                <ValidationMessage For="() => Input.TwoFactorCode" class="text-danger" />
-                <FluentCheckbox Name="Input.RememberMachine" @bind-Value="Input.RememberMachine" Label="Remember this machine" Style="width: 100%;"/>
-            <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%;">Log in</FluentButton>
-        </EditForm>
-    </FluentGridItem>
-</FluentGrid>
+
+<EditForm Model="Input" FormName="login-with-2fa" OnValidSubmit="OnValidSubmitAsync" method="post">
+    <input type="hidden" name="ReturnUrl" value="@ReturnUrl" />
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" role="alert" />
+    <FluentTextField Name="Input.TwoFactorCode" @bind-Value="Input.TwoFactorCode" class="form-control" AutoComplete="off" Label="Authenticator code" Style="width: 100%;"/>
+    <ValidationMessage For="() => Input.TwoFactorCode" class="text-danger" />
+    <FluentCheckbox Name="Input.RememberMachine" @bind-Value="@(Input.RememberMachine)" Label="Remember this machine" Style="width: 100%;"/>
+    <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%;">Log in</FluentButton>
+</EditForm>
+
 <p>
     Don't have access to your authenticator device? You can
     <a href="Account/LoginWithRecoveryCode?ReturnUrl=@ReturnUrl">log in with a recovery code</a>.

@@ -1,15 +1,19 @@
 ﻿@inherits LayoutComponentBase
-@layout Spenses.Web.Client.Components.Layout.MainLayout
+@layout Spenses.Web.Client.Components.Layout.BaseLayout
 @inject NavigationManager NavigationManager
 
-@if (HttpContext is null)
-{
-    <p>Loading...</p>
-}
-else
-{
-    @Body
-}
+<FluentLayout>
+    <FluentCard Style="margin: auto; margin-top:10%; max-width: 600px;">
+        @if (HttpContext is null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            @Body
+        }
+    </FluentCard>
+</FluentLayout>
 
 @code {
     [CascadingParameter]
