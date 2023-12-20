@@ -18,3 +18,12 @@ public record LoginResult(
     bool RequiresTwoFactor = false,
     bool IsNotAllowed = false,
     bool IsLockedOut = false);
+
+public record CurrentUser
+{
+    public required string UserName { get; init; }
+
+    public required string Email { get; init; }
+
+    public required bool EmailVerified { get; init; }
+}

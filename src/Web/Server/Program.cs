@@ -17,8 +17,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddFluentUIComponents();
 
-builder
-    .AddDatabaseServices()
+builder.AddDatabaseServices()
     .AddIdentityServices();
 
 var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);

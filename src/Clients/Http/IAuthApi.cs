@@ -11,4 +11,7 @@ public interface IAuthApi
 
     [Post("/auth/login-with-2fa")]
     public Task<IApiResponse<LoginResult>> TwoFactorLogin(TwoFactorLoginRequest request);
+
+    [Post("/auth/logout")]
+    public Task<IApiResponse> Logout();
 }

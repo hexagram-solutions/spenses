@@ -7,6 +7,8 @@ public static class ApplicationClaimTypes
 {
     public const string Email = ClaimTypes.Email;
 
+    public const string EmailVerified = JwtClaimTypes.EmailVerified;
+
     public const string GivenName = "givenname";
 
     public const string Issuer = JwtClaimTypes.Issuer;

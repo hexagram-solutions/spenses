@@ -37,7 +37,7 @@
 
 @code {
     private string? _message;
-    // private ApplicationUser _user = default!;
+    private ApplicationUser _user = default!;
 
     [SupplyParameterFromForm]
     private InputModel Input { get; set; } = new();
@@ -48,31 +48,30 @@
     protected override async Task OnInitializedAsync()
     {
         // Ensure the user has gone through the username & password screen first
-        // _user = await SignInManager.GetTwoFactorAuthenticationUserAsync() ??
-        //     throw new InvalidOperationException("Unable to load two-factor authentication user.");
+        _user = await SignInManager.GetTwoFactorAuthenticationUserAsync() ??
+            throw new InvalidOperationException("Unable to load two-factor authentication user.");
     }
 
     private async Task OnValidSubmitAsync()
     {
         var authenticatorCode = Input.TwoFactorCode!.Replace(" ", string.Empty).Replace("-", string.Empty);
-        // var result = await SignInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, true, Input.RememberMachine);
-        // var userId = await UserManager.GetUserIdAsync(_user);
+        var result = await SignInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, true, Input.RememberMachine);
 
         // var user = await SignInManager.GetTwoFactorAuthenticationUserAsync();
 
-        var loginResult = await AuthApi.TwoFactorLogin(new TwoFactorLoginRequest
-        {
-            TwoFactorCode = authenticatorCode,
-            TwoFactorRememberClient = Input.RememberMachine
-        });
+        // var loginResult = await AuthApi.TwoFactorLogin(new TwoFactorLoginRequest
+        // {
+        //     TwoFactorCode = authenticatorCode,
+        //     TwoFactorRememberClient = Input.RememberMachine
+        // });
 
-        if (loginResult.IsSuccessStatusCode)
+        if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
             RedirectManager.RedirectTo(ReturnUrl);
         }
 
-        var result = loginResult.Error.Content!.FromJson<LoginResult>()!;
+        // var result = loginResult.Error.Content!.FromJson<LoginResult>()!;
 
         if (result.Succeeded)
         {

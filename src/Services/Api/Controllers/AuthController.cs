@@ -21,7 +21,8 @@ public class AuthController(SignInManager<ApplicationUser> signInManager) : Cont
     /// <param name="request">The login credentials</param>
     /// <returns>The new expense category.</returns>
     [HttpPost("login")]
-    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<LoginResult>> Login(LoginRequest request)
     {
         signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
@@ -40,7 +41,8 @@ public class AuthController(SignInManager<ApplicationUser> signInManager) : Cont
     }
 
     [HttpPost("login-with-2fa")]
-    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<LoginResult>> TwoFactorLogin(TwoFactorLoginRequest request)
     {
         signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
@@ -67,10 +69,12 @@ public class AuthController(SignInManager<ApplicationUser> signInManager) : Cont
     }
 
     [HttpPost("logout")]
-    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult> Logout()
     {
-        throw new NotImplementedException();
+        await signInManager.SignOutAsync();
+
+        return Ok();
     }
 
     // confirm email
@@ -85,9 +89,24 @@ public class AuthController(SignInManager<ApplicationUser> signInManager) : Cont
 [ApiController]
 [ApiVersion("1.0")]
 [Route("me")]
-public class MeController(SignInManager<ApplicationUser> signInManager) : ControllerBase
+public class MeController(UserManager<ApplicationUser> userManager) : ControllerBase
 {
-    // get info
+    [HttpGet("info")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
+    public async Task<ActionResult<CurrentUser>> GetInfo()
+    {
+        var currentUser = await userManager.GetUserAsync(User);
+
+        if (currentUser is null)
+            return NotFound();
+
+        return Ok(new CurrentUser
+        {
+            UserName = currentUser.UserName!,
+            Email = currentUser.Email!,
+            EmailVerified = currentUser.EmailConfirmed
+        });
+    }
 
     // post info
 
