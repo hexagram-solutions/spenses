@@ -9,11 +9,11 @@ namespace Spenses.Web.Client;
 
 public interface IAuthService
 {
-    public Task<LoginResult> LogIn(LoginRequest request);
+    public Task<LoginResult> Login(LoginRequest request);
 
-    public Task<LoginResult> TwoFactorLogIn(TwoFactorLoginRequest request);
+    public Task<LoginResult> TwoFactorLogin(TwoFactorLoginRequest request);
 
-    public Task LogOut();
+    public Task Logout();
 }
 
 public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi)
@@ -21,7 +21,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi)
 {
     private bool _authenticated;
 
-    public async Task<LoginResult> LogIn(LoginRequest request)
+    public async Task<LoginResult> Login(LoginRequest request)
     {
         var result = await authApi.Login(request);
 
@@ -33,7 +33,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi)
         return result.Content!;
     }
 
-    public async Task<LoginResult> TwoFactorLogIn(TwoFactorLoginRequest request)
+    public async Task<LoginResult> TwoFactorLogin(TwoFactorLoginRequest request)
     {
         var result = await authApi.TwoFactorLogin(request);
 
@@ -45,7 +45,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi)
         return result.Content!;
     }
 
-    public async Task LogOut()
+    public async Task Logout()
     {
         await authApi.Logout();
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
