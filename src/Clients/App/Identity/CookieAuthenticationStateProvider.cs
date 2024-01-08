@@ -61,7 +61,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi) :
         try
         {
 
-            var result = await authApi.Register(new RegisterRequest { Email = email, Password = password });
+            var result = await authApi.Register(new RegisterRequest(email, password));
 
             // successful?
             if (result.IsSuccessStatusCode)

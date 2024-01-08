@@ -2,6 +2,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Spenses.Shared.Models.Authentication;
 
-public record LoginRequest(
+public record RegisterRequest(
     [EmailAddress] string Email,
-    string Password);
+    [Required]string Password);
