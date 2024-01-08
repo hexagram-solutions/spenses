@@ -15,7 +15,7 @@ public static class ApplicationClaimTypes
 
     public const string Identifier = ClaimTypes.NameIdentifier;
 
-    public const string Name = JwtClaimTypes.Name;
+    public const string Name = ClaimTypes.Name;
 
     public const string NickName = JwtClaimTypes.NickName;
 

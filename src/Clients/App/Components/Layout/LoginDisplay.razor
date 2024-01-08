@@ -7,13 +7,13 @@
         <FluentButton Appearance="Appearance.Accent" @onclick="BeginLogOut">Log out</FluentButton>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Log in</a>
+        <a href="login">Log in</a>
     </NotAuthorized>
 </AuthorizeView>
 
 @code{
     public void BeginLogOut()
     {
-        Navigation.NavigateToLogout("authentication/logout");
+        Navigation.NavigateToLogout("logout");
     }
 }

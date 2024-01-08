@@ -110,42 +110,22 @@ public static class ProgramExtensions
         return builder;
     }
 
-    public static IServiceCollection AddAuth0Authentication(this IServiceCollection services, string authority,
-        string audience)
-    {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = authority;
-                options.Audience = audience;
-
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    NameClaimType = ClaimTypes.NameIdentifier,
-                    ValidAudience = audience,
-                    ValidIssuer = authority
-                };
-            });
-
-        return services;
-    }
-
     public static WebApplicationBuilder AddIdentity(this WebApplicationBuilder builder)
     {
-        var dataProtectionBuilder = builder.Services.AddDataProtection()
-            .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName));
+        //var dataProtectionBuilder = builder.Services.AddDataProtection()
+        //    .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName));
 
-        if (!builder.Environment.IsLocalOrIntegrationTestEnvironment())
-        {
-            var blobStorageUri =
-                new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageSasUri));
-            var keyIdentifier =
-                new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionKeyIdentifier));
+        //if (!builder.Environment.IsLocalOrIntegrationTestEnvironment())
+        //{
+        //    var blobStorageUri =
+        //        new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageSasUri));
+        //    var keyIdentifier =
+        //        new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionKeyIdentifier));
 
-            dataProtectionBuilder
-                .PersistKeysToAzureBlobStorage(blobStorageUri)
-                .ProtectKeysWithAzureKeyVault(keyIdentifier, new DefaultAzureCredential());
-        }
+        //    dataProtectionBuilder
+        //        .PersistKeysToAzureBlobStorage(blobStorageUri)
+        //        .ProtectKeysWithAzureKeyVault(keyIdentifier, new DefaultAzureCredential());
+        //}
 
         builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
             .AddIdentityCookies()
