@@ -1,7 +1,7 @@
 using System.Net;
 using Refit;
-using Spenses.Application.Models.Insights;
 using Spenses.Client.Http;
+using Spenses.Shared.Models.Insights;
 
 namespace Spenses.Api.IntegrationTests.Insights;
 

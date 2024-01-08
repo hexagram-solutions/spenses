@@ -1,5 +1,5 @@
 using Refit;
-using Spenses.Application.Models.Homes;
+using Spenses.Shared.Models.Homes;
 
 namespace Spenses.Client.Http;
 

@@ -3,9 +3,9 @@ using Blazorise.DataGrid;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Spenses.Application.Models.Expenses;
 using Spenses.Client.Web.Store.Expenses;
-using SortDirection = Spenses.Application.Models.Common.SortDirection;
+using Spenses.Shared.Models.Expenses;
+using SortDirection = Spenses.Shared.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Expenses;
 

@@ -1,7 +1,7 @@
 using System.Net;
 using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using Spenses.Application.Models.Homes;
+using Spenses.Shared.Models.Homes;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 

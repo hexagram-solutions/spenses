@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace Spenses.Application.Models.Common;
+namespace Spenses.Shared.Models.Common;
 
 public enum SortDirection
 {

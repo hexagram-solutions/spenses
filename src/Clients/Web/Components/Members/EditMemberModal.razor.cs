@@ -1,9 +1,9 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Spenses.Application.Models.Homes;
-using Spenses.Application.Models.Members;
 using Spenses.Client.Web.Store.Homes;
 using Spenses.Client.Web.Store.Members;
+using Spenses.Shared.Models.Homes;
+using Spenses.Shared.Models.Members;
 
 namespace Spenses.Client.Web.Components.Members;
 

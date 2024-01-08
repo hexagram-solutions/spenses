@@ -1,8 +1,8 @@
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Spenses.Application.Common;
 using Spenses.Client.Web;
+using Spenses.Shared.Common;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 

@@ -1,5 +1,5 @@
 using System.Net;
-using Spenses.Application.Models.Expenses;
+using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.Api.IntegrationTests.Expenses;
 

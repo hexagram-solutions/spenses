@@ -1,4 +1,4 @@
-namespace Spenses.Application.Common.Query;
+namespace Spenses.Shared.Common.Query;
 
 /// <summary>
 /// Marks a property as one that can be used to order query results.

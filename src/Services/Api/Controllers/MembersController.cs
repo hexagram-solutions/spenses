@@ -3,8 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Members.Requests;
-using Spenses.Application.Models.Common;
-using Spenses.Application.Models.Members;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.Controllers;
 

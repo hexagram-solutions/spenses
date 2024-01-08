@@ -1,6 +1,6 @@
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc;
-using Spenses.Application.Common;
+using Spenses.Shared.Common;
 
 namespace Spenses.Api.Infrastructure;
 

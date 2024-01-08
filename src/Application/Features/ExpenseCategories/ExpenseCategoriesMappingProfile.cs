@@ -1,5 +1,5 @@
 using AutoMapper;
-using Spenses.Application.Models.ExpenseCategories;
+using Spenses.Shared.Models.ExpenseCategories;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.ExpenseCategories;

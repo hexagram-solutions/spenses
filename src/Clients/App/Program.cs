@@ -5,7 +5,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using Spenses.App;
 using Spenses.App.Components;
 using Spenses.App.Identity;
-using Spenses.Application.Common;
+using Spenses.Shared.Common;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

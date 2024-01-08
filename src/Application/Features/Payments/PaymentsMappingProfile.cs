@@ -1,5 +1,5 @@
 using AutoMapper;
-using Spenses.Application.Models.Payments;
+using Spenses.Shared.Models.Payments;
 using DbDigests = Spenses.Resources.Relational.DigestModels;
 using DbModels = Spenses.Resources.Relational.Models;
 

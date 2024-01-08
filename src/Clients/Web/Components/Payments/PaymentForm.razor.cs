@@ -1,8 +1,8 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Spenses.Application.Models.Homes;
-using Spenses.Application.Models.Payments;
 using Spenses.Client.Web.Store.Homes;
+using Spenses.Shared.Models.Homes;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Client.Web.Components.Payments;
 

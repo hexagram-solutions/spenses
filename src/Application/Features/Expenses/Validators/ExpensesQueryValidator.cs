@@ -1,7 +1,7 @@
 using FluentValidation;
 using Spenses.Application.Features.Common.Validators;
 using Spenses.Application.Features.Expenses.Requests;
-using Spenses.Application.Models.Expenses;
+using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.Application.Features.Expenses.Validators;
 

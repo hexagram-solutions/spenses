@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Payments.Requests;
-using Spenses.Application.Models.Payments;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Api.Controllers;
 

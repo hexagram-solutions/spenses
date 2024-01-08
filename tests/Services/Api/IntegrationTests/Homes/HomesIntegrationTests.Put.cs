@@ -1,4 +1,4 @@
-using Spenses.Application.Models.Homes;
+using Spenses.Shared.Models.Homes;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 

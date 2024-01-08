@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Spenses.Application.Models.ExpenseCategories;
+using Spenses.Shared.Models.ExpenseCategories;
 
-namespace Spenses.Application.Models.Expenses;
+namespace Spenses.Shared.Models.Expenses;
 
 public record ExpenseFilters
 {

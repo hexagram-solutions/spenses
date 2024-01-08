@@ -4,8 +4,8 @@ using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
 using Spenses.Api.Infrastructure;
 using Spenses.Application;
-using Spenses.Application.Common;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 

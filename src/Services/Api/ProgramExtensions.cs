@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,20 +7,18 @@ using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
-using Microsoft.IdentityModel.Tokens;
 using NSwag;
 using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
-using Spenses.Application.Common;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
+using Spenses.Shared.Common;
 using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api;

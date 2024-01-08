@@ -1,5 +1,5 @@
 using System.Net;
-using Spenses.Application.Models.ExpenseCategories;
+using Spenses.Shared.Models.ExpenseCategories;
 
 namespace Spenses.Api.IntegrationTests.ExpenseCategories;
 public partial class ExpenseCategoriesIntegrationTests

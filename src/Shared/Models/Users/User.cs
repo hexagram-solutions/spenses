@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Spenses.Application.Models.Users;
+namespace Spenses.Shared.Models.Users;
 
 public record User
 {

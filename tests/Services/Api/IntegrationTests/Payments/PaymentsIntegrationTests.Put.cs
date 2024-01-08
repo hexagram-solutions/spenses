@@ -1,5 +1,5 @@
 using System.Net;
-using Spenses.Application.Models.Payments;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Api.IntegrationTests.Payments;
 

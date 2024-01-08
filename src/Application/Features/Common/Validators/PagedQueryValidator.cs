@@ -1,8 +1,8 @@
 using System.Reflection;
 using FluentValidation;
 using Hexagrams.Extensions.Common;
-using Spenses.Application.Common.Query;
-using Spenses.Application.Models.Common;
+using Spenses.Shared.Common.Query;
+using Spenses.Shared.Models.Common;
 
 namespace Spenses.Application.Features.Common.Validators;
 

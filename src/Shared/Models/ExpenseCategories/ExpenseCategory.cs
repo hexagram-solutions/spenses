@@ -1,4 +1,4 @@
-namespace Spenses.Application.Models.ExpenseCategories;
+namespace Spenses.Shared.Models.ExpenseCategories;
 
 public record ExpenseCategory : ExpenseCategoryProperties
 {

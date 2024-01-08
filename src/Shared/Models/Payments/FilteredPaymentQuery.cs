@@ -1,7 +1,7 @@
 using System.ComponentModel;
-using Spenses.Application.Models.Common;
+using Spenses.Shared.Models.Common;
 
-namespace Spenses.Application.Models.Payments;
+namespace Spenses.Shared.Models.Payments;
 
 public record FilteredPaymentQuery : PagedQuery<PaymentDigest>
 {

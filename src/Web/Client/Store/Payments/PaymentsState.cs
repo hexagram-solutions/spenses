@@ -1,6 +1,6 @@
 using Fluxor;
-using Spenses.Application.Models.Common;
-using Spenses.Application.Models.Payments;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Web.Client.Store.Payments;
 

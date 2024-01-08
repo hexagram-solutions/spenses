@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Components.Authorization;
-using Spenses.Application.Models.Authentication;
 using Spenses.Client.Http;
+using Spenses.Shared.Models.Authentication;
 using Spenses.Utilities.Security;
 
 namespace Spenses.Web.Client;

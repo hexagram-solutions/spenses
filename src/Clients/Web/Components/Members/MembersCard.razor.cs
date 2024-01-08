@@ -1,8 +1,8 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Spenses.Application.Models.Members;
 using Spenses.Client.Web.Store.Members;
+using Spenses.Shared.Models.Members;
 
 namespace Spenses.Client.Web.Components.Members;
 

@@ -1,8 +1,8 @@
 using FluentValidation.TestHelper;
 using Spenses.Application.Features.Payments.Requests;
 using Spenses.Application.Features.Payments.Validators;
-using Spenses.Application.Models.Payments;
 using Spenses.Application.Tests.Features.Common.Validators;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Application.Tests.Features.Payments.Validators;
 

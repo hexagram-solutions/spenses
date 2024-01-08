@@ -1,4 +1,4 @@
-namespace Spenses.Application.Models.Authentication;
+namespace Spenses.Shared.Models.Authentication;
 
 public record LoginRequest(
     string Email,

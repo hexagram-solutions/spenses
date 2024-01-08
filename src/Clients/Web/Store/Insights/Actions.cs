@@ -1,4 +1,4 @@
-using Spenses.Application.Models.Insights;
+using Spenses.Shared.Models.Insights;
 
 namespace Spenses.Client.Web.Store.Insights;
 

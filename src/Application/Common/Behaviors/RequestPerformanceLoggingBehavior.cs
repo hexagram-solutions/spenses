@@ -3,6 +3,7 @@ using Hexagrams.Extensions.Configuration;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Spenses.Shared.Common;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;
 

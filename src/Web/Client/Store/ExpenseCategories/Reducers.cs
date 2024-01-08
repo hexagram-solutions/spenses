@@ -1,6 +1,6 @@
 using Fluxor;
 using Hexagrams.Extensions.Common;
-using Spenses.Application.Models.ExpenseCategories;
+using Spenses.Shared.Models.ExpenseCategories;
 
 namespace Spenses.Web.Client.Store.ExpenseCategories;
 

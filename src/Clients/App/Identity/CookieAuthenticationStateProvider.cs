@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Net.Http.Json;
 using Hexagrams.Extensions.Common.Serialization;
 using Refit;
 using Spenses.App.Identity.Models;
-using Spenses.Application.Models.Authentication;
 using Spenses.Client.Http;
+using Spenses.Shared.Models.Authentication;
 using Spenses.Utilities.Security;
 
 namespace Spenses.App.Identity;

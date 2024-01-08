@@ -12,7 +12,7 @@ public partial class Homes
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
 
-    private IQueryable<Application.Models.Homes.Home> HomeItems => HomesState.Value.Homes.AsQueryable();
+    private IQueryable<Shared.Models.Homes.Home> HomeItems => HomesState.Value.Homes.AsQueryable();
 
     protected override void OnInitialized()
     {

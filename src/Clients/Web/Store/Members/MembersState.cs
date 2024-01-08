@@ -1,5 +1,5 @@
 using Fluxor;
-using Spenses.Application.Models.Members;
+using Spenses.Shared.Models.Members;
 
 namespace Spenses.Client.Web.Store.Members;
 

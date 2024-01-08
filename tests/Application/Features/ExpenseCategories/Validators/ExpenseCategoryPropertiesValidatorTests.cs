@@ -1,6 +1,6 @@
 using FluentValidation.TestHelper;
 using Spenses.Application.Features.ExpenseCategories.Validators;
-using Spenses.Application.Models.ExpenseCategories;
+using Spenses.Shared.Models.ExpenseCategories;
 
 namespace Spenses.Application.Tests.Features.ExpenseCategories.Validators;
 

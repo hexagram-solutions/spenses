@@ -1,4 +1,4 @@
-namespace Spenses.Application.Models.Common;
+namespace Spenses.Shared.Models.Common;
 
 public record DeletionResult<T>(DeletionType Type, T Model);
 

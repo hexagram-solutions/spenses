@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using Spenses.Application.Models.Common;
+using Spenses.Shared.Models.Common;
 
-namespace Spenses.Application.Common.Query;
+namespace Spenses.Shared.Common.Query;
 
 public static class QueryableExtensions
 {

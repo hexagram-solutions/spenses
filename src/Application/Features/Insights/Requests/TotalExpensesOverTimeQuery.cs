@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Application.Models.Insights;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Models.Insights;
 
 namespace Spenses.Application.Features.Insights.Requests;
 

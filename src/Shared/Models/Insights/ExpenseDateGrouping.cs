@@ -1,4 +1,4 @@
-namespace Spenses.Application.Models.Insights;
+namespace Spenses.Shared.Models.Insights;
 
 public enum ExpenseDateGrouping
 {

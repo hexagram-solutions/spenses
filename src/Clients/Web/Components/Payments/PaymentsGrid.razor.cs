@@ -1,11 +1,11 @@
 using Blazorise.DataGrid;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Spenses.Application.Models.Common;
-using Spenses.Application.Models.Payments;
 using Spenses.Client.Http;
 using Spenses.Client.Web.Store.Payments;
-using SortDirection = Spenses.Application.Models.Common.SortDirection;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Payments;
+using SortDirection = Spenses.Shared.Models.Common.SortDirection;
 
 namespace Spenses.Client.Web.Components.Payments;
 

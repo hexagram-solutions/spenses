@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace Spenses.Application.Common.Query;
+namespace Spenses.Shared.Common.Query;
 
 // TODO: Move to shared lib
 public static class ExpressionHelper

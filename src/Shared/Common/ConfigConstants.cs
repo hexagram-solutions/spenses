@@ -1,4 +1,4 @@
-namespace Spenses.Application.Common;
+namespace Spenses.Shared.Common;
 
 public static class ConfigConstants
 {

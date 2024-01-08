@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using Spenses.Application.Models.Members;
-using Spenses.Application.Models.Users;
+using Spenses.Shared.Models.Members;
+using Spenses.Shared.Models.Users;
 
-namespace Spenses.Application.Models.Homes;
+namespace Spenses.Shared.Models.Homes;
 
 public record Home : HomeProperties
 {

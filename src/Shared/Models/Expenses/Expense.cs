@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Spenses.Application.Models.ExpenseCategories;
-using Spenses.Application.Models.Members;
-using Spenses.Application.Models.Users;
 using Spenses.Shared.Common.Serialization;
+using Spenses.Shared.Models.ExpenseCategories;
+using Spenses.Shared.Models.Members;
+using Spenses.Shared.Models.Users;
 
-namespace Spenses.Application.Models.Expenses;
+namespace Spenses.Shared.Models.Expenses;
 
 public abstract record ExpenseBase
 {

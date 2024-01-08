@@ -2,8 +2,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Models.Homes;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Models.Homes;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;
 

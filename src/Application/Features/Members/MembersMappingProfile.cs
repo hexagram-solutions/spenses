@@ -1,5 +1,5 @@
 using AutoMapper;
-using Spenses.Application.Models.Members;
+using Spenses.Shared.Models.Members;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Members;

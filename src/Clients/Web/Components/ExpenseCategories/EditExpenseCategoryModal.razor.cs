@@ -1,9 +1,9 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Spenses.Application.Models.ExpenseCategories;
-using Spenses.Application.Models.Homes;
 using Spenses.Client.Web.Store.ExpenseCategories;
 using Spenses.Client.Web.Store.Homes;
+using Spenses.Shared.Models.ExpenseCategories;
+using Spenses.Shared.Models.Homes;
 
 namespace Spenses.Client.Web.Components.ExpenseCategories;
 

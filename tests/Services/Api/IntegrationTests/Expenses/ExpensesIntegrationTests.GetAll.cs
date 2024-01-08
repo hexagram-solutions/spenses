@@ -1,7 +1,7 @@
 using System.Net;
 using Hexagrams.Extensions.Common;
-using Spenses.Application.Models.Common;
-using Spenses.Application.Models.Expenses;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.Api.IntegrationTests.Expenses;
 

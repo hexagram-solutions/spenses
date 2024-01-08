@@ -1,8 +1,8 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Client.Web.Store.ExpenseCategories;
+using Spenses.Shared.Models.ExpenseCategories;
 
 namespace Spenses.Client.Web.Components.ExpenseCategories;
 

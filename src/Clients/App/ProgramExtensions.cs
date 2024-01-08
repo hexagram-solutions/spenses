@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Polly;
 using Refit;
 using Spenses.App.Identity;
-using Spenses.Application.Common;
 using Spenses.Client.Http;
+using Spenses.Shared.Common;
 
 namespace Spenses.App;
 

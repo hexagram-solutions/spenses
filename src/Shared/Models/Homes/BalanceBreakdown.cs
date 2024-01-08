@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using Spenses.Application.Models.Members;
+using Spenses.Shared.Models.Members;
 
-namespace Spenses.Application.Models.Homes;
+namespace Spenses.Shared.Models.Homes;
 
 public record BalanceBreakdown
 {

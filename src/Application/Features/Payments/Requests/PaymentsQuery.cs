@@ -5,11 +5,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
-using Spenses.Application.Common.Query;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Application.Models.Common;
-using Spenses.Application.Models.Payments;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Common.Query;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Application.Features.Payments.Requests;
 

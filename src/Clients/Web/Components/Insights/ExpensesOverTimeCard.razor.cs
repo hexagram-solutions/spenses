@@ -1,8 +1,8 @@
 using Blazorise.Charts;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Spenses.Application.Models.Insights;
 using Spenses.Client.Web.Store.Insights;
+using Spenses.Shared.Models.Insights;
 
 namespace Spenses.Client.Web.Components.Insights;
 

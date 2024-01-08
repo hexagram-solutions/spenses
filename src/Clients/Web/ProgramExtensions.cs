@@ -1,7 +1,6 @@
 using Blazorise.Bootstrap5;
 using Blazorise.FluentValidation;
 using Blazorise.Icons.FontAwesome;
-using FluentValidation;
 using Fluxor;
 using Hexagrams.Extensions.Authentication.OAuth;
 using Hexagrams.Extensions.Common.Http;

@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Application.Models.Payments;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Application.Features.Payments.Requests;
 

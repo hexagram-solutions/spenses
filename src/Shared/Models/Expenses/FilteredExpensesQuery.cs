@@ -1,7 +1,7 @@
 using System.ComponentModel;
-using Spenses.Application.Models.Common;
+using Spenses.Shared.Models.Common;
 
-namespace Spenses.Application.Models.Expenses;
+namespace Spenses.Shared.Models.Expenses;
 
 public record FilteredExpensesQuery : PagedQuery<ExpenseDigest>
 {

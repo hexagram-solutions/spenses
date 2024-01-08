@@ -1,7 +1,7 @@
 using FluentValidation.TestHelper;
-using Spenses.Application.Common.Query;
 using Spenses.Application.Features.Common.Validators;
-using Spenses.Application.Models.Common;
+using Spenses.Shared.Common.Query;
+using Spenses.Shared.Models.Common;
 
 namespace Spenses.Application.Tests.Features.Common.Validators;
 

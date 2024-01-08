@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
-using Spenses.Application.Models.Authentication;
 using Spenses.Resources.Relational.Models;
+using Spenses.Shared.Models.Authentication;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Spenses.Api.Controllers;

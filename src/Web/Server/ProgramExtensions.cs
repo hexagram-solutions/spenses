@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Common;
 using Spenses.Resources.Communication;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
+using Spenses.Shared.Common;
 using Spenses.Web.Server.Components.Account;
 
 namespace Spenses.Web.Server;

@@ -1,5 +1,5 @@
 using AutoMapper;
-using Spenses.Application.Models.Homes;
+using Spenses.Shared.Models.Homes;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Homes;

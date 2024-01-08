@@ -1,5 +1,5 @@
 using Fluxor;
-using Spenses.Application.Models.Homes;
+using Spenses.Shared.Models.Homes;
 
 namespace Spenses.Web.Client.Store.Homes;
 

@@ -1,6 +1,6 @@
 using Hexagrams.Extensions.Configuration;
 using Microsoft.FluentUI.AspNetCore.Components;
-using Spenses.Application.Common;
+using Spenses.Shared.Common;
 using Spenses.Web.Client;
 using Spenses.Web.Client.Components.Pages;
 using Spenses.Web.Server;
