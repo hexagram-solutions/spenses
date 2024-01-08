@@ -6,7 +6,9 @@ public static class ClaimsPrincipalExtensions
 {
     public static string GetId(this ClaimsPrincipal user)
     {
-        return user.FindFirst(ApplicationClaimTypes.Identifier)?.Value ??
-            user.FindFirst(ApplicationClaimTypes.Subject)!.Value;
+        if (user.Identity?.IsAuthenticated != true)
+            throw new InvalidOperationException("Current user is not authenticated.");
+
+        return user.FindFirst(ApplicationClaimTypes.Identifier)!.Value;
     }
 }
