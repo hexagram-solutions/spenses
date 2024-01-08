@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Spenses.Application.Common.Serialization;
+namespace Spenses.Shared.Common.Serialization;
 
 public class LowerCaseNormalizingStringArrayConverter : JsonConverter<string[]>
 {

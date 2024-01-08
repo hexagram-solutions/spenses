@@ -7,7 +7,6 @@ using Hexagrams.Extensions.Authentication.OAuth;
 using Hexagrams.Extensions.Common.Http;
 using Polly;
 using Refit;
-using Spenses.Application.Features.Homes.Validators;
 using Spenses.Client.Http;
 using Spenses.Client.Web.Infrastructure;
 using IAccessTokenProvider = Hexagrams.Extensions.Authentication.OAuth.IAccessTokenProvider;
@@ -103,9 +102,6 @@ public static class ProgramExtensions
             .AddBootstrap5Providers()
             .AddFontAwesomeIcons()
             .AddBlazoriseFluentValidation();
-
-        // todo: is there a better hook for this?
-        services.AddValidatorsFromAssemblyContaining<HomePropertiesValidator>();
 
         return services;
     }

@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using Spenses.Application.Common.Serialization;
 using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Application.Models.Members;
 using Spenses.Application.Models.Users;
+using Spenses.Shared.Common.Serialization;
 
 namespace Spenses.Application.Models.Expenses;
 

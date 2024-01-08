@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Utilities\Security\Spenses.Utilities.Security.csproj" />
     <ProjectReference Include="..\Http\Spenses.Client.Http.csproj" />
   </ItemGroup>
 
