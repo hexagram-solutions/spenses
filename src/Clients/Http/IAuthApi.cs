@@ -13,4 +13,7 @@ public interface IAuthApi
 
     [Post("/auth/logout")]
     public Task<IApiResponse> Logout();
+
+    [Post("/auth/register")]
+    public Task<IApiResponse> Register(RegisterRequest request);
 }

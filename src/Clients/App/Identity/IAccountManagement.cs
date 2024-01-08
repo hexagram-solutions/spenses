@@ -16,7 +16,7 @@ public interface IAccountManagement
     public Task<FormResult> LoginAsync(string email, string password);
 
     /// <summary>
-    /// Log out the logged in user.
+    /// Log out the logged-in user.
     /// </summary>
     /// <returns>The asynchronous task.</returns>
     public Task LogoutAsync();

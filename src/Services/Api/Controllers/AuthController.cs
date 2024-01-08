@@ -77,6 +77,8 @@ public class AuthController(SignInManager<ApplicationUser> signInManager) : Cont
         return Ok();
     }
 
+    // register
+
     // confirm email
      
     // resend confirmation

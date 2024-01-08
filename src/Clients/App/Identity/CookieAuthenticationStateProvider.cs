@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Net.Http.Json;
+using Hexagrams.Extensions.Common.Serialization;
+using Refit;
 using Spenses.App.Identity.Models;
 using Spenses.Application.Models.Authentication;
+using Spenses.Client.Http;
 using Spenses.Utilities.Security;
 
 namespace Spenses.App.Identity;
@@ -11,7 +14,7 @@ namespace Spenses.App.Identity;
 /// <summary>
 /// Handles state for cookie-based auth.
 /// </summary>
-public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IAccountManagement
+public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi) : AuthenticationStateProvider, IAccountManagement
 {
     /// <summary>
     /// Map the JavaScript-formatted properties to C#-formatted classes.
@@ -25,7 +28,7 @@ public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IA
     /// <summary>
     /// Special auth client.
     /// </summary>
-    private readonly HttpClient _httpClient;
+    //private readonly HttpClient _httpClient;
 
     /// <summary>
     /// Authentication state.
@@ -42,8 +45,8 @@ public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IA
     /// Create a new instance of the auth provider.
     /// </summary>
     /// <param name="httpClientFactory">Factory to retrieve auth client.</param>
-    public CookieAuthenticationStateProvider(IHttpClientFactory httpClientFactory)
-        => _httpClient = httpClientFactory.CreateClient("Auth");
+    //public CookieAuthenticationStateProvider(IHttpClientFactory httpClientFactory)
+    //    => _httpClient = httpClientFactory.CreateClient("Auth");
 
     /// <summary>
     /// Register a new user.
@@ -58,13 +61,8 @@ public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IA
 
         try
         {
-            // make the request
-            var result = await _httpClient.PostAsJsonAsync(
-                "register", new
-                {
-                    email,
-                    password
-                });
+
+            var result = await authApi.Register(new RegisterRequest { Email = email, Password = password });
 
             // successful?
             if (result.IsSuccessStatusCode)
@@ -73,31 +71,15 @@ public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IA
             }
 
             // body should contain details about why it failed
-            var details = await result.Content.ReadAsStringAsync();
-            var problemDetails = JsonDocument.Parse(details);
+            var details = result.Error.Content!.FromJson<ProblemDetails>();
             var errors = new List<string>();
-            var errorList = problemDetails.RootElement.GetProperty("errors");
-
-            foreach (var errorEntry in errorList.EnumerateObject())
-            {
-                if (errorEntry.Value.ValueKind == JsonValueKind.String)
-                {
-                    errors.Add(errorEntry.Value.GetString()!);
-                }
-                else if (errorEntry.Value.ValueKind == JsonValueKind.Array)
-                {
-                    errors.AddRange(
-                        errorEntry.Value.EnumerateArray().Select(
-                                e => e.GetString() ?? string.Empty)
-                            .Where(e => !string.IsNullOrEmpty(e)));
-                }
-            }
+            errors.AddRange(details!.Errors.Select(e => $"{e.Key}: {string.Join(", ", e.Value)}"));
 
             // return the error list
             return new FormResult
             {
                 Succeeded = false,
-                ErrorList = problemDetails == null ? defaultDetail : [.. errors]
+                ErrorList = errors.Count == 0 ? defaultDetail : [.. errors]
             };
         }
         catch { }
@@ -110,31 +92,16 @@ public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IA
         };
     }
 
-    /// <summary>
-    /// User login.
-    /// </summary>
-    /// <param name="email">The user's email address.</param>
-    /// <param name="password">The user's password.</param>
-    /// <returns>The result of the login request serialized to a <see cref="FormResult"/>.</returns>
     public async Task<FormResult> LoginAsync(string email, string password)
     {
         try
         {
-            // login with cookies
-            var result = await _httpClient.PostAsJsonAsync(
-                "auth/login", new
-                {
-                    email,
-                    password
-                });
+            var result = await authApi.Login(new LoginRequest(email, password));
 
-            // success?
             if (result.IsSuccessStatusCode)
             {
-                // need to refresh auth state
                 NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
-                // success!
                 return new FormResult { Succeeded = true };
             }
         }
@@ -166,17 +133,18 @@ public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IA
         try
         {
             // the user info endpoint is secured, so if the user isn't logged in this will fail
-            var userResponse = await _httpClient.GetAsync("me/info");
+            var userResponse = await meApi.GetMe();
 
             // throw if user info wasn't retrieved
-            userResponse.EnsureSuccessStatusCode();
-
-            // user is authenticated,so let's build their authenticated identity
-            var userJson = await userResponse.Content.ReadAsStringAsync();
-            var userInfo = JsonSerializer.Deserialize<CurrentUser>(userJson, _jsonSerializerOptions);
-
-            if (userInfo != null)
+            if (!userResponse.IsSuccessStatusCode)
             {
+                throw new Exception("Login failed"); // todo: find a better thing to do here
+            }
+
+            if (userResponse.Content is not null)
+            {
+                var userInfo = userResponse.Content;
+
                 // in our system name and email are the same
                 var claims = new List<Claim>
                 {
@@ -199,7 +167,7 @@ public class CookieAuthenticationStateProvider : AuthenticationStateProvider, IA
 
     public async Task LogoutAsync()
     {
-        await _httpClient.PostAsync("/auth/logout", null);
+        await authApi.Logout();
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 

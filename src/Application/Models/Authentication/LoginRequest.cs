@@ -27,3 +27,10 @@ public record CurrentUser
 
     public required bool EmailVerified { get; init; }
 }
+
+public record RegisterRequest
+{
+    public required string Email { get; init; }
+
+    public required string Password { get; init; }
+}
