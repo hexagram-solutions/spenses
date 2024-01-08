@@ -1,8 +1,10 @@
 using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
+using Spenses.Application.Features.Authentication.Requests;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Authentication;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
@@ -13,7 +15,7 @@ namespace Spenses.Api.Controllers;
 [ApiVersion("1.0")]
 [Route("auth")]
 [AllowAnonymous]
-public class AuthController(SignInManager<ApplicationUser> signInManager) : ControllerBase
+public class AuthController(SignInManager<ApplicationUser> signInManager, ISender sender) : ControllerBase
 {
     /// <summary>
     /// Authenticate a user using their credentials.
@@ -25,19 +27,9 @@ public class AuthController(SignInManager<ApplicationUser> signInManager) : Cont
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<LoginResult>> Login(LoginRequest request)
     {
-        signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
+        var result = await sender.Send(new LoginCommand(request));
 
-        var (email, password) = request;
-
-        var result = await signInManager.PasswordSignInAsync(email, password, true, true);
-
-        if (!result.Succeeded)
-        {
-            return StatusCode(StatusCodes.Status401Unauthorized,
-                new LoginResult(result.Succeeded, result.RequiresTwoFactor, result.IsNotAllowed, result.IsLockedOut));
-        }
-
-        return Ok(new LoginResult(result.Succeeded));
+        return result.Succeeded ? Ok(result) : StatusCode(StatusCodes.Status401Unauthorized, result);
     }
 
     [HttpPost("login-with-2fa")]
