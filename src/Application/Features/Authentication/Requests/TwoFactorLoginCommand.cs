@@ -16,16 +16,15 @@ public class TwoFactorLoginCommandHandler(SignInManager<ApplicationUser> signInM
 
         var result = new SignInResult();
 
-        var (twoFactorCode, twoFactorRecoveryCode, twoFactorRememberClient) = request.Request;
+        var (code, recoveryCode, rememberClient) = request.Request;
 
-        if (!string.IsNullOrEmpty(twoFactorCode))
+        if (!string.IsNullOrEmpty(code))
         {
-            result = await signInManager.TwoFactorAuthenticatorSignInAsync(twoFactorCode, true,
-                twoFactorRememberClient);
+            result = await signInManager.TwoFactorAuthenticatorSignInAsync(code, true, rememberClient);
         }
-        else if (!string.IsNullOrEmpty(twoFactorRecoveryCode))
+        else if (!string.IsNullOrEmpty(recoveryCode))
         {
-            result = await signInManager.TwoFactorRecoveryCodeSignInAsync(twoFactorRecoveryCode);
+            result = await signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
         }
 
         return result.Succeeded

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Spenses.Application.Common.Behaviors;
 using Spenses.Application.Features.Homes.Requests;
 using Spenses.Application.Features.Homes.Validators;
+using Spenses.Shared.Validators.Authentication;
 
 namespace Spenses.Application;
 
@@ -29,6 +30,9 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddValidatorsFromAssemblyContaining<CreateHomeCommandValidator>();
+
+        //TODO: Update when all validators are moved
+        services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
         return services;
     }

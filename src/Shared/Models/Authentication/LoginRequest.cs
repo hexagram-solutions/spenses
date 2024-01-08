@@ -4,7 +4,7 @@ public record LoginRequest(
     string Email,
     string Password);
 
-public record TwoFactorLoginRequest(string? TwoFactorCode, string? TwoFactorRecoveryCode, bool TwoFactorRememberClient);
+public record TwoFactorLoginRequest(string? Code, string? RecoveryCode, bool RememberClient);
 
 public record LoginResult(
     bool Succeeded,

@@ -1,13 +1,9 @@
 using Asp.Versioning;
-using Azure.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Application.Features.Authentication.Requests;
-using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Authentication;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Spenses.Api.Controllers;
 
@@ -15,7 +11,7 @@ namespace Spenses.Api.Controllers;
 [ApiVersion("1.0")]
 [Route("auth")]
 [AllowAnonymous]
-public class AuthController(SignInManager<ApplicationUser> signInManager, ISender sender) : ControllerBase
+public class AuthController(ISender sender) : ControllerBase
 {
     /// <summary>
     /// Authenticate a user using their credentials.
@@ -24,6 +20,7 @@ public class AuthController(SignInManager<ApplicationUser> signInManager, ISende
     /// <returns>The new expense category.</returns>
     [HttpPost("login")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<LoginResult>> Login(LoginRequest request)
     {
@@ -34,6 +31,7 @@ public class AuthController(SignInManager<ApplicationUser> signInManager, ISende
 
     [HttpPost("login-with-2fa")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<LoginResult>> TwoFactorLogin(TwoFactorLoginRequest request)
     {
