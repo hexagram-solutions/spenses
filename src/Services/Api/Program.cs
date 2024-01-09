@@ -15,7 +15,7 @@ const string corsPolicyName = "AllowSpecificOrigins";
 
 builder
     .AddWebApiServices(corsPolicyName)
-    .AddIdentity()
+    .AddIdentityServices()
     .AddAuthorizationServices();
 
 builder.Services

@@ -7,8 +7,6 @@ using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Authentication.Requests;
 
-public record IdentityEmailOptions(string ApplicationBaseUrl, string ConfirmationPath, string PasswordResetPath);
-
 public record SendConfirmationEmailCommand(string Email, bool IsChange = false) : IRequest;
 
 public class SendConfirmationEmailCommandHandler(UserManager<ApplicationUser> userManager,
@@ -40,7 +38,7 @@ public class SendConfirmationEmailCommandHandler(UserManager<ApplicationUser> us
 
         var emailConfirmationPath = QueryHelpers.AddQueryString(emailOptions.Value.ConfirmationPath, queryParameters);
 
-        var confirmEmailUrl = new Uri(new Uri(emailOptions.Value.ApplicationBaseUrl), emailConfirmationPath);
+        var confirmEmailUrl = new Uri(new Uri(emailOptions.Value.WebApplicationBaseUrl), emailConfirmationPath);
 
         await emailSender.SendConfirmationLinkAsync(user, email, confirmEmailUrl.ToString());
     }

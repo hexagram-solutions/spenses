@@ -1,45 +1,50 @@
 ﻿@page "/sign-up"
-@using Morris.Blazor.FluentValidation
-@using Morris.Blazor.Validation
 @using Spenses.Shared.Validators.Authentication
 
 <PageTitle>Sign up</PageTitle>
 
 <h2>Sign up</h2>
 
-@if (Errors.Count != 0)
-{
-    foreach (var error in Errors)
+<FluentStack Orientation="Orientation.Vertical">
+
+    @if (Errors.Count > 1)
     {
-        <div class="alert alert-danger">@error</div>
+        <FluentMessageBar Title="Unable to sign up"
+                          Intent="MessageIntent.Error">
+            <ul>
+                @foreach (var error in Errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </FluentMessageBar>
     }
-}
+    else if (Errors.Count > 0)
+    {
+        <FluentMessageBar Title="@Errors.Single()"
+                          Intent="MessageIntent.Error"/>
+    }
 
-<EditForm Model="RegisterRequest"
-          asp-route-returnUrl="@ReturnUrl"
-          method="post"
-          OnValidSubmit="RegisterUser"
-          FormName="register">
+    <EditForm Model="RegisterRequest"
+              OnSubmit="RegisterUser">
 
-    <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<RegisterRequestValidator>())"/>
+        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<RegisterRequestValidator>())"/>
 
-    <FluentStack Orientation="Orientation.Vertical">
         <FluentTextField Name="RegisterRequest.Email"
                          @bind-Value="RegisterRequest.Email"
                          AutoComplete="username"
                          Required="true"
-                         Placeholder="name@example.com"
+                         Placeholder="hmccringleberry@psu.edu"
                          Label="Email"
                          Style="width: 100%"/>
         <ValidationMessage For="() => RegisterRequest.Email"
                            class="text-danger"/>
 
-        <FluentTextField type="password"
-                         Name="RegisterRequest.Password"
+        <FluentTextField Name="RegisterRequest.Password"
+                         TextFieldType="TextFieldType.Password"
                          @bind-Value="RegisterRequest.Password"
                          AutoComplete="current-password"
-                         Required="true"
-                         Placeholder="password"
+                         Required
                          Label="Password"
                          Style="width: 100%"/>
         <ValidationMessage For="() => RegisterRequest.Password"
@@ -48,7 +53,7 @@
         <FluentButton Type="ButtonType.Submit"
                       Appearance="Appearance.Accent"
                       Style="width: 100%">
-            Log in
+            Sign up
         </FluentButton>
-    </FluentStack>
-</EditForm>
+    </EditForm>
+</FluentStack>

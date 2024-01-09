@@ -29,7 +29,7 @@ public class ForgotPasswordCommandHandler(UserManager<ApplicationUser> userManag
 
         var passwordResetPath = QueryHelpers.AddQueryString(emailOptions.Value.ConfirmationPath, queryParameters);
 
-        var resetPasswordUrl = new Uri(new Uri(emailOptions.Value.ApplicationBaseUrl), passwordResetPath);
+        var resetPasswordUrl = new Uri(new Uri(emailOptions.Value.WebApplicationBaseUrl), passwordResetPath);
 
         await emailSender.SendPasswordResetLinkAsync(user, request.Request.Email, resetPasswordUrl.ToString());
     }

@@ -3,13 +3,14 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Spenses.Application.Exceptions;
+using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Authentication;
 
 namespace Spenses.Application.Features.Authentication.Requests;
 
 public record ConfirmEmailCommand(ConfirmEmailRequest ConfirmEmail) : IRequest;
 
-public class ConfirmEmailCommandHandler(UserManager<IdentityUser> userManager) : IRequestHandler<ConfirmEmailCommand>
+public class ConfirmEmailCommandHandler(UserManager<ApplicationUser> userManager) : IRequestHandler<ConfirmEmailCommand>
 {
     public async Task Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
     {

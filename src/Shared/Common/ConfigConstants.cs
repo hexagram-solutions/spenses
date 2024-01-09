@@ -12,9 +12,7 @@ public static class ConfigConstants
     public const string SpensesApiAllowedOrigins = "Spenses:Api:AllowedOrigins";
     public const string SpensesApiBaseUrl = "Spenses:Api:BaseUrl";
 
-    public const string SpensesWebBaseUrl = "Spenses:Web:BaseUrl";
-    public const string SpensesWebEmailConfirmationPath = "Spenses:Web:EmailConfirmationPath";
-    public const string SpensesWebPasswordResetPath = "Spenses:Web:PasswordResetPath";
+    public const string SpensesIdentityEmailConfigurationSection = "Spenses:Identity:Email";
 
     public const string SpensesLoggingLongRunningRequestThreshold = "Spenses:Logging:LongRunningRequestThreshold";
 

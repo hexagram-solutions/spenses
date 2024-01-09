@@ -37,10 +37,10 @@ public class RegisterRequestValidatorTests
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Password);
 
-        _validator.TestValidate(model with { Password = new string('a', 11) })
+        _validator.TestValidate(model with { Password = new string('a', 9) })
             .ShouldHaveValidationErrorFor(x => x.Password);
 
-        _validator.TestValidate(model with { Password = new string('a', 12) })
+        _validator.TestValidate(model with { Password = new string('a', 10) })
             .ShouldNotHaveValidationErrorFor(x => x.Password);
     }
 }

@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Authentication;
 
 namespace Spenses.Application.Features.Authentication.Requests;
@@ -7,7 +8,7 @@ namespace Spenses.Application.Features.Authentication.Requests;
 public record ResendConfirmationEmailCommand(ResendConfirmationEmailRequest Request) : IRequest;
 
 public class ResendConfirmationEmailCommandHandler(
-    UserManager<IdentityUser> userManager, ISender sender)
+    UserManager<ApplicationUser> userManager, ISender sender)
     : IRequestHandler<ResendConfirmationEmailCommand>
 {
     public async Task Handle(ResendConfirmationEmailCommand request, CancellationToken cancellationToken)

@@ -10,8 +10,8 @@
 
     @if (!string.IsNullOrEmpty(ErrorMessage))
     {
-            <FluentMessageBar Title="@ErrorMessage"
-                              Intent="MessageIntent.Error"/>
+        <FluentMessageBar Title="@ErrorMessage"
+                          Intent="MessageIntent.Error"/>
     }
 
     <EditForm Model="LoginRequest"
@@ -29,8 +29,8 @@
 
         <FluentTextField Id="password"
                          TextFieldType="TextFieldType.Password"
-                         @bind-Value="LoginRequest.Password"
-                         AutoComplete="password"
+                          @bind-Value="LoginRequest.Password"
+                          AutoComplete="current-password"
                          Required
                          Label="Password"
                          Style="width: 100%"/>

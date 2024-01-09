@@ -15,8 +15,11 @@ using Microsoft.FeatureManagement;
 using NSwag;
 using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
+using Spenses.Application.Features.Authentication;
 using Spenses.Application.Features.Homes.Authorization;
+using Spenses.Application.Services.Identity;
 using Spenses.Application.Services.Identity.Passwords;
+using Spenses.Resources.Communication;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Common;
@@ -108,7 +111,7 @@ public static class ProgramExtensions
         return builder;
     }
 
-    public static WebApplicationBuilder AddIdentity(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddIdentityServices(this WebApplicationBuilder builder)
     {
         //var dataProtectionBuilder = builder.Services.AddDataProtection()
         //    .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName));
@@ -157,6 +160,24 @@ public static class ProgramExtensions
             options.Password.RequiredUniqueChars = 3;
             options.Password.RequiredLength = 8;
         });
+
+        builder.Services.AddTransient<IEmailSender<ApplicationUser>, IdentityEmailSender>();
+
+        if (builder.Environment.IsLocalOrIntegrationTestEnvironment())
+        {
+            builder.Services.AddSmtpEmailServices(
+                builder.Configuration.GetRequiredSection(ConfigConstants.CommunicationEmailConfigurationSection),
+                builder.Configuration.GetRequiredSection(ConfigConstants.CommunicationSmtpOptionsSection));
+        }
+        else
+        {
+            builder.Services.AddAzureEmailServices(
+                builder.Configuration.GetRequiredSection(ConfigConstants.CommunicationEmailConfigurationSection),
+                builder.Configuration.Require(ConfigConstants.AzureCommunicationServicesConnectionString));
+        }
+
+        builder.Services.Configure<IdentityEmailOptions>(
+            builder.Configuration.GetRequiredSection(ConfigConstants.SpensesIdentityEmailConfigurationSection));
 
         return builder;
     }

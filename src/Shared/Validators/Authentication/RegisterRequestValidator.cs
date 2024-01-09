@@ -12,6 +12,6 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
 
         RuleFor(x => x.Password)
             .NotEmpty()
-            .MinimumLength(12);
+            .MinimumLength(10);
     }
 }

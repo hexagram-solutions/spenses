@@ -19,7 +19,7 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IU
 
         var user = new ApplicationUser();
 
-        //var emailStore = (IUserEmailStore<IdentityUser>) userStore;
+        //var emailStore = (IUserEmailStore<ApplicationUser>) userStore;
         //await userStore.SetUserNameAsync(user, email, cancellationToken);
         //await emailStore.SetEmailAsync(user, email, cancellationToken);
 

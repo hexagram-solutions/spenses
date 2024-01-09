@@ -4,8 +4,17 @@ POST {{HOST}}/auth/register
 Content-Type: application/json
 
 {
-  "email": "foo@bar.ca",
-  "password": "foo@bar.ca"
+  "email": "tyroil@bar.ca",
+  "password": "foobarfoobar"
+}
+
+###
+
+POST {{HOST}}/auth/resend-confirmation-email
+Content-Type: application/json
+
+{
+  "email": "asdf@bar.ca"
 }
 
 ###
