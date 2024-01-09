@@ -1,8 +1,6 @@
-﻿@page "/register"
+﻿@page "/sign-up"
 @using Spenses.App.Identity
 @inject IAccountManagement Acct
-
-@attribute [AllowAnonymous]
 
 <PageTitle>Register</PageTitle>
 
@@ -15,7 +13,7 @@
     <NotAuthorized>
         @if (success)
         {
-            <div class="alert alert-success">You successfully registered. Now you can <a href="login">login</a>.</div>
+            <div class="alert alert-success">You successfully registered. Now you can <a href="login">log in</a>.</div>
         }
         else
         {
@@ -40,12 +38,6 @@
                     <input required id="password" name="passwordInput" placeholder="Enter your password" type="password" @bind-value="password" /><br />
                 </div>
                 <div>
-                    <label for="confirmPassword">
-                        Retype password:
-                    </label>
-                    <input required id="confirmPassword" name="confirmPasswordInput" placeholder="Re-enter your password" type="password" @bind-value="confirmPassword" />
-                </div>
-                <div>
                     <button class="btn btn-primary" @onclick="DoRegisterAsync">Register</button>
                 </div>
             </div>
@@ -57,7 +49,6 @@
     private bool success, errors;
     private string email = string.Empty;
     private string password = string.Empty;
-    private string confirmPassword = string.Empty;
     private string[] errorList = [];
 
     public async Task DoRegisterAsync()
@@ -81,28 +72,12 @@
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(confirmPassword))
-        {
-            errors = true;
-            errorList = ["Please confirm your password."];
-
-            return;
-        }
-
-        if (password != confirmPassword)
-        {
-            errors = true;
-            errorList = ["Passwords don't match."];
-
-            return;
-        }
-
-        var result = await Acct.RegisterAsync(email!, password!);
+        var result = await Acct.RegisterAsync(email, password);
 
         if (result.Succeeded)
         {
             success = true;
-            email = password = confirmPassword = string.Empty;
+            email = password = string.Empty;
         }
         else
         {

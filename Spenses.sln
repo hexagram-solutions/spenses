@@ -53,11 +53,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Web.Server", "src\W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Resources.Communication", "src\Resources\Communication\Spenses.Resources.Communication.csproj", "{398B4C55-B7C8-4F81-AEEB-149BC97B0625}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.App", "src\Clients\App\Spenses.App.csproj", "{9F71FFB7-1155-4EEC-8C9C-671CEC43FFE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.App", "src\Clients\App\Spenses.App.csproj", "{9F71FFB7-1155-4EEC-8C9C-671CEC43FFE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Shared", "src\Shared\Spenses.Shared.csproj", "{6225E2F2-156B-40D7-8437-2B0FAFC8F586}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Shared", "src\Shared\Spenses.Shared.csproj", "{6225E2F2-156B-40D7-8437-2B0FAFC8F586}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spenses.Shared.Tests", "tests\Shared\Spenses.Shared.Tests.csproj", "{4CEA5AF3-8483-45F7-91F8-8E7BC5E06C84}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spenses.Shared.Tests", "tests\Shared\Spenses.Shared.Tests.csproj", "{4CEA5AF3-8483-45F7-91F8-8E7BC5E06C84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

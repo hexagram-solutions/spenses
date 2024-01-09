@@ -91,27 +91,13 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi) :
         };
     }
 
-    public async Task<FormResult> LoginAsync(string email, string password)
+    public async Task<LoginResult> LoginAsync(LoginRequest request)
     {
-        try
-        {
-            var result = await authApi.Login(new LoginRequest(email, password));
+        var result = await authApi.Login(request);
 
-            if (result.IsSuccessStatusCode)
-            {
-                NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
-                return new FormResult { Succeeded = true };
-            }
-        }
-        catch { }
-
-        // unknown error
-        return new FormResult
-        {
-            Succeeded = false,
-            ErrorList = ["Invalid email and/or password."]
-        };
+        return result.Content!;
     }
 
     /// <summary>

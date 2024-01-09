@@ -1,8 +1,10 @@
+@using Spenses.App.Infrastructure
+
 @inject NavigationManager NavigationManager
 
 @code {
     protected override void OnInitialized()
     {
-        NavigationManager.NavigateTo($"login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}");
+        NavigationManager.NavigateTo(Routes.Identity.Login(Uri.EscapeDataString(NavigationManager.Uri)));
     }
 }

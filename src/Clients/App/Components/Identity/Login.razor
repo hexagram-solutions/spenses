@@ -1,85 +1,87 @@
 ﻿@page "/login"
+
+@using Morris.Blazor.Validation
+@using Morris.Blazor.Validation.Extensions
+@using Morris.Blazor.FluentValidation
 @using Spenses.App.Identity
+@using Spenses.App.Infrastructure
+@using Spenses.Shared.Models.Authentication
+@using Spenses.Shared.Validators.Authentication
+
 @inject IAccountManagement Acct
-@attribute [AllowAnonymous]
+@inject NavigationManager Navigation
 
-<PageTitle>Login</PageTitle>
+<PageTitle>Log in</PageTitle>
 
-<h1>Login</h1>
+<h2>Log in</h2>
 
-<AuthorizeView>
-    <Authorized>
-        <div class="alert alert-success">You're logged in as @context.User.Identity?.Name.</div>
-    </Authorized>
-    <NotAuthorized>
-        @if (errors)
-        {
-            @foreach (var error in errorList)
-            {
-                <div class="alert alert-danger">@error</div>
-            }
-        }
-        <div class="flex-outer">
-            <div>
-                <label for="email">
-                    Email:
-                </label>
-                <input required id="email" name="emailInput" placeholder="Enter your email address" type="email" @bind-value="email" />
-            </div>
-            <div>
-                <label for="password">
-                    Password:
-                </label>
-                <input required id="password" name="passwordInput" placeholder="Enter your password" type="password" @bind-value="password" />
-            </div>
-            <div>
-                <button class="btn btn-primary" @onclick="DoLoginAsync">Login</button>
-            </div>
+@if (!string.IsNullOrEmpty(_errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @_errorMessage
+    </div>
+}
+
+<EditForm Model="_loginRequest.Password" method="post" OnValidSubmit="LogIn" FormName="login">
+    <Validate ValidationProperties=@(ValidationProperties.Set.FluentValidator<LoginRequestValidator>())/>
+
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentTextField Name="email" @bind-Value="_loginRequest.Email" AutoComplete="username" Required="true" Placeholder="name@example.com" Label="Email" Style="width: 100%"/>
+        <ValidationMessage For=@(() => _loginRequest.Email) />
+
+        <FluentTextField type="password" Name="password" @bind-Value="_loginRequest.Password" AutoComplete="current-password" Required="true" Placeholder="password" Label="Password" Style="width: 100%"/>
+        <ValidationMessage For=@(() => _loginRequest.Password) />
+
+        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%">Log in</FluentButton>
+
+        <div>
+            <p>
+                <FluentAnchor Appearance="Appearance.Hypertext" Href="@Routes.Identity.ForgotPassword">Forgot password?</FluentAnchor>
+            </p>
+            <p>
+                <FluentAnchor Appearance="Appearance.Hypertext" Href="@Routes.Identity.SignUp(ReturnUrl)">Register as a new user</FluentAnchor>
+            </p>
+            <p>
+                <FluentAnchor Appearance="Appearance.Hypertext" Href="@Routes.Identity.ReSendConfirmationEmail">Resend email confirmation</FluentAnchor>
+            </p>
         </div>
-        
-        
-        <a href="register"><span class="bi bi-pencil-square" aria-hidden="true" style="vertical-align:middle"></span> Register</a>
-    </NotAuthorized>
-</AuthorizeView>
+    </FluentStack>
+</EditForm>
 
 @code {
-    private bool success, errors;
-    private string email = string.Empty;
-    private string password = string.Empty;
-    private string[] errorList = [];
 
-    public async Task DoLoginAsync()
+    [SupplyParameterFromQuery] private string ReturnUrl { get; init; } = "/";
+
+    private string? _errorMessage;
+
+    readonly LoginRequest _loginRequest = new()
     {
-        success = errors = false;
-        errorList = [];
+        Email = string.Empty,
+        Password = string.Empty
+    };
 
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            errors = true;
-            errorList = ["Email is required."];
-
+    public async Task LogIn(EditContext editContext)
+    {
+        if (!editContext.ValidateObjectTree())
             return;
-        }
 
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            errors = true;
-            errorList = ["Password is required."];
-
-            return;
-        }
-
-        var result = await Acct.LoginAsync(email!, password!);
+        var result = await Acct.LoginAsync(_loginRequest);
 
         if (result.Succeeded)
         {
-            success = true;
-            email = password = string.Empty;
+            Navigation.NavigateTo(ReturnUrl);
+        }
+        else if (result.RequiresTwoFactor)
+        {
+            Navigation.NavigateTo(Routes.Identity.TwoFactorLogin(ReturnUrl));
+        }
+        else if (result.IsLockedOut)
+        {
+            _errorMessage = "This account is locked.";
         }
         else
         {
-            errors = true;
-            errorList = result.ErrorList;
+            _errorMessage = "Your email or password was incorrect. Please try again.";
         }
     }
 }

@@ -1,11 +1,10 @@
-using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.FluentUI.AspNetCore.Components;
+using Morris.Blazor.Validation;
 using Spenses.App;
 using Spenses.App.Components;
-using Spenses.App.Identity;
-using Spenses.Shared.Common;
+using Spenses.Shared.Validators.Authentication;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -16,14 +15,8 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.H
 builder.AddIdentityServices()
     .AddApiClients();
 
-var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
-
-// todo: replace with use of IAuthApi
-builder.Services.AddHttpClient(
-        "Auth",
-        opt => opt.BaseAddress = new Uri(baseUrl))
-    .AddHttpMessageHandler<CookieHandler>();
-
-builder.Services.AddFluentUIComponents();
+builder.Services
+    .AddFluentUIComponents()
+    .AddFormValidation(config => config.AddFluentValidation(typeof(LoginRequestValidator).Assembly));
 
 await builder.Build().RunAsync();

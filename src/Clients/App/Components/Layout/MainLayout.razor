@@ -1,31 +1,18 @@
 ﻿@inherits LayoutComponentBase
+@layout BaseLayout
+
 <FluentLayout>
     <FluentHeader>
-        Spenses.App
+        Spenses
         <FluentSpacer />
-	    <LoginDisplay />
+        <LoginDisplay />
     </FluentHeader>
     <FluentStack Class="main" Orientation="Orientation.Horizontal" Width="100%">
         <NavMenu />
         <FluentBodyContent>
-            <ErrorBoundary>
-                <ChildContent>
-                   <div class="content">
-                        @Body
-                    </div>
-                </ChildContent>
-                <ErrorContent Context="ex">
-                    <div class="blazor-error-boundary">@ex.Message</div>
-                </ErrorContent>
-            </ErrorBoundary>
+            <div class="content">
+                @Body
+            </div>
         </FluentBodyContent>
     </FluentStack>
-    <FluentFooter>
-        <div class="link1">
-            <a href="https://www.fluentui-blazor.net" target="_blank">Documentation and demos</a>
-        </div>
-        <div class="link2">
-            <a href="https://learn.microsoft.com/en-us/aspnet/core/blazor" target="_blank">About Blazor</a>
-        </div>
-    </FluentFooter>
 </FluentLayout>

@@ -11,7 +11,7 @@ public class LoginRequestValidatorTests
     [Fact]
     public void Email_is_required()
     {
-        var model = new LoginRequest(string.Empty, "hunter2");
+        var model = new LoginRequest { Email = string.Empty, Password = "hunter2" };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Email);
@@ -23,7 +23,7 @@ public class LoginRequestValidatorTests
     [Fact]
     public void Password_is_required()
     {
-        var model = new LoginRequest("george@vandelayindustries.com", string.Empty);
+        var model = new LoginRequest { Email = "george@vandelayindustries.com", Password = string.Empty };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Password);
