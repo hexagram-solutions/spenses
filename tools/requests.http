@@ -1,11 +1,21 @@
 @HOST=https://localhost:8081
 
+POST {{HOST}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "foo@bar.ca",
+  "password": "foo@bar.ca"
+}
+
+###
+
 POST {{HOST}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "ericsondergard+spensesuser@fastmail.com",
-  "password": "Password1!"
+  "email": "asdf",
+  "password": "asdf"
 }
 
 ###

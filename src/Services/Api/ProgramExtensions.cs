@@ -16,6 +16,7 @@ using NSwag;
 using NSwag.AspNetCore;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Homes.Authorization;
+using Spenses.Application.Services.Identity.Passwords;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Common;
@@ -140,7 +141,22 @@ public static class ProgramExtensions
         builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddPasswordValidator<UserNameAsPasswordValidator>()
+            .AddPasswordValidator<EmailAsPasswordValidator>()
+            .AddPasswordValidator<CommonPasswordValidator>();
+
+        // We specify a minimum password length and no other requirements. We compare submitted passwords to a list
+        // of common passwords to validate them instead.
+        builder.Services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequiredUniqueChars = 3;
+            options.Password.RequiredLength = 8;
+        });
 
         return builder;
     }

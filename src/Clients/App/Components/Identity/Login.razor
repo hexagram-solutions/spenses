@@ -1,87 +1,68 @@
 ﻿@page "/login"
-
-@using Morris.Blazor.Validation
-@using Morris.Blazor.Validation.Extensions
-@using Morris.Blazor.FluentValidation
-@using Spenses.App.Identity
-@using Spenses.App.Infrastructure
-@using Spenses.Shared.Models.Authentication
 @using Spenses.Shared.Validators.Authentication
-
-@inject IAccountManagement Acct
-@inject NavigationManager Navigation
+@using Spenses.App.Infrastructure
 
 <PageTitle>Log in</PageTitle>
 
 <h2>Log in</h2>
 
-@if (!string.IsNullOrEmpty(_errorMessage))
-{
-    <div class="alert alert-danger" role="alert">
-        @_errorMessage
-    </div>
-}
+<FluentStack Orientation="Orientation.Vertical">
 
-<EditForm Model="_loginRequest.Password" method="post" OnValidSubmit="LogIn" FormName="login">
-    <Validate ValidationProperties=@(ValidationProperties.Set.FluentValidator<LoginRequestValidator>())/>
-
-    <FluentStack Orientation="Orientation.Vertical">
-        <FluentTextField Name="email" @bind-Value="_loginRequest.Email" AutoComplete="username" Required="true" Placeholder="name@example.com" Label="Email" Style="width: 100%"/>
-        <ValidationMessage For=@(() => _loginRequest.Email) />
-
-        <FluentTextField type="password" Name="password" @bind-Value="_loginRequest.Password" AutoComplete="current-password" Required="true" Placeholder="password" Label="Password" Style="width: 100%"/>
-        <ValidationMessage For=@(() => _loginRequest.Password) />
-
-        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="width: 100%">Log in</FluentButton>
-
-        <div>
-            <p>
-                <FluentAnchor Appearance="Appearance.Hypertext" Href="@Routes.Identity.ForgotPassword">Forgot password?</FluentAnchor>
-            </p>
-            <p>
-                <FluentAnchor Appearance="Appearance.Hypertext" Href="@Routes.Identity.SignUp(ReturnUrl)">Register as a new user</FluentAnchor>
-            </p>
-            <p>
-                <FluentAnchor Appearance="Appearance.Hypertext" Href="@Routes.Identity.ReSendConfirmationEmail">Resend email confirmation</FluentAnchor>
-            </p>
-        </div>
-    </FluentStack>
-</EditForm>
-
-@code {
-
-    [SupplyParameterFromQuery] private string ReturnUrl { get; init; } = "/";
-
-    private string? _errorMessage;
-
-    readonly LoginRequest _loginRequest = new()
+    @if (!string.IsNullOrEmpty(ErrorMessage))
     {
-        Email = string.Empty,
-        Password = string.Empty
-    };
-
-    public async Task LogIn(EditContext editContext)
-    {
-        if (!editContext.ValidateObjectTree())
-            return;
-
-        var result = await Acct.LoginAsync(_loginRequest);
-
-        if (result.Succeeded)
-        {
-            Navigation.NavigateTo(ReturnUrl);
-        }
-        else if (result.RequiresTwoFactor)
-        {
-            Navigation.NavigateTo(Routes.Identity.TwoFactorLogin(ReturnUrl));
-        }
-        else if (result.IsLockedOut)
-        {
-            _errorMessage = "This account is locked.";
-        }
-        else
-        {
-            _errorMessage = "Your email or password was incorrect. Please try again.";
-        }
+            <FluentMessageBar Title="@ErrorMessage"
+                              Intent="MessageIntent.Error"/>
     }
-}
+
+    <EditForm Model="LoginRequest"
+              OnSubmit="LogIn">
+        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<LoginRequestValidator>())"/>
+
+        <FluentTextField Id="email"
+                         TextFieldType="TextFieldType.Email"
+                         @bind-Value="LoginRequest.Email"
+                         AutoComplete="email"
+                         Required
+                         Label="Email"
+                         Style="width: 100%"/>
+        <ValidationMessage For="@(() => LoginRequest.Email)"/>
+
+        <FluentTextField Id="password"
+                         TextFieldType="TextFieldType.Password"
+                         @bind-Value="LoginRequest.Password"
+                         AutoComplete="password"
+                         Required
+                         Label="Password"
+                         Style="width: 100%"/>
+        <ValidationMessage For="@(() => LoginRequest.Password)"/>
+
+        <FluentButton Type="ButtonType.Submit"
+                      Appearance="Appearance.Accent"
+                      Style="width: 100%">
+            Log in
+        </FluentButton>
+    </EditForm>
+
+    <div>
+        <p>
+            <FluentAnchor Appearance="Appearance.Hypertext"
+                          Href="@Routes.Identity.ForgotPassword">
+                Forgot password?
+            </FluentAnchor>
+        </p>
+        <p>
+            Don't have an account?
+            <FluentAnchor Appearance="Appearance.Hypertext"
+                          Href="@Routes.Identity.SignUp(ReturnUrl)">
+                Sign up
+            </FluentAnchor>
+        </p>
+        <p>
+            @* TODO: Move to email confirmation requirement screen*@
+            <FluentAnchor Appearance="Appearance.Hypertext"
+                          Href="@Routes.Identity.ReSendConfirmationEmail">
+                Resend email confirmation
+            </FluentAnchor>
+        </p>
+    </div>
+</FluentStack>

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Spenses.Resources.Communication;
 using Spenses.Resources.Relational.Models;
 
-namespace Spenses.Application.Services;
+namespace Spenses.Application.Services.Identity;
 
 public class IdentityEmailSender(IEmailClient emailClient) : IEmailSender<ApplicationUser>
 {

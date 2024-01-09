@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Polly;
 using Refit;
-using Spenses.App.Identity;
+using Spenses.App.Authentication;
 using Spenses.Client.Http;
 using Spenses.Shared.Common;
 
@@ -19,7 +19,7 @@ public static class ProgramExtensions
         builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
 
         builder.Services.AddScoped(
-            sp => (IAccountManagement) sp.GetRequiredService<AuthenticationStateProvider>());
+            sp => (IAuthenticationService) sp.GetRequiredService<AuthenticationStateProvider>());
 
         return builder;
     }

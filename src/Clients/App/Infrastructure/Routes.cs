@@ -2,6 +2,8 @@ namespace Spenses.App.Infrastructure;
 
 public static class Routes
 {
+    public const string Root = "/";
+
     public static class Identity
     {
         public static string Login(string? returnUrl = null) => string.IsNullOrEmpty(returnUrl)

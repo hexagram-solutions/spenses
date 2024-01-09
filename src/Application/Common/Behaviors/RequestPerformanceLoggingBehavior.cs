@@ -40,6 +40,8 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TReq
             logger.LogWarning(
                 "Request {Name} took {ElapsedMilliseconds}ms to complete (threshold: {Threshold})",
                 requestName, elapsedMilliseconds, _longRunningRequestThreshold);
+
+            return response;
         }
 
         var userId = currentUser.GetId();

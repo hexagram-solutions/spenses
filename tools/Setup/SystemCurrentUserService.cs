@@ -14,5 +14,5 @@ public class SystemCurrentUserService : ICurrentUserService
         new Claim(ApplicationClaimTypes.Name, SystemUserId),
         new Claim(ApplicationClaimTypes.Issuer, "self"),
         new Claim(ApplicationClaimTypes.Email, "system@spenses.ca"),
-    }));
+    }, nameof(SystemCurrentUserService)));
 }

@@ -1,6 +1,6 @@
 ﻿@page "/logout"
-@using Spenses.App.Identity
-@inject IAccountManagement Acct
+@using Spenses.App.Authentication
+@inject IAuthenticationService Acct
 
 <PageTitle>Logout</PageTitle>
 
@@ -22,7 +22,7 @@
     {
         if (await Acct.CheckAuthenticatedAsync())
         {
-            await Acct.LogoutAsync();
+            await Acct.Logout();
         }
 
         await base.OnInitializedAsync();

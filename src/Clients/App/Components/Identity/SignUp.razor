@@ -1,88 +1,54 @@
 ﻿@page "/sign-up"
-@using Spenses.App.Identity
-@inject IAccountManagement Acct
+@using Morris.Blazor.FluentValidation
+@using Morris.Blazor.Validation
+@using Spenses.Shared.Validators.Authentication
 
-<PageTitle>Register</PageTitle>
+<PageTitle>Sign up</PageTitle>
 
-<h1>Register</h1>
+<h2>Sign up</h2>
 
-<AuthorizeView>
-    <Authorized>
-        <div class="alert alert-success">You're already logged in as @context.User.Identity?.Name.</div>
-    </Authorized>
-    <NotAuthorized>
-        @if (success)
-        {
-            <div class="alert alert-success">You successfully registered. Now you can <a href="login">log in</a>.</div>
-        }
-        else
-        {
-            if (errors)
-            {
-                foreach (var error in errorList)
-                {
-                    <div class="alert alert-danger">@error</div>
-                }
-            }
-            <div class="flex-outer">
-                <div>
-                    <label for="email">
-                        Email:
-                    </label>
-                    <input autofocus autocomplete="on" required id="email" name="emailInput" placeholder="Enter your email address" type="email" @bind-value="email" />
-                </div>
-                <div>
-                    <label for="password">
-                        Password:
-                    </label>
-                    <input required id="password" name="passwordInput" placeholder="Enter your password" type="password" @bind-value="password" /><br />
-                </div>
-                <div>
-                    <button class="btn btn-primary" @onclick="DoRegisterAsync">Register</button>
-                </div>
-            </div>
-        }
-    </NotAuthorized>
-</AuthorizeView>
-
-@code {
-    private bool success, errors;
-    private string email = string.Empty;
-    private string password = string.Empty;
-    private string[] errorList = [];
-
-    public async Task DoRegisterAsync()
+@if (Errors.Count != 0)
+{
+    foreach (var error in Errors)
     {
-        success = errors = false;
-        errorList = [];
-
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            errors = true;
-            errorList = ["Email is required."];
-
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(password))
-        {
-            errors = true;
-            errorList = ["Password is required."];
-
-            return;
-        }
-
-        var result = await Acct.RegisterAsync(email, password);
-
-        if (result.Succeeded)
-        {
-            success = true;
-            email = password = string.Empty;
-        }
-        else
-        {
-            errors = true;
-            errorList = result.ErrorList;
-        }
+        <div class="alert alert-danger">@error</div>
     }
 }
+
+<EditForm Model="RegisterRequest"
+          asp-route-returnUrl="@ReturnUrl"
+          method="post"
+          OnValidSubmit="RegisterUser"
+          FormName="register">
+
+    <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<RegisterRequestValidator>())"/>
+
+    <FluentStack Orientation="Orientation.Vertical">
+        <FluentTextField Name="RegisterRequest.Email"
+                         @bind-Value="RegisterRequest.Email"
+                         AutoComplete="username"
+                         Required="true"
+                         Placeholder="name@example.com"
+                         Label="Email"
+                         Style="width: 100%"/>
+        <ValidationMessage For="() => RegisterRequest.Email"
+                           class="text-danger"/>
+
+        <FluentTextField type="password"
+                         Name="RegisterRequest.Password"
+                         @bind-Value="RegisterRequest.Password"
+                         AutoComplete="current-password"
+                         Required="true"
+                         Placeholder="password"
+                         Label="Password"
+                         Style="width: 100%"/>
+        <ValidationMessage For="() => RegisterRequest.Password"
+                           class="text-danger"/>
+
+        <FluentButton Type="ButtonType.Submit"
+                      Appearance="Appearance.Accent"
+                      Style="width: 100%">
+            Log in
+        </FluentButton>
+    </FluentStack>
+</EditForm>
