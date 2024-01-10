@@ -2,12 +2,12 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 using Refit;
 using Spenses.Client.Http;
-using Spenses.Shared.Models.Authentication;
+using Spenses.Shared.Models.Identity;
 using Spenses.Utilities.Security;
 
 namespace Spenses.App.Authentication;
 
-public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi,
+public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi meApi,
     ILogger<CookieAuthenticationStateProvider> logger)
     : AuthenticationStateProvider, IAuthenticationService
 {
@@ -15,7 +15,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi,
 
     public async Task<IdentityResult<LoginResult>> Login(LoginRequest request)
     {
-        var result = await authApi.Login(request);
+        var result = await identityApi.Login(request);
 
         // The login attempt "failed successfully" (e.g.: credentials were incorrect or the user needs to log in with
         // a second factor)
@@ -39,7 +39,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi,
 
     public async Task<IdentityResult> Register(RegisterRequest request)
     {
-        var result = await authApi.Register(request);
+        var result = await identityApi.Register(request);
 
         if (result.Error is null)
             return new IdentityResult();
@@ -51,7 +51,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi,
 
     public async Task Logout()
     {
-        await authApi.Logout();
+        await identityApi.Logout();
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }

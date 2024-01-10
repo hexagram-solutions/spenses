@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Authentication;
 using Spenses.App.Infrastructure;
-using Spenses.Shared.Models.Authentication;
+using Spenses.Shared.Models.Identity;
 
 namespace Spenses.App.Components.Identity;
 

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Authentication;
 using Spenses.App.Infrastructure;
-using Spenses.Shared.Models.Authentication;
+using Spenses.Shared.Models.Identity;
 
 namespace Spenses.App.Components.Identity;
 
@@ -21,9 +21,6 @@ public partial class SignUp
 
     [Inject]
     public required ILogger<SignUp> Logger { get; set; }
-
-    [SupplyParameterFromQuery]
-    private string ReturnUrl { get; init; } = Routes.Root;
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,7 +49,7 @@ public partial class SignUp
 
         if (result.Succeeded)
         {
-            Navigation.NavigateTo(ReturnUrl);
+            Navigation.NavigateTo(Routes.Identity.EmailVerificationRequired);
         }
         else if (result.Error!.Errors.ContainsKey(IdentityErrors.DuplicateUserName) ||
                  result.Error.Errors.ContainsKey(IdentityErrors.DuplicateEmail))

@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Spenses.Client.Http;
-using Spenses.Shared.Models.Authentication;
+using Spenses.Shared.Models.Identity;
 using Spenses.Utilities.Security;
 
 namespace Spenses.Web.Client;
@@ -16,14 +16,14 @@ public interface IAuthService
     public Task Logout();
 }
 
-public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi)
+public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi meApi)
     : AuthenticationStateProvider, IAuthService
 {
     private bool _authenticated;
 
     public async Task<LoginResult> Login(LoginRequest request)
     {
-        var result = await authApi.Login(request);
+        var result = await identityApi.Login(request);
 
         if (result.Error is not null)
             return result.Error.Content!.FromJson<LoginResult>()!;
@@ -35,7 +35,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi)
 
     public async Task<LoginResult> TwoFactorLogin(TwoFactorLoginRequest request)
     {
-        var result = await authApi.TwoFactorLogin(request);
+        var result = await identityApi.TwoFactorLogin(request);
 
         if (result.Error is not null)
             return result.Error.Content!.FromJson<LoginResult>()!;
@@ -47,7 +47,7 @@ public class CookieAuthenticationStateProvider(IAuthApi authApi, IMeApi meApi)
 
     public async Task Logout()
     {
-        await authApi.Logout();
+        await identityApi.Logout();
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 

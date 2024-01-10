@@ -1,0 +1,65 @@
+﻿@page "/email-verification-required"
+@using Spenses.Utilities.Security
+@using Spenses.Client.Http
+@using Spenses.Shared.Models.Identity
+
+<PageTitle>Verify email</PageTitle>
+
+<h2>Verify your email address</h2>
+
+<FluentStack Orientation="Orientation.Vertical">
+    <div>
+        <p>
+            Before you start using Spenses, we need to verify your email address.
+        </p>
+        <p>
+            We have sent a verification link to @Email. Follow the link to verify your email address and get started.
+        </p>
+    </div>
+    <div>
+        <p>
+            If you didn't receive anything, we can
+            <FluentButton Appearance="Appearance.Lightweight"
+                          Style="width: 100%;"
+                          OnClick="ResendVerificationEmail">
+                send a new verification email.
+            </FluentButton>
+        </p>
+    </div>
+    @if (VerificationEmailReSent)
+    {
+        <div>
+            <FluentMessageBar Title="Email sent"
+                              Intent="MessageIntent.Info">
+                Verification email re-sent to @Email
+            </FluentMessageBar>
+        </div>
+    }
+</FluentStack>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
+    [Inject] public required IIdentityApi IdentityApi { get; set; }
+
+    private bool VerificationEmailReSent { get; set; }
+
+    public string Email { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Email = (await AuthenticationState!).User.GetEmail();  // TODO: when is auth state actually null
+    }
+
+    private async Task ResendVerificationEmail()
+    {
+        var response = await IdentityApi.ResendVerificationEmail(new ResendVerificationEmailRequest(Email));
+
+        if (response.IsSuccessStatusCode)
+            VerificationEmailReSent = true;
+    }
+
+}

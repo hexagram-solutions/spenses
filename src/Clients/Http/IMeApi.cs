@@ -1,5 +1,5 @@
 using Refit;
-using Spenses.Shared.Models.Authentication;
+using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Client.Http;
 

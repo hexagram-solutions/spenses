@@ -1,17 +1,15 @@
 ﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject NavigationManager Navigation
 
-<AuthorizeView>
-    <Authorized>
-        Hello, @context.User.Identity?.Name!
+<div>
+        Hello, @Au.User.Identity?.Name!
         <FluentButton Appearance="Appearance.Accent" @onclick="BeginLogOut">Log out</FluentButton>
-    </Authorized>
-    <NotAuthorized>
-        <a href="login">Log in</a>
-    </NotAuthorized>
-</AuthorizeView>
+</div>
 
 @code{
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationState { get; set; }
+
     public void BeginLogOut()
     {
         Navigation.NavigateToLogout("logout");

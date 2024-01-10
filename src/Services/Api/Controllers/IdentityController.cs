@@ -2,14 +2,14 @@ using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Spenses.Application.Features.Authentication.Requests;
-using Spenses.Shared.Models.Authentication;
+using Spenses.Application.Features.Identity.Requests;
+using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("auth")]
+[Route("identity")]
 [AllowAnonymous]
 public class IdentityController(ISender sender) : ControllerBase
 {
@@ -50,23 +50,23 @@ public class IdentityController(ISender sender) : ControllerBase
         return result;
     }
 
-    [HttpPost("confirm-email")]
+    [HttpPost("verify-email")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult> ConfirmEmail(ConfirmEmailRequest request)
+    public async Task<ActionResult> VerifyEmail(VerifyEmailRequest request)
     {
-        await sender.Send(new ConfirmEmailCommand(request));
+        await sender.Send(new VerifyEmailCommand(request));
 
         return Ok();
     }
 
-    [HttpPost("resend-confirmation-email")]
+    [HttpPost("resend-verification-email")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> ResendConfirmationEmail(ResendConfirmationEmailRequest request)
+    public async Task<ActionResult> ResendConfirmationEmail(ResendVerificationEmailRequest request)
     {
-        await sender.Send(new ResendConfirmationEmailCommand(request));
+        await sender.Send(new ResendVerificationEmailCommand(request));
 
         return Ok();
     }

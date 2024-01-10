@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Spenses.Resources.Relational.Models;
-using Spenses.Shared.Models.Authentication;
+using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Application.Services.Identity.Passwords;
 

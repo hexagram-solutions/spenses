@@ -8,9 +8,9 @@ public class IdentityEmailSender(IEmailClient emailClient) : IEmailSender<Applic
 {
     public Task SendConfirmationLinkAsync(ApplicationUser user, string email, string confirmationLink)
     {
-        return emailClient.SendEmail(email, "Confirm your email",
-            $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>.",
-            $"Please confirm your account by following this link: {confirmationLink}");
+        return emailClient.SendEmail(email, "Verify your email",
+            $"Please verify your account by <a href='{confirmationLink}'>clicking here</a>.",
+            $"Please verify your account by following this link: {confirmationLink}");
     }
 
     public Task SendPasswordResetLinkAsync(ApplicationUser user, string email, string resetLink)

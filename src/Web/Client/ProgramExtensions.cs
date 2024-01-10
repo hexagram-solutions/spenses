@@ -39,7 +39,7 @@ public static class ProgramExtensions
                 clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
         }
 
-        AddApiClient<IAuthApi>();
+        AddApiClient<IIdentityApi>();
         AddApiClient<IExpenseCategoriesApi>();
         AddApiClient<IExpensesApi>();
         AddApiClient<IHomesApi>();

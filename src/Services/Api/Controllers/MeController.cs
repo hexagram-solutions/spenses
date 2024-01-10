@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Resources.Relational.Models;
-using Spenses.Shared.Models.Authentication;
+using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.Controllers;
 

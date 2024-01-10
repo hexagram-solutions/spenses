@@ -19,7 +19,9 @@ public static class Routes
 
         public static string ForgotPassword => "/forgot-password";
 
-        public static string ReSendConfirmationEmail => "resend-confirmation-email";
+        public static string EmailVerificationRequired => "/email-verification-required";
+
+        public static string VerifyEmail => "/verify-email";
     }
 
     public static class Homes

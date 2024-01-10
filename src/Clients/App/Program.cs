@@ -4,7 +4,7 @@ using Microsoft.FluentUI.AspNetCore.Components;
 using Morris.Blazor.Validation;
 using Spenses.App;
 using Spenses.App.Components;
-using Spenses.Shared.Validators.Authentication;
+using Spenses.Shared.Validators.Identity;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

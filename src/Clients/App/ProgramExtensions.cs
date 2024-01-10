@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Polly;
 using Refit;
 using Spenses.App.Authentication;
+using Spenses.App.Infrastructure;
 using Spenses.Client.Http;
 using Spenses.Shared.Common;
+using Spenses.Utilities.Security;
 
 namespace Spenses.App;
 
@@ -14,12 +16,19 @@ public static class ProgramExtensions
 {
     internal static WebAssemblyHostBuilder AddIdentityServices(this WebAssemblyHostBuilder builder)
     {
-        builder.Services.AddAuthorizationCore();
+        builder.Services.AddOptions();
+        builder.Services.AddAuthorizationCore(configure =>
+        {
+            configure.AddPolicy(AuthorizationConstants.RequireVerifiedEmail, policy =>
+                policy.RequireClaim(ApplicationClaimTypes.EmailVerified, "true"));
+        });
 
         builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
 
         builder.Services.AddScoped(
             sp => (IAuthenticationService) sp.GetRequiredService<AuthenticationStateProvider>());
+
+
 
         return builder;
     }
@@ -60,7 +69,7 @@ public static class ProgramExtensions
                 clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
         }
 
-        AddApiClient<IAuthApi>();
+        AddApiClient<IIdentityApi>();
         AddApiClient<IExpenseCategoriesApi>();
         AddApiClient<IExpensesApi>();
         AddApiClient<IHomesApi>();

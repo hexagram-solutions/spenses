@@ -1,5 +1,5 @@
 ﻿@page "/login"
-@using Spenses.Shared.Validators.Authentication
+@using Spenses.Shared.Validators.Identity
 @using Spenses.App.Infrastructure
 
 <PageTitle>Log in</PageTitle>
@@ -55,13 +55,6 @@
             <FluentAnchor Appearance="Appearance.Hypertext"
                           Href="@Routes.Identity.SignUp(ReturnUrl)">
                 Sign up
-            </FluentAnchor>
-        </p>
-        <p>
-            @* TODO: Move to email confirmation requirement screen*@
-            <FluentAnchor Appearance="Appearance.Hypertext"
-                          Href="@Routes.Identity.ReSendConfirmationEmail">
-                Resend email confirmation
             </FluentAnchor>
         </p>
     </div>
