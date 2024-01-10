@@ -3,7 +3,6 @@ using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.FluentUI.AspNetCore.Components;
 using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;

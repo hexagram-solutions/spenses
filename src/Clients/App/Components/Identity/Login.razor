@@ -9,10 +9,22 @@
 
 <FluentStack Orientation="Orientation.Vertical">
 
-    @if (!string.IsNullOrEmpty(IdentityState.Value.Error))
+    @if (IdentityState.Value.Errors.Length > 1)
     {
-        <FluentMessageBar Title="@IdentityState.Value.Error"
-                          Intent="MessageIntent.Error"/>
+        <FluentMessageBar Title="Unable to sign up"
+                          Intent="MessageIntent.Error">
+            <ul>
+                @foreach (var error in IdentityState.Value.Errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </FluentMessageBar>
+    }
+    else if (IdentityState.Value.Errors.Length > 0)
+    {
+        <FluentMessageBar Title="@IdentityState.Value.Errors.Single()"
+                          Intent="MessageIntent.Error" />
     }
 
     <EditForm Model="LoginRequest"
@@ -40,7 +52,7 @@
         <FluentButton Type="ButtonType.Submit"
                       Appearance="Appearance.Accent"
                       Style="width: 100%"
-                      Loading="IdentityState.Value.IsLoggingIn">
+                      Loading="IdentityState.Value.LoginRequesting">
             Log in
         </FluentButton>
     </EditForm>

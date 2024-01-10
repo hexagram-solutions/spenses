@@ -7,21 +7,21 @@
 
 <FluentStack Orientation="Orientation.Vertical">
 
-    @if (Errors.Count > 1)
+    @if (IdentityState.Value.Errors.Length > 1)
     {
         <FluentMessageBar Title="Unable to sign up"
                           Intent="MessageIntent.Error">
             <ul>
-                @foreach (var error in Errors)
+                @foreach (var error in IdentityState.Value.Errors)
                 {
                     <li>@error</li>
                 }
             </ul>
         </FluentMessageBar>
     }
-    else if (Errors.Count > 0)
+    else if (IdentityState.Value.Errors.Length > 0)
     {
-        <FluentMessageBar Title="@Errors.Single()"
+        <FluentMessageBar Title="@IdentityState.Value.Errors.Single()"
                           Intent="MessageIntent.Error"/>
     }
 
@@ -52,7 +52,8 @@
 
         <FluentButton Type="ButtonType.Submit"
                       Appearance="Appearance.Accent"
-                      Style="width: 100%">
+                      Style="width: 100%"
+                      Loading="IdentityState.Value.RegistrationRequesting">
             Sign up
         </FluentButton>
     </EditForm>

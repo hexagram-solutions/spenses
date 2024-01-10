@@ -1,23 +1,25 @@
+using Fluxor;
+using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Morris.Blazor.Validation.Extensions;
-using Spenses.App.Authentication;
 using Spenses.App.Infrastructure;
+using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.App.Components.Identity;
 
 public partial class SignUp
 {
-    [Inject]
-    private IAuthenticationService AuthenticationService { get; set; } = null!;
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     [Inject]
-    public required AuthenticationStateProvider AuthenticationState { get; set; }
+    private IDispatcher Dispatcher { get; set; } = null!;
 
     [Inject]
-    private NavigationManager Navigation { get; set; } = null!; // todo: dispatch navigation action instead?
+    private IState<IdentityState> IdentityState { get; set; } = null!;
 
     [Inject]
     public required ILogger<SignUp> Logger { get; set; }
@@ -26,13 +28,9 @@ public partial class SignUp
     {
         await base.OnInitializedAsync();
 
-        var authenticationState = await AuthenticationState.GetAuthenticationStateAsync();
-
-        if (authenticationState.User.Identity?.IsAuthenticated == true)
-            Navigation.NavigateTo(Routes.Root);
+        if ((await AuthenticationState).User.Identity?.IsAuthenticated == true)
+            Dispatcher.Dispatch(new GoAction(Routes.Root));
     }
-
-    private List<string> Errors { get; } = [];
 
     private RegisterRequest RegisterRequest { get; } = new()
     {
@@ -40,32 +38,11 @@ public partial class SignUp
         Password = string.Empty
     };
 
-    private async Task RegisterUser(EditContext editContext)
+    private void RegisterUser(EditContext editContext)
     {
         if (!editContext.ValidateObjectTree())
             return;
 
-        var result = await AuthenticationService.Register(RegisterRequest);
-
-        if (result.Succeeded)
-        {
-            Navigation.NavigateTo(Routes.Identity.EmailVerificationRequired);
-        }
-        else if (result.Error!.Errors.ContainsKey(IdentityErrors.DuplicateUserName) ||
-                 result.Error.Errors.ContainsKey(IdentityErrors.DuplicateEmail))
-        {
-            Errors.Add("It looks like you may already have an account with us. Use your credentials to log in " +
-                "instead.");
-        }
-        else if (result.Error.Errors.Count != 0)
-        {
-            Errors.AddRange(result.Error.Errors.SelectMany(e => e.Value));
-        }
-        else
-        {
-            Errors.Add("An unknown error occurred.");
-
-            Logger.LogError("Error when registering user: {Error}", result.Error.Detail);
-        }
+        Dispatcher.Dispatch(new RegistrationRequestedAction(RegisterRequest));
     }
 }
