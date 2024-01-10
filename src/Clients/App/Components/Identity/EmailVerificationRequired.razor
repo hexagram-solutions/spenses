@@ -3,43 +3,38 @@
 @using Spenses.Client.Http
 @using Spenses.Shared.Models.Identity
 
-<PageTitle>Verify email</PageTitle>
+<PageTitle>Verification required</PageTitle>
 
 <h2>Verify your email address</h2>
 
-<FluentStack Orientation="Orientation.Vertical">
-    <div>
-        <p>
-            Before you start using Spenses, we need to verify your email address.
-        </p>
-        <p>
-            We have sent a verification link to @Email. Follow the link to verify your email address and get started.
-        </p>
-    </div>
-    <div>
-        <p>
-            If you didn't receive anything, we can
-            <FluentButton Appearance="Appearance.Lightweight"
-                          Style="width: 100%;"
-                          OnClick="ResendVerificationEmail">
-                send a new verification email.
-            </FluentButton>
-        </p>
-    </div>
+<FluentStack Orientation="Orientation.Vertical" VerticalGap="4">
+    <p>
+        Before you can start using Spenses, we need to verify your email address.
+    </p>
+    <p>
+        We have sent a verification link to <b><samp>@Email</samp></b>. Follow the link to verify your email address and get started.
+    </p>
+    <FluentStack Orientation="Orientation.Vertical">
+        <div>
+            If you didn't receive an email, we can send you a new one.
+        </div>
+        <FluentButton Appearance="Appearance.Outline"
+                      
+                      OnClick="ResendVerificationEmail">
+            Resend verification email
+        </FluentButton>
+    </FluentStack>
     @if (VerificationEmailReSent)
     {
-        <div>
-            <FluentMessageBar Title="Email sent"
-                              Intent="MessageIntent.Info">
-                Verification email re-sent to @Email
-            </FluentMessageBar>
-        </div>
+        <FluentMessageBar Title="Email sent"
+                          Intent="MessageIntent.Info">
+            Verification email re-sent to @Email
+        </FluentMessageBar>
     }
 </FluentStack>
 
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     [Inject] public required IIdentityApi IdentityApi { get; set; }
 
@@ -51,7 +46,7 @@
     {
         await base.OnInitializedAsync();
 
-        Email = (await AuthenticationState!).User.GetEmail();  // TODO: when is auth state actually null
+        Email = (await AuthenticationState).User.GetEmail();
     }
 
     private async Task ResendVerificationEmail()

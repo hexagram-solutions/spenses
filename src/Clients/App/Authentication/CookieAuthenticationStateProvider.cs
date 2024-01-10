@@ -83,7 +83,7 @@ public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi 
         {
             new(ApplicationClaimTypes.Name, currentUser.UserName),
             new(ApplicationClaimTypes.Email, currentUser.Email),
-            new(ApplicationClaimTypes.EmailVerified, currentUser.EmailVerified.ToString())
+            new(ApplicationClaimTypes.EmailVerified, currentUser.EmailVerified.ToString().ToLowerInvariant())
         };
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(claims, nameof(CookieAuthenticationStateProvider)));

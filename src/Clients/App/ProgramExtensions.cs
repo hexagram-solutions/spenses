@@ -20,7 +20,7 @@ public static class ProgramExtensions
         builder.Services.AddAuthorizationCore(configure =>
         {
             configure.AddPolicy(AuthorizationConstants.RequireVerifiedEmail, policy =>
-                policy.RequireClaim(ApplicationClaimTypes.EmailVerified, "true"));
+                policy.RequireClaim(ApplicationClaimTypes.EmailVerified, "true".ToLowerInvariant()));
         });
 
         builder.Services.AddScoped<AuthenticationStateProvider, CookieAuthenticationStateProvider>();
@@ -28,7 +28,7 @@ public static class ProgramExtensions
         builder.Services.AddScoped(
             sp => (IAuthenticationService) sp.GetRequiredService<AuthenticationStateProvider>());
 
-
+        builder.Services.AddCascadingAuthenticationState();
 
         return builder;
     }

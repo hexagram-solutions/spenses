@@ -1,0 +1,83 @@
+﻿@page "/verify-email"
+@using Spenses.Client.Http
+@using Spenses.Shared.Models.Identity
+@using Spenses.App.Infrastructure
+
+<PageTitle>Email verification</PageTitle>
+
+<h2>Email verification</h2>
+
+<FluentStack Orientation="Orientation.Vertical"
+             VerticalGap="4">
+    @if (Success == true)
+    {
+        <FluentMessageBar Title="Email verified"
+                          Intent="MessageIntent.Success">
+            Your email address was successfully verified. You will be redirected to the
+            <FluentAnchor Href="@Routes.Identity.Login()"
+                          Appearance="Appearance.Hypertext">
+                login page
+            </FluentAnchor>
+            shortly.
+        </FluentMessageBar>
+    }
+    else if (Success == false)
+    {
+        <FluentMessageBar Title="Email verified"
+                          Intent="MessageIntent.Error">
+            We were unable to verify your email address. You can request a new verification email
+            <FluentAnchor Href="@Routes.Identity.EmailVerificationRequired"
+                          Appearance="Appearance.Hypertext">
+                here.
+            </FluentAnchor>
+        </FluentMessageBar>
+    }
+    else
+    {
+        <FluentProgressRing />
+    }
+</FluentStack>
+
+@code {
+
+    [SupplyParameterFromQuery] private string? UserId { get; set; }
+
+    [SupplyParameterFromQuery] private string? Code { get; set; }
+
+    [Inject] NavigationManager Navigation { get; set; } = null!;
+
+    [Inject] IIdentityApi IdentityApi { get; set; } = null!;
+
+    bool? Success { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        if (UserId is null || Code is null)
+        {
+            Navigation.NavigateTo(Routes.Root);
+            return;
+        }
+
+        var result = await IdentityApi.VerifyEmail(new VerifyEmailRequest(UserId, Code));
+
+        if (!result.IsSuccessStatusCode)
+        {
+            Success = false;
+
+            return;
+        }
+
+        Success = true;
+
+        NavigateToLogin();
+    }
+
+    private async void NavigateToLogin()
+    {
+        await Task.Delay(5000);
+
+        Navigation.NavigateTo(Routes.Identity.Login());
+    }
+}

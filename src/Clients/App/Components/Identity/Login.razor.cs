@@ -10,27 +10,24 @@ namespace Spenses.App.Components.Identity;
 
 public partial class Login
 {
-    [Inject]
-    private IAuthenticationService AuthenticationService { get; set; } = null!;
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     [Inject]
-    public required AuthenticationStateProvider AuthenticationState { get; set; }
+    private IAuthenticationService AuthenticationService { get; set; } = null!;
 
     [Inject]
     private NavigationManager Navigation { get; set; } = null!; // todo: dispatch navigation action instead?
 
     [SupplyParameterFromQuery]
-    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local
-    private string ReturnUrl { get; set; } = Routes.Root;
+    public string? ReturnUrl { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        var authenticationState = await AuthenticationState.GetAuthenticationStateAsync();
-
-        if (authenticationState.User.Identity?.IsAuthenticated == true)
-            Navigation.NavigateTo(ReturnUrl);
+        if ((await AuthenticationState).User.Identity?.IsAuthenticated == true)
+            Navigation.NavigateTo(ReturnUrl ?? Routes.Root);
     }
 
     private LoginRequest LoginRequest { get; } = new() { Email = string.Empty, Password = string.Empty };
@@ -39,9 +36,6 @@ public partial class Login
 
     public async Task LogIn(EditContext editContext)
     {
-        //if (await _fluentValidationValidator!.ValidateAsync())
-        //    return;
-
         if (!editContext.ValidateObjectTree())
             return;
 
@@ -49,7 +43,7 @@ public partial class Login
 
         if (result.Content!.Succeeded)
         {
-            Navigation.NavigateTo(ReturnUrl);
+            Navigation.NavigateTo(ReturnUrl ?? Routes.Root);
         }
         else if (result.Content!.RequiresTwoFactor)
         {

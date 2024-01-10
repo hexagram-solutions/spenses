@@ -2,13 +2,21 @@
 @inject NavigationManager Navigation
 
 <div>
-        Hello, @Au.User.Identity?.Name!
+        Hello, @UserName!
         <FluentButton Appearance="Appearance.Accent" @onclick="BeginLogOut">Log out</FluentButton>
 </div>
 
 @code{
-    [CascadingParameter]
-    private Task<AuthenticationState>? AuthenticationState { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+
+    private string UserName { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        UserName = (await AuthenticationState).User.Identity!.Name;
+    }
 
     public void BeginLogOut()
     {
