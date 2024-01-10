@@ -1,61 +1,45 @@
+using Fluxor;
+using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.FluentUI.AspNetCore.Components;
 using Morris.Blazor.Validation.Extensions;
-using Spenses.App.Authentication;
 using Spenses.App.Infrastructure;
+using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.App.Components.Identity;
 
 public partial class Login
 {
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     [Inject]
-    private IAuthenticationService AuthenticationService { get; set; } = null!;
+    private IDispatcher Dispatcher { get; set; } = null!;
 
     [Inject]
-    private NavigationManager Navigation { get; set; } = null!; // todo: dispatch navigation action instead?
-
-    [SupplyParameterFromQuery]
-    public string? ReturnUrl { get; set; }
+    private IState<IdentityState> IdentityState { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         if ((await AuthenticationState).User.Identity?.IsAuthenticated == true)
-            Navigation.NavigateTo(ReturnUrl ?? Routes.Root);
+            Dispatcher.Dispatch(new GoAction(ReturnUrl ?? Routes.Root));
     }
 
     private LoginRequest LoginRequest { get; } = new() { Email = string.Empty, Password = string.Empty };
 
-    private string? ErrorMessage { get; set; }
-
-    public async Task LogIn(EditContext editContext)
+    public void LogIn(EditContext editContext)
     {
         if (!editContext.ValidateObjectTree())
             return;
 
-        var result = await AuthenticationService.Login(LoginRequest);
-
-        if (result.Content!.Succeeded)
-        {
-            Navigation.NavigateTo(ReturnUrl ?? Routes.Root);
-        }
-        else if (result.Content!.RequiresTwoFactor)
-        {
-            Navigation.NavigateTo(Routes.Identity.TwoFactorLogin(ReturnUrl));
-        }
-        else if (result.Content.IsLockedOut)
-        {
-            ErrorMessage = "This account is locked.";
-        }
-        else
-        {
-            ErrorMessage = "Your email or password was incorrect. Please try again.";
-        }
+        Dispatcher.Dispatch(new LoginRequestedAction(LoginRequest, ReturnUrl));
     }
 }

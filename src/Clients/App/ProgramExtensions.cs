@@ -1,3 +1,4 @@
+using Fluxor;
 using Hexagrams.Extensions.Common.Http;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -77,6 +78,20 @@ public static class ProgramExtensions
         AddApiClient<IMeApi>();
         AddApiClient<IMembersApi>();
         AddApiClient<IPaymentsApi>();
+
+        return builder;
+    }
+
+    public static WebAssemblyHostBuilder AddStateManagement(this WebAssemblyHostBuilder builder)
+    {
+        builder.Services.AddFluxor(opts =>
+        {
+            opts.ScanAssemblies(typeof(Program).Assembly)
+                .UseRouting();
+
+            if (builder.HostEnvironment.IsEnvironment(EnvironmentNames.Development))
+                opts.UseReduxDevTools();
+        });
 
         return builder;
     }

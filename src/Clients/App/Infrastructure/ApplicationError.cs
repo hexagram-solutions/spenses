@@ -11,6 +11,11 @@ public static class RefitExtensions
     {
         var problem = refitException.Content!.FromJson<ProblemDetails>()!;
 
+        return problem.ToApplicationError();
+    }
+
+    public static ApplicationError ToApplicationError(this ProblemDetails problem)
+    {
         return new ApplicationError(problem.Title!, problem.Detail, problem.Errors);
     }
 }

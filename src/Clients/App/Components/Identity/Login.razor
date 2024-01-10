@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @using Spenses.Shared.Validators.Identity
 @using Spenses.App.Infrastructure
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Log in</PageTitle>
 
@@ -8,9 +9,9 @@
 
 <FluentStack Orientation="Orientation.Vertical">
 
-    @if (!string.IsNullOrEmpty(ErrorMessage))
+    @if (!string.IsNullOrEmpty(IdentityState.Value.Error))
     {
-        <FluentMessageBar Title="@ErrorMessage"
+        <FluentMessageBar Title="@IdentityState.Value.Error"
                           Intent="MessageIntent.Error"/>
     }
 
@@ -29,8 +30,8 @@
 
         <FluentTextField Id="password"
                          TextFieldType="TextFieldType.Password"
-                          @bind-Value="LoginRequest.Password"
-                          AutoComplete="current-password"
+                         @bind-Value="LoginRequest.Password"
+                         AutoComplete="current-password"
                          Required
                          Label="Password"
                          Style="width: 100%"/>
@@ -38,7 +39,8 @@
 
         <FluentButton Type="ButtonType.Submit"
                       Appearance="Appearance.Accent"
-                      Style="width: 100%">
+                      Style="width: 100%"
+                      Loading="IdentityState.Value.IsLoggingIn">
             Log in
         </FluentButton>
     </EditForm>
