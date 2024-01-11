@@ -82,21 +82,27 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
         {
             dispatcher.Dispatch(new ResendVerificationEmailFailedAction());
             dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
+
+            return;
         }
 
         dispatcher.Dispatch(new ResendVerificationEmailSucceededAction());
     }
 
     [EffectMethod]
-    public async Task HandleLogoutRequestedAction(LogoutRequestedAction action,
-        IDispatcher dispatcher)
+    public async Task HandleLogoutRequestedAction(LogoutRequestedAction _, IDispatcher dispatcher)
     {
-        var result = await authenticationService.Logout();
-
-        if (!result.Succeeded)
+        if (await authenticationService.CheckAuthenticatedAsync())
         {
-            dispatcher.Dispatch(new LogoutFailedAction());
-            dispatcher.Dispatch(new ApplicationErrorAction(result.Error!.ToApplicationError()));
+            var result = await authenticationService.Logout();
+
+            if (!result.Succeeded)
+            {
+                dispatcher.Dispatch(new LogoutFailedAction());
+                dispatcher.Dispatch(new ApplicationErrorAction(result.Error!.ToApplicationError()));
+
+                return;
+            }
         }
 
         dispatcher.Dispatch(new LogoutSucceededAction());

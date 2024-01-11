@@ -29,8 +29,6 @@ public static class ProgramExtensions
         builder.Services.AddScoped(
             sp => (IAuthenticationService) sp.GetRequiredService<AuthenticationStateProvider>());
 
-        builder.Services.AddCascadingAuthenticationState();
-
         return builder;
     }
 

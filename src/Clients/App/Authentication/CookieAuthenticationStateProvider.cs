@@ -67,6 +67,7 @@ public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi 
 
         return _authenticated;
     }
+
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         _authenticated = false;
