@@ -14,6 +14,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using NSwag;
 using NSwag.AspNetCore;
+using Polly;
+using PwnedPasswords.Validator;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Application.Features.Identity;
@@ -141,13 +143,18 @@ public static class ProgramExtensions
 
         builder.Services.AddAuthorizationBuilder();
 
+        builder.Services.AddPwnedPasswordHttpClient()
+            .AddTransientHttpErrorPolicy(p => p.RetryAsync(3))
+            .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(2)));
+
         builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders()
             .AddPasswordValidator<UserNameAsPasswordValidator>()
             .AddPasswordValidator<EmailAsPasswordValidator>()
-            .AddPasswordValidator<CommonPasswordValidator>();
+            .AddPasswordValidator<PwnedPasswordValidator<ApplicationUser>>()
+            .AddPwnedPasswordErrorDescriber<PwnedPasswordErrorDescriber>();
 
         // We specify a minimum password length and no other requirements. We compare submitted passwords to a list
         // of common passwords to validate them instead.

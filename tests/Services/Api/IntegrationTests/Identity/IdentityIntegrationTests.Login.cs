@@ -1,6 +1,5 @@
 using System.Net;
 using Bogus;
-using Refit;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.IntegrationTests.Identity;

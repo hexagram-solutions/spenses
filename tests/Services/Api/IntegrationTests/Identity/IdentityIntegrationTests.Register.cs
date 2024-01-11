@@ -50,6 +50,25 @@ public partial class IdentityIntegrationTests
     }
 
     [Fact]
+    public async Task Register_with_pwned_password_yields_identity_error()
+    {
+        var request = new RegisterRequest
+        {
+            Email = "hmccringleberry@psu.edu",
+            Password = "1234567890",
+            Name = "Hingle McCringleberry"
+        };
+
+        var response = await _identityApi.Register(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
+
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.PwnedPassword);
+    }
+
+    [Fact]
     public async Task Register_with_duplicate_email_yields_identity_error()
     {
         var request = new RegisterRequest

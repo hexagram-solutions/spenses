@@ -12,7 +12,7 @@ public static class IdentityErrors
 
     public const string PasswordTooShort = nameof(PasswordTooShort);
 
-    public const string PasswordTooCommon = nameof(PasswordTooCommon);
+    public const string PwnedPassword = nameof(PwnedPassword);
 
     public const string InvalidToken = nameof(InvalidToken);
 

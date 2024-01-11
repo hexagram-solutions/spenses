@@ -65,6 +65,35 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
             return;
         }
 
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.PasswordTooShort))
+        {
+            dispatcher.Dispatch(new RegistrationFailedAction([
+                "The password you entered has appeared multiple times in historical data breaches. Enter a different " +
+                "password."
+            ]));
+
+            return;
+        }
+
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.EmailAsPassword))
+        {
+            dispatcher.Dispatch(new RegistrationFailedAction([
+                "You cannot user your email address ass your password."
+            ]));
+
+            return;
+        }
+
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.PwnedPassword))
+        {
+            dispatcher.Dispatch(new RegistrationFailedAction([
+                "The password you entered has appeared multiple times in historical data breaches. Enter a different " +
+                "password."
+            ]));
+
+            return;
+        }
+
         if (result.Error.Errors.Count != 0)
         {
             dispatcher.Dispatch(new RegistrationFailedAction(result.Error.Errors.SelectMany(e => e.Value).ToArray()));
