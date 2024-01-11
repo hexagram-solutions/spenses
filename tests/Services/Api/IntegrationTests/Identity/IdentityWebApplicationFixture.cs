@@ -71,12 +71,17 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         await userManager.DeleteAsync(user!);
     }
 
-    public (string userId, string code) GetVerificationParametersForEmail(string email)
+    public CapturedEmailMessage GetLastMessageForEmail(string email)
     {
         var emailClient = WebApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
 
-        var message = emailClient.EmailMessages
+        return emailClient.EmailMessages
             .Last(e => e.RecipientAddress == email);
+    }
+
+    public (string userId, string code) GetVerificationParametersForEmail(string email)
+    {
+        var message = GetLastMessageForEmail(email);
 
         var confirmationUri = GetLinkFromEmailMessage(message);
 
@@ -87,10 +92,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public (string email, string code) GetPasswordResetParametersForEmail(string email)
     {
-        var emailClient = WebApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
-
-        var message = emailClient.EmailMessages
-            .Last(e => e.RecipientAddress == email);
+        var message = GetLastMessageForEmail(email);
 
         var confirmationUri = GetLinkFromEmailMessage(message);
 
@@ -99,7 +101,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         return (parameters["email"]!, parameters["code"]!);
     }
 
-    private Uri GetLinkFromEmailMessage(CapturedEmailMessage message)
+    private static Uri GetLinkFromEmailMessage(CapturedEmailMessage message)
     {
         var regex = new Regex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase);
 

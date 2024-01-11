@@ -1,9 +1,5 @@
 using System.Net;
-using System.Text.RegularExpressions;
-using System.Web;
 using Bogus;
-using Microsoft.Extensions.DependencyInjection;
-using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.IntegrationTests.Identity;

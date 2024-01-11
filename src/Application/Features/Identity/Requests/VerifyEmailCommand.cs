@@ -8,13 +8,13 @@ using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Application.Features.Identity.Requests;
 
-public record VerifyEmailCommand(VerifyEmailRequest VerifyEmail) : IRequest;
+public record VerifyEmailCommand(VerifyEmailRequest Request) : IRequest;
 
 public class VerifyEmailCommandHandler(UserManager<ApplicationUser> userManager) : IRequestHandler<VerifyEmailCommand>
 {
     public async Task Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
     {
-        var (userId, code) = request.VerifyEmail;
+        var (userId, code) = request.Request;
 
         if (await userManager.FindByIdAsync(userId) is not { } user)
         {

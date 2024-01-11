@@ -100,17 +100,25 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
         {
             Id = TestUserId,
             Email = "test@example.com",
-            UserName = "test"
+            UserName = "test@example.com",
+            NickName = "test"
         });
 
-        var homeEntry = await db.Homes.AddAsync(new DbModels.Home { Name = "Test home" });
+        var homeEntry = await db.Homes.AddAsync(new DbModels.Home
+        {
+            Name = "Test home",
+            CreatedById = TestUserId,
+            ModifiedById = TestUserId
+        });
 
         var oneThirdMember = (await db.Members.AddAsync(
             new DbModels.Member
             {
                 Name = "Hingle McCringleberry",
                 DefaultSplitPercentage = 0.34m,
-                HomeId = homeEntry.Entity.Id
+                HomeId = homeEntry.Entity.Id,
+                CreatedById = TestUserId,
+                ModifiedById = TestUserId
             })).Entity;
 
         var twoThirdsMember = (await db.Members.AddAsync(
@@ -118,7 +126,9 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             {
                 Name = "Grunky Peep",
                 DefaultSplitPercentage = 0.66m,
-                HomeId = homeEntry.Entity.Id
+                HomeId = homeEntry.Entity.Id,
+                CreatedById = TestUserId,
+                ModifiedById = TestUserId
             })).Entity;
 
         await db.SaveChangesAsync();
@@ -139,7 +149,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                         {
                             OwedByMemberId = oneThirdMember.Id,
                             OwedAmount = 33.34m,
-                            OwedPercentage = 33.34m
+                            OwedPercentage = 33.34m,
                         },
                         new DbModels.ExpenseShare
                         {
@@ -151,8 +161,12 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                     Category = new DbModels.ExpenseCategory
                     {
                         Name = Guid.NewGuid().ToString(),
-                        HomeId = homeEntry.Entity.Id
-                    }
+                        HomeId = homeEntry.Entity.Id,
+                        CreatedById = TestUserId,
+                        ModifiedById = TestUserId
+                    },
+                    CreatedById = TestUserId,
+                    ModifiedById = TestUserId
                 });
 
                 await db.Payments.AddAsync(new DbModels.Payment
@@ -161,7 +175,9 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                     Amount = 50.00m,
                     PaidByMemberId = member.Id,
                     PaidToMemberId = db.Members.First(m => m.Id != member.Id).Id,
-                    HomeId = homeEntry.Entity.Id
+                    HomeId = homeEntry.Entity.Id,
+                    CreatedById = TestUserId,
+                    ModifiedById = TestUserId
                 });
             }
         }

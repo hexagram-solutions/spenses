@@ -6,7 +6,7 @@ POST {{HOST}}/identity/register
 Content-Type: application/json
 
 {
-  "nickName": "Tyroil Smoochie Wallace",
+  "name": "Tyroil Smoochie Wallace",
   "email": "tyroil@bar.ca",
   "password": "foobarfoobar"
 }
@@ -26,8 +26,8 @@ POST {{HOST}}/identity/login
 Content-Type: application/json
 
 {
-  "email": "asdf",
-  "password": "asdf"
+  "email": "tyroil@bar.ca",
+  "password": "foobarfoobar"
 }
 
 ###

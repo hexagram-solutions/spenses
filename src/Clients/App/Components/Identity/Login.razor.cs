@@ -32,7 +32,7 @@ public partial class Login
             Dispatcher.Dispatch(new GoAction(ReturnUrl ?? Routes.Root));
     }
 
-    private LoginRequest LoginRequest { get; } = new() { Email = string.Empty, Password = string.Empty };
+    private LoginRequest LoginRequest { get; } = new();
 
     public void LogIn(EditContext editContext)
     {

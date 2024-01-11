@@ -3,7 +3,6 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
-using Spenses.Application.Features.Identity;
 using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Identity.Requests;

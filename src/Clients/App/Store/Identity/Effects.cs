@@ -31,6 +31,11 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
         {
             dispatcher.Dispatch(new GoAction(Routes.Identity.TwoFactorLogin(action.ReturnUrl)));
         }
+        else if (result.Content.IsNotAllowed)
+        {
+            // todo: will have to return some code here so that we can direct user to verification re send
+            dispatcher.Dispatch(new LoginFailedAction("You need to verify your email before you can log in."));
+        }
         else if (result.Content.IsLockedOut)
         {
             dispatcher.Dispatch(new LoginFailedAction("This account is locked."));
