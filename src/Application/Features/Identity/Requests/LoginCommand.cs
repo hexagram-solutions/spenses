@@ -1,3 +1,4 @@
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Spenses.Resources.Relational.Models;

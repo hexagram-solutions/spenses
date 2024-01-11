@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Spenses.Application.Exceptions;
 using Spenses.Utilities.Security.Services;
 
-namespace Spenses.Application.Common.Behaviors;
+namespace Spenses.Application.Behaviors;
 
 public interface IBaseAuthorizedRequest
 {

@@ -14,8 +14,6 @@ public class TestAuthenticationHandlerOptions : AuthenticationSchemeOptions
     public string DefaultUserEmail { get; set; } = null!;
 
     public string DefaultUserNickName { get; set; } = null!;
-
-    public string DefaultUserIssuer { get; set; } = null!;
 }
 
 public class TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationHandlerOptions> options,
@@ -40,11 +38,13 @@ public class TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationHandler
 
     public ClaimsPrincipal GetClaimsPrincipal()
     {
-        var claims = new List<Claim> {
-            new (ApplicationClaimTypes.Identifier, _options.CurrentValue.DefaultUserIdentifier),
-            new(ApplicationClaimTypes.NickName, _options.CurrentValue.DefaultUserNickName),
-            new(ApplicationClaimTypes.Issuer, _options.CurrentValue.DefaultUserIssuer),
+        var claims = new List<Claim>
+        {
+            new(ApplicationClaimTypes.Identifier, _options.CurrentValue.DefaultUserIdentifier),
+            new(ApplicationClaimTypes.UserName, _options.CurrentValue.DefaultUserEmail),
             new(ApplicationClaimTypes.Email, _options.CurrentValue.DefaultUserEmail),
+            new(ApplicationClaimTypes.EmailVerified, true.ToString()),
+            new(ApplicationClaimTypes.NickName, _options.CurrentValue.DefaultUserNickName)
         };
 
         var identity = new ClaimsIdentity(claims, AuthenticationScheme);

@@ -7,7 +7,7 @@ using Spenses.Shared.Common;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;
 
-namespace Spenses.Application.Common.Behaviors;
+namespace Spenses.Application.Behaviors;
 
 public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TRequest> logger,
     ICurrentUserService currentUserService, IConfiguration configuration)

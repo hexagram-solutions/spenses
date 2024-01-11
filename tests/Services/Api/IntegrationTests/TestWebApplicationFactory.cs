@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Spenses.Resources.Communication;
 using Spenses.Shared.Common;
 using Spenses.Utilities.Security.Services;
 
@@ -22,7 +23,6 @@ public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEnt
                 options.DefaultUserIdentifier = "integration-test-user";
                 options.DefaultUserEmail = "george@vandelayindustries.com";
                 options.DefaultUserNickName = "George Costanza";
-                options.DefaultUserIssuer = "self";
             });
 
             services.AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)
@@ -35,6 +35,8 @@ public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEnt
 
                 return new MockCurrentUserService(principal);
             });
+
+            services.AddTransient<IEmailClient, NoOpEmailClient>();
         });
     }
 }
@@ -42,4 +44,13 @@ public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEnt
 public class MockCurrentUserService(ClaimsPrincipal currentUser) : ICurrentUserService
 {
     public ClaimsPrincipal CurrentUser { get; } = currentUser;
+}
+
+public class NoOpEmailClient : IEmailClient
+{
+    public Task SendEmail(string recipientAddress, string subject, string htmlMessage, string? plainTextMessage = null,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
+    }
 }

@@ -76,7 +76,7 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
     public async Task HandleResendVerificationEmailRequested(ResendVerificationEmailRequestedAction action,
         IDispatcher dispatcher)
     {
-        var response = await identityApi.ResendVerificationEmail(action.Request);
+        var response = await identityApi.ResendVerificationEmail(new ResendVerificationEmailRequest(action.Email));
 
         if (!response.IsSuccessStatusCode)
         {

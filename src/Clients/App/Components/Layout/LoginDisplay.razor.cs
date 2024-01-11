@@ -1,7 +1,6 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Spenses.App.Store.Identity;
 using Spenses.Utilities.Security;
 
@@ -24,7 +23,7 @@ public partial class LoginDisplay
     {
         await base.OnInitializedAsync();
 
-        UserName = (await AuthenticationState).User.GetName();
+        UserName = (await AuthenticationState).User.GetUserName();
     }
 
     public void LogOut()

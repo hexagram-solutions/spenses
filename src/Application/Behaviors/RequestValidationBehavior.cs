@@ -2,7 +2,7 @@ using FluentValidation;
 using MediatR;
 using Spenses.Application.Exceptions;
 
-namespace Spenses.Application.Common.Behaviors;
+namespace Spenses.Application.Behaviors;
 
 public class RequestValidationBehaviour<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull

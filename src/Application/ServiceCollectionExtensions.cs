@@ -1,7 +1,7 @@
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Behaviors;
 using Spenses.Application.Features.Homes.Requests;
 using Spenses.Application.Features.Homes.Validators;
 using Spenses.Shared.Validators.Identity;
