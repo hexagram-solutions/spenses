@@ -29,10 +29,10 @@ public static class ClaimsPrincipalExtensions
         return user.FindFirst(ApplicationClaimTypes.Email)!.Value;
     }
 
-    public static string GetUserName(this ClaimsPrincipal user)
+    public static string GetNickName(this ClaimsPrincipal user)
     {
         user.EnsureAuthenticated();
 
-        return user.FindFirst(ApplicationClaimTypes.UserName)!.Value;
+        return user.FindFirst(ApplicationClaimTypes.NickName)!.Value;
     }
 }

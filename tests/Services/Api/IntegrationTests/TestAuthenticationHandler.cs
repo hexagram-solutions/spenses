@@ -41,7 +41,6 @@ public class TestAuthenticationHandler(IOptionsMonitor<TestAuthenticationHandler
         var claims = new List<Claim>
         {
             new(ApplicationClaimTypes.Identifier, _options.CurrentValue.DefaultUserIdentifier),
-            new(ApplicationClaimTypes.UserName, _options.CurrentValue.DefaultUserEmail),
             new(ApplicationClaimTypes.Email, _options.CurrentValue.DefaultUserEmail),
             new(ApplicationClaimTypes.EmailVerified, true.ToString()),
             new(ApplicationClaimTypes.NickName, _options.CurrentValue.DefaultUserNickName)

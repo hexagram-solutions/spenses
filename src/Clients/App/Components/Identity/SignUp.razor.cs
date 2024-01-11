@@ -35,7 +35,8 @@ public partial class SignUp
     private RegisterRequest RegisterRequest { get; } = new()
     {
         Email = string.Empty,
-        Password = string.Empty
+        Password = string.Empty,
+        NickName = string.Empty
     };
 
     private void RegisterUser(EditContext editContext)

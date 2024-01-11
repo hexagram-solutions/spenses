@@ -14,8 +14,8 @@ public class UsersMappingProfile : Profile
         CreateMap<ClaimsPrincipal, DbModels.ApplicationUser>()
             .ForMember(dest => dest.Id,
                 opts => opts.MapFrom(src => src.FindFirst(ApplicationClaimTypes.Identifier)!.Value))
-            .ForMember(dest => dest.UserName,
-                opts => opts.MapFrom(src => src.FindFirst(ApplicationClaimTypes.UserName)!.Value))
+            .ForMember(dest => dest.NickName,
+                opts => opts.MapFrom(src => src.FindFirst(ApplicationClaimTypes.NickName)!.Value))
             .ForMember(dest => dest.Email,
                 opts => opts.MapFrom(src => src.FindFirst(ApplicationClaimTypes.Email)!.Value))
             .ForAllOtherMembers(opts => opts.Ignore());

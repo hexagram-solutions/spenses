@@ -15,14 +15,18 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IU
 {
     public async Task<CurrentUser> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var (email, password) = request.Request;
+        var (email, password, nickName) = request.Request;
 
-        var user = new ApplicationUser();
+        var user = new ApplicationUser
+        {
+            NickName = nickName
+        };
 
         //var emailStore = (IUserEmailStore<ApplicationUser>) userStore;
         //await userStore.SetUserNameAsync(user, email, cancellationToken);
         //await emailStore.SetEmailAsync(user, email, cancellationToken);
 
+        // TODO: Make sure users who encounter an error (like for password length) do not get saved, they need to be able to try again
         await userManager.SetUserNameAsync(user, email);
         await userManager.SetEmailAsync(user, email);
         var result = await userManager.CreateAsync(user, password);
@@ -34,8 +38,8 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IU
 
         return new CurrentUser
         {
-            Email = email,
-            UserName = email,
+            Email = user.Email!,
+            NickName = user.NickName,
             EmailVerified = false,
         };
     }

@@ -17,13 +17,13 @@ public partial class LoginDisplay
     [Inject]
     private IState<IdentityState> IdentityState { get; set; } = null!;
 
-    private string UserName { get; set; } = null!;
+    private string NickName { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        UserName = (await AuthenticationState).User.GetUserName();
+        NickName = (await AuthenticationState).User.GetNickName();
     }
 
     public void LogOut()

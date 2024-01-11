@@ -23,8 +23,8 @@ public class MeController(UserManager<ApplicationUser> userManager) : Controller
 
         return Ok(new CurrentUser
         {
-            UserName = currentUser.UserName!,
             Email = currentUser.Email!,
+            NickName = currentUser.NickName,
             EmailVerified = currentUser.EmailConfirmed
         });
     }

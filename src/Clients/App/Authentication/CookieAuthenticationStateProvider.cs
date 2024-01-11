@@ -75,7 +75,7 @@ public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi 
 
         if (userResponse.Error is not null)
         {
-            logger.LogWarning($"Failed to retrieve current user: {userResponse.Error.ReasonPhrase}");
+            logger.LogWarning("Failed to retrieve current user: {Reason}", userResponse.Error.ReasonPhrase);
 
             var unauthenticatedUser = new ClaimsPrincipal(new ClaimsIdentity());
 
@@ -86,7 +86,7 @@ public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi 
 
         var claims = new List<Claim>
         {
-            new(ApplicationClaimTypes.UserName, currentUser.UserName),
+            new(ApplicationClaimTypes.NickName, currentUser.NickName),
             new(ApplicationClaimTypes.Email, currentUser.Email),
             new(ApplicationClaimTypes.EmailVerified, currentUser.EmailVerified.ToString().ToLowerInvariant())
         };

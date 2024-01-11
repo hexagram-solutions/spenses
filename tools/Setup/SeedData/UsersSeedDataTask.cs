@@ -37,19 +37,20 @@ public class UsersSeedDataTask(
         var defaultPassword = configuration.Require(defaultUserPasswordSettingKey,
             $"A value for {defaultUserPasswordSettingKey} must be set in user secrets.");
 
-        await AddUser(SystemCurrentUserService.SystemUserId, "system@spenses.ca");
-        await AddUser("integration-test-user", "george@vandelayindustries.com");
-        await AddUser(Guid.NewGuid().ToString(), "ericsondergard+spensesuser@fastmail.com");
+        await AddUser(SystemCurrentUserService.SystemUserId, "system@spenses.ca", "System User");
+        await AddUser("integration-test-user", "george@vandelayindustries.com", "George Costanza");
+        await AddUser(Guid.NewGuid().ToString(), "ericsondergard+spensesuser@fastmail.com", "esond");
 
         return;
 
-        Task<IdentityResult> AddUser(string id, string email)
+        Task<IdentityResult> AddUser(string id, string email, string nickName)
         {
             var user = new ApplicationUser
             {
                 Id = id,
                 UserName = email,
                 Email = email,
+                NickName = nickName,
                 EmailConfirmed = true
             };
 

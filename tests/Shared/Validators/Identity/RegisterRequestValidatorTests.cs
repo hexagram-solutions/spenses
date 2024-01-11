@@ -11,7 +11,12 @@ public class RegisterRequestValidatorTests
     [Fact]
     public void Email_must_be_valid_email_address()
     {
-        var model = new RegisterRequest { Email = string.Empty, Password = "hunter2" };
+        var model = new RegisterRequest
+        {
+            Email = string.Empty,
+            Password = "hunter2",
+            NickName = "George Costanza"
+        };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Email);
@@ -32,7 +37,12 @@ public class RegisterRequestValidatorTests
     [Fact]
     public void Password_must_be_at_least_12_characters_long()
     {
-        var model = new RegisterRequest { Email = "george@vandelayindustries.com", Password = string.Empty };
+        var model = new RegisterRequest
+        {
+            Email = "george@vandelayindustries.com",
+            Password = string.Empty,
+            NickName = "George Costanza"
+        };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Password);
@@ -42,5 +52,22 @@ public class RegisterRequestValidatorTests
 
         _validator.TestValidate(model with { Password = new string('a', 10) })
             .ShouldNotHaveValidationErrorFor(x => x.Password);
+    }
+
+    [Fact]
+    public void Nick_name_is_required()
+    {
+        var model = new RegisterRequest
+        {
+            Email = "george@vandelayindustries.com",
+            Password = "hunter2",
+            NickName = string.Empty
+        };
+
+        _validator.TestValidate(model)
+            .ShouldHaveValidationErrorFor(x => x.NickName);
+
+        _validator.TestValidate(model with { NickName = "George Costanza" })
+            .ShouldNotHaveValidationErrorFor(x => x.NickName);
     }
 }
