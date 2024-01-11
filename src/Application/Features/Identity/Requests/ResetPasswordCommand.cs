@@ -9,14 +9,14 @@ using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Application.Features.Identity.Requests;
 
-public record ResetPasswordCommand(ResetPasswordRequest Reset) : IRequest;
+public record ResetPasswordCommand(ResetPasswordRequest Request) : IRequest;
 
 public class SendPasswordResetEmailCommandHandler(UserManager<ApplicationUser> userManager)
     : IRequestHandler<ResetPasswordCommand>
 {
     public async Task Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
     {
-        var (email, resetCode, newPassword) = request.Reset;
+        var (email, resetCode, newPassword) = request.Request;
 
         var user = await userManager.FindByEmailAsync(email);
 

@@ -35,7 +35,7 @@ public class RegisterRequestValidatorTests
     }
 
     [Fact]
-    public void Password_must_be_at_least_12_characters_long()
+    public void Password_must_be_at_least_10_characters_long()
     {
         var model = new RegisterRequest
         {

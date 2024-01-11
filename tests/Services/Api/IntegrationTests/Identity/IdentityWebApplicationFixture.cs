@@ -1,3 +1,6 @@
+using System.Text.RegularExpressions;
+using System.Web;
+using Bogus;
 using FluentAssertions.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,20 +28,28 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public IdentityWebApplicationFactory<TStartup> WebApplicationFactory { get; }
 
-    public CurrentUser RegisteredUser { get; private set; } = null!;
+    public CurrentUser VerifiedUser { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
         var identityApi = RestService.For<IIdentityApi>(WebApplicationFactory.CreateClient());
 
-        var response = await identityApi.Register(new RegisterRequest
+        var registerRequest = new RegisterRequest
         {
             Email = "grunky.peep@georgiasouthern.edu",
-            Password = "Password123!",
+            Password = new Faker().Internet.Password(),
             Name = "Grunky Peep"
-        });
+        };
 
-        RegisteredUser = response.Content!;
+        var response = await identityApi.Register(registerRequest);
+
+        VerifiedUser = response.Content!;
+
+        var (userId, code) = GetVerificationParametersForEmail(registerRequest.Email);
+
+        await identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
+
+        VerifiedUser.EmailVerified = true;
     }
 
     public async Task DisposeAsync()
@@ -58,5 +69,44 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         var user = await userManager.FindByEmailAsync(email);
 
         await userManager.DeleteAsync(user!);
+    }
+
+    public (string userId, string code) GetVerificationParametersForEmail(string email)
+    {
+        var emailClient = WebApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
+
+        var message = emailClient.EmailMessages
+            .Last(e => e.RecipientAddress == email);
+
+        var confirmationUri = GetLinkFromEmailMessage(message);
+
+        var parameters = HttpUtility.ParseQueryString(confirmationUri.Query);
+
+        return (parameters["userId"]!, parameters["code"]!);
+    }
+
+    public (string email, string code) GetPasswordResetParametersForEmail(string email)
+    {
+        var emailClient = WebApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
+
+        var message = emailClient.EmailMessages
+            .Last(e => e.RecipientAddress == email);
+
+        var confirmationUri = GetLinkFromEmailMessage(message);
+
+        var parameters = HttpUtility.ParseQueryString(confirmationUri.Query);
+
+        return (parameters["email"]!, parameters["code"]!);
+    }
+
+    private Uri GetLinkFromEmailMessage(CapturedEmailMessage message)
+    {
+        var regex = new Regex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase);
+
+        var verificationAnchorValue = regex.Matches(message.HtmlMessage)
+            .Select(m => m.Groups["href"].Value)
+            .Single();
+
+        return new Uri(verificationAnchorValue);
     }
 }

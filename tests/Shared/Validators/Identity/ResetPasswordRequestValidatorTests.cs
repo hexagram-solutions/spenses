@@ -42,14 +42,17 @@ public class ResetPasswordRequestValidatorTests
     }
 
     [Fact]
-    public void New_password_is_required()
+    public void New_password_must_be_at_least_10_characters_long()
     {
         var model = new ResetPasswordRequest("george@vandelayindustries.com", "foo", string.Empty);
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.NewPassword);
 
-        _validator.TestValidate(model with { NewPassword = "hunter2" })
+        _validator.TestValidate(model with { NewPassword = new string('a', 9) })
+            .ShouldHaveValidationErrorFor(x => x.NewPassword);
+
+        _validator.TestValidate(model with { NewPassword = new string('a', 10) })
             .ShouldNotHaveValidationErrorFor(x => x.NewPassword);
     }
 }

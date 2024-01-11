@@ -14,6 +14,8 @@ public static class IdentityErrors
 
     public const string PasswordTooCommon = nameof(PasswordTooCommon);
 
+    public const string InvalidToken = nameof(InvalidToken);
+
     public const string UserNameAsPassword = nameof(UserNameAsPassword);
 
     public const string EmailAsPassword = nameof(EmailAsPassword);

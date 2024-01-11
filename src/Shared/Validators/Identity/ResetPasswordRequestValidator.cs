@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Shared.Validators.Identity;
@@ -14,6 +14,7 @@ public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequ
             .NotEmpty();
 
         RuleFor(x => x.NewPassword)
-            .NotEmpty();
+            .NotEmpty()
+            .MinimumLength(10);
     }
 }

@@ -1,4 +1,5 @@
 using System.Net;
+using Bogus;
 using Refit;
 using Spenses.Shared.Models.Identity;
 
@@ -12,7 +13,7 @@ public partial class IdentityIntegrationTests
         var request = new RegisterRequest
         {
             Email = "hmccringleberry@psu.edu",
-            Password = "Password123!",
+            Password = new Faker().Internet.Password(),
             Name = "Hingle McCringleberry"
         };
 
@@ -54,7 +55,7 @@ public partial class IdentityIntegrationTests
         var request = new RegisterRequest
         {
             Email = "hmccringleberry@psu.edu",
-            Password = "Password123!",
+            Password = new Faker().Internet.Password(),
             Name = "Hingle McCringleberry"
         };
 
@@ -87,7 +88,7 @@ public partial class IdentityIntegrationTests
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
         problemDetails!.Errors.Should().ContainKey(nameof(RegisterRequest.Email));
-        problemDetails!.Errors.Should().ContainKey(nameof(RegisterRequest.Name));
-        problemDetails!.Errors.Should().ContainKey(nameof(RegisterRequest.Password));
+        problemDetails.Errors.Should().ContainKey(nameof(RegisterRequest.Name));
+        problemDetails.Errors.Should().ContainKey(nameof(RegisterRequest.Password));
     }
 }
