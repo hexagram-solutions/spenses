@@ -14,7 +14,7 @@ public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
             .NotEmpty()
             .MinimumLength(10);
 
-        RuleFor(x => x.NickName)
+        RuleFor(x => x.Name)
             .NotEmpty();
     }
 }

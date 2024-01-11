@@ -1,16 +1,19 @@
 @HOST=https://localhost:8081
 
-POST {{HOST}}/auth/register
+###
+
+POST {{HOST}}/identity/register
 Content-Type: application/json
 
 {
+  "nickName": "Tyroil Smoochie Wallace",
   "email": "tyroil@bar.ca",
   "password": "foobarfoobar"
 }
 
 ###
 
-POST {{HOST}}/auth/resend-confirmation-email
+POST {{HOST}}/identity/resend-verification-email
 Content-Type: application/json
 
 {
@@ -19,7 +22,7 @@ Content-Type: application/json
 
 ###
 
-POST {{HOST}}/auth/login
+POST {{HOST}}/identity/login
 Content-Type: application/json
 
 {
@@ -29,7 +32,7 @@ Content-Type: application/json
 
 ###
 
-POST {{HOST}}/auth/logout
+POST {{HOST}}/identity/logout
 
 ###
 # @name homes

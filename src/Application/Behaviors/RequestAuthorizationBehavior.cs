@@ -35,7 +35,7 @@ public class RequestAuthorizationBehavior<TRequest, TResponse>(IAuthorizationSer
 
         var currentUser = currentUserService.CurrentUser;
 
-        var authorizationResult = await authorizationService.AuthorizeAsync(currentUser, authorizedRequest.Policy);
+        var authorizationResult = await authorizationService.AuthorizeAsync(currentUser!, authorizedRequest.Policy);
 
         if (authorizationResult.Succeeded)
             return await next();

@@ -54,8 +54,7 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
             result.Error.Errors.ContainsKey(IdentityErrors.DuplicateEmail))
         {
             dispatcher.Dispatch(new RegistrationFailedAction([
-                "It looks like you may already have an account with " +
-                "us. Use your credentials to log in instead."
+                "It looks like you may already have an account with us. Use your credentials to log in instead."
             ]));
 
             return;

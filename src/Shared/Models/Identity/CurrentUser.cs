@@ -6,11 +6,11 @@ public record CurrentUser
 {
     [Required]
     [EmailAddress]
-    public required string Email { get; init; }
+    public string Email { get; set; } = null!;
 
     [Required]
-    public required string NickName { get; init; }
+    public string NickName { get; set; } = null!;
 
     [Required]
-    public required bool EmailVerified { get; init; }
+    public bool EmailVerified { get; set; }
 }

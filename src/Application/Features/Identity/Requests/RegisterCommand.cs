@@ -9,8 +9,7 @@ namespace Spenses.Application.Features.Identity.Requests;
 
 public record RegisterCommand(RegisterRequest Request) : IRequest<CurrentUser>;
 
-public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IUserStore<ApplicationUser> userStore,
-    ISender sender)
+public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, ISender sender)
     : IRequestHandler<RegisterCommand, CurrentUser>
 {
     public async Task<CurrentUser> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -22,17 +21,16 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IU
             NickName = nickName
         };
 
-        //var emailStore = (IUserEmailStore<ApplicationUser>) userStore;
-        //await userStore.SetUserNameAsync(user, email, cancellationToken);
-        //await emailStore.SetEmailAsync(user, email, cancellationToken);
-
-        // TODO: Make sure users who encounter an error (like for password length) do not get saved, they need to be able to try again
         await userManager.SetUserNameAsync(user, email);
         await userManager.SetEmailAsync(user, email);
         var result = await userManager.CreateAsync(user, password);
 
         if (!result.Succeeded)
+        {
+            await userManager.DeleteAsync(user);
+
             throw new InvalidRequestException(result.Errors.Select(e => new ValidationFailure(e.Code, e.Description)));
+        }
 
         await sender.Send(new SendVerificationEmailCommand(email), cancellationToken);
 

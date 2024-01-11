@@ -16,7 +16,7 @@ public class HomesQueryHandler(ApplicationDbContext db, IMapper mapper, ICurrent
 {
     public async Task<IEnumerable<Home>> Handle(HomesQuery request, CancellationToken cancellationToken)
     {
-        var currentUserId = currentUserService.CurrentUser.GetId();
+        var currentUserId = currentUserService.CurrentUser!.GetId();
 
         var homes = await db.Homes
             .Where(h => h.Members.Select(m => m.UserId).Contains(currentUserId))

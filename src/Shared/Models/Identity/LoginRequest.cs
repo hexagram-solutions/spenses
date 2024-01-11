@@ -6,10 +6,10 @@ public record LoginRequest
 {
     [Required]
     [EmailAddress]
-    public required string Email { get; set; }
+    public string Email { get; set; } = null!;
 
     [Required]
-    public required string Password { get; set; }
+    public string Password { get; set; } = null!;
 
     public void Deconstruct(out string email, out string password)
     {

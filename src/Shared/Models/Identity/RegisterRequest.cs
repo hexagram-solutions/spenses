@@ -6,15 +6,16 @@ public record RegisterRequest
 {
     [Required]
     [EmailAddress]
-    public required string Email { get; set; }
+    public string Email { get; set; } = null!;
 
     [Required]
-    public required string Password { get; set; }
+    public string Password { get; set; } = null!;
 
-    public required string NickName { get; set; }
+    [Required]
+    public string Name { get; set; } = null!;
 
     public void Deconstruct(out string email, out string password, out string nickName)
     {
-        (email, password, nickName) = (Email, Password, NickName);
+        (email, password, nickName) = (Email, Password, Name);
     }
 }

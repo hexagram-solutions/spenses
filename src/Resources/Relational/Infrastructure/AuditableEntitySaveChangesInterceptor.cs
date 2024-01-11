@@ -31,12 +31,12 @@ public class AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUs
 
         var currentUser = currentUserService.CurrentUser;
 
-        if (currentUser.Identity?.IsAuthenticated != true)
+        if (currentUser?.Identity?.IsAuthenticated != true)
             return;
 
         var utcNow = DateTime.UtcNow;
 
-        var currentUserId = currentUserService.CurrentUser.GetId();
+        var currentUserId = currentUser.GetId();
 
         foreach (var entry in context.ChangeTracker.Entries<AggregateRoot>())
         {

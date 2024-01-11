@@ -19,7 +19,7 @@ public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, I
     {
         var home = mapper.Map<DbModels.Home>(request.Props);
 
-        var currentUser = currentUserService.CurrentUser;
+        var currentUser = currentUserService.CurrentUser!;
 
         home.Members.Add(new DbModels.Member
         {

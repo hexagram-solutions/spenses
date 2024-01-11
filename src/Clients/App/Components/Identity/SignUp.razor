@@ -30,13 +30,13 @@
 
         <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<RegisterRequestValidator>())"/>
 
-        <FluentTextField Name="RegisterRequest.NickName"
-                         @bind-Value="RegisterRequest.NickName"
+        <FluentTextField Name="RegisterRequest.Name"
+                         @bind-Value="RegisterRequest.Name"
                          Required="true"
                          Placeholder="Hingle McCringleberry"
                          Label="Your name"
                          Style="width: 100%" />
-        <ValidationMessage For="() => RegisterRequest.NickName"
+        <ValidationMessage For="() => RegisterRequest.Name"
                            class="text-danger" />
 
         <FluentTextField Name="RegisterRequest.Email"

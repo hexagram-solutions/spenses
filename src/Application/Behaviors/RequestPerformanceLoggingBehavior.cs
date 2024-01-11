@@ -35,7 +35,7 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TReq
 
         var currentUser = currentUserService.CurrentUser;
 
-        if (currentUser.Identity?.IsAuthenticated == false)
+        if (currentUser?.Identity?.IsAuthenticated == false)
         {
             logger.LogWarning(
                 "Request {Name} took {ElapsedMilliseconds}ms to complete (threshold: {Threshold})",
@@ -44,7 +44,7 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TReq
             return response;
         }
 
-        var userId = currentUser.GetId();
+        var userId = currentUser!.GetId();
 
         logger.LogWarning(
             "Request {Name} took {ElapsedMilliseconds}ms to complete for user {@UserId} (threshold: {Threshold})",

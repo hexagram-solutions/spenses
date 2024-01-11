@@ -15,7 +15,7 @@ public class RegisterRequestValidatorTests
         {
             Email = string.Empty,
             Password = "hunter2",
-            NickName = "George Costanza"
+            Name = "George Costanza"
         };
 
         _validator.TestValidate(model)
@@ -41,7 +41,7 @@ public class RegisterRequestValidatorTests
         {
             Email = "george@vandelayindustries.com",
             Password = string.Empty,
-            NickName = "George Costanza"
+            Name = "George Costanza"
         };
 
         _validator.TestValidate(model)
@@ -61,13 +61,13 @@ public class RegisterRequestValidatorTests
         {
             Email = "george@vandelayindustries.com",
             Password = "hunter2",
-            NickName = string.Empty
+            Name = string.Empty
         };
 
         _validator.TestValidate(model)
-            .ShouldHaveValidationErrorFor(x => x.NickName);
+            .ShouldHaveValidationErrorFor(x => x.Name);
 
-        _validator.TestValidate(model with { NickName = "George Costanza" })
-            .ShouldNotHaveValidationErrorFor(x => x.NickName);
+        _validator.TestValidate(model with { Name = "George Costanza" })
+            .ShouldNotHaveValidationErrorFor(x => x.Name);
     }
 }

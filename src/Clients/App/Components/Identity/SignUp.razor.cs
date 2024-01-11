@@ -36,7 +36,7 @@ public partial class SignUp
     {
         Email = string.Empty,
         Password = string.Empty,
-        NickName = string.Empty
+        Name = string.Empty
     };
 
     private void RegisterUser(EditContext editContext)

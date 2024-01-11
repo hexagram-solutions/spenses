@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
