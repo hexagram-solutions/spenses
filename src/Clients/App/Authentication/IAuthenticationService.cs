@@ -16,7 +16,7 @@ public interface IAuthenticationService
 
     public Task<IdentityResult> Register(RegisterRequest request);
 
-    public Task Logout();
+    public Task<IdentityResult> Logout();
 
     public Task<bool> CheckAuthenticatedAsync();
 }

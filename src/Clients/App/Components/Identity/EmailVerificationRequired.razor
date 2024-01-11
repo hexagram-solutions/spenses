@@ -1,29 +1,40 @@
 ﻿@page "/email-verification-required"
+
 @using Spenses.Utilities.Security
 @using Spenses.Client.Http
 @using Spenses.Shared.Models.Identity
+@using Fluxor
+@using Fluxor.Blazor.Web.Middlewares.Routing
+@using Spenses.App.Store.Identity
+@using Spenses.App.Infrastructure
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Verification required</PageTitle>
 
 <h2>Verify your email address</h2>
 
-<FluentStack Orientation="Orientation.Vertical" VerticalGap="4">
+<FluentStack Orientation="Orientation.Vertical"
+             VerticalGap="4">
     <p>
         Before you can start using Spenses, we need to verify your email address.
     </p>
     <p>
-        We have sent a verification link to <b><samp>@Email</samp></b>. Follow the link to verify your email address and get started.
+        We have sent a verification link to
+        <b>
+            <samp>@Email</samp>
+        </b>. Follow the link to verify your email address and get started.
     </p>
     <FluentStack Orientation="Orientation.Vertical">
         <div>
             If you didn't receive an email, we can send you a new one.
         </div>
         <FluentButton Appearance="Appearance.Outline"
-                      
-                      OnClick="ResendVerificationEmail">
+                      OnClick="ResendVerificationEmail"
+                      Loading="State.ResendVerificationEmailRequesting">
             Resend verification email
         </FluentButton>
     </FluentStack>
+
     @if (VerificationEmailReSent)
     {
         <FluentMessageBar Title="Email sent"
@@ -32,29 +43,3 @@
         </FluentMessageBar>
     }
 </FluentStack>
-
-@code {
-    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
-
-    [Inject] public required IIdentityApi IdentityApi { get; set; }
-
-    private bool VerificationEmailReSent { get; set; }
-
-    public string Email { get; set; } = null!;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        Email = (await AuthenticationState).User.GetEmail();
-    }
-
-    private async Task ResendVerificationEmail()
-    {
-        var response = await IdentityApi.ResendVerificationEmail(new ResendVerificationEmailRequest(Email));
-
-        if (response.IsSuccessStatusCode)
-            VerificationEmailReSent = true;
-    }
-
-}

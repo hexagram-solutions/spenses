@@ -15,45 +15,50 @@ public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi 
 
     public async Task<IdentityResult<LoginResult>> Login(LoginRequest request)
     {
-        var result = await identityApi.Login(request);
+        var response = await identityApi.Login(request);
 
         // The login attempt "failed successfully" (e.g.: credentials were incorrect or the user needs to log in with
         // a second factor)
-        if (result.Error is not null && await result.Error.GetContentAsAsync<LoginResult>() is { } loginResult) 
+        if (response.Error is not null && await response.Error.GetContentAsAsync<LoginResult>() is { } loginResult) 
         {
             return new IdentityResult<LoginResult>(loginResult);
         }
 
         // The login attempt failed for some other reason (e.g.: network error)
-        if (result.Error is not null)
+        if (response.Error is not null)
         {
-            var errors = await result.Error.GetContentAsAsync<ProblemDetails>();
+            var errors = await response.Error.GetContentAsAsync<ProblemDetails>();
 
             return new IdentityResult<LoginResult>(null) { Error = errors };
         }
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
 
-        return new IdentityResult<LoginResult>(result.Content);
+        return new IdentityResult<LoginResult>(response.Content);
     }
 
     public async Task<IdentityResult> Register(RegisterRequest request)
     {
-        var result = await identityApi.Register(request);
+        var response = await identityApi.Register(request);
 
-        if (result.Error is null)
+        if (response.Error is null)
             return new IdentityResult();
 
-        var errors = await result.Error.GetContentAsAsync<ProblemDetails>();
+        var errors = await response.Error.GetContentAsAsync<ProblemDetails>();
 
         return new IdentityResult(errors);
     }
 
-    public async Task Logout()
+    public async Task<IdentityResult> Logout()
     {
-        await identityApi.Logout();
+        var response = await identityApi.Logout();
+
+        if (!response.IsSuccessStatusCode)
+            return new IdentityResult(await response.Error.GetContentAsAsync<ProblemDetails>());
 
         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+
+        return new IdentityResult();
     }
 
     public async Task<bool> CheckAuthenticatedAsync()

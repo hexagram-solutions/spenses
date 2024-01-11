@@ -1,25 +1,13 @@
-﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-@inject NavigationManager Navigation
+﻿@inject NavigationManager Navigation
 
-<div>
+<FluentStack Orientation="Orientation.Horizontal"
+             VerticalAlignment="VerticalAlignment.Center">
+    <div>
         Hello, @UserName!
-        <FluentButton Appearance="Appearance.Accent" @onclick="BeginLogOut">Log out</FluentButton>
-</div>
-
-@code{
-    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
-
-    private string UserName { get; set; } = null!;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        UserName = (await AuthenticationState).User.Identity!.Name;
-    }
-
-    public void BeginLogOut()
-    {
-        Navigation.NavigateToLogout("logout");
-    }
-}
+    </div>
+    <FluentButton Appearance="Appearance.Accent"
+                  OnClick="LogOut"
+                  Loading="IdentityState.Value.LogoutRequesting">
+        Log out
+    </FluentButton>
+</FluentStack>

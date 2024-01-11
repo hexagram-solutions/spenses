@@ -14,14 +14,20 @@ public record RegistrationSucceededAction;
 
 public record RegistrationFailedAction(string[] Errors);
 
-public record EmailVerificationRequestedAction(VerifyEmailRequest Request);
+public record EmailVerificationRequestedAction(string UserId, string Code);
 
 public record EmailVerificationSucceededAction;
 
 public record EmailVerificationFailedAction(string Error);
 
-public record ResendVerificationEmailRequestedAction(ResendVerificationEmailRequest Request);
+public record ResendVerificationEmailRequestedAction(string Email);
 
 public record ResendVerificationEmailSucceededAction;
 
-public record ResendVerificationEmailFailedAction(string Error);
+public record ResendVerificationEmailFailedAction;
+
+public record LogoutRequestedAction;
+
+public record LogoutSucceededAction;
+
+public record LogoutFailedAction;
