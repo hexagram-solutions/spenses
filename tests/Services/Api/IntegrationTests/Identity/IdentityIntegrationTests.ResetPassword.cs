@@ -11,7 +11,7 @@ public partial class IdentityIntegrationTests
     {
         var verifiedUser = fixture.VerifiedUser;
 
-        await _identityApi.ForgotPassword(new ForgotPasswordRequest(verifiedUser.Email));
+        await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = verifiedUser.Email });
 
         var (email, code) = fixture.GetPasswordResetParametersForEmail(verifiedUser.Email);
 
@@ -46,7 +46,7 @@ public partial class IdentityIntegrationTests
     {
         var verifiedUser = fixture.VerifiedUser;
 
-        await _identityApi.ForgotPassword(new ForgotPasswordRequest(verifiedUser.Email));
+        await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = verifiedUser.Email });
 
         var (email, code) = fixture.GetPasswordResetParametersForEmail(verifiedUser.Email);
 

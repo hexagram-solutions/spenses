@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Shared.Validators.Identity;

@@ -22,6 +22,15 @@ Content-Type: application/json
 
 ###
 
+POST {{HOST}}/identity/forgot-password
+Content-Type: application/json
+
+{
+  "email": ""
+}
+
+###
+
 POST {{HOST}}/identity/login
 Content-Type: application/json
 

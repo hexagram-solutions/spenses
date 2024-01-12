@@ -11,19 +11,19 @@ public class ForgotPasswordRequestValidatorTests
     [Fact]
     public void Email_must_be_valid_email_address()
     {
-        _validator.TestValidate(new ForgotPasswordRequest(string.Empty))
+        _validator.TestValidate(new ForgotPasswordRequest { Email = string.Empty })
             .ShouldHaveValidationErrorFor(x => x.Email);
 
-        _validator.TestValidate(new ForgotPasswordRequest(Email: "@"))
+        _validator.TestValidate(new ForgotPasswordRequest { Email = "@" })
             .ShouldHaveValidationErrorFor(x => x.Email);
 
-        _validator.TestValidate(new ForgotPasswordRequest(Email: "george@"))
+        _validator.TestValidate(new ForgotPasswordRequest { Email = "george@" })
             .ShouldHaveValidationErrorFor(x => x.Email);
 
-        _validator.TestValidate(new ForgotPasswordRequest(Email: "@vandelayindustries.com"))
+        _validator.TestValidate(new ForgotPasswordRequest { Email = "@vandelayindustries.com" })
             .ShouldHaveValidationErrorFor(x => x.Email);
 
-        _validator.TestValidate(new ForgotPasswordRequest(Email: "george@vandelayindustries.com"))
+        _validator.TestValidate(new ForgotPasswordRequest { Email = string.Empty })
             .ShouldNotHaveValidationErrorFor(x => x.Email);
     }
 }

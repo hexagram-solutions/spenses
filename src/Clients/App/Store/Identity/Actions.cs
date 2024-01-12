@@ -31,3 +31,9 @@ public record LogoutRequestedAction;
 public record LogoutSucceededAction;
 
 public record LogoutFailedAction;
+
+public record ForgotPasswordRequestedAction(string Email);
+
+public record ForgotPasswordSucceededAction;
+
+public record ForgotPasswordFailedAction;

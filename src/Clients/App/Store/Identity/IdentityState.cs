@@ -20,5 +20,7 @@ public record IdentityState
 
     public bool LogoutRequesting { get; init; }
 
+    public bool ForgotPasswordRequesting { get; init; }
+
     public string[] Errors { get; init; } = [];
 }

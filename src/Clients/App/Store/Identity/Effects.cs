@@ -1,3 +1,4 @@
+using System;
 using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
 using Spenses.App.Authentication;
@@ -89,7 +90,6 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
         }
 
         dispatcher.Dispatch(new RegistrationFailedAction(["An unknown error occurred."]));
-        dispatcher.Dispatch(new ApplicationErrorAction(result.Error.ToApplicationError()));
     }
 
     [EffectMethod]
@@ -127,5 +127,20 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
 
         dispatcher.Dispatch(new LogoutSucceededAction());
         dispatcher.Dispatch(new GoAction(Routes.Identity.Login(), true));
+    }
+
+    [EffectMethod]
+    public async Task HandleForgotPasswordRequestedAction(ForgotPasswordRequestedAction action, IDispatcher dispatcher)
+    {
+        var response = await identityApi.ForgotPassword(new ForgotPasswordRequest { Email = action.Email });
+
+        if (!response.IsSuccessStatusCode)
+        {
+            dispatcher.Dispatch(new ForgotPasswordFailedAction());
+
+            return;
+        }
+
+        dispatcher.Dispatch(new ForgotPasswordSucceededAction());
     }
 }

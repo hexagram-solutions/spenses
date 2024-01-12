@@ -9,7 +9,8 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Forgot_password_sends_reset_email_for_verified_user()
     {
-        var response = await _identityApi.ForgotPassword(new ForgotPasswordRequest(fixture.VerifiedUser.Email));
+        var response = await _identityApi.ForgotPassword(
+            new ForgotPasswordRequest { Email = fixture.VerifiedUser.Email });
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -30,7 +31,7 @@ public partial class IdentityIntegrationTests
 
         await _identityApi.Register(registerRequest);
 
-        var response = await _identityApi.ForgotPassword(new ForgotPasswordRequest(registerRequest.Email));
+        var response = await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = registerRequest.Email });
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -40,7 +41,8 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Forgot_password_fails_silently_for_non_existent_user()
     {
-        var response = await _identityApi.ForgotPassword(new ForgotPasswordRequest("quatro.quatro@sjsu.edu"));
+        var response = await _identityApi.ForgotPassword(
+             new ForgotPasswordRequest { Email = "quatro.quatro@sjsu.edu" });
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }

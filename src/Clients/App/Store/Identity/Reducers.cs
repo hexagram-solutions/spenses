@@ -102,4 +102,25 @@ public static class Reducers
     {
         return state with { LogoutRequesting = false, Errors = [] };
     }
+
+    [ReducerMethod]
+    public static IdentityState ReduceForgotPasswordRequested(IdentityState state,
+        ForgotPasswordRequestedAction _)
+    {
+        return state with { ForgotPasswordRequesting = true };
+    }
+
+    [ReducerMethod]
+    public static IdentityState ReduceForgotPasswordSucceededAction(IdentityState state,
+        ForgotPasswordSucceededAction _)
+    {
+        return state with { ForgotPasswordRequesting = false };
+    }
+
+    [ReducerMethod]
+    public static IdentityState ReduceForgotPasswordFailedAction(IdentityState state,
+        ForgotPasswordFailedAction action)
+    {
+        return state with { ForgotPasswordRequesting = false };
+    }
 }

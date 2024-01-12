@@ -35,16 +35,18 @@
 
     <MudForm Model="LoginRequest"
              @ref="FormRef"
-             Validation="@(_validator.Validate(LoginRequest).IsValid)">
+             Validation="@(_validator.ValidateValue())">
         <MudStack Spacing="0">
             
             <MudTextField @bind-Value="LoginRequest.Email"
                           Label="Email"
+                          For="@(() => LoginRequest.Email)"
                           Required/>
 
             <MudTextField @bind-Value="LoginRequest.Password"
                           Label="Password"
                           InputType="InputType.Password"
+                          For="@(() => LoginRequest.Password)"
                           Required/>
         </MudStack>
     </MudForm>

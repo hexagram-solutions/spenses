@@ -43,7 +43,7 @@
 
     <MudForm Model="RegisterRequest"
              @ref="FormRef"
-             Validation="@(_validator.Validate(RegisterRequest).IsValid)">
+             Validation="@(_validator.ValidateValue())">
 
         <MudCardContent>
             <MudTextField @bind-Value="RegisterRequest.Name"
