@@ -1,13 +1,11 @@
-﻿@inject NavigationManager Navigation
-
-<FluentStack Orientation="Orientation.Horizontal"
-             VerticalAlignment="VerticalAlignment.Center">
+﻿<MudStack Row="true">
     <div>
         Hello, @NickName!
     </div>
-    <FluentButton Appearance="Appearance.Accent"
-                  OnClick="LogOut"
-                  Loading="IdentityState.Value.LogoutRequesting">
+    <MudButton Variant="Variant.Filled"
+               EndIcon="@Icons.Filled.Logout"
+               OnClick="LogOut"
+               Disabled="IdentityState.Value.LogoutRequesting">
         Log out
-    </FluentButton>
-</FluentStack>
+    </MudButton>
+</MudStack>

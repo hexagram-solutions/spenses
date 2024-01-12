@@ -13,9 +13,8 @@ public static class Routes
         public static string TwoFactorLogin(string? returnUrl = null) => string.IsNullOrEmpty(returnUrl)
             ? "/two-factor-login"
             : $"/two-factor-login?returnUrl={returnUrl}";
-        public static string SignUp(string? returnUrl = null) => string.IsNullOrEmpty(returnUrl)
-            ? "/sign-up"
-            : $"/sign-up?returnUrl={returnUrl}";
+
+        public static string SignUp => "/sign-up";
 
         public static string ForgotPassword => "/forgot-password";
 

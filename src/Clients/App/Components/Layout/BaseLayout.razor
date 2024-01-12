@@ -1,7 +1,11 @@
 ﻿@inherits LayoutComponentBase
 
-<FluentLayout>
-    <FluentBodyContent>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudMainContent>
         <ErrorBoundary>
             <ChildContent>
                 @Body
@@ -10,5 +14,5 @@
                 <div class="blazor-error-boundary">@ex.Message</div>
             </ErrorContent>
         </ErrorBoundary>
-    </FluentBodyContent>
-</FluentLayout>
+    </MudMainContent>
+</MudLayout>

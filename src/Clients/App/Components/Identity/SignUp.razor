@@ -1,15 +1,13 @@
 ﻿@page "/sign-up"
-@using Spenses.Shared.Models.Identity
-@using Spenses.Shared.Validators.Identity
 @using Spenses.App.Infrastructure
+@using Spenses.Shared.Models.Identity
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Sign up</PageTitle>
 
 <h2>Sign up</h2>
 
-<FluentStack Orientation="Orientation.Vertical">
-
+<MudCard>
     @foreach (var error in IdentityState.Value.Errors)
     {
         switch (error)
@@ -43,100 +41,94 @@
         }
     }
 
-    <EditForm Model="RegisterRequest"
-              OnSubmit="RegisterUser">
+    <MudForm Model="RegisterRequest"
+             @ref="FormRef"
+             Validation="@(_validator.Validate(RegisterRequest).IsValid)">
 
-        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<RegisterRequestValidator>())"/>
+        <MudCardContent>
+            <MudTextField @bind-Value="RegisterRequest.Name"
+                          Label="Name"
+                          Placeholder="Hingle McCringleberry"
+                          Required/>
 
-        <FluentTextField Name="RegisterRequest.Name"
-                         @bind-Value="RegisterRequest.Name"
-                         Required="true"
-                         Placeholder="Hingle McCringleberry"
-                         Label="Your name"
-                         Style="width: 100%"/>
-        <ValidationMessage For="() => RegisterRequest.Name"
-                           class="text-danger"/>
+            <MudTextField @bind-Value="RegisterRequest.Email"
+                          Label="Email"
+                          Placeholder="hmccringleberry@psu.edu"
+                          Required/>
 
-        <FluentTextField Name="RegisterRequest.Email"
-                         @bind-Value="RegisterRequest.Email"
-                         AutoComplete="username"
-                         Required="true"
-                         Placeholder="hmccringleberry@psu.edu"
-                         Label="Email"
-                         Style="width: 100%"/>
-        <ValidationMessage For="() => RegisterRequest.Email"
-                           class="text-danger"/>
+            <MudTextField @bind-Value="RegisterRequest.Password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          Required/>
+        </MudCardContent>
+    </MudForm>
 
-        <FluentTextField Name="RegisterRequest.Password"
-                         TextFieldType="TextFieldType.Password"
-                         @bind-Value="RegisterRequest.Password"
-                         AutoComplete="current-password"
-                         Required
-                         Label="Password"
-                         Style="width: 100%"/>
-        <ValidationMessage For="() => RegisterRequest.Password"
-                           class="text-danger"/>
-
-        <FluentButton Type="ButtonType.Submit"
-                      Appearance="Appearance.Accent"
-                      Style="width: 100%"
-                      Loading="IdentityState.Value.RegistrationRequesting">
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="ml-auto"
+                   OnClick="Register"
+                   Disabled="IdentityState.Value.RegistrationRequesting">
             Sign up
-        </FluentButton>
-    </EditForm>
-</FluentStack>
+        </MudButton>
+    </MudCardActions>
+</MudCard>
 
 @code
 {
     private RenderFragment InvalidUserNameOrEmailError => __builder =>
     {
-        <FluentMessageBar Title="The email address you entered is invalid."
-                          Intent="MessageIntent.Error" />
+        <MudAlert Severity="Severity.Error">
+            The email address you entered is invalid.
+        </MudAlert>
     };
 
     private RenderFragment DuplicateUserNameOrEmailError => __builder =>
     {
-        <FluentMessageBar Title="It looks like you may already have an account with us."
-                          Intent="MessageIntent.Error">
-            Use your credentials to <FluentAnchor Href="@Routes.Identity.Login()">login</FluentAnchor> instead.
-        </FluentMessageBar>
+        <MudAlert Severity="Severity.Error">
+            It looks like you may already have an account with us. Use your credentials to
+            <MudLink Href="@Routes.Identity.Login()">log in.</MudLink>
+        </MudAlert>
     };
 
     private RenderFragment PasswordTooShortError => __builder =>
     {
-        <FluentMessageBar Title="Passwords must have a minimum of 10 characters."
-                          Intent="MessageIntent.Error" />
+        <MudAlert Severity="Severity.Error">
+            Passwords must have a minimum of 10 characters.
+        </MudAlert>
     };
 
     private RenderFragment UserNameOrEmailAsPasswordError => __builder =>
     {
-        <FluentMessageBar Title="You cannot use your email address as your password."
-                          Intent="MessageIntent.Error" />
+        <MudAlert Severity="Severity.Error">
+            You cannot use your email address as your password.
+        </MudAlert>
     };
 
     private readonly RenderFragment _pwnedPasswordError = __builder =>
     {
-        <FluentMessageBar Title="Your password is insecure."
-                          Intent="MessageIntent.Error">
+        <MudAlert Severity="Severity.Error">
             <p>
-                The password you've entered appears multiple times in historical data breaches and is therefore known to be insecure. Please enter a different password.
+                The password you've entered appears in multiple public data breaches and is therefore insecure. Please enter a different password.
             </p>
             <p>
-                For more information, click <FluentAnchor Href="https://haveibeenpwned.com/Passwords">here.</FluentAnchor>
+                See <FluentAnchor Href="https://haveibeenpwned.com/Passwords">this page</FluentAnchor> for more information.
             </p>
-        </FluentMessageBar>
+        </MudAlert>
     };
 
     private RenderFragment GenericSignUpError(string[] errors) => __builder =>
     {
-        <FluentMessageBar Title="Unable to sign up"
-                          Intent="MessageIntent.Error">
+        <MudAlert Severity="Severity.Error">
+            <p>
+                Unable to sign up:
+            </p>
             <ul>
                 @foreach (var error in errors)
                 {
                     <li>@error</li>
                 }
             </ul>
-        </FluentMessageBar>
+        </MudAlert>
     };
 }

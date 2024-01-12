@@ -6,8 +6,7 @@
 
 <h2>Verify your email address</h2>
 
-<FluentStack Orientation="Orientation.Vertical"
-             VerticalGap="4">
+<MudStack Spacing="4">
     <p>
         Before you can start using Spenses, we need to verify your email address.
     </p>
@@ -17,22 +16,21 @@
             <samp>@Email</samp>
         </b>. Follow the link to verify your email address and get started.
     </p>
-    <FluentStack Orientation="Orientation.Vertical">
+    <MudStack>
         <div>
             If you didn't receive an email, we can send you a new one.
         </div>
-        <FluentButton Appearance="Appearance.Outline"
-                      OnClick="ResendVerificationEmail"
-                      Loading="State.ResendVerificationEmailRequesting">
+        <MudButton Variant="Variant.Outlined"
+                   OnClick="ResendVerificationEmail"
+                   Disabled="State.ResendVerificationEmailRequesting">
             Resend verification email
-        </FluentButton>
-    </FluentStack>
+        </MudButton>
+    </MudStack>
 
     @if (VerificationEmailReSent)
     {
-        <FluentMessageBar Title="Email sent"
-                          Intent="MessageIntent.Info">
+        <MudAlert Severity="Severity.Success">
             Verification email re-sent to @Email
-        </FluentMessageBar>
+        </MudAlert>
     }
-</FluentStack>
+</MudStack>

@@ -3,6 +3,7 @@ using Hexagrams.Extensions.Common.Http;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
 using Polly;
 using Refit;
 using Spenses.App.Authentication;
@@ -13,8 +14,17 @@ using Spenses.Utilities.Security;
 
 namespace Spenses.App;
 
-public static class ProgramExtensions
+internal static class ProgramExtensions
 {
+    internal static WebAssemblyHostBuilder AddWebServices(this WebAssemblyHostBuilder builder)
+    {
+        builder.Services
+            .AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
+            .AddMudServices();
+
+        return builder;
+    }
+
     internal static WebAssemblyHostBuilder AddIdentityServices(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddOptions();
@@ -32,7 +42,7 @@ public static class ProgramExtensions
         return builder;
     }
 
-    public static WebAssemblyHostBuilder AddApiClients(this WebAssemblyHostBuilder builder)
+    internal static WebAssemblyHostBuilder AddApiClients(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddScoped<CookieHandler>();
 
@@ -80,7 +90,7 @@ public static class ProgramExtensions
         return builder;
     }
 
-    public static WebAssemblyHostBuilder AddStateManagement(this WebAssemblyHostBuilder builder)
+    internal static WebAssemblyHostBuilder AddStateManagement(this WebAssemblyHostBuilder builder)
     {
         builder.Services.AddFluxor(opts =>
         {

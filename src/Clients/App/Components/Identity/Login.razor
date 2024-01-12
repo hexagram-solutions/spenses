@@ -1,14 +1,13 @@
 ﻿@page "/login"
 @using Spenses.App.Infrastructure
 @using Spenses.Shared.Models.Identity
-@using Spenses.Shared.Validators.Identity
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Log in</PageTitle>
 
 <h2>Log in</h2>
 
-<FluentStack Orientation="Orientation.Vertical">
+<MudCard>
     @foreach (var error in IdentityState.Value.Errors)
     {
         switch (error)
@@ -31,85 +30,83 @@
         }
     }
 
-    <EditForm Model="LoginRequest"
-              OnSubmit="LogIn">
-        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<LoginRequestValidator>())"/>
+    <MudForm Model="LoginRequest"
+             @ref="FormRef"
+             Validation="@(_validator.Validate(LoginRequest).IsValid)">
 
-        <FluentTextField Id="email"
-                         TextFieldType="TextFieldType.Email"
-                         @bind-Value="LoginRequest.Email"
-                         AutoComplete="email"
-                         Required
-                         Label="Email"
-                         Style="width: 100%"/>
-        <ValidationMessage For="@(() => LoginRequest.Email)"/>
+        <MudCardContent>
+            <MudTextField @bind-Value="LoginRequest.Email"
+                          Label="Email"
+                          Required/>
 
-        <FluentTextField Id="password"
-                         TextFieldType="TextFieldType.Password"
-                         @bind-Value="LoginRequest.Password"
-                         AutoComplete="current-password"
-                         Required
-                         Label="Password"
-                         Style="width: 100%"/>
-        <ValidationMessage For="@(() => LoginRequest.Password)"/>
+            <MudTextField @bind-Value="LoginRequest.Password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          Required/>
+        </MudCardContent>
+    </MudForm>
 
-        <FluentButton Type="ButtonType.Submit"
-                      Appearance="Appearance.Accent"
-                      Style="width: 100%"
-                      Loading="IdentityState.Value.LoginRequesting">
+    <MudCardActions>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Class="ml-auto"
+                   OnClick="LogIn"
+                   Disabled="IdentityState.Value.LoginRequesting">
             Log in
-        </FluentButton>
-    </EditForm>
+        </MudButton>
+    </MudCardActions>
 
     <div>
         <p>
-            <FluentAnchor Appearance="Appearance.Hypertext"
-                          Href="@Routes.Identity.ForgotPassword">
-                Forgot password?
-            </FluentAnchor>
+            <MudLink Href="@Routes.Identity.ForgotPassword">Forgot your password?</MudLink>
         </p>
         <p>
             Don't have an account?
-            <FluentAnchor Appearance="Appearance.Hypertext"
-                          Href="@Routes.Identity.SignUp(ReturnUrl)">
-                Sign up
-            </FluentAnchor>
+            <MudLink Href="@Routes.Identity.SignUp">Sign up</MudLink>
         </p>
     </div>
-</FluentStack>
+</MudCard>
 
 @code
 {
     private RenderFragment InvalidCredentialsError => __builder =>
     {
-        <FluentMessageBar Title="Your email or password was incorrect. Please try again."
-                          Intent="MessageIntent.Error"/>
+        <MudAlert Severity="Severity.Error">
+            Your email or password was incorrect. Please try again.
+        </MudAlert>
     };
 
     private RenderFragment EmailVerificationRequiredError => __builder =>
     {
-        <FluentMessageBar Title="You need to verify your email address before you can log in."
-                          Intent="MessageIntent.Error">
-            You can request a new verification email <FluentAnchor Href="@Routes.Identity.EmailVerificationRequired">here.</FluentAnchor>
-        </FluentMessageBar>
+        <MudAlert Title="You need to verify your email address before you can log in."
+                  Intent="MessageIntent.Error">
+
+        </MudAlert>
+        <MudAlert Severity="Severity.Error">
+            You need to verify your email address before you can log in. You can request a new verification email
+            <MudLink Href="@Routes.Identity.EmailVerificationRequired">here.</MudLink>
+        </MudAlert>
     };
 
     private RenderFragment LockedOutError => __builder =>
     {
-        <FluentMessageBar Title="This account is locked and cannot log in."
-                          Intent="MessageIntent.Error"/>
+        <MudAlert Severity="Severity.Error">
+            This account is locked and cannot log in.
+        </MudAlert>
     };
 
     private RenderFragment GenericLoginError(string[] errors) => __builder =>
     {
-        <FluentMessageBar Title="Unable to log in"
-                          Intent="MessageIntent.Error">
+        <MudAlert Severity="Severity.Error">
+            <p>
+                Unable to log in:
+            </p>
             <ul>
                 @foreach (var error in errors)
                 {
                     <li>@error</li>
                 }
             </ul>
-        </FluentMessageBar>
+        </MudAlert>
     };
 }

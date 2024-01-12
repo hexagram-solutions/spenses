@@ -2,11 +2,11 @@ using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
+using MudBlazor;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Validators.Identity;
 
 namespace Spenses.App.Components.Identity;
 
@@ -24,6 +24,10 @@ public partial class SignUp
     [Inject]
     public required ILogger<SignUp> Logger { get; set; }
 
+    private MudForm FormRef { get; set; } = null!;
+
+    private readonly RegisterRequestValidator _validator = new();
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -32,16 +36,13 @@ public partial class SignUp
             Dispatcher.Dispatch(new GoAction(Routes.Root));
     }
 
-    private RegisterRequest RegisterRequest { get; } = new()
-    {
-        Email = string.Empty,
-        Password = string.Empty,
-        Name = string.Empty
-    };
+    private RegisterRequest RegisterRequest { get; } = new();
 
-    private void RegisterUser(EditContext editContext)
+    private async Task Register()
     {
-        if (!editContext.ValidateObjectTree())
+        await FormRef.Validate();
+
+        if (!FormRef.IsValid)
             return;
 
         Dispatcher.Dispatch(new RegistrationRequestedAction(RegisterRequest));

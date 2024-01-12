@@ -2,11 +2,11 @@ using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
+using MudBlazor;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Validators.Identity;
 
 namespace Spenses.App.Components.Identity;
 
@@ -24,6 +24,10 @@ public partial class Login
     [Inject]
     private IState<IdentityState> IdentityState { get; set; } = null!;
 
+    private MudForm FormRef { get; set; } = null!;
+
+    private readonly LoginRequestValidator _validator = new();
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -34,9 +38,11 @@ public partial class Login
 
     private LoginRequest LoginRequest { get; } = new();
 
-    public void LogIn(EditContext editContext)
+    public async Task LogIn()
     {
-        if (!editContext.ValidateObjectTree())
+        await FormRef.Validate();
+
+        if (!FormRef.IsValid)
             return;
 
         Dispatcher.Dispatch(new LoginRequestedAction(LoginRequest, ReturnUrl));

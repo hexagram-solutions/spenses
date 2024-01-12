@@ -6,33 +6,28 @@
 
 <h2>Email verification</h2>
 
-<FluentStack Orientation="Orientation.Vertical"
-             VerticalGap="4">
+<MudStack Spacing="4">
     @if (Success == true)
     {
-        <FluentMessageBar Title="Email verified"
-                          Intent="MessageIntent.Success">
+        <MudAlert Severity="Severity.Success">
             Your email address was successfully verified. You will be redirected to the
-            <FluentAnchor Href="@Routes.Identity.Login()"
-                          Appearance="Appearance.Hypertext">
+            <MudLink Href="@Routes.Identity.Login()">
                 login page
-            </FluentAnchor>
+            </MudLink>
             shortly.
-        </FluentMessageBar>
+        </MudAlert>
     }
     else if (Success == false)
     {
-        <FluentMessageBar Title="Email not verified"
-                          Intent="MessageIntent.Error">
+        <MudAlert Severity="Severity.Error">
             We were unable to verify your email address. You can request a new verification email
-            <FluentAnchor Href="@Routes.Identity.EmailVerificationRequired"
-                          Appearance="Appearance.Hypertext">
+            <MudLink Href="@Routes.Identity.EmailVerificationRequired">
                 here.
-            </FluentAnchor>
-        </FluentMessageBar>
+            </MudLink>
+        </MudAlert>
     }
     else
     {
-        <FluentProgressRing />
+        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
     }
-</FluentStack>
+</MudStack>
