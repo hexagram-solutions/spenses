@@ -1,9 +1,9 @@
-﻿<MudStack Row="true">
+﻿<MudStack Row="true" AlignItems="AlignItems.Center">
     <div>
         Hello, @NickName!
     </div>
     <MudButton Variant="Variant.Filled"
-               EndIcon="@Icons.Filled.Logout"
+               EndIcon="@Icons.Material.Filled.Logout"
                OnClick="LogOut"
                Disabled="IdentityState.Value.LogoutRequesting">
         Log out
