@@ -5,36 +5,39 @@
 
 <PageTitle>Log in</PageTitle>
 
-<h2>Log in</h2>
+<MudStack>
+    <MudText Typo="Typo.h5">Log in</MudText>
 
-<MudCard>
-    @foreach (var error in IdentityState.Value.Errors)
+    @if (IdentityState.Value.Errors.Length > 0)
     {
-        switch (error)
+        @foreach (var error in IdentityState.Value.Errors)
         {
-            case IdentityErrors.Login.InvalidCredentials:
-                @InvalidCredentialsError
-                break;
+            switch (error)
+            {
+                case IdentityErrors.Login.InvalidCredentials:
+                    @InvalidCredentialsError
+                    break;
 
-            case IdentityErrors.Login.EmailVerificationRequired:
-                @EmailVerificationRequiredError
-                break;
+                case IdentityErrors.Login.EmailVerificationRequired:
+                    @EmailVerificationRequiredError
+                    break;
 
-            case IdentityErrors.Login.LockedOut:
-                @LockedOutError
-                break;
+                case IdentityErrors.Login.LockedOut:
+                    @LockedOutError
+                    break;
 
-            default:
-                @GenericLoginError(IdentityState.Value.Errors)
-                break;
+                default:
+                    @GenericLoginError(IdentityState.Value.Errors)
+                    break;
+            }
         }
     }
 
     <MudForm Model="LoginRequest"
              @ref="FormRef"
              Validation="@(_validator.Validate(LoginRequest).IsValid)">
-
-        <MudCardContent>
+        <MudStack Spacing="0">
+            
             <MudTextField @bind-Value="LoginRequest.Email"
                           Label="Email"
                           Required/>
@@ -43,29 +46,23 @@
                           Label="Password"
                           InputType="InputType.Password"
                           Required/>
-        </MudCardContent>
+        </MudStack>
     </MudForm>
 
-    <MudCardActions>
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   Class="ml-auto"
-                   OnClick="LogIn"
-                   Disabled="IdentityState.Value.LoginRequesting">
-            Log in
-        </MudButton>
-    </MudCardActions>
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               OnClick="LogIn"
+               Disabled="IdentityState.Value.LoginRequesting">
+        Log in
+    </MudButton>
 
-    <div>
-        <p>
-            <MudLink Href="@Routes.Identity.ForgotPassword">Forgot your password?</MudLink>
-        </p>
-        <p>
-            Don't have an account?
-            <MudLink Href="@Routes.Identity.SignUp">Sign up</MudLink>
-        </p>
-    </div>
-</MudCard>
+    <MudStack>
+        <MudLink Href="@Routes.Identity.ForgotPassword">Forgot your password?</MudLink>
+        <div>
+            Don't have an account? <MudLink Href="@Routes.Identity.SignUp">Sign up</MudLink>
+        </div>
+    </MudStack>
+</MudStack>
 
 @code
 {

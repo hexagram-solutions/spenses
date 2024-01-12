@@ -2,9 +2,21 @@
 @layout BaseLayout
 
 <MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIcon Icon="@Icons.Material.Filled.AttachMoney"
+                Color="Color.Inherit"/>
+        <MudText Typo="Typo.h5"
+                 Class="ml-3">
+            Spenses
+        </MudText>
+    </MudAppBar>
     <MudMainContent>
-        <MudContainer Style="margin: auto; margin-top:15%">
-            @Body
+        <MudContainer Style="ma-auto"
+                      MaxWidth="MaxWidth.Small">
+            <MudPaper Class="pa-10"
+                      Elevation="2">
+                @Body
+            </MudPaper>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
