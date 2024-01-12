@@ -17,7 +17,7 @@ public partial class VerifyEmail
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
 
-    private bool? Success { get; set; }
+    private bool? Succeeded { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -32,11 +32,11 @@ public partial class VerifyEmail
 
         Dispatcher.Dispatch(new EmailVerificationRequestedAction(UserId, Code));
 
-        SubscribeToAction<EmailVerificationFailedAction>(_ => Success = false);
+        SubscribeToAction<EmailVerificationFailedAction>(_ => Succeeded = false);
 
         SubscribeToAction<EmailVerificationSucceededAction>(_ =>
         {
-            Success = true;
+            Succeeded = true;
 
             NavigateToLogin();
         });

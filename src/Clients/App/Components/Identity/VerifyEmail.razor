@@ -7,7 +7,7 @@
 <h2>Email verification</h2>
 
 <MudStack Spacing="4">
-    @if (Success == true)
+    @if (Succeeded == true)
     {
         <MudAlert Severity="Severity.Success">
             Your email address was successfully verified. You will be redirected to the
@@ -17,7 +17,7 @@
             shortly.
         </MudAlert>
     }
-    else if (Success == false)
+    else if (Succeeded == false)
     {
         <MudAlert Severity="Severity.Error">
             We were unable to verify your email address. You can request a new verification email

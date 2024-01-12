@@ -4,6 +4,7 @@ using Refit;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.IntegrationTests.Identity;
+
 public partial class IdentityIntegrationTests
 {
     [Fact]
@@ -17,7 +18,12 @@ public partial class IdentityIntegrationTests
 
         var newPassword = new Faker().Internet.Password();
 
-        var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest(email, code, newPassword));
+        var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest
+        {
+            Email = email,
+            NewPassword = newPassword,
+            ResetCode = code
+        });
 
         resetResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -32,7 +38,12 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Reset_password_with_invalid_parameters_yields_bad_request()
     {
-        var response = await _identityApi.ResetPassword(new ResetPasswordRequest("foo", string.Empty, "baz"));
+        var response = await _identityApi.ResetPassword(new ResetPasswordRequest
+        {
+            Email = "foo",
+            NewPassword = string.Empty,
+            ResetCode = "baz"
+        });
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
@@ -52,7 +63,12 @@ public partial class IdentityIntegrationTests
 
         var newPassword = verifiedUser.Email;
 
-        var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest(email, code, newPassword));
+        var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest
+        {
+            Email = email,
+            NewPassword = newPassword,
+            ResetCode = code
+        });
 
         resetResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -66,8 +82,12 @@ public partial class IdentityIntegrationTests
     {
         var verifiedUser = fixture.VerifiedUser;
 
-        var resetResponse = await _identityApi.ResetPassword(
-            new ResetPasswordRequest(verifiedUser.Email, "foo", new Faker().Internet.Password()));
+        var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest
+        {
+            Email = verifiedUser.Email,
+            ResetCode = "foo",
+            NewPassword = new Faker().Internet.Password(),
+        });
 
         resetResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -79,8 +99,12 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Reset_password_for_non_existent_user_yields_identity_error()
     {
-        var resetResponse = await _identityApi.ResetPassword(
-            new ResetPasswordRequest("quatro.quatro@sjsu.edu", "foo", new Faker().Internet.Password()));
+        var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest
+        {
+            Email = "quatro.quatro@sjsu.edu",
+            ResetCode = "foo",
+            NewPassword = new Faker().Internet.Password()
+        });
 
         resetResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 

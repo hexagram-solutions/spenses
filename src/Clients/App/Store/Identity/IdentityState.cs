@@ -22,5 +22,7 @@ public record IdentityState
 
     public bool ForgotPasswordRequesting { get; init; }
 
+    public bool ResetPasswordRequesting { get; init; }
+
     public string[] Errors { get; init; } = [];
 }

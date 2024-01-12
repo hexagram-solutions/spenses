@@ -11,7 +11,12 @@ public class ResetPasswordRequestValidatorTests
     [Fact]
     public void Email_must_be_valid_email_address()
     {
-        var model = new ResetPasswordRequest(string.Empty, "foo", "hunter2");
+        var model = new ResetPasswordRequest
+        {
+            Email = string.Empty,
+            ResetCode = "foo",
+            NewPassword = "hunter2"
+        };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Email);
@@ -32,7 +37,12 @@ public class ResetPasswordRequestValidatorTests
     [Fact]
     public void Reset_code_is_required()
     {
-        var model = new ResetPasswordRequest("george@vandelayindustries.com", string.Empty, "hunter2");
+        var model = new ResetPasswordRequest
+        {
+            Email = "george@vandelayindustries.com",
+            ResetCode = string.Empty,
+            NewPassword = "hunter2"
+        };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.ResetCode);
@@ -44,7 +54,12 @@ public class ResetPasswordRequestValidatorTests
     [Fact]
     public void New_password_must_be_at_least_10_characters_long()
     {
-        var model = new ResetPasswordRequest("george@vandelayindustries.com", "foo", string.Empty);
+        var model = new ResetPasswordRequest
+        {
+            Email = "george@vandelayindustries.com",
+            ResetCode = "foo",
+            NewPassword = string.Empty
+        };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.NewPassword);

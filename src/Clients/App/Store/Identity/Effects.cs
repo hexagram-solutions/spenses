@@ -1,6 +1,6 @@
-using System;
 using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
+using Refit;
 using Spenses.App.Authentication;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Shared;
@@ -142,5 +142,51 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
         }
 
         dispatcher.Dispatch(new ForgotPasswordSucceededAction());
+    }
+
+    [EffectMethod]
+    public async Task HandleResetPasswordRequestedAction(ResetPasswordRequestedAction action, IDispatcher dispatcher)
+    {
+        var response = await identityApi.ResetPassword(action.Request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            dispatcher.Dispatch(new ResetPasswordSucceededAction());
+
+            return;
+        }
+
+        var result = await response.Error.GetContentAsAsync<ProblemDetails>();
+
+        if (result!.Errors.ContainsKey(IdentityErrors.Register.PasswordTooShort))
+        {
+            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Register.PasswordTooShort]));
+
+            return;
+        }
+
+        if (result.Errors.ContainsKey(IdentityErrors.Register.EmailAsPassword) ||
+            result.Errors.ContainsKey(IdentityErrors.Register.UserNameAsPassword))
+        {
+            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Register.EmailAsPassword]));
+
+            return;
+        }
+
+        if (result.Errors.ContainsKey(IdentityErrors.Register.PwnedPassword))
+        {
+            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Register.PwnedPassword]));
+
+            return;
+        }
+
+        if (result.Errors.Count != 0)
+        {
+            dispatcher.Dispatch(new RegistrationFailedAction(result.Errors.SelectMany(e => e.Value).ToArray()));
+
+            return;
+        }
+
+        dispatcher.Dispatch(new RegistrationFailedAction(["An unknown error occurred."]));
     }
 }

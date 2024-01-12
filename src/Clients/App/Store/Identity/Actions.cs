@@ -37,3 +37,9 @@ public record ForgotPasswordRequestedAction(string Email);
 public record ForgotPasswordSucceededAction;
 
 public record ForgotPasswordFailedAction;
+
+public record ResetPasswordRequestedAction(ResetPasswordRequest Request);
+
+public record ResetPasswordSucceededAction;
+
+public record ResetPasswordFailedAction(string[] Errors);

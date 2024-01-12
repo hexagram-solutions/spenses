@@ -8,31 +8,6 @@
 <MudStack>
     <MudText Typo="Typo.h5">Log in</MudText>
 
-    @if (IdentityState.Value.Errors.Length > 0)
-    {
-        @foreach (var error in IdentityState.Value.Errors)
-        {
-            switch (error)
-            {
-                case IdentityErrors.Login.InvalidCredentials:
-                    @InvalidCredentialsError
-                    break;
-
-                case IdentityErrors.Login.EmailVerificationRequired:
-                    @EmailVerificationRequiredError
-                    break;
-
-                case IdentityErrors.Login.LockedOut:
-                    @LockedOutError
-                    break;
-
-                default:
-                    @GenericLoginError(IdentityState.Value.Errors)
-                    break;
-            }
-        }
-    }
-
     <MudForm Model="LoginRequest"
              @ref="FormRef"
              Validation="@(_validator.ValidateValue())">
@@ -57,6 +32,31 @@
                Disabled="IdentityState.Value.LoginRequesting">
         Log in
     </MudButton>
+
+    @if (IdentityState.Value.Errors.Length > 0)
+    {
+        @foreach (var error in IdentityState.Value.Errors)
+        {
+            switch (error)
+            {
+                case IdentityErrors.Login.InvalidCredentials:
+                    @InvalidCredentialsError
+                    break;
+
+                case IdentityErrors.Login.EmailVerificationRequired:
+                    @EmailVerificationRequiredError
+                    break;
+
+                case IdentityErrors.Login.LockedOut:
+                    @LockedOutError
+                    break;
+
+                default:
+                    @GenericLoginError(IdentityState.Value.Errors)
+                    break;
+            }
+        }
+    }
 
     <MudStack>
         <MudLink Href="@Routes.Identity.ForgotPassword">Forgot your password?</MudLink>

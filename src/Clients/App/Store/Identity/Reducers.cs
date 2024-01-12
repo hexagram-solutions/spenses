@@ -83,29 +83,25 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceLogoutRequested(IdentityState state,
-        LogoutRequestedAction _)
+    public static IdentityState ReduceLogoutRequested(IdentityState state, LogoutRequestedAction _)
     {
         return state with { LogoutRequesting = true, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceLogoutSucceededAction(IdentityState state,
-        LogoutSucceededAction _)
+    public static IdentityState ReduceLogoutSucceededAction(IdentityState state, LogoutSucceededAction _)
     {
         return state with { LogoutRequesting = false, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceLogoutFailedAction(IdentityState state,
-        LogoutFailedAction action)
+    public static IdentityState ReduceLogoutFailedAction(IdentityState state, LogoutFailedAction action)
     {
         return state with { LogoutRequesting = false, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceForgotPasswordRequested(IdentityState state,
-        ForgotPasswordRequestedAction _)
+    public static IdentityState ReduceForgotPasswordRequested(IdentityState state, ForgotPasswordRequestedAction _)
     {
         return state with { ForgotPasswordRequesting = true };
     }
@@ -118,9 +114,26 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceForgotPasswordFailedAction(IdentityState state,
-        ForgotPasswordFailedAction action)
+    public static IdentityState ReduceForgotPasswordFailedAction(IdentityState state, ForgotPasswordFailedAction _)
     {
         return state with { ForgotPasswordRequesting = false };
+    }
+
+    [ReducerMethod]
+    public static IdentityState ReduceResetPasswordRequested(IdentityState state, ResetPasswordRequestedAction _)
+    {
+        return state with { ResetPasswordRequesting = true, Errors = [] };
+    }
+
+    [ReducerMethod]
+    public static IdentityState ReduceResetPasswordSucceededAction(IdentityState state, ResetPasswordSucceededAction _)
+    {
+        return state with { ResetPasswordRequesting = false, Errors = [] };
+    }
+
+    [ReducerMethod]
+    public static IdentityState ReduceResetPasswordFailedAction(IdentityState state, ResetPasswordFailedAction action)
+    {
+        return state with { ResetPasswordRequesting = false, Errors = action.Errors };
     }
 }
