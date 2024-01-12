@@ -15,13 +15,6 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
     {
         var result = await authenticationService.Login(action.Request);
 
-        if (result.Error is not null)
-        {
-            dispatcher.Dispatch(new LoginFailedAction("Your email or password was incorrect. Please try again."));
-
-            return;
-        }
-
         if (result.Content!.Succeeded)
         {
             dispatcher.Dispatch(new LoginSucceededAction());
@@ -33,12 +26,15 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
         }
         else if (result.Content.IsNotAllowed)
         {
-            // todo: will have to return some code here so that we can direct user to verification re send
-            dispatcher.Dispatch(new LoginFailedAction("You need to verify your email before you can log in."));
+            dispatcher.Dispatch(new LoginFailedAction(IdentityErrors.Login.EmailVerificationRequired));
         }
         else if (result.Content.IsLockedOut)
         {
-            dispatcher.Dispatch(new LoginFailedAction("This account is locked."));
+            dispatcher.Dispatch(new LoginFailedAction(IdentityErrors.Login.LockedOut));
+        }
+        else
+        {
+            dispatcher.Dispatch(new LoginFailedAction(IdentityErrors.Login.InvalidCredentials));
         }
     }
 
@@ -55,41 +51,32 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
             return;
         }
 
-        if (result.Error!.Errors.ContainsKey(IdentityErrors.DuplicateUserName) ||
-            result.Error.Errors.ContainsKey(IdentityErrors.DuplicateEmail))
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.Register.DuplicateUserName) ||
+            result.Error.Errors.ContainsKey(IdentityErrors.Register.DuplicateEmail))
         {
-            dispatcher.Dispatch(new RegistrationFailedAction([
-                "It looks like you may already have an account with us. Use your credentials to log in instead."
-            ]));
+            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Register.DuplicateEmail]));
 
             return;
         }
 
-        if (result.Error!.Errors.ContainsKey(IdentityErrors.PasswordTooShort))
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.Register.PasswordTooShort))
         {
-            dispatcher.Dispatch(new RegistrationFailedAction([
-                "The password you entered has appeared multiple times in historical data breaches. Enter a different " +
-                "password."
-            ]));
+            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Register.PasswordTooShort]));
 
             return;
         }
 
-        if (result.Error!.Errors.ContainsKey(IdentityErrors.EmailAsPassword))
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.Register.EmailAsPassword) ||
+            result.Error!.Errors.ContainsKey(IdentityErrors.Register.UserNameAsPassword))
         {
-            dispatcher.Dispatch(new RegistrationFailedAction([
-                "You cannot user your email address ass your password."
-            ]));
+            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Register.EmailAsPassword]));
 
             return;
         }
 
-        if (result.Error!.Errors.ContainsKey(IdentityErrors.PwnedPassword))
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.Register.PwnedPassword))
         {
-            dispatcher.Dispatch(new RegistrationFailedAction([
-                "The password you entered has appeared multiple times in historical data breaches. Enter a different " +
-                "password."
-            ]));
+            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Register.PwnedPassword]));
 
             return;
         }

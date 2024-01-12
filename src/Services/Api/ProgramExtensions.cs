@@ -143,7 +143,7 @@ public static class ProgramExtensions
 
         builder.Services.AddAuthorizationBuilder();
 
-        builder.Services.AddPwnedPasswordHttpClient()
+        builder.Services.AddPwnedPasswordHttpClient(minimumFrequencyToConsiderPwned: 5)
             .AddTransientHttpErrorPolicy(p => p.RetryAsync(3))
             .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(2)));
 

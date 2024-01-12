@@ -1,6 +1,7 @@
 ﻿@page "/login"
-@using Spenses.Shared.Validators.Identity
 @using Spenses.App.Infrastructure
+@using Spenses.Shared.Models.Identity
+@using Spenses.Shared.Validators.Identity
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Log in</PageTitle>
@@ -8,23 +9,26 @@
 <h2>Log in</h2>
 
 <FluentStack Orientation="Orientation.Vertical">
+    @foreach (var error in IdentityState.Value.Errors)
+    {
+        switch (error)
+        {
+            case IdentityErrors.Login.InvalidCredentials:
+                @InvalidCredentialsError
+                break;
 
-    @if (IdentityState.Value.Errors.Length > 1)
-    {
-        <FluentMessageBar Title="Unable to sign up"
-                          Intent="MessageIntent.Error">
-            <ul>
-                @foreach (var error in IdentityState.Value.Errors)
-                {
-                    <li>@error</li>
-                }
-            </ul>
-        </FluentMessageBar>
-    }
-    else if (IdentityState.Value.Errors.Length > 0)
-    {
-        <FluentMessageBar Title="@IdentityState.Value.Errors.Single()"
-                          Intent="MessageIntent.Error" />
+            case IdentityErrors.Login.EmailVerificationRequired:
+                @EmailVerificationRequiredError
+                break;
+
+            case IdentityErrors.Login.LockedOut:
+                @LockedOutError
+                break;
+
+            default:
+                @GenericLoginError(IdentityState.Value.Errors)
+                break;
+        }
     }
 
     <EditForm Model="LoginRequest"
@@ -73,3 +77,39 @@
         </p>
     </div>
 </FluentStack>
+
+@code
+{
+    private RenderFragment InvalidCredentialsError => __builder =>
+    {
+        <FluentMessageBar Title="Your email or password was incorrect. Please try again."
+                          Intent="MessageIntent.Error"/>
+    };
+
+    private RenderFragment EmailVerificationRequiredError => __builder =>
+    {
+        <FluentMessageBar Title="You need to verify your email address before you can log in."
+                          Intent="MessageIntent.Error">
+            You can request a new verification email <FluentAnchor Href="@Routes.Identity.EmailVerificationRequired">here.</FluentAnchor>
+        </FluentMessageBar>
+    };
+
+    private RenderFragment LockedOutError => __builder =>
+    {
+        <FluentMessageBar Title="This account is locked and cannot log in."
+                          Intent="MessageIntent.Error"/>
+    };
+
+    private RenderFragment GenericLoginError(string[] errors) => __builder =>
+    {
+        <FluentMessageBar Title="Unable to log in"
+                          Intent="MessageIntent.Error">
+            <ul>
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </FluentMessageBar>
+    };
+}

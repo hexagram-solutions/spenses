@@ -46,7 +46,7 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.EmailAsPassword);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Register.EmailAsPassword);
     }
 
     [Fact]
@@ -65,7 +65,7 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.PwnedPassword);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Register.PwnedPassword);
     }
 
     [Fact]
@@ -85,7 +85,7 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.DuplicateUserName);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Register.DuplicateUserName);
 
         await fixture.DeleteUser(request.Email);
     }

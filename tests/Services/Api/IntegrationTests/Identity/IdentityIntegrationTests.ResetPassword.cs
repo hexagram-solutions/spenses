@@ -58,7 +58,7 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await resetResponse.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.EmailAsPassword);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Register.EmailAsPassword);
     }
 
     [Fact]
@@ -73,7 +73,7 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await resetResponse.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.InvalidToken);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.EmailVerification.InvalidToken);
     }
 
     [Fact]
@@ -86,6 +86,6 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await resetResponse.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.InvalidToken);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.EmailVerification.InvalidToken);
     }
 }

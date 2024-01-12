@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;
 
@@ -13,7 +13,7 @@ public class UserNameAsPasswordValidator : IPasswordValidator<ApplicationUser>
         {
             return Task.FromResult(IdentityResult.Failed(new IdentityError
             {
-                Code = IdentityErrors.UserNameAsPassword,
+                Code = IdentityErrors.Register.UserNameAsPassword,
                 Description = "You cannot use your username as your password."
             }));
         }

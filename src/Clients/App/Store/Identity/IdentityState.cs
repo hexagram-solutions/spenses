@@ -5,6 +5,11 @@ namespace Spenses.App.Store.Identity;
 [FeatureState(Name = "Identity", CreateInitialStateMethodName = nameof(Initialize))]
 public record IdentityState
 {
+    private static IdentityState Initialize()
+    {
+        return new IdentityState();
+    }
+
     public bool LoginRequesting { get; init; }
 
     public bool RegistrationRequesting { get; init; }
@@ -16,9 +21,4 @@ public record IdentityState
     public bool LogoutRequesting { get; init; }
 
     public string[] Errors { get; init; } = [];
-
-    private static IdentityState Initialize()
-    {
-        return new IdentityState();
-    }
 }

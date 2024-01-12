@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;
 
@@ -13,7 +13,7 @@ public class EmailAsPasswordValidator : IPasswordValidator<ApplicationUser>
         {
             return Task.FromResult(IdentityResult.Failed(new IdentityError
             {
-                Code = IdentityErrors.EmailAsPassword,
+                Code = IdentityErrors.Register.EmailAsPassword,
                 Description = "You cannot use your email as your password."
             }));
         }
