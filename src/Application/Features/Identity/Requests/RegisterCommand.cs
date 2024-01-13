@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Spenses.Application.Exceptions;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Models.Me;
 
 namespace Spenses.Application.Features.Identity.Requests;
 

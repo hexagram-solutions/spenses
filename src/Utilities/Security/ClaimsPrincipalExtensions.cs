@@ -28,11 +28,4 @@ public static class ClaimsPrincipalExtensions
 
         return user.FindFirst(ApplicationClaimTypes.Email)!.Value;
     }
-
-    public static string GetNickName(this ClaimsPrincipal user)
-    {
-        user.EnsureAuthenticated();
-
-        return user.FindFirst(ApplicationClaimTypes.NickName)!.Value;
-    }
 }

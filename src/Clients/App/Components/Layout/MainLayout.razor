@@ -10,7 +10,7 @@
                 <MudIconButton Icon="@Icons.Material.Filled.Menu"
                                Color="Color.Inherit"
                                Edge="Edge.Start"
-                               OnClick="@(e => DrawerToggle())"/>
+                               OnClick="@(_ => DrawerToggle())"/>
                 <MudText Typo="Typo.h5"
                          Class="ml-3">
                     Spenses
@@ -24,8 +24,7 @@
                 <NavMenu/>
             </MudDrawer>
             <MudMainContent>
-                <MudContainer MaxWidth="MaxWidth.ExtraLarge"
-                              Class="my-16 pt-16">
+                <MudContainer MaxWidth="MaxWidth.ExtraLarge">
                     @Body
                 </MudContainer>
             </MudMainContent>

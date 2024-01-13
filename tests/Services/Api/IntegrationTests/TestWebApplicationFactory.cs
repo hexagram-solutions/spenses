@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Resources.Communication;
+using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Common;
 using Spenses.Utilities.Security.Services;
 
@@ -22,7 +24,6 @@ public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEnt
             {
                 options.DefaultUserIdentifier = "integration-test-user";
                 options.DefaultUserEmail = "george@vandelayindustries.com";
-                options.DefaultUserNickName = "George Costanza";
             });
 
             services.AddAuthentication(TestAuthenticationHandler.AuthenticationScheme)

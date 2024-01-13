@@ -87,7 +87,6 @@ public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi 
 
         var claims = new List<Claim>
         {
-            new(ApplicationClaimTypes.NickName, currentUser.NickName),
             new(ApplicationClaimTypes.Email, currentUser.Email),
             new(ApplicationClaimTypes.EmailVerified, currentUser.EmailVerified.ToString().ToLowerInvariant())
         };

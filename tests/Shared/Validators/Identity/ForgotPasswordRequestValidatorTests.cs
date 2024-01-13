@@ -23,7 +23,7 @@ public class ForgotPasswordRequestValidatorTests
         _validator.TestValidate(new ForgotPasswordRequest { Email = "@vandelayindustries.com" })
             .ShouldHaveValidationErrorFor(x => x.Email);
 
-        _validator.TestValidate(new ForgotPasswordRequest { Email = string.Empty })
+        _validator.TestValidate(new ForgotPasswordRequest { Email = "george@vandelayindustries.com" })
             .ShouldNotHaveValidationErrorFor(x => x.Email);
     }
 }

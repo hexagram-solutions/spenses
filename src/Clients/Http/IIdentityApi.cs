@@ -1,5 +1,6 @@
 using Refit;
 using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Models.Me;
 
 namespace Spenses.Client.Http;
 

@@ -1,13 +1,13 @@
 using Refit;
-using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Models.Me;
 
 namespace Spenses.Client.Http;
 
 public interface IMeApi
 {
-    [Get("/me/info")]
+    [Get("/me")]
     public Task<IApiResponse<CurrentUser>> GetMe();
 
-    [Put("/me/info")]
-    public Task<IApiResponse<CurrentUser>> UpdateMe();
+    [Put("/me")]
+    public Task<IApiResponse<CurrentUser>> UpdateMe(UserProfileProperties props);
 }

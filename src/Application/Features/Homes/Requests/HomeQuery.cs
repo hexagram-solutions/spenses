@@ -15,7 +15,7 @@ public record HomeQuery(Guid HomeId) : IAuthorizedRequest<Home>
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class HomeQueryCommandHandler(ApplicationDbContext db, IMapper mapper) : IRequestHandler<HomeQuery, Home>
+public class HomeQueryHandler(ApplicationDbContext db, IMapper mapper) : IRequestHandler<HomeQuery, Home>
 {
     public async Task<Home> Handle(HomeQuery request, CancellationToken cancellationToken)
     {

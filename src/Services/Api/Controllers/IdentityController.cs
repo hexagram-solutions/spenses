@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Application.Features.Identity.Requests;
 using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Models.Me;
 
 namespace Spenses.Api.Controllers;
 

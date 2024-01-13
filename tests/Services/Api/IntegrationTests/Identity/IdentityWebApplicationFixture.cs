@@ -9,6 +9,7 @@ using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Models.Me;
 
 namespace Spenses.Api.IntegrationTests.Identity;
 

@@ -41,8 +41,8 @@ public partial class IdentityIntegrationTests
         var response = await _identityApi.ResetPassword(new ResetPasswordRequest
         {
             Email = "foo",
-            NewPassword = string.Empty,
-            ResetCode = "baz"
+            NewPassword = "bar",
+            ResetCode = string.Empty
         });
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
