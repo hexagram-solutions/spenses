@@ -18,7 +18,7 @@ public partial class IdentityIntegrationTests
 
         await _identityApi.Register(registerRequest);
 
-        var (userId, code) = fixture.GetVerificationParametersForEmail(registerRequest.Email);
+        var (userId, code, _) = fixture.GetVerificationParametersForEmail(registerRequest.Email);
 
         var response = await _identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
 
@@ -28,10 +28,16 @@ public partial class IdentityIntegrationTests
     }
 
     [Fact]
-    public async Task Verify_email_with_invalid_parameters_yields_unauthorized()
+    public async Task Verify_changes_email_changes_user_email()
     {
-        var response = await _identityApi.VerifyEmail(new VerifyEmailRequest("foo", "bar"));
+        throw new NotImplementedException();
+    }
 
-        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    [Fact]
+    public async Task Verify_email_with_invalid_parameters_yields_bad_request()
+    {
+        var response = await _identityApi.VerifyEmail(new VerifyEmailRequest("foo", "bar", "baz"));
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 }

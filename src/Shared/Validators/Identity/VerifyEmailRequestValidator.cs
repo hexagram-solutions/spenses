@@ -12,5 +12,9 @@ public class VerifyEmailRequestValidator : AbstractValidator<VerifyEmailRequest>
 
         RuleFor(x => x.UserId)
             .NotEmpty();
+
+        RuleFor(x => x.NewEmail)
+            .EmailAddress()
+            .When(x => !string.IsNullOrEmpty(x.NewEmail));
     }
 }

@@ -35,8 +35,8 @@ POST {{HOST}}/identity/login
 Content-Type: application/json
 
 {
-  "email": "tyroil@bar.ca",
-  "password": "foobarfoobar"
+  "email": "ericsondergard+spensesuser@fastmail.com",
+  "password": "Password1!"
 }
 
 ###
@@ -44,10 +44,11 @@ Content-Type: application/json
 POST {{HOST}}/identity/logout
 
 ###
+
 # @name homes
 GET {{HOST}}/homes
 
-@homeId = {{homes.response.body.$[0].id}}
+
 
 ###
 # @name expenses

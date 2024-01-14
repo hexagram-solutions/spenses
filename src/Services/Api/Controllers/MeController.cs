@@ -39,13 +39,15 @@ public class MeController(ISender sender) : ControllerBase
     }
 
     /// <summary>
-    /// Change the current user's email address, log the user out, and send a new verification email.
+    /// Request an email change verification message for the current user.
     /// </summary>
     [HttpPut("change-email")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
-    public Task<ActionResult> ChangeEmail()
+    public async Task<ActionResult> ChangeEmail(ChangeEmailRequest request)
     {
-        throw new NotImplementedException();
+        await sender.Send(new ChangeEmailCommand(request));
+
+        return Ok();
     }
 
     /// <summary>

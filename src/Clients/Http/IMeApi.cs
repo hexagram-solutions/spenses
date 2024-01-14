@@ -10,4 +10,7 @@ public interface IMeApi
 
     [Put("/me")]
     public Task<IApiResponse<CurrentUser>> UpdateMe(UserProfileProperties props);
+
+    [Put("/me/change-email")]
+    public Task<IApiResponse> ChangeEmail(ChangeEmailRequest request);
 }

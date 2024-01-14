@@ -31,4 +31,28 @@ public class VerifyEmailRequestValidatorTests
         _validator.TestValidate(model with { Code = "bar" })
             .ShouldNotHaveValidationErrorFor(x => x.Code);
     }
+
+    [Fact]
+    public void New_email_must_be_valid_when_not_empty()
+    {
+        var model = new VerifyEmailRequest("foo", "bar");
+
+        _validator.TestValidate(model)
+            .ShouldNotHaveValidationErrorFor(x => x.NewEmail);
+
+        _validator.TestValidate(model with { NewEmail = string.Empty })
+            .ShouldNotHaveValidationErrorFor(x => x.NewEmail);
+
+        _validator.TestValidate(model with { NewEmail = "@" })
+            .ShouldHaveValidationErrorFor(x => x.NewEmail);
+
+        _validator.TestValidate(model with { NewEmail = "george@" })
+            .ShouldHaveValidationErrorFor(x => x.NewEmail);
+
+        _validator.TestValidate(model with { NewEmail = "@vandelayindustries.com" })
+            .ShouldHaveValidationErrorFor(x => x.NewEmail);
+
+        _validator.TestValidate(model with { NewEmail = "george@vandelayindustries.com" })
+            .ShouldNotHaveValidationErrorFor(x => x.NewEmail);
+    }
 }

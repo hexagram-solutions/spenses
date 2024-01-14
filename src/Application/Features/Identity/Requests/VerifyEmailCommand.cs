@@ -10,16 +10,16 @@ namespace Spenses.Application.Features.Identity.Requests;
 
 public record VerifyEmailCommand(VerifyEmailRequest Request) : IRequest;
 
-public class VerifyEmailCommandHandler(UserManager<ApplicationUser> userManager) : IRequestHandler<VerifyEmailCommand>
+public class VerifyEmailCommandHandler(
+    UserManager<ApplicationUser> userManager,
+    SignInManager<ApplicationUser> signInManager) : IRequestHandler<VerifyEmailCommand>
 {
     public async Task Handle(VerifyEmailCommand request, CancellationToken cancellationToken)
     {
-        var (userId, code) = request.Request;
+        var (userId, code, newEmail) = request.Request;
 
         if (await userManager.FindByIdAsync(userId) is not { } user)
-        {
             throw new UnauthorizedException();
-        }
 
         try
         {
@@ -30,11 +30,26 @@ public class VerifyEmailCommandHandler(UserManager<ApplicationUser> userManager)
             throw new UnauthorizedException();
         }
 
-        var result = await userManager.ConfirmEmailAsync(user, code);
+        var isEmailChange = !string.IsNullOrEmpty(newEmail);
+
+        IdentityResult result;
+
+        if (!isEmailChange)
+        {
+            result = await userManager.ConfirmEmailAsync(user, code);
+        }
+        else
+        {
+            result = await userManager.ChangeEmailAsync(user, newEmail!, code);
+
+            if (result.Succeeded)
+                result = await userManager.SetUserNameAsync(user, newEmail);
+        }
 
         if (!result.Succeeded)
-        {
             throw new UnauthorizedException();
-        }
+
+        if (isEmailChange)
+            await signInManager.SignOutAsync(); // Log the user out to make them re-authenticate with new email
     }
 }

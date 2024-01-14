@@ -18,7 +18,7 @@ public partial class IdentityIntegrationTests
 
         await _identityApi.Register(registerRequest);
 
-        var (userId, code) = fixture.GetVerificationParametersForEmail(registerRequest.Email);
+        var (userId, code, _) = fixture.GetVerificationParametersForEmail(registerRequest.Email);
 
         await _identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
 

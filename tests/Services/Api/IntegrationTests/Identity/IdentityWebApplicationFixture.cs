@@ -46,7 +46,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
         VerifiedUser = response.Content!;
 
-        var (userId, code) = GetVerificationParametersForEmail(registerRequest.Email);
+        var (userId, code, _) = GetVerificationParametersForEmail(registerRequest.Email);
 
         await identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
 
@@ -80,7 +80,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
             .Last(e => e.RecipientAddress == email);
     }
 
-    public (string userId, string code) GetVerificationParametersForEmail(string email)
+    public (string userId, string code, string? newEmail) GetVerificationParametersForEmail(string email)
     {
         var message = GetLastMessageForEmail(email);
 
@@ -88,7 +88,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
         var parameters = HttpUtility.ParseQueryString(confirmationUri.Query);
 
-        return (parameters["userId"]!, parameters["code"]!);
+        return (parameters["userId"]!, parameters["code"]!, parameters["newEmail"]);
     }
 
     public (string email, string code) GetPasswordResetParametersForEmail(string email)
