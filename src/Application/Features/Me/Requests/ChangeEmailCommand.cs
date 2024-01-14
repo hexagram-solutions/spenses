@@ -36,7 +36,7 @@ public class ChangeEmailCommandHandler(UserManager<ApplicationUser> userManager,
             { "code", code },
             { "newEmail", newEmail }
         };
-        
+
         var emailConfirmationPath = QueryHelpers.AddQueryString(emailOptions.Value.VerificationPath, queryParameters);
 
         var confirmEmailUrl = new Uri(new Uri(emailOptions.Value.WebApplicationBaseUrl), emailConfirmationPath);

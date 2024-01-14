@@ -28,12 +28,6 @@ public partial class IdentityIntegrationTests
     }
 
     [Fact]
-    public async Task Verify_changes_email_changes_user_email()
-    {
-        throw new NotImplementedException();
-    }
-
-    [Fact]
     public async Task Verify_email_with_invalid_parameters_yields_bad_request()
     {
         var response = await _identityApi.VerifyEmail(new VerifyEmailRequest("foo", "bar", "baz"));

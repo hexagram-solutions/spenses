@@ -19,7 +19,7 @@ public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi 
 
         // The login attempt "failed successfully" (e.g.: credentials were incorrect or the user needs to log in with
         // a second factor)
-        if (response.Error is not null && await response.Error.GetContentAsAsync<LoginResult>() is { } loginResult) 
+        if (response.Error is not null && await response.Error.GetContentAsAsync<LoginResult>() is { } loginResult)
         {
             return new IdentityResult<LoginResult>(loginResult);
         }

@@ -24,7 +24,8 @@ public partial class IdentityIntegrationTests
 
         var response = await _identityApi.Login(new LoginRequest
         {
-            Email = registerRequest.Email, Password = registerRequest.Password
+            Email = registerRequest.Email,
+            Password = registerRequest.Password
         });
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);

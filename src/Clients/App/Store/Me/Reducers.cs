@@ -13,7 +13,7 @@ public static class Reducers
     [ReducerMethod]
     public static MeState ReduceCurrentUserSucceededAction(MeState state, CurrentUserReceivedAction action)
     {
-        return state with { CurrentUserRequesting = false, CurrentUser = action.CurrentUser};
+        return state with { CurrentUserRequesting = false, CurrentUser = action.CurrentUser };
     }
 
     [ReducerMethod]

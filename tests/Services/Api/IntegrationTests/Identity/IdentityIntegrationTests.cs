@@ -1,4 +1,4 @@
-﻿using Refit;
+using Refit;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Identity;
