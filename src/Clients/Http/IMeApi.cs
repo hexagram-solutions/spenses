@@ -13,4 +13,7 @@ public interface IMeApi
 
     [Put("/me/change-email")]
     public Task<IApiResponse> ChangeEmail(ChangeEmailRequest request);
+
+    [Put("/me/change-password")]
+    public Task<IApiResponse> ChangePassword(ChangePasswordRequest request);
 }

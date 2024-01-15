@@ -55,9 +55,11 @@ public class MeController(ISender sender) : ControllerBase
     /// </summary>
     [HttpPut("change-password")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
-    public async Task<ActionResult> ChangePassword()
+    public async Task<ActionResult> ChangePassword(ChangePasswordRequest request)
     {
-        throw new NotImplementedException();
+        await sender.Send(new ChangePasswordCommand(request));
+
+        return Ok();
     }
 
     [HttpPut("enable-2fa")]

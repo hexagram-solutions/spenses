@@ -35,7 +35,7 @@ public class RegisterRequestValidatorTests
     }
 
     [Fact]
-    public void Password_must_be_at_least_10_characters_long()
+    public void Password_must_be_at_least_8_characters_long()
     {
         var model = new RegisterRequest
         {
@@ -47,10 +47,10 @@ public class RegisterRequestValidatorTests
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Password);
 
-        _validator.TestValidate(model with { Password = new string('a', 9) })
+        _validator.TestValidate(model with { Password = new string('a', 7) })
             .ShouldHaveValidationErrorFor(x => x.Password);
 
-        _validator.TestValidate(model with { Password = new string('a', 10) })
+        _validator.TestValidate(model with { Password = new string('a', 8) })
             .ShouldNotHaveValidationErrorFor(x => x.Password);
     }
 
