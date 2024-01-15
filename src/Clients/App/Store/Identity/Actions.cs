@@ -14,11 +14,11 @@ public record RegistrationSucceededAction;
 
 public record RegistrationFailedAction(string[] Errors);
 
-public record EmailVerificationRequestedAction(string UserId, string Code);
+public record EmailVerificationRequestedAction(VerifyEmailRequest Request);
 
 public record EmailVerificationSucceededAction;
 
-public record EmailVerificationFailedAction(string Error);
+public record EmailVerificationFailedAction;
 
 public record ResendVerificationEmailRequestedAction(string Email);
 

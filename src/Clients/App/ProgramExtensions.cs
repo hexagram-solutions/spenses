@@ -48,7 +48,7 @@ internal static class ProgramExtensions
 
         if (builder.HostEnvironment.IsDevelopment())
         {
-            builder.Services.AddTransient(_ => new DelayingHttpHandler(TimeSpan.FromMicroseconds(500)));
+            builder.Services.AddScoped(_ => new DelayingHttpHandler(TimeSpan.FromMilliseconds(500)));
         }
 
         var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
@@ -64,10 +64,10 @@ internal static class ProgramExtensions
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
                 .AddHttpMessageHandler<CookieHandler>();
 
-            if (!builder.HostEnvironment.IsDevelopment())
-                clientBuilder.AddStandardResilienceHandler();
-            else
+            if (builder.HostEnvironment.IsDevelopment())
                 clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
+            else
+                clientBuilder.AddStandardResilienceHandler();
         }
 
         AddApiClient<IIdentityApi>();

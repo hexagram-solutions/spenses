@@ -4,22 +4,25 @@
 <MudStack>
     <MudText Typo="Typo.h5"
              GutterBottom="true">
-        Display name
+        Profile
     </MudText>
-    <MudText Typo="Typo.caption">
-        This is the name that other members know you by.
+    <MudText Typo="Typo.body1">
+        Your personal profile. This information is shown to other Spenses users.
     </MudText>
     <MudForm Model="Properties"
              @ref="FormRef"
              Validation="@(_validator.ValidateValue())">
 
         <MudTextField @bind-Value="Properties.DisplayName"
-                      Label="Name"
+                      Label="Display name"
                       For="@(() => Properties.DisplayName)"
-                      Variant="Variant.Outlined"
                       Immediate
                       DebounceInterval="250"
-                      Required/>
+                      Required
+                      HelperText="The name shown to other members to identify you."
+                      Adornment="@(UpdateSucceeded == true ? Adornment.End : Adornment.None)"
+                      AdornmentIcon="@Icons.Material.Filled.Check"
+                      AdornmentColor="Color.Success"/>
     </MudForm>
 
     <MudButton Variant="Variant.Filled"
@@ -30,11 +33,7 @@
         {
             <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
         }
-        else if (UpdateSucceeded == true)
-        {
-            <MudIcon Icon="@Icons.Material.Filled.Check" />
-        }
-        <MudText Class="ms-2">Update information</MudText>
+        <MudText Class="ms-2">Update profile</MudText>
     </MudButton>
 
 </MudStack>

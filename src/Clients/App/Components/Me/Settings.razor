@@ -1,14 +1,54 @@
 ﻿@page "/settings"
 @layout MainLayout
+@using Spenses.App.Store.Me
+@using Spenses.Shared.Models.Me
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Settings</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Settings</MudText>
+<MudText Typo="Typo.h4"
+         GutterBottom="true">
+    Settings
+</MudText>
 
-<MudPaper>
+<MudPaper Class="pa-10">
     <MudStack>
-        <Profile />
-        <MudDivider />
-        <Email />
+        <Profile Properties="UserProfileProperties"/>
+        <MudDivider/>
+        <Email Request="ChangeEmailRequest"/>
     </MudStack>
 </MudPaper>
+
+@code
+{
+    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+
+    [Inject] private IState<MeState> MeState { get; set; } = null!;
+
+    private CurrentUser? CurrentUser => MeState.Value.CurrentUser;
+
+    private UserProfileProperties UserProfileProperties { get; set; } = new();
+
+    private ChangeEmailRequest ChangeEmailRequest { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        SubscribeToAction<CurrentUserReceivedAction>(action =>
+        {
+            UserProfileProperties = new UserProfileProperties { DisplayName = action.CurrentUser.DisplayName };
+            ChangeEmailRequest = new ChangeEmailRequest { NewEmail = action.CurrentUser.Email };
+        });
+
+        if (CurrentUser is not null)
+        {
+            UserProfileProperties = new UserProfileProperties { DisplayName = CurrentUser!.DisplayName };
+            ChangeEmailRequest = new ChangeEmailRequest { NewEmail = CurrentUser.Email };
+        }
+        else if (!MeState.Value.CurrentUserRequesting)
+        {
+            Dispatcher.Dispatch(new CurrentUserRequestedAction());
+        }
+    }
+}

@@ -9,6 +9,9 @@ namespace Spenses.App.Components.Me;
 
 public partial class Profile
 {
+    [Parameter]
+    public UserProfileProperties Properties { get; set; } = new();
+
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
 
@@ -19,8 +22,6 @@ public partial class Profile
 
     private readonly UserProfilePropertiesValidator _validator = new();
 
-    private UserProfileProperties Properties { get; set; } = new();
-
     private bool IsDirty => Properties.DisplayName != MeState.Value.CurrentUser?.DisplayName;
 
     private bool? UpdateSucceeded { get; set; }
@@ -30,20 +31,6 @@ public partial class Profile
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
-        if (MeState.Value.CurrentUser is null && !MeState.Value.CurrentUserRequesting)
-        {
-            Dispatcher.Dispatch(new CurrentUserRequestedAction());
-
-            SubscribeToAction<CurrentUserReceivedAction>(action => Properties = new UserProfileProperties
-            {
-                DisplayName = action.CurrentUser.DisplayName
-            });
-        }
-        else
-        {
-            Properties = new UserProfileProperties { DisplayName = MeState.Value.CurrentUser!.DisplayName };
-        }
 
         SubscribeToAction<CurrentUserUpdateSucceededAction>(_ => UpdateSucceeded = true);
     }

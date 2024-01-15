@@ -9,6 +9,11 @@ namespace Spenses.App.Components.Me;
 
 public partial class Email
 {
+    private readonly ChangeEmailRequestValidator _validator = new();
+
+    [Parameter]
+    public ChangeEmailRequest Request { get; set; } = null!;
+
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
 
@@ -19,11 +24,11 @@ public partial class Email
 
     private MudTextField<string> EmailTextFieldRef { get; set; } = null!;
 
-    private readonly ChangeEmailRequestValidator _validator = new();
-
     private bool IsEditing { get; set; }
 
-    private ChangeEmailRequest Request { get; set; } = new();
+    private bool IsDirty => Request.NewEmail != MeState.Value.CurrentUser?.Email;
+
+    private bool ChangeEmailEnabled => IsDirty && !MeState.Value.ChangeEmailRequesting;
 
     private bool VerificationEmailSent { get; set; }
 
@@ -31,15 +36,13 @@ public partial class Email
     {
         await base.OnInitializedAsync();
 
-        if (MeState.Value.CurrentUser is null)
-            Dispatcher.Dispatch(new CurrentUserRequestedAction());
-
         SubscribeToAction<ChangeEmailSucceededAction>(_ => VerificationEmailSent = true);
     }
 
     private async Task ToggleEditMode()
     {
         Request.NewEmail = MeState.Value.CurrentUser!.Email;
+
         IsEditing = !IsEditing;
 
         if (IsEditing)

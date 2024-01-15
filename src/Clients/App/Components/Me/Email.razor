@@ -2,71 +2,95 @@
 @using Spenses.Shared.Models.Identity
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudStack>
-    <MudText Typo="Typo.h5"
-             GutterBottom="true">
-        Email
-    </MudText>
+<MudGrid>
+    <MudItem xs="12">
+        <MudText Typo="Typo.h5"
+                 GutterBottom="true">
+            Email
+        </MudText>
+    </MudItem>
+    <MudItem xs="9">
+        <MudText>
+            The email associated with your account. You use it to log in and receive emails from Spenses.
+        </MudText>
+    </MudItem>
+    <MudItem xs="3">
+        <MudSpacer/>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Tertiary"
+                   OnClick="ToggleEditMode"
+                   StartIcon="@(IsEditing ? Icons.Material.Filled.EditOff : Icons.Material.Filled.Edit)">
+            @if (IsEditing)
+            {
+                <text>Cancel</text>
+            }
+            else
+            {
+                <text>Edit</text>
+            }
+        </MudButton>
+    </MudItem>
+    <MudItem xs="12">
+        <MudForm Model="Request"
+                 @ref="FormRef"
+                 Validation="@(_validator.ValidateValue())">
 
-    <MudText Typo="Typo.caption">
-        The email associated with your account. You use it to log in and receive emails from Spenses.
-    </MudText>
-
-    <MudForm Model="Request"
-             @ref="FormRef"
-             Validation="@(_validator.ValidateValue())">
-
-        <MudTextField @bind-Value="Request.NewEmail"
-                      @ref="EmailTextFieldRef"
-                      Variant="Variant.Outlined"
-                      Adornment="Adornment.End"
-                      Disabled="!IsEditing"
-                      AdornmentIcon="@(IsEditing ? Icons.Material.Filled.Edit : Icons.Material.Filled.EditOff)"
-                      OnAdornmentClick="ToggleEditMode"/>
-
-    </MudForm>
+            <MudTextField @bind-Value="Request.NewEmail"
+                          @ref="EmailTextFieldRef"
+                          Label="Email"
+                          For="@(() => Request.NewEmail)"
+                          Immediate
+                          DebounceInterval="250"
+                          Required
+                          Disabled="!IsEditing"/>
+        </MudForm>
+    </MudItem>
 
     @if (IsEditing)
     {
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   OnClick="ChangeEmail"
-                   Disabled="MeState.Value.ChangeEmailRequesting">
-            Change email
-        </MudButton>
-    }
+        <MudItem xs="3">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="ChangeEmail"
+                       Disabled="!ChangeEmailEnabled">
+                <MudText>Confirm new email</MudText>
+            </MudButton>
+        </MudItem>
 
-    @if (MeState.Value.ChangeEmailErrors.Length > 0)
-    {
-        @foreach (var error in MeState.Value.ChangeEmailErrors)
-        {
-            switch (error)
+        <MudItem xs="9">
+            @if (MeState.Value.ChangeEmailErrors.Length > 0)
             {
-                case IdentityErrors.Register.InvalidEmail:
-                case IdentityErrors.Register.InvalidUserName:
-                    @InvalidUserNameOrEmailError
-                    break;
+                @foreach (var error in MeState.Value.ChangeEmailErrors)
+                {
+                    switch (error)
+                    {
+                        case IdentityErrors.Register.InvalidEmail:
+                        case IdentityErrors.Register.InvalidUserName:
+                            @InvalidUserNameOrEmailError
+                            break;
 
-                case IdentityErrors.Register.DuplicateEmail:
-                case IdentityErrors.Register.DuplicateUserName:
-                    @DuplicateUserNameOrEmailError
-                    break;
+                        case IdentityErrors.Register.DuplicateEmail:
+                        case IdentityErrors.Register.DuplicateUserName:
+                            @DuplicateUserNameOrEmailError
+                            break;
 
-                default:
-                    @GenericError(MeState.Value.ChangeEmailErrors)
-                    break;
+                        default:
+                            @GenericError(MeState.Value.ChangeEmailErrors)
+                            break;
+                    }
+                }
             }
-        }
-    }
 
-    @if (VerificationEmailSent)
-    {
-        <MudAlert Severity="Severity.Success">
-            A verification email has been sent to <b>@Request.NewEmail</b>. Once you verify your new email, you can
-            use it to log in.
-        </MudAlert>
+            @if (VerificationEmailSent)
+            {
+                <MudAlert Severity="Severity.Success">
+                    A verification email has been sent to <b>@Request.NewEmail</b>. Once you verify your new email, you can
+                    use it to log in.
+                </MudAlert>
+            }
+        </MudItem>
     }
-</MudStack>
+</MudGrid>
 
 @code
 {

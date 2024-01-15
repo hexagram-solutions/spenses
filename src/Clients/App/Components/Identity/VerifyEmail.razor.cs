@@ -3,6 +3,7 @@ using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
+using Spenses.Shared.Models.Identity;
 
 namespace Spenses.App.Components.Identity;
 
@@ -13,6 +14,9 @@ public partial class VerifyEmail
 
     [SupplyParameterFromQuery]
     private string? Code { get; set; }
+
+    [SupplyParameterFromQuery]
+    private string? NewEmail { get; set; }
 
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
@@ -30,7 +34,7 @@ public partial class VerifyEmail
             return;
         }
 
-        Dispatcher.Dispatch(new EmailVerificationRequestedAction(UserId, Code));
+        Dispatcher.Dispatch(new EmailVerificationRequestedAction(new VerifyEmailRequest(UserId, Code, NewEmail)));
 
         SubscribeToAction<EmailVerificationFailedAction>(_ => Succeeded = false);
 

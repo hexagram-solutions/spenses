@@ -44,7 +44,7 @@ public static class Reducers
     public static IdentityState ReduceEmailVerificationRequested(IdentityState state,
         EmailVerificationRequestedAction _)
     {
-        return state with { EmailVerificationRequesting = true, Errors = [] };
+        return state with { EmailVerificationRequesting = true };
     }
 
     [ReducerMethod]
@@ -58,7 +58,7 @@ public static class Reducers
     public static IdentityState ReduceEmailVerificationFailedAction(IdentityState state,
         EmailVerificationFailedAction action)
     {
-        return state with { EmailVerificationRequesting = false, Errors = [action.Error] };
+        return state with { EmailVerificationRequesting = false };
     }
 
     [ReducerMethod]

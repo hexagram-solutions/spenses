@@ -93,6 +93,21 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
     }
 
     [EffectMethod]
+    public async Task HandleEmailVerificationRequested(EmailVerificationRequestedAction action, IDispatcher dispatcher)
+    {
+        var response = await identityApi.VerifyEmail(action.Request);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            dispatcher.Dispatch(new EmailVerificationFailedAction());
+
+            return;
+        }
+
+        dispatcher.Dispatch(new EmailVerificationSucceededAction());
+    }
+
+    [EffectMethod]
     public async Task HandleResendVerificationEmailRequested(ResendVerificationEmailRequestedAction action,
         IDispatcher dispatcher)
     {
