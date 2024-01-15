@@ -5,7 +5,7 @@ namespace Spenses.Resources.Relational.Models;
 public class ApplicationUser : IdentityUser
 {
     [PersonalData]
-    public string NickName { get; set; } = null!;
+    public string DisplayName { get; set; } = null!;
 
     public ICollection<Payment> CreatedPayments { get; set; } = new HashSet<Payment>();
 

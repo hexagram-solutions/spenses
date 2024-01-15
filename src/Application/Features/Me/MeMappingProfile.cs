@@ -11,11 +11,11 @@ public class MeMappingProfile : Profile
     {
         CreateMap<ApplicationUser, CurrentUser>()
             .ForMember(dest => dest.Email, opts => opts.MapFrom(src => src.Email))
-            .ForMember(dest => dest.NickName, opts => opts.MapFrom(src => src.NickName))
+            .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
             .ForMember(dest => dest.EmailVerified, opts => opts.MapFrom(src => src.EmailConfirmed));
 
         CreateMap<UserProfileProperties, ApplicationUser>()
-            .ForMember(dest => dest.NickName, opts => opts.MapFrom(src => src.NickName))
+            .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
             .ForAllOtherMembers(opts => opts.Ignore());
     }
 }

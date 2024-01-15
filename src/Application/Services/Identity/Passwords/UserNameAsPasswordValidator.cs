@@ -13,7 +13,7 @@ public class UserNameAsPasswordValidator : IPasswordValidator<ApplicationUser>
         {
             return Task.FromResult(IdentityResult.Failed(new IdentityError
             {
-                Code = IdentityErrors.Register.UserNameAsPassword,
+                Code = IdentityErrors.Password.UserNameAsPassword,
                 Description = "You cannot use your username as your password."
             }));
         }

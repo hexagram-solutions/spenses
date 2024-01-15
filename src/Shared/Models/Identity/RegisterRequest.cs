@@ -13,10 +13,10 @@ public record RegisterRequest
     public string Password { get; set; } = null!;
 
     [Required]
-    public string Name { get; set; } = null!;
+    public string DisplayName { get; set; } = null!;
 
-    public void Deconstruct(out string email, out string password, out string nickName)
+    public void Deconstruct(out string email, out string password, out string displayName)
     {
-        (email, password, nickName) = (Email, Password, Name);
+        (email, password, displayName) = (Email, Password, DisplayName);
     }
 }

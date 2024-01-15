@@ -43,14 +43,14 @@ public class UsersSeedDataTask(
 
         return;
 
-        Task<IdentityResult> AddUser(string id, string email, string nickName)
+        Task<IdentityResult> AddUser(string id, string email, string displayName)
         {
             var user = new ApplicationUser
             {
                 Id = id,
                 UserName = email,
                 Email = email,
-                NickName = nickName,
+                DisplayName = displayName,
                 EmailConfirmed = true
             };
 

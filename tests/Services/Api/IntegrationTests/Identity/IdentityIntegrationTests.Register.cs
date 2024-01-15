@@ -14,7 +14,7 @@ public partial class IdentityIntegrationTests
         {
             Email = "hmccringleberry@psu.edu",
             Password = new Faker().Internet.Password(),
-            Name = "Hingle McCringleberry"
+            DisplayName = "Hingle McCringleberry"
         };
 
         var response = await _identityApi.Register(request);
@@ -24,7 +24,7 @@ public partial class IdentityIntegrationTests
         var registeredUser = response.Content!;
 
         registeredUser.Email.Should().Be(request.Email);
-        registeredUser.NickName.Should().Be(request.Name);
+        registeredUser.DisplayName.Should().Be(request.DisplayName);
         registeredUser.EmailVerified.Should().BeFalse();
 
         await fixture.DeleteUser(registeredUser.Email);
@@ -37,7 +37,7 @@ public partial class IdentityIntegrationTests
         {
             Email = "hmccringleberry@psu.edu",
             Password = "hmccringleberry@psu.edu",
-            Name = "Hingle McCringleberry"
+            DisplayName = "Hingle McCringleberry"
         };
 
         var response = await _identityApi.Register(request);
@@ -46,7 +46,7 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Register.EmailAsPassword);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Password.EmailAsPassword);
     }
 
     [Fact]
@@ -56,7 +56,7 @@ public partial class IdentityIntegrationTests
         {
             Email = "hmccringleberry@psu.edu",
             Password = "1234567890",
-            Name = "Hingle McCringleberry"
+            DisplayName = "Hingle McCringleberry"
         };
 
         var response = await _identityApi.Register(request);
@@ -65,7 +65,7 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Register.PwnedPassword);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Password.PwnedPassword);
     }
 
     [Fact]
@@ -75,7 +75,7 @@ public partial class IdentityIntegrationTests
         {
             Email = "hmccringleberry@psu.edu",
             Password = new Faker().Internet.Password(),
-            Name = "Hingle McCringleberry"
+            DisplayName = "Hingle McCringleberry"
         };
 
         await _identityApi.Register(request);
@@ -97,7 +97,7 @@ public partial class IdentityIntegrationTests
         {
             Email = "foobar",
             Password = "hunter2",
-            Name = string.Empty
+            DisplayName = string.Empty
         };
 
         var response = await _identityApi.Register(request);
@@ -107,7 +107,7 @@ public partial class IdentityIntegrationTests
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
         problemDetails!.Errors.Should().ContainKey(nameof(RegisterRequest.Email));
-        problemDetails.Errors.Should().ContainKey(nameof(RegisterRequest.Name));
+        problemDetails.Errors.Should().ContainKey(nameof(RegisterRequest.DisplayName));
         problemDetails.Errors.Should().ContainKey(nameof(RegisterRequest.Password));
     }
 }

@@ -46,13 +46,9 @@ internal static class ProgramExtensions
     {
         builder.Services.AddScoped<CookieHandler>();
 
-        var retry = false;
-
         if (builder.HostEnvironment.IsDevelopment())
         {
             builder.Services.AddTransient(_ => new DelayingHttpHandler(TimeSpan.FromMicroseconds(500)));
-
-            retry = true;
         }
 
         var baseUrl = builder.Configuration.Require(ConfigConstants.SpensesApiBaseUrl);
@@ -68,13 +64,9 @@ internal static class ProgramExtensions
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri(baseUrl))
                 .AddHttpMessageHandler<CookieHandler>();
 
-            if (retry)
-            {
-                clientBuilder.AddTransientHttpErrorPolicy(policy =>
-                    policy.WaitAndRetryAsync(3, attempt => TimeSpan.FromSeconds(Math.Pow(1.5, attempt))));
-            }
-
-            if (builder.HostEnvironment.IsDevelopment())
+            if (!builder.HostEnvironment.IsDevelopment())
+                clientBuilder.AddStandardResilienceHandler();
+            else
                 clientBuilder.AddHttpMessageHandler<DelayingHttpHandler>();
         }
 

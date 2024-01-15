@@ -15,11 +15,11 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IS
 {
     public async Task<CurrentUser> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
-        var (email, password, nickName) = request.Request;
+        var (email, password, displayName) = request.Request;
 
         var user = new ApplicationUser
         {
-            NickName = nickName
+            DisplayName = displayName
         };
 
         await userManager.SetUserNameAsync(user, email);
@@ -38,7 +38,7 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IS
         return new CurrentUser
         {
             Email = user.Email!,
-            NickName = user.NickName,
+            DisplayName = user.DisplayName,
             EmailVerified = false,
         };
     }

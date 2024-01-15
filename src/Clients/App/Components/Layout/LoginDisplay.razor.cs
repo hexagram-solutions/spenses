@@ -20,7 +20,7 @@ public partial class LoginDisplay
     {
         await base.OnInitializedAsync();
 
-        if (MeState.Value.CurrentUser is null)
+        if (MeState.Value.CurrentUser is null && !MeState.Value.CurrentUserRequesting)
             Dispatcher.Dispatch(new CurrentUserRequestedAction());
     }
 

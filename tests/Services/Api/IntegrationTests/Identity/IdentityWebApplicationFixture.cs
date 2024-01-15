@@ -39,7 +39,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         {
             Email = "grunky.peep@georgiasouthern.edu",
             Password = new Faker().Internet.Password(),
-            Name = "Grunky Peep"
+            DisplayName = "Grunky Peep"
         };
 
         var response = await identityApi.Register(registerRequest);

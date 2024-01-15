@@ -24,7 +24,7 @@ public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, I
 
         home.Members.Add(new DbModels.Member
         {
-            Name = currentUser!.NickName,
+            Name = currentUser!.DisplayName,
             ContactEmail = currentUser.Email,
             DefaultSplitPercentage = 1m,
             UserId = currentUser.Id

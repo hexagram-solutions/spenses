@@ -7,7 +7,7 @@ public class UserProfilePropertiesValidator : AbstractValidator<UserProfilePrope
 {
     public UserProfilePropertiesValidator()
     {
-        RuleFor(x => x.NickName)
+        RuleFor(x => x.DisplayName)
             .NotEmpty();
     }
 }

@@ -101,7 +101,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             Id = TestUserId,
             Email = "test@example.com",
             UserName = "test@example.com",
-            NickName = "test"
+            DisplayName = "test"
         });
 
         var homeEntry = await db.Homes.AddAsync(new DbModels.Home

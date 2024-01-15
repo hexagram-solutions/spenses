@@ -5,7 +5,7 @@ namespace Spenses.Shared.Models.Me;
 public record UserProfileProperties
 {
     [Required]
-    public string NickName { get; set; } = null!;
+    public string DisplayName { get; set; } = null!;
 }
 
 public record CurrentUser : UserProfileProperties

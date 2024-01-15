@@ -75,7 +75,7 @@ public partial class IdentityIntegrationTests
 
         var problemDetails = await resetResponse.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Register.EmailAsPassword);
+        problemDetails!.Errors.Should().ContainKey(IdentityErrors.Password.EmailAsPassword);
     }
 
     [Fact]

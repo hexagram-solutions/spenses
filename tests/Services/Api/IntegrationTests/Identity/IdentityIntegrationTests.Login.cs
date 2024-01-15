@@ -13,7 +13,7 @@ public partial class IdentityIntegrationTests
         {
             Email = "donkey.teeth@boisestate.edu",
             Password = new Faker().Internet.Password(),
-            Name = "DONKEY TEETH"
+            DisplayName = "DONKEY TEETH"
         };
 
         await _identityApi.Register(registerRequest);
@@ -61,7 +61,7 @@ public partial class IdentityIntegrationTests
         {
             Email = "donkey.teeth@boisestate.edu",
             Password = new Faker().Internet.Password(),
-            Name = "DONKEY TEETH"
+            DisplayName = "DONKEY TEETH"
         };
 
         await _identityApi.Register(registerRequest);

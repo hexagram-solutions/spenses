@@ -13,7 +13,7 @@ public partial class MeIntegrationTests
     [Fact]
     public async Task Put_me_updates_current_user()
     {
-        var props = new UserProfileProperties { NickName = "Torque" };
+        var props = new UserProfileProperties { DisplayName = "Torque" };
 
         var response = await _meApi.UpdateMe(props);
 
@@ -26,14 +26,14 @@ public partial class MeIntegrationTests
         {
             Email = applicationUser!.Email!,
             EmailVerified = applicationUser.EmailConfirmed,
-            NickName = props.NickName
+            DisplayName = props.DisplayName
         });
     }
 
     [Fact]
     public async Task Put_me_with_invalid_properties_yields_bad_request()
     {
-        var props = new UserProfileProperties { NickName = string.Empty };
+        var props = new UserProfileProperties { DisplayName = string.Empty };
 
         var response = await _meApi.UpdateMe(props);
 
@@ -41,6 +41,6 @@ public partial class MeIntegrationTests
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails.Errors.Should().ContainKey(nameof(UserProfileProperties.NickName));
+        problemDetails.Errors.Should().ContainKey(nameof(UserProfileProperties.DisplayName));
     }
 }

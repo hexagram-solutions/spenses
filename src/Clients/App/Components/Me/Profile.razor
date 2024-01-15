@@ -1,0 +1,40 @@
+﻿@using Spenses.App.Infrastructure
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack>
+    <MudText Typo="Typo.h5"
+             GutterBottom="true">
+        Display name
+    </MudText>
+    <MudText Typo="Typo.caption">
+        This is the name that other members know you by.
+    </MudText>
+    <MudForm Model="Properties"
+             @ref="FormRef"
+             Validation="@(_validator.ValidateValue())">
+
+        <MudTextField @bind-Value="Properties.DisplayName"
+                      Label="Name"
+                      For="@(() => Properties.DisplayName)"
+                      Variant="Variant.Outlined"
+                      Immediate
+                      DebounceInterval="250"
+                      Required/>
+    </MudForm>
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               OnClick="UpdateInformation"
+               Disabled="!UpdateEnabled">
+        @if (MeState.Value.CurrentUserUpdating)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+        }
+        else if (UpdateSucceeded == true)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.Check" />
+        }
+        <MudText Class="ms-2">Update information</MudText>
+    </MudButton>
+
+</MudStack>

@@ -22,7 +22,10 @@ public static class IdentityErrors
         public const string DuplicateUserName = nameof(DuplicateUserName);
 
         public const string DuplicateEmail = nameof(DuplicateEmail);
+    }
 
+    public static class Password
+    {
         public const string PasswordTooShort = nameof(PasswordTooShort);
 
         public const string PwnedPassword = nameof(PwnedPassword);

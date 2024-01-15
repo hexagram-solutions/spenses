@@ -3,6 +3,14 @@ namespace Spenses.App.Infrastructure;
 public static class Routes
 {
     public const string Root = "/";
+    public static class Homes
+    {
+        public static string Dashboard(Guid homeId) => $"/homes/{homeId}/dashboard";
+        public static string Expenses(Guid homeId) => $"/homes/{homeId}/expenses";
+        public static string Payments(Guid homeId) => $"/homes/{homeId}/payments";
+        public static string Insights(Guid homeId) => $"/homes/{homeId}/insights";
+        public static string Settings(Guid homeId) => $"/homes/{homeId}/settings";
+    }
 
     public static class Identity
     {
@@ -23,12 +31,9 @@ public static class Routes
         public static string VerifyEmail => "/verify-email";
     }
 
-    public static class Homes
+    public static class Me
     {
-        public static string Dashboard(Guid homeId) => $"/homes/{homeId}/dashboard";
-        public static string Expenses(Guid homeId) => $"/homes/{homeId}/expenses";
-        public static string Payments(Guid homeId) => $"/homes/{homeId}/payments";
-        public static string Insights(Guid homeId) => $"/homes/{homeId}/insights";
-        public static string Settings(Guid homeId) => $"/homes/{homeId}/settings";
+        public static string Settings => "/settings";
     }
+
 }

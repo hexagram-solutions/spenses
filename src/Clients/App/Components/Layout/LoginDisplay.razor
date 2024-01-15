@@ -1,26 +1,50 @@
-﻿@using MudBlazor
-
+﻿@using Spenses.App.Infrastructure
+@using Fluxor.Blazor.Web.Middlewares.Routing
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <MudStack Row="true"
           AlignItems="AlignItems.Center">
     @if (MeState.Value.CurrentUserRequesting)
     {
-        <div>
-            Loading...
-        </div>
+        <MudSkeleton SkeletonType="SkeletonType.Circle"
+                     Width="40px"
+                     Height="40px"/>
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle"
+                     Width="100px"
+                     Height="40px"/>
     }
     else
     {
-        <div>
-            Hello, @MeState.Value.CurrentUser!.NickName!
-        </div>
+        <MudMenu @ref="MenuRef"
+            Label="@MeState.Value.CurrentUser!.DisplayName"
+                 AnchorOrigin="Origin.BottomRight"
+                 TransformOrigin="Origin.TopRight">
+            <ActivatorContent>
+                <MudStack Row="true"
+                          AlignItems="AlignItems.Center">
+                    <MudAvatar Size="Size.Small">
+                        <MudImage Src="@(AvatarHelper.GetGravatarUri(MeState.Value.CurrentUser!.Email).ToString())"/>
+                    </MudAvatar>
+                    <MudText>@MeState.Value.CurrentUser.DisplayName</MudText>
+                    <MudIcon Icon="@(MenuRef.IsOpen ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)" />
+                </MudStack>
+            </ActivatorContent>
+            <ChildContent>
+                <MudMenuItem Icon="@Icons.Material.Filled.Settings"
+                             OnClick="@(() => Dispatcher.Dispatch(new GoAction(Routes.Me.Settings)))">
+                    Settings
+                </MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Filled.Logout"
+                             Disabled="IdentityState.Value.LogoutRequesting"
+                             OnClick="LogOut">
+                    Log out
+                </MudMenuItem>
+            </ChildContent>
+        </MudMenu>
     }
-    <MudButton Variant="Variant.Outlined"
-               Color="Color.Tertiary"
-               EndIcon="@Icons.Material.Filled.Logout"
-               OnClick="LogOut"
-               Disabled="IdentityState.Value.LogoutRequesting">
-        Log out
-    </MudButton>
 </MudStack>
+
+@code
+{
+    MudMenu MenuRef { get; set; } = new();
+}

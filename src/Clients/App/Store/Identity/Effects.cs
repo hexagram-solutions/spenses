@@ -60,24 +60,24 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
             return;
         }
 
-        if (result.Error!.Errors.ContainsKey(IdentityErrors.Register.PasswordTooShort))
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.Password.PasswordTooShort))
         {
-            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Register.PasswordTooShort]));
+            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Password.PasswordTooShort]));
 
             return;
         }
 
-        if (result.Error!.Errors.ContainsKey(IdentityErrors.Register.EmailAsPassword) ||
-            result.Error!.Errors.ContainsKey(IdentityErrors.Register.UserNameAsPassword))
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.Password.EmailAsPassword) ||
+            result.Error!.Errors.ContainsKey(IdentityErrors.Password.UserNameAsPassword))
         {
-            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Register.EmailAsPassword]));
+            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Password.EmailAsPassword]));
 
             return;
         }
 
-        if (result.Error!.Errors.ContainsKey(IdentityErrors.Register.PwnedPassword))
+        if (result.Error!.Errors.ContainsKey(IdentityErrors.Password.PwnedPassword))
         {
-            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Register.PwnedPassword]));
+            dispatcher.Dispatch(new RegistrationFailedAction([IdentityErrors.Password.PwnedPassword]));
 
             return;
         }
@@ -158,24 +158,24 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
 
         var result = await response.Error.GetContentAsAsync<ProblemDetails>();
 
-        if (result!.Errors.ContainsKey(IdentityErrors.Register.PasswordTooShort))
+        if (result!.Errors.ContainsKey(IdentityErrors.Password.PasswordTooShort))
         {
-            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Register.PasswordTooShort]));
+            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Password.PasswordTooShort]));
 
             return;
         }
 
-        if (result.Errors.ContainsKey(IdentityErrors.Register.EmailAsPassword) ||
-            result.Errors.ContainsKey(IdentityErrors.Register.UserNameAsPassword))
+        if (result.Errors.ContainsKey(IdentityErrors.Password.EmailAsPassword) ||
+            result.Errors.ContainsKey(IdentityErrors.Password.UserNameAsPassword))
         {
-            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Register.EmailAsPassword]));
+            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Password.EmailAsPassword]));
 
             return;
         }
 
-        if (result.Errors.ContainsKey(IdentityErrors.Register.PwnedPassword))
+        if (result.Errors.ContainsKey(IdentityErrors.Password.PwnedPassword))
         {
-            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Register.PwnedPassword]));
+            dispatcher.Dispatch(new ResetPasswordFailedAction([IdentityErrors.Password.PwnedPassword]));
 
             return;
         }

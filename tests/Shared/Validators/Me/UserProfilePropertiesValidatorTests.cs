@@ -9,12 +9,12 @@ public class UserProfilePropertiesValidatorTests
     private readonly UserProfilePropertiesValidator _validator = new();
 
     [Fact]
-    public void NickName_is_required()
+    public void DisplayName_is_required()
     {
-        _validator.TestValidate(new UserProfileProperties { NickName = string.Empty })
-            .ShouldHaveValidationErrorFor(x => x.NickName);
+        _validator.TestValidate(new UserProfileProperties { DisplayName = string.Empty })
+            .ShouldHaveValidationErrorFor(x => x.DisplayName);
 
-        _validator.TestValidate(new UserProfileProperties { NickName = "foo" })
-            .ShouldNotHaveValidationErrorFor(x => x.NickName);
+        _validator.TestValidate(new UserProfileProperties { DisplayName = "foo" })
+            .ShouldNotHaveValidationErrorFor(x => x.DisplayName);
     }
 }

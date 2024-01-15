@@ -11,7 +11,7 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static MeState ReduceCurrentUserSucceededAction(MeState state, CurrentUserReceivedAction action)
+    public static MeState ReduceCurrentUserReceivedAction(MeState state, CurrentUserReceivedAction action)
     {
         return state with { CurrentUserRequesting = false, CurrentUser = action.CurrentUser };
     }
@@ -38,5 +38,41 @@ public static class Reducers
     public static MeState ReduceCurrentUserUpdateFailedAction(MeState state, CurrentUserUpdateFailedAction _)
     {
         return state with { CurrentUserUpdating = false };
+    }
+
+    [ReducerMethod]
+    public static MeState ReduceChangeEmailRequested(MeState state, ChangeEmailRequestedAction _)
+    {
+        return state with { ChangeEmailRequesting = true };
+    }
+
+    [ReducerMethod]
+    public static MeState ReduceChangeEmailSucceededAction(MeState state, ChangeEmailSucceededAction action)
+    {
+        return state with { ChangeEmailRequesting = false, ChangeEmailErrors = [] };
+    }
+
+    [ReducerMethod]
+    public static MeState ReduceChangeEmailRequestFailedAction(MeState state, ChangeEmailFailedAction action)
+    {
+        return state with { ChangeEmailRequesting = false, ChangeEmailErrors = action.Errors };
+    }
+
+    [ReducerMethod]
+    public static MeState ReduceChangePasswordRequested(MeState state, ChangePasswordRequestedAction _)
+    {
+        return state with { ChangePasswordRequesting = true };
+    }
+
+    [ReducerMethod]
+    public static MeState ReduceChangePasswordSucceededAction(MeState state, ChangePasswordSucceededAction action)
+    {
+        return state with { ChangePasswordRequesting = false, ChangePasswordErrors = [] };
+    }
+
+    [ReducerMethod]
+    public static MeState ReduceChangePasswordRequestFailedAction(MeState state, ChangePasswordFailedAction action)
+    {
+        return state with { ChangePasswordRequesting = false, ChangePasswordErrors = action.Errors };
     }
 }

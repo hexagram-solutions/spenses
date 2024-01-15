@@ -13,7 +13,7 @@ public class EmailAsPasswordValidator : IPasswordValidator<ApplicationUser>
         {
             return Task.FromResult(IdentityResult.Failed(new IdentityError
             {
-                Code = IdentityErrors.Register.EmailAsPassword,
+                Code = IdentityErrors.Password.EmailAsPassword,
                 Description = "You cannot use your email as your password."
             }));
         }

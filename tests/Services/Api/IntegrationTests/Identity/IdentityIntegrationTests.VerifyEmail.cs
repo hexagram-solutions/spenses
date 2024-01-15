@@ -11,7 +11,7 @@ public partial class IdentityIntegrationTests
     {
         var registerRequest = new RegisterRequest
         {
-            Name = "Quatro Quatro",
+            DisplayName = "Quatro Quatro",
             Email = "quatro.quatro@sjsu.edu",
             Password = new Faker().Internet.Password()
         };

@@ -22,7 +22,7 @@ public partial class MeIntegrationTests
         {
             Email = applicationUser!.Email!,
             EmailVerified = applicationUser.EmailConfirmed,
-            NickName = applicationUser.NickName
+            DisplayName = applicationUser.DisplayName
         });
     }
 }

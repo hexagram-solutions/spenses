@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +28,7 @@ public partial class MeIntegrationTests
         // Register a new user
         var registerRequest = new RegisterRequest
         {
-            Name = "Quackadilly Blip",
+            DisplayName = "Quackadilly Blip",
             Email = "quackadilly.blip@auburn.edu",
             Password = new Faker().Internet.Password()
         };
