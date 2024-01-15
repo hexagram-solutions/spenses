@@ -1,9 +1,8 @@
 ﻿@using Spenses.App.Infrastructure
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudStack>
-    <MudText Typo="Typo.h5"
-             GutterBottom="true">
+<MudStack AlignItems="AlignItems.Start">
+    <MudText Typo="Typo.h5">
         Profile
     </MudText>
     <MudText Typo="Typo.body1">
@@ -31,9 +30,11 @@
                Disabled="!UpdateEnabled">
         @if (MeState.Value.CurrentUserUpdating)
         {
-            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true"/>
+            <MudProgressCircular Class="ms-n1"
+                                 Size="Size.Small"
+                                 Indeterminate="true"/>
         }
-        <MudText Class="ms-2">Update profile</MudText>
+        <MudText>Update profile</MudText>
     </MudButton>
 
 </MudStack>

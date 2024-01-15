@@ -2,35 +2,36 @@
 @using Spenses.Shared.Models.Identity
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudGrid>
-    <MudItem xs="12">
-        <MudText Typo="Typo.h5"
-                 GutterBottom="true">
-            Email
-        </MudText>
-    </MudItem>
-    <MudItem xs="9">
+<MudStack AlignItems="AlignItems.Start">
+    <MudText Typo="Typo.h5">
+        Email
+    </MudText>
+
+    <MudStack Row
+              Justify="Justify.SpaceBetween">
+
         <MudText>
             The email associated with your account. You use it to log in and receive emails from Spenses.
         </MudText>
-    </MudItem>
-    <MudItem xs="3">
+
         <MudSpacer/>
+
         <MudButton Variant="Variant.Filled"
                    Color="Color.Tertiary"
                    OnClick="ToggleEditMode"
                    StartIcon="@(IsEditing ? Icons.Material.Filled.EditOff : Icons.Material.Filled.Edit)">
             @if (IsEditing)
             {
-                <text>Cancel</text>
+                <MudText>Cancel</MudText>
             }
             else
             {
-                <text>Edit</text>
+                <MudText>Edit</MudText>
             }
         </MudButton>
-    </MudItem>
-    <MudItem xs="12">
+    </MudStack>
+
+    <div class="d-flex flex-grow-1">
         <MudForm Model="Request"
                  @ref="FormRef"
                  Validation="@(_validator.ValidateValue())">
@@ -42,22 +43,22 @@
                           Immediate
                           DebounceInterval="250"
                           Required
-                          Disabled="!IsEditing"/>
+                          Disabled="!IsEditing"
+                          FullWidth/>
         </MudForm>
-    </MudItem>
 
-    @if (IsEditing)
-    {
-        <MudItem xs="3">
+    </div>
+
+    <MudStack Row>
+        @if (IsEditing)
+        {
             <MudButton Variant="Variant.Filled"
                        Color="Color.Primary"
                        OnClick="ChangeEmail"
                        Disabled="!ChangeEmailEnabled">
                 <MudText>Confirm new email</MudText>
             </MudButton>
-        </MudItem>
 
-        <MudItem xs="9">
             @if (MeState.Value.ChangeEmailErrors.Length > 0)
             {
                 @foreach (var error in MeState.Value.ChangeEmailErrors)
@@ -88,9 +89,9 @@
                     use it to log in.
                 </MudAlert>
             }
-        </MudItem>
-    }
-</MudGrid>
+        }
+    </MudStack>
+</MudStack>
 
 @code
 {

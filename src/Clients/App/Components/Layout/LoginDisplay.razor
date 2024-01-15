@@ -16,17 +16,21 @@
     else
     {
         <MudMenu @ref="MenuRef"
-            Label="@MeState.Value.CurrentUser!.DisplayName"
+                 Label="@MeState.Value.CurrentUser!.DisplayName"
                  AnchorOrigin="Origin.BottomRight"
                  TransformOrigin="Origin.TopRight">
             <ActivatorContent>
                 <MudStack Row="true"
                           AlignItems="AlignItems.Center">
-                    <MudAvatar Size="Size.Small">
+                    <MudAvatar Size="Size.Medium">
                         <MudImage Src="@(AvatarHelper.GetGravatarUri(MeState.Value.CurrentUser!.Email).ToString())"/>
                     </MudAvatar>
-                    <MudText>@MeState.Value.CurrentUser.DisplayName</MudText>
-                    <MudIcon Icon="@(MenuRef.IsOpen ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)" />
+                    <MudStack Justify="Justify.Center"
+                              Spacing="0">
+                        <MudText Typo="Typo.body1">@MeState.Value.CurrentUser.DisplayName</MudText>
+                        <MudText Typo="Typo.body2">@MeState.Value.CurrentUser.Email</MudText>
+                    </MudStack>
+                    <MudIcon Icon="@(MenuRef.IsOpen ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"/>
                 </MudStack>
             </ActivatorContent>
             <ChildContent>

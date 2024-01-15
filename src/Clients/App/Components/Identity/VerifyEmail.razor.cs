@@ -50,6 +50,6 @@ public partial class VerifyEmail
     {
         await Task.Delay(5000);
 
-        Dispatcher.Dispatch(new GoAction(Routes.Identity.Login()));
+        Dispatcher.Dispatch(new GoAction(Routes.Identity.Login(), true));
     }
 }
