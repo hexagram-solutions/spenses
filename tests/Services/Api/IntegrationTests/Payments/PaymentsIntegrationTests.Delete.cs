@@ -10,7 +10,7 @@ public partial class PaymentsIntegrationTests
     {
         var homeId = (await _homes.GetHomes()).Content!.First().Id;
 
-        var paymentId = (await _payments.GetPayments(homeId, new FilteredPaymentQuery())).Content!.Items.First().Id;
+        var paymentId = (await _payments.GetPayments(homeId, new FilteredPaymentsQuery())).Content!.Items.First().Id;
 
         var homeNotFoundResult = await _payments.DeletePayment(Guid.NewGuid(), paymentId);
 

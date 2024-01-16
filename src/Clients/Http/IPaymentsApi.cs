@@ -10,7 +10,7 @@ public interface IPaymentsApi
     Task<IApiResponse<Payment>> PostPayment(Guid homeId, PaymentProperties props);
 
     [Get("/homes/{homeId}/payments")]
-    Task<IApiResponse<PagedResult<PaymentDigest>>> GetPayments(Guid homeId, [Query] FilteredPaymentQuery query);
+    Task<IApiResponse<PagedResult<PaymentDigest>>> GetPayments(Guid homeId, [Query] FilteredPaymentsQuery query);
 
     [Get("/homes/{homeId}/payments/{paymentId}")]
     Task<IApiResponse<Payment>> GetPayment(Guid homeId, Guid paymentId);

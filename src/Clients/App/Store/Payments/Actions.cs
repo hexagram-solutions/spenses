@@ -3,7 +3,7 @@ using Spenses.Shared.Models.Payments;
 
 namespace Spenses.App.Store.Payments;
 
-public record PaymentsRequestedAction(Guid HomeId, FilteredPaymentQuery Query);
+public record PaymentsRequestedAction(Guid HomeId, FilteredPaymentsQuery Query);
 
 public record PaymentsReceivedAction(PagedResult<PaymentDigest> Payments);
 

@@ -1,13 +1,12 @@
 using FluentValidation;
-using Spenses.Application.Features.Common.Validators;
-using Spenses.Application.Features.Payments.Requests;
 using Spenses.Shared.Models.Payments;
+using Spenses.Shared.Validators.Common;
 
-namespace Spenses.Application.Features.Payments.Validators;
+namespace Spenses.Shared.Validators.Payments;
 
-public class PaymentsQueryValidator : AbstractValidator<PaymentsQuery>
+public class FilteredPaymentsQueryValidator : AbstractValidator<FilteredPaymentsQuery>
 {
-    public PaymentsQueryValidator()
+    public FilteredPaymentsQueryValidator()
     {
         Include(new PagedQueryValidator<PaymentDigest>());
 

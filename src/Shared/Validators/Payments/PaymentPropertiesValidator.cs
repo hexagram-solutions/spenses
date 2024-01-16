@@ -1,7 +1,7 @@
 using FluentValidation;
 using Spenses.Shared.Models.Payments;
 
-namespace Spenses.Application.Features.Payments.Validators;
+namespace Spenses.Shared.Validators.Payments;
 
 public class PaymentPropertiesValidator : AbstractValidator<PaymentProperties>
 {

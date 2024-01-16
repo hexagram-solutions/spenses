@@ -1,13 +1,12 @@
 using FluentValidation;
-using Spenses.Application.Features.Common.Validators;
-using Spenses.Application.Features.Expenses.Requests;
 using Spenses.Shared.Models.Expenses;
+using Spenses.Shared.Validators.Common;
 
-namespace Spenses.Application.Features.Expenses.Validators;
+namespace Spenses.Shared.Validators.Expenses;
 
-public class ExpensesQueryValidator : AbstractValidator<ExpensesQuery>
+public class FilteredExpensesQueryValidator : AbstractValidator<FilteredExpensesQuery>
 {
-    public ExpensesQueryValidator()
+    public FilteredExpensesQueryValidator()
     {
         Include(new PagedQueryValidator<ExpenseDigest>());
 

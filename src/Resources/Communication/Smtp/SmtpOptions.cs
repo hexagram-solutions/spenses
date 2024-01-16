@@ -1,4 +1,4 @@
-namespace Spenses.Resources.Communication;
+namespace Spenses.Resources.Communication.Smtp;
 
 public class SmtpOptions
 {

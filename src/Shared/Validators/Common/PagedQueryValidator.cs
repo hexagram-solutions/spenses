@@ -4,7 +4,7 @@ using Hexagrams.Extensions.Common;
 using Spenses.Shared.Common.Query;
 using Spenses.Shared.Models.Common;
 
-namespace Spenses.Application.Features.Common.Validators;
+namespace Spenses.Shared.Validators.Common;
 
 public class PagedQueryValidator<T> : AbstractValidator<PagedQuery<T>>
     where T : class

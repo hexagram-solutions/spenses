@@ -1,21 +1,20 @@
 using FluentValidation.TestHelper;
-using Spenses.Application.Features.Expenses.Requests;
-using Spenses.Application.Features.Expenses.Validators;
-using Spenses.Application.Tests.Features.Common.Validators;
 using Spenses.Shared.Models.Expenses;
+using Spenses.Shared.Tests.Validators.Common;
+using Spenses.Shared.Validators.Expenses;
 
-namespace Spenses.Application.Tests.Features.Expenses.Validators;
+namespace Spenses.Shared.Tests.Validators.Expenses;
 
-public class ExpensesQueryValidatorTests : PagedQueryValidatorTests<ExpenseDigest>
+public class FilteredExpensesQueryValidatorTests : PagedQueryValidatorTests<ExpenseDigest>
 {
-    private readonly ExpensesQueryValidator _validator = new();
+    private readonly FilteredExpensesQueryValidator _validator = new();
 
     [Fact]
     public void Min_date_must_be_less_than_or_equal_to_max_date()
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
 
-        var model = new ExpensesQuery(Guid.NewGuid()) { MinDate = today.AddDays(1), MaxDate = today };
+        var model = new FilteredExpensesQuery { MinDate = today.AddDays(1), MaxDate = today };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.MinDate);
@@ -26,7 +25,7 @@ public class ExpensesQueryValidatorTests : PagedQueryValidatorTests<ExpenseDiges
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
 
-        var model = new ExpensesQuery(Guid.NewGuid()) { MinDate = today.AddDays(1), MaxDate = today };
+        var model = new FilteredExpensesQuery { MinDate = today.AddDays(1), MaxDate = today };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.MaxDate);
@@ -37,7 +36,7 @@ public class ExpensesQueryValidatorTests : PagedQueryValidatorTests<ExpenseDiges
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
 
-        var model = new ExpensesQuery(Guid.NewGuid()) { MinDate = today, MaxDate = today };
+        var model = new FilteredExpensesQuery { MinDate = today, MaxDate = today };
 
         var validationResult = _validator.TestValidate(model);
 
@@ -48,7 +47,7 @@ public class ExpensesQueryValidatorTests : PagedQueryValidatorTests<ExpenseDiges
     [Fact]
     public void Tags_cannot_contain_empty_values()
     {
-        var model = new ExpensesQuery(Guid.NewGuid()) { Tags = new[] { "" } };
+        var model = new FilteredExpensesQuery { Tags = new[] { "" } };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Tags);
@@ -60,7 +59,7 @@ public class ExpensesQueryValidatorTests : PagedQueryValidatorTests<ExpenseDiges
     [Fact]
     public void Tags_must_be_unique()
     {
-        var model = new ExpensesQuery(Guid.NewGuid()) { Tags = new[] { "foo", "foo" } };
+        var model = new FilteredExpensesQuery { Tags = new[] { "foo", "foo" } };
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Tags);

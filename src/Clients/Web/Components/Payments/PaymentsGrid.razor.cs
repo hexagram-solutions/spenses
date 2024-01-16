@@ -31,7 +31,7 @@ public partial class PaymentsGrid
 
     private PagedResult<PaymentDigest> Payments { get; set; } = new(0, Enumerable.Empty<PaymentDigest>());
 
-    private FilteredPaymentQuery Query { get; set; } = new()
+    private FilteredPaymentsQuery Query { get; set; } = new()
     {
         OrderBy = nameof(PaymentDigest.Date),
         SortDirection = SortDirection.Desc

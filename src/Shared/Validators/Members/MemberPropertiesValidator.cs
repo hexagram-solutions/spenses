@@ -1,7 +1,7 @@
 using FluentValidation;
 using Spenses.Shared.Models.Members;
 
-namespace Spenses.Application.Features.Members.Validators;
+namespace Spenses.Shared.Validators.Members;
 
 public class MemberPropertiesValidator : AbstractValidator<MemberProperties>
 {

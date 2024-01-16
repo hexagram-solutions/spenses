@@ -13,7 +13,7 @@ using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Application.Features.Payments.Requests;
 
-public record PaymentsQuery(Guid HomeId) : FilteredPaymentQuery, IAuthorizedRequest<PagedResult<PaymentDigest>>
+public record PaymentsQuery(Guid HomeId) : FilteredPaymentsQuery, IAuthorizedRequest<PagedResult<PaymentDigest>>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }

@@ -1,7 +1,7 @@
 using FluentValidation;
 using Spenses.Shared.Models.Expenses;
 
-namespace Spenses.Application.Features.Expenses.Validators;
+namespace Spenses.Shared.Validators.Expenses;
 
 public class ExpensePropertiesValidator : AbstractValidator<ExpenseProperties>
 {

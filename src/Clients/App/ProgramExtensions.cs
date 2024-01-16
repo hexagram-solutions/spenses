@@ -23,7 +23,7 @@ internal static class ProgramExtensions
             .AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
             .AddMudServices();
 
-        builder.Services.AddFormValidation(config => config.AddFluentValidation(typeof(HomeValidator).Assembly));
+        builder.Services.AddFormValidation(config => config.AddFluentValidation(typeof(HomePropertiesValidator).Assembly));
 
         return builder;
     }

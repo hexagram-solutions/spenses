@@ -1,8 +1,8 @@
 using FluentValidation.TestHelper;
-using Spenses.Application.Features.Expenses.Validators;
 using Spenses.Shared.Models.Expenses;
+using Spenses.Shared.Validators.Expenses;
 
-namespace Spenses.Application.Tests.Features.Expenses.Validators;
+namespace Spenses.Shared.Tests.Validators.Expenses;
 
 public class ExpensePropertiesValidatorTests
 {

@@ -1,8 +1,8 @@
 using FluentValidation.TestHelper;
-using Spenses.Application.Features.Members.Validators;
 using Spenses.Shared.Models.Members;
+using Spenses.Shared.Validators.Members;
 
-namespace Spenses.Application.Tests.Features.Members.Validators;
+namespace Spenses.Shared.Tests.Validators.Members;
 
 public class MemberPropertiesValidatorTests
 {

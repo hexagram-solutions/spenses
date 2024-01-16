@@ -37,7 +37,7 @@ public class PaymentsController(IMediator mediator) : ControllerBase
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<PaymentDigest>>> GetPayments(Guid homeId,
-        [FromQuery] FilteredPaymentQuery query)
+        [FromQuery] FilteredPaymentsQuery query)
     {
         var payments = await mediator.Send(new PaymentsQuery(homeId)
         {

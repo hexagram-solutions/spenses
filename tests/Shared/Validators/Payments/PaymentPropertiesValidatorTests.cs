@@ -1,8 +1,8 @@
 using FluentValidation.TestHelper;
-using Spenses.Application.Features.Payments.Validators;
 using Spenses.Shared.Models.Payments;
+using Spenses.Shared.Validators.Payments;
 
-namespace Spenses.Application.Tests.Features.Payments.Validators;
+namespace Spenses.Shared.Tests.Validators.Payments;
 
 public class PaymentPropertiesValidatorTests
 {

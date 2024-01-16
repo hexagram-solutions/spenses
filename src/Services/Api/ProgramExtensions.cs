@@ -14,7 +14,6 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using NSwag;
 using NSwag.AspNetCore;
-using Polly;
 using PwnedPasswords.Validator;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Homes.Authorization;

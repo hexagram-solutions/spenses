@@ -3,7 +3,7 @@ using Spenses.Shared.Models.Common;
 
 namespace Spenses.Shared.Models.Payments;
 
-public record FilteredPaymentQuery : PagedQuery<PaymentDigest>
+public record FilteredPaymentsQuery : PagedQuery<PaymentDigest>
 {
     [Description("The minimum date of payments to retrieve")]
     public DateOnly? MinDate { get; set; }

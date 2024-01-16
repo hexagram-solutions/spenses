@@ -1,9 +1,9 @@
 using FluentValidation.TestHelper;
-using Spenses.Application.Features.Common.Validators;
 using Spenses.Shared.Common.Query;
 using Spenses.Shared.Models.Common;
+using Spenses.Shared.Validators.Common;
 
-namespace Spenses.Application.Tests.Features.Common.Validators;
+namespace Spenses.Shared.Tests.Validators.Common;
 
 public abstract class PagedQueryValidatorTests<TModel> where TModel : class
 {
