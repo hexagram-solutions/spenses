@@ -41,6 +41,6 @@ public partial class MeIntegrationTests
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
-        problemDetails.Errors.Should().ContainKey(nameof(UserProfileProperties.DisplayName));
+        problemDetails!.Errors.Should().ContainKey(nameof(UserProfileProperties.DisplayName));
     }
 }

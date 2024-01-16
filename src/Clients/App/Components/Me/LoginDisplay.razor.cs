@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Spenses.App.Store.Identity;
 using Spenses.App.Store.Me;
 
-namespace Spenses.App.Components.Layout;
+namespace Spenses.App.Components.Me;
 
 public partial class LoginDisplay
 {

@@ -1,7 +1,7 @@
 using Refit;
 using Spenses.Shared.Models.Identity;
 
-namespace Spenses.App.Authentication;
+namespace Spenses.App.Infrastructure.Authentication;
 
 public record IdentityResult(ProblemDetails? Error = null)
 {

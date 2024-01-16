@@ -7,7 +7,7 @@ using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
 using Spenses.Utilities.Security;
 
-namespace Spenses.App.Components.Identity;
+namespace Spenses.App.Pages.Identity;
 
 public partial class EmailVerificationRequired
 {

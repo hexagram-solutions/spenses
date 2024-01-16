@@ -5,7 +5,7 @@ using Spenses.Client.Http;
 using Spenses.Shared.Models.Identity;
 using Spenses.Utilities.Security;
 
-namespace Spenses.App.Authentication;
+namespace Spenses.App.Infrastructure.Authentication;
 
 public class CookieAuthenticationStateProvider(IIdentityApi identityApi, IMeApi meApi,
     ILogger<CookieAuthenticationStateProvider> logger)

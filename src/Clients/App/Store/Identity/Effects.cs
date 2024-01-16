@@ -1,8 +1,8 @@
 using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
 using Refit;
-using Spenses.App.Authentication;
 using Spenses.App.Infrastructure;
+using Spenses.App.Infrastructure.Authentication;
 using Spenses.App.Store.Shared;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Identity;

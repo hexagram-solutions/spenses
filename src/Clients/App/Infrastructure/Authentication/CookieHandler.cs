@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Http;
 
-namespace Spenses.App.Authentication;
+namespace Spenses.App.Infrastructure.Authentication;
 
 public class CookieHandler : DelegatingHandler
 {

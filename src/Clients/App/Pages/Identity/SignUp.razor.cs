@@ -8,13 +8,10 @@ using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Validators.Identity;
 
-namespace Spenses.App.Components.Identity;
+namespace Spenses.App.Pages.Identity;
 
-public partial class Login
+public partial class SignUp
 {
-    [SupplyParameterFromQuery]
-    public string? ReturnUrl { get; set; }
-
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
@@ -24,27 +21,30 @@ public partial class Login
     [Inject]
     private IState<IdentityState> IdentityState { get; set; } = null!;
 
+    [Inject]
+    public required ILogger<SignUp> Logger { get; set; }
+
     private MudForm FormRef { get; set; } = null!;
 
-    private readonly LoginRequestValidator _validator = new();
+    private readonly RegisterRequestValidator _validator = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         if ((await AuthenticationState).User.Identity?.IsAuthenticated == true)
-            Dispatcher.Dispatch(new GoAction(ReturnUrl ?? Routes.Root));
+            Dispatcher.Dispatch(new GoAction(Routes.Root));
     }
 
-    private LoginRequest LoginRequest { get; } = new();
+    private RegisterRequest RegisterRequest { get; } = new();
 
-    public async Task LogIn()
+    private async Task Register()
     {
         await FormRef.Validate();
 
         if (!FormRef.IsValid)
             return;
 
-        Dispatcher.Dispatch(new LoginRequestedAction(LoginRequest, ReturnUrl));
+        Dispatcher.Dispatch(new RegistrationRequestedAction(RegisterRequest));
     }
 }
