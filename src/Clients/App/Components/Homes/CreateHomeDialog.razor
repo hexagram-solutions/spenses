@@ -1,29 +1,12 @@
-﻿@using Spenses.Shared.Validators.Homes
-@using Spenses.App.Infrastructure
+﻿@using Spenses.App.Infrastructure
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
-
 
 <EditForm Model="Home"
           OnSubmit="Save">
     <LoadingOverlay Visible="HomesState.Value.HomeCreating"/>
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <DialogContent>
-            <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<HomePropertiesValidator>())"
-                      OnTransformModel="OnTransformModel"/>
-
-            <MudTextField @bind-Value="Home.Name"
-                          Label="Name"
-                          HelperText="The name of this home"
-                          Placeholder="My household"
-                          Required/>
-
-            <MudTextField @bind-Value="Home.Description"
-                          Label="Description"
-                          HelperText="An optional description of this home"
-                          Placeholder="2411 4th St NW"/>
-
-            @* <HomeForm @ref="HomeFormRef"
-                  Home="Home" /> *@
+            <HomeForm Home="Home"/>
         </DialogContent>
         <DialogActions>
             <MudButton Color="Color.Warning"

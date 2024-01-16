@@ -19,12 +19,7 @@ public partial class CreateHomeDialog
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
 
-    [Inject]
-    private IDialogService DialogService { get; init; } = null!;
-
     public HomeProperties Home { get; set; } = new();
-
-    public HomeForm HomeFormRef { get; set; } = null!;
 
     private void Close()
     {
@@ -38,19 +33,6 @@ public partial class CreateHomeDialog
 
         Dispatcher.Dispatch(new HomeCreatedAction(Home));
 
-        Close();
-    }
-    private object OnTransformModel(object model)
-    {
-        if (model is Home home)
-        {
-            return new HomeProperties
-            {
-                Name = home.Name,
-                Description = home.Description
-            };
-        }
-
-        return model;
+        //Close();
     }
 }
