@@ -58,7 +58,7 @@
 
 @code
 {
-    [Inject] private IState<HomesState> HomesState { get; set; } = null;
+    [Inject] private IState<HomesState> HomesState { get; set; } = null!;
 
     [Inject] private IState<RoutingState> RoutingState { get; set; } = null!;
 

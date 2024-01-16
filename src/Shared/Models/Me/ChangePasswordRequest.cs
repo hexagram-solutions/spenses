@@ -13,6 +13,6 @@ public record ChangePasswordRequest
 
     public void Deconstruct(out string oldPassword, out string newPassword)
     {
-        (oldPassword, newPassword)= (CurrentPassword, NewPassword);
+        (oldPassword, newPassword) = (CurrentPassword, NewPassword);
     }
 }

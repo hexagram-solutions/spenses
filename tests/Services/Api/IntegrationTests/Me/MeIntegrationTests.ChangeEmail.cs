@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;

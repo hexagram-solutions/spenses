@@ -32,9 +32,9 @@ public partial class Settings
         Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
     }
 
-    private void Save(EditContext editContext)
+    private async Task Save()
     {
-        if (!editContext.ValidateObjectTree())
+        if (!await HomeFormRef.Validations.ValidateAll())
             return;
 
         Dispatcher.Dispatch(new HomeUpdatedAction(HomeId, Home!));

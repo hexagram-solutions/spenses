@@ -23,5 +23,5 @@ public record MeState
 
     public string[] ChangeEmailErrors { get; init; } = [];
 
-    public string[] ChangePasswordErrors { get; init;} = [];
+    public string[] ChangePasswordErrors { get; init; } = [];
 }
