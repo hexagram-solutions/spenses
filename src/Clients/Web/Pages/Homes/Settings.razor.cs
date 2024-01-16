@@ -1,5 +1,6 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Spenses.Client.Web.Components.Homes;
 using Spenses.Client.Web.Store.Homes;
 using Spenses.Shared.Models.Homes;
@@ -31,9 +32,9 @@ public partial class Settings
         Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
     }
 
-    private async Task Save()
+    private void Save(EditContext editContext)
     {
-        if (!await HomeFormRef.Validations.ValidateAll())
+        if (!editContext.ValidateObjectTree())
             return;
 
         Dispatcher.Dispatch(new HomeUpdatedAction(HomeId, Home!));

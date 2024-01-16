@@ -32,7 +32,5 @@ public partial class CreateHomeDialog
             return;
 
         Dispatcher.Dispatch(new HomeCreatedAction(Home));
-
-        //Close();
     }
 }
