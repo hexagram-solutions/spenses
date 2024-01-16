@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="8.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
-    <PackageReference Include="NSwag.AspNetCore" Version="14.0.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="14.0.1" />
     <PackageReference Include="PwnedPasswords.Validator" Version="1.2.0" />
     <PackageReference Include="Scrutor" Version="4.2.2" />
   </ItemGroup>
