@@ -1,15 +1,15 @@
 ﻿@using Spenses.App.Infrastructure
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<EditForm Model="Home"
+<EditForm Model="ExpenseCategory"
           OnSubmit="Save">
-    <LoadingOverlay Visible="HomesState.Value.HomeCreating"/>
+    <LoadingOverlay Visible="ExpenseCategoriesState.Value.ExpenseCategoryCreating" />
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>
-            New home
+            New expense category
         </TitleContent>
         <DialogContent>
-            <HomeForm Home="Home"/>
+            <ExpenseCategoryForm Properties="ExpenseCategory"/>
         </DialogContent>
         <DialogActions>
             <MudButton Color="Color.Warning"
@@ -21,7 +21,7 @@
                        Variant="Variant.Filled"
                        StartIcon="@FontIcons.Solid.Plus"
                        ButtonType="ButtonType.Submit">
-                Create home
+                Create expense category
             </MudButton>
         </DialogActions>
     </MudDialog>

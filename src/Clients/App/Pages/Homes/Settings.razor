@@ -1,36 +1,47 @@
 ﻿@page "/homes/{homeId:guid}/settings"
 @using Spenses.App.Components.Homes
+@using Spenses.App.Components.Members
+@using Spenses.App.Components.ExpenseCategories
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Settings: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</PageTitle>
 
-<MudText Typo="Typo.h4" GutterBottom>Settings: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</MudText>
+<MudText Typo="Typo.h4"
+         GutterBottom>
+    Settings: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")
+</MudText>
 
 <MudGrid>
     <MudItem xs="12">
         <MudPaper Class="pa-6">
-                <EditForm Model="Home"
-                          OnSubmit="Save">
-                    <LoadingOverlay Visible="HomesState.Value.HomeRequesting || HomesState.Value.HomeUpdating"/>
-                    <HomeForm Home="Home"/>
-                    <MudButton ButtonType="ButtonType.Submit"
-                               Color="Color.Primary"
-                               Variant="Variant.Filled">
-                        Save
-                    </MudButton>
-                </EditForm>
+            <EditForm Model="Home"
+                      OnSubmit="Save">
+                <LoadingOverlay Visible="HomesState.Value.HomeRequesting || HomesState.Value.HomeUpdating"/>
+                <HomeForm Home="Home"/>
+                <MudButton ButtonType="ButtonType.Submit"
+                           Color="Color.Primary"
+                           Variant="Variant.Filled">
+                    Save
+                </MudButton>
+            </EditForm>
         </MudPaper>
     </MudItem>
     <MudItem md="6"
-             sm="12">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-            md6 sm12 expense categories card
-        </MudPaper>
+             sm="12"
+             Style="pa-4">
+        <MudText Typo="Typo.h5"
+                 GutterBottom>
+            Expense categories
+        </MudText>
+        <ExpenseCategoriesTable HomeId="HomeId"/>
     </MudItem>
     <MudItem md="6"
-             sm="12">
-        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
-            md6 sm12 members card
-        </MudPaper>
+             sm="12"
+             Style="pa-4">
+        <MudText Typo="Typo.h5"
+                 GutterBottom>
+            Members
+        </MudText>
+            <MembersTable/>
     </MudItem>
 </MudGrid>

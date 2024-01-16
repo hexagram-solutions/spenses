@@ -19,7 +19,7 @@
 {
     [Parameter] public HomeProperties Home { get; set; } = null!;
 
-    private object OnTransformModel(object model)
+    private static object OnTransformModel(object model)
     {
         if (model is Home home)
         {
