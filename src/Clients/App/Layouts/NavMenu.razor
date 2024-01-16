@@ -1,5 +1,6 @@
 ﻿@using Spenses.App.Store.Homes
 @using Fluxor.Blazor.Web.Middlewares.Routing
+@using Spenses.App.Components.Homes
 @using Spenses.App.Infrastructure
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
@@ -46,6 +47,12 @@
                 </MudNavLink>
             </MudNavGroup>
         }
+
+        <MudNavLink OnClick="ShowCreateHomeDialog"
+                    IconColor="Color.Primary"
+                    Icon="@FontIcons.Solid.Plus">
+            New home
+        </MudNavLink>
     }
 </MudNavMenu>
 
@@ -63,16 +70,16 @@
     {
         base.OnInitialized();
 
-        // TODO
-        // SubscribeToAction<HomeCreationSucceededAction>(_ => DialogService.Close());
-
         Dispatcher.Dispatch(new HomesRequestedAction());
     }
 
-    private Task ShowCreateHomeModal()
+    private void ShowCreateHomeDialog()
     {
-        // TODO
-        // return DialogService.Show<CreateHomeModal>();
-        return Task.CompletedTask;
+        DialogService.Show<CreateHomeDialog>("Create new home", new DialogOptions
+        {
+            CloseOnEscapeKey = true,
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+        });
     }
 }

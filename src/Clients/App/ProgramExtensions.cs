@@ -3,13 +3,14 @@ using Hexagrams.Extensions.Common.Http;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Morris.Blazor.Validation;
 using MudBlazor.Services;
-using Polly;
 using Refit;
 using Spenses.App.Infrastructure;
 using Spenses.App.Infrastructure.Authentication;
 using Spenses.Client.Http;
 using Spenses.Shared.Common;
+using Spenses.Shared.Validators.Homes;
 using Spenses.Utilities.Security;
 
 namespace Spenses.App;
@@ -21,6 +22,8 @@ internal static class ProgramExtensions
         builder.Services
             .AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
             .AddMudServices();
+
+        builder.Services.AddFormValidation(config => config.AddFluentValidation(typeof(HomeValidator).Assembly));
 
         return builder;
     }

@@ -1,0 +1,27 @@
+﻿@page "/homes/{homeId:guid}/settings"
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<PageTitle>Settings: @(Home?.Name ?? "Loading...")</PageTitle>
+
+<MudText Typo="Typo.h4">Settings: @(Home?.Name ?? "Loading...")</MudText>
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+            xs=12
+            home form card
+        </MudPaper>
+    </MudItem>
+    <MudItem md="6"
+             sm="12">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+            md6 sm12 expense categories card
+        </MudPaper>
+    </MudItem>
+    <MudItem md="6"
+             sm="12">
+        <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+            md6 sm12 members card
+        </MudPaper>
+    </MudItem>
+</MudGrid>

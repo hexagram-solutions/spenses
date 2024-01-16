@@ -1,8 +1,8 @@
 using FluentValidation.TestHelper;
-using Spenses.Application.Features.Homes.Validators;
 using Spenses.Shared.Models.Homes;
+using Spenses.Shared.Validators.Homes;
 
-namespace Spenses.Application.Tests.Features.Homes.Validators;
+namespace Spenses.Shared.Tests.Validators.Homes;
 
 public class HomePropertiesValidatorTests
 {
