@@ -1,0 +1,45 @@
+﻿@using Spenses.Shared.Models.Members
+@using Spenses.Shared.Validators.Members
+@using Spenses.App.Store.Homes
+@using Spenses.Shared.Models.Homes
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<MemberPropertiesValidator>())"
+          OnTransformModel="OnTransformModel" />
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudTextField @bind-Value="Member.Name"
+                      Label="Name"
+                      HelperText="This member's name"
+                      Placeholder="Quackadilly Blip"
+                      Required />
+    </MudItem>
+    <MudItem xs="6">
+        <MudTextField @bind-Value="Member.ContactEmail"
+                      Label="Contact email"
+                      HelperText="Add this member's email address if they should receive email notifications or reminders"
+                      Placeholder="quackadilly.blip@auburn.edu"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Rounded.AlternateEmail"/>
+    </MudItem>
+    <MudItem xs="12">
+        <MudNumericField @bind-Value="Member.DefaultSplitPercentage"
+                         Label="Default split percentage"
+                         HelperText="The default ratio to use when splitting expenses with this member."
+                         T="decimal"
+                         Format="P2"
+                         Placeholder="50.00"
+                         Adornment="Adornment.End"
+                         AdornmentIcon="@Icons.Material.Rounded.Percent" />
+    </MudItem>
+    <MudItem xs="12">
+        <MemberSplitPercentageMessage @bind-IsValid="IsTotalHomeSplitPercentageValid" />
+    </MudItem>
+</MudGrid>
+
+@code
+{
+
+    // TODO: Good candidate for a reactive model
+}

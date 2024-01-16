@@ -1,5 +1,68 @@
-﻿<h3>HomeMembersTable</h3>
+﻿@using Spenses.App.Store.Members
+@using Spenses.Shared.Models.Members
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-@code {
+<MudTable Items="MembersState.Value.Members"
+          Loading="IsLoading"
+          GroupBy="_groupDefinition">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Contact email</MudTh>
+        <MudTh>Default split %</MudTh>
+        <MudTh Style="text-align:right">
+            <MudIconButton Icon="@Icons.Material.Filled.Add"
+                           Color="Color.Success"
+                           Size="Size.Small"
+                           OnClick="AddMember"/>
+        </MudTh>
+    </HeaderContent>
+    <GroupHeaderTemplate>
+        <MudTh colspan="4">@context.Key</MudTh>
+    </GroupHeaderTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Contact email">
+            @if (!string.IsNullOrEmpty(context.ContactEmail))
+            {
+                @context.ContactEmail
+            }
+            else
+            {
+                <MudText Color="Color.Secondary">None</MudText>
+            }
+        </MudTd>
+        <MudTd DataLabel="Default split percentage">
+            <samp>
+                @($"{context.DefaultSplitPercentage:P2}")
+            </samp>
+        </MudTd>
+        <MudTd DataLabel="Actions"
+               Style="text-align:right">
+            @if (context.IsActive)
+            {
+                <MudTooltip Text="Edit">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Tertiary"
+                                   Size="Size.Small"
+                                   OnClick="@(args => OnEditClicked(args, context.Id))"/>
+                </MudTooltip>
 
-}
+                <MudTooltip Text="Remove">
+                    <MudIconButton Icon="@Icons.Material.Filled.Remove"
+                                   Color="Color.Error"
+                                   Size="Size.Small"
+                                   OnClick="@(args => OnRemoveClicked(args, context))"/>
+                </MudTooltip>
+            }
+            else
+            {
+                <MudTooltip Text="Reactivate" Inline>
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="@(args => OnReactivateClicked(args, context.Id))"/>
+                </MudTooltip>
+            }
+        </MudTd>
+    </RowTemplate>
+</MudTable>

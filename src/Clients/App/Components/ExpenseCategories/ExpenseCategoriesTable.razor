@@ -1,16 +1,17 @@
-﻿@using Spenses.App.Store.ExpenseCategories
-@using Spenses.Shared.Models.ExpenseCategories
-@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudTable Items="ExpenseCategories" Loading="IsLoading">
+<MudTable Items="ExpenseCategories"
+          Loading="IsLoading">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Description</MudTh>
         <MudTh Style="text-align:right">
-            <MudIconButton Icon="@Icons.Material.Filled.Add"
-                           Color="Color.Success"
-                           Size="Size.Small"
-                           OnClick="AddExpenseCategory"/>
+            <MudTooltip Text="Add expense category">
+                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                               Color="Color.Success"
+                               Size="Size.Small"
+                               OnClick="AddExpenseCategory"/>
+            </MudTooltip>
         </MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -18,72 +19,19 @@
         <MudTd DataLabel="Description">@context.Description</MudTd>
         <MudTd DataLabel="Actions"
                Style="text-align:right">
-            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                           Color="Color.Tertiary"
-                           Size="Size.Small"
-                           OnClick="@(args => OnEditClicked(args, @context.Id))" />
+            <MudTooltip Text="Edit">
+                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                               Color="Color.Tertiary"
+                               Size="Size.Small"
+                               OnClick="@(args => OnEditClicked(args, context.Id))"/>
+            </MudTooltip>
 
-            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                           Color="Color.Error"
-                           Size="Size.Small"
-                           OnClick="OnDeleteClicked" />
+            <MudTooltip Text="Delete">
+                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               OnClick="OnDeleteClicked"/>
+            </MudTooltip>
         </MudTd>
     </RowTemplate>
 </MudTable>
-
-@code {
-    [Parameter, EditorRequired]
-    public Guid HomeId { get; set; }
-
-    [Inject]
-    private IState<ExpenseCategoriesState> ExpenseCategoriesState { get; set; } = null!;
-
-    [Inject]
-    private IDispatcher Dispatcher { get; set; } = null!;
-
-    [Inject]
-    public IDialogService DialogService { get; init; } = null!;
-
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
-
-    private bool IsLoading => ExpenseCategoriesState.Value.ExpenseCategoriesRequesting ||
-                              ExpenseCategoriesState.Value.ExpenseCategoryCreating ||
-                              ExpenseCategoriesState.Value.ExpenseCategoryUpdating ||
-                              ExpenseCategoriesState.Value.ExpenseCategoryDeleting;
-
-    private IEnumerable<ExpenseCategory> ExpenseCategories =>
-        ExpenseCategoriesState.Value.ExpenseCategories
-            .Where(ec => !ec.IsDefault);
-
-    private IDialogReference? CreateDialog { get; set; }
-
-    private IDialogReference? EditDialog { get; set; }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        Dispatcher.Dispatch(new ExpenseCategoriesRequestedAction(HomeId));
-
-        SubscribeToAction<ExpenseCategoryCreatedAction>(_ => CreateDialog?.Close());
-        SubscribeToAction<ExpenseCategoryUpdatedAction>(_ => EditDialog?.Close());
-    }
-
-    private async Task AddExpenseCategory()
-    {
-        CreateDialog = await DialogService.ShowAsync<CreateExpenseCategoryDialog>();
-    }
-
-    private async  Task OnEditClicked(MouseEventArgs _, Guid expenseCategoryId)
-    {
-        var parameters = new DialogParameters<EditExpenseCategoryDialog> { { x => x.ExpenseCategoryId, expenseCategoryId } };
-
-        EditDialog = await DialogService.ShowAsync<EditExpenseCategoryDialog>("Edit expense category", parameters);
-    }
-
-    private void OnDeleteClicked()
-    {
-        Snackbar.Add("That feature is not implemented yet.", Severity.Error);
-    }
-}

@@ -12,8 +12,9 @@
 </MudText>
 
 <MudGrid>
-    <MudItem xs="12">
-        <MudPaper Class="pa-6">
+    <MudItem md="6"
+             sm="12">
+        <MudPaper Class="pa-4">
             <EditForm Model="Home"
                       OnSubmit="Save">
                 <LoadingOverlay Visible="HomesState.Value.HomeRequesting || HomesState.Value.HomeUpdating"/>
@@ -35,13 +36,12 @@
         </MudText>
         <ExpenseCategoriesTable HomeId="HomeId"/>
     </MudItem>
-    <MudItem md="6"
-             sm="12"
+    <MudItem xs="12"
              Style="pa-4">
         <MudText Typo="Typo.h5"
                  GutterBottom>
             Members
         </MudText>
-            <MembersTable/>
+        <MembersTable HomeId="HomeId"/>
     </MudItem>
 </MudGrid>

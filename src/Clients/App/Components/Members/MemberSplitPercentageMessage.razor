@@ -1,0 +1,29 @@
+﻿<MudAlert @bind-Visible="IsValid" Severity="Severity.Success" Icon="@Icons.Material.Filled.Check">
+    The total default split percentages among members of this home is 100%.
+</MudAlert>
+<MudAlert @bind-Visible="IsValid"
+          Severity="Severity.Warning"
+          Icon="@Icons.Material.Filled.Warning">
+    <MudText Typo="Typo.subtitle1">
+        The total default split percentages among members of this home is not 100%.
+    </MudText>
+    <MudText Typo="Typo.body2">
+        If the default split percentages for all home members does not total 100%, custom split ratios will need to be
+        specified for each expense individually. Ensure that you adjust the default split percentage for each home
+        member such that they total exactly 100%.
+    </MudText>
+</MudAlert>
+
+@code{
+    [Parameter]
+    public bool IsValid { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsValidChanged { get; set; }
+
+    public bool IsNotValid
+    {
+        get => !IsValid;
+        set => IsValid = !value;
+    }
+}
