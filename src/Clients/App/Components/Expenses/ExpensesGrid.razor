@@ -1,62 +1,74 @@
-﻿@using Spenses.App.Store.Expenses
+﻿@using SortDirection = Spenses.Shared.Models.Common.SortDirection;
+@using Spenses.App.Store.Expenses
+@using Spenses.Client.Http
 @using Spenses.Shared.Models.Expenses
-@using SortDirection = Spenses.Shared.Models.Common.SortDirection;
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudStack>
-    <MudStack Row>
+<MudDataGrid @ref="DataGridRef"
+             T="ExpenseDigest"
+             FixedHeader
+             Virtualize
+             SortMode="SortMode.Single"
+             ServerData="GetServerData"
+             Height="calc(100vh - 16rem);"
+             CurrentPage="0"
+             RowsPerPage="200">
+    <ToolBarContent>
+        <MudButton Color="Color.Primary"
+                   Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Rounded.Add"
+                   OnClick="CreateExpense">
+            Create expense
+        </MudButton>
         <MudText>Filters</MudText>
         <MudText>And actions</MudText>
+        <MudSpacer></MudSpacer>
         <MudText>Go here</MudText>
-    </MudStack>
-
-    <MudDataGrid @ref="DataGridRef"
-                 T="ExpenseDigest"
-                 Items="Expenses"
-                 FixedHeader
-                 Loading="ExpensesState.Value.ExpensesRequesting"
-                 SortMode="SortMode.Single"
-                 Virtualize
-                 Height="calc(100vh - 15rem);">
-        <Columns>
-            <PropertyColumn Property="x => x.Date"
-                            Title="Date"/>
-            <PropertyColumn Property="x => x.Amount"
-                            Title="Amount"/>
-            <PropertyColumn Property="x => x.PaidByMemberName"
-                            Title="Paid by"/>
-            <PropertyColumn Property="x => x.CategoryName"
-                            Title="Category"/>
-            <TemplateColumn Title="Tags">
-                <CellTemplate>
-                    @foreach (var tag in context.Item.Tags?.Split(' ').OrderBy(x => x) ?? Enumerable.Empty<string>())
-                    {
-                        <MudChip Size="Size.Small"
-                                 Variant="Variant.Text">
-                            @tag
-                        </MudChip>
-                    }
-                </CellTemplate>
-            </TemplateColumn>
-            <TemplateColumn Title="Actions">
-                <CellTemplate>
-                    <MudStack Row AlignItems="AlignItems.End">
-                        <MudTooltip Text="Edit">
-                            <MudIconButton Size="Size.Small"
-                                           Color="Color.Tertiary"
-                                           OnClick="@(args => OnEditClicked(args, context.Item.Id))"/>
-                        </MudTooltip>
-                        <MudTooltip Text="Delete">
-                            <MudIconButton Size="Size.Small"
-                                           Color="Color.Error"
-                                           OnClick="@(args => OnDeleteClicked(args, context.Item))"/>
-                        </MudTooltip>
-                    </MudStack>
-                </CellTemplate>
-            </TemplateColumn>
-        </Columns>
-    </MudDataGrid>
-</MudStack>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Date"
+                        Title="Date"
+                        Format="O"/>
+        <PropertyColumn Property="x => x.Amount"
+                        Title="Amount">
+            <CellTemplate>
+                <samp>@($"{context.Item.Amount:C}")</samp>
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="x => x.PaidByMemberName"
+                        Title="Paid by"/>
+        <PropertyColumn Property="x => x.CategoryName"
+                        Title="Category"/>
+        <TemplateColumn Title="Tags"
+                        Sortable="false">
+            <CellTemplate>
+                @foreach (var tag in context.Item.Tags?.Split(' ').OrderBy(x => x) ?? Enumerable.Empty<string>())
+                {
+                    <MudChip Size="Size.Small"
+                             Variant="Variant.Text">
+                        @tag
+                    </MudChip>
+                }
+            </CellTemplate>
+        </TemplateColumn>
+        <TemplateColumn Title="Actions" Sortable="false">
+            <CellTemplate>
+                <MudTooltip Text="Edit">
+                    <MudIconButton Size="Size.Small"
+                                   Color="Color.Tertiary"
+                                   Icon="@Icons.Material.Rounded.Edit"
+                                   OnClick="@(args => OnEditClicked(args, context.Item.Id))"/>
+                </MudTooltip>
+                <MudTooltip Text="Delete">
+                    <MudIconButton Size="Size.Small"
+                                   Color="Color.Error"
+                                   Icon="@Icons.Material.Rounded.Delete"
+                                   OnClick="@(args => OnDeleteClicked(args, context.Item))"/>
+                </MudTooltip>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
 
 @code {
     [Parameter] public Guid HomeId { get; init; }
@@ -67,34 +79,34 @@
 
     [Inject] private IDialogService DialogService { get; init; } = null!;
 
-    [Inject] private ISnackbar Snackbar { get; init; } = null!;
+    [Inject] private IExpensesApi ExpensesApi { get; init; } = null!;
 
     private IEnumerable<ExpenseDigest> Expenses => ExpensesState.Value.Expenses.Items;
 
     private MudDataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
 
-    private FilteredExpensesQuery Query { get; set; } = new()
-    {
-        OrderBy = nameof(ExpenseDigest.Date),
-        SortDirection = SortDirection.Desc
-    };
-
     private IDialogReference? CreateDialog { get; set; }
 
     private IDialogReference? EditDialog { get; set; }
 
+    private Dictionary<string, SortDefinition<ExpenseDigest>> SortDefinitions { get; set; } = new();
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        // todo: investigate data grid server data
-
         SubscribeToAction<ExpenseCreationSucceededAction>(_ => CreateDialog?.Close());
         SubscribeToAction<ExpenseUpdateSucceededAction>(_ => EditDialog?.Close());
 
         Dispatcher.Dispatch(new ExpenseFiltersRequestedAction(HomeId));
-        Dispatcher.Dispatch(new ExpensesRequestedAction(HomeId, Query));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+            await DataGridRef.SetSortAsync(nameof(ExpenseDigest.Date), MudBlazor.SortDirection.Descending, x => x.Date);
     }
 
     private Task OnAddExpenseClicked()
@@ -121,6 +133,36 @@
             return;
 
         Dispatcher.Dispatch(new ExpenseDeletedAction(HomeId, expense.Id));
+    }
+
+    private async Task<GridData<ExpenseDigest>> GetServerData(GridState<ExpenseDigest> state)
+    {
+        var query = new FilteredExpensesQuery
+        {
+            Skip = state.PageSize * state.Page,
+            Take = state.PageSize,
+        };
+
+        var sortDefinition = state.SortDefinitions.SingleOrDefault();
+
+        if (sortDefinition is not null)
+        {
+            query.SortDirection = sortDefinition.Descending ? SortDirection.Desc : SortDirection.Asc;
+            query.OrderBy = sortDefinition.SortBy;
+        }
+
+        var response = await ExpensesApi.GetExpenses(HomeId, query);
+
+        return new GridData<ExpenseDigest>
+        {
+            Items = response.Content!.Items,
+            TotalItems = response.Content.TotalCount
+        };
+    }
+
+    private Task CreateExpense()
+    {
+        return Task.CompletedTask;
     }
 
 }
