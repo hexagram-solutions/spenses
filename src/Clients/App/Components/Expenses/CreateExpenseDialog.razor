@@ -1,14 +1,14 @@
 ﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<EditForm Model="Member"
+<EditForm Model="Expense"
           OnSubmit="Save">
-    <LoadingOverlay Visible="MembersState.Value.MemberCreating" />
+    <LoadingOverlay Visible="ExpensesState.Value.ExpenseCreating" />
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>
-            New member
+            New expense
         </TitleContent>
         <DialogContent>
-            <MemberForm Member="Member"/>
+            <ExpenseForm Expense="Expense"/>
         </DialogContent>
         <DialogActions>
             <MudButton Color="Color.Warning"
@@ -18,9 +18,9 @@
             </MudButton>
             <MudButton Color="Color.Primary"
                        Variant="Variant.Filled"
-                       StartIcon="@Icons.Material.Rounded.PersonAdd"
+                       StartIcon="@Icons.Material.Rounded.Add"
                        ButtonType="ButtonType.Submit">
-                Create member
+                Create expense
             </MudButton>
         </DialogActions>
     </MudDialog>

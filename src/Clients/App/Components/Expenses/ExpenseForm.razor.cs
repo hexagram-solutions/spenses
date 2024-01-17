@@ -1,0 +1,66 @@
+using Fluxor;
+using Microsoft.AspNetCore.Components;
+using Spenses.App.Store.ExpenseCategories;
+using Spenses.App.Store.Expenses;
+using Spenses.App.Store.Homes;
+using Spenses.Shared.Models.ExpenseCategories;
+using Spenses.Shared.Models.Expenses;
+using Spenses.Shared.Models.Homes;
+
+namespace Spenses.App.Components.Expenses;
+
+public partial class ExpenseForm
+{
+    [Parameter]
+    [EditorRequired]
+    public ExpenseProperties Expense { get; set; } = null!;
+
+    [Inject]
+    private IState<ExpensesState> ExpensesState { get; set; } = null!;
+
+    [Inject]
+    private IState<ExpenseCategoriesState> ExpenseCategoriesState { get; set; } = null!;
+
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; init; } = null!;
+
+    private Home Home => HomesState.Value.CurrentHome!;
+
+    private IEnumerable<ExpenseCategory> Categories => ExpenseCategoriesState.Value.ExpenseCategories;
+
+    private IEnumerable<string> AvailableTags => ExpensesState.Value.ExpenseFilters.Tags;
+
+    private string TagValue { get; set; } = null!;
+
+    private DateTime DateValue
+    {
+        get => new(Expense.Date, TimeOnly.MinValue);
+        set => DateOnly.FromDateTime(value);
+    }
+
+    private List<string> ExpenseTags
+    {
+        get => Expense.Tags.ToList();
+        set => Expense.Tags = [.. value];
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Dispatcher.Dispatch(new ExpenseCategoriesRequestedAction(Home.Id));
+    }
+
+    private Task<IEnumerable<string>> SearchTags(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return Task.FromResult(AvailableTags);
+
+        var tags = AvailableTags.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+
+        return Task.FromResult(tags);
+    }
+}

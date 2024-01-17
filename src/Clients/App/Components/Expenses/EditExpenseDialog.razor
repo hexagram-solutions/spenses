@@ -1,14 +1,15 @@
-﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+﻿@using Spenses.App.Infrastructure
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<EditForm Model="Member"
+<EditForm Model="Expense"
           OnSubmit="Save">
-    <LoadingOverlay Visible="MembersState.Value.MemberCreating" />
+    <LoadingOverlay Visible="ExpensesState.Value.ExpenseRequesting || ExpensesState.Value.ExpenseUpdating" />
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>
-            New member
+            Edit expense
         </TitleContent>
         <DialogContent>
-            <MemberForm Member="Member"/>
+            <ExpenseForm Expense="Expense"/>
         </DialogContent>
         <DialogActions>
             <MudButton Color="Color.Warning"
@@ -18,9 +19,9 @@
             </MudButton>
             <MudButton Color="Color.Primary"
                        Variant="Variant.Filled"
-                       StartIcon="@Icons.Material.Rounded.PersonAdd"
+                       StartIcon="@FontIcons.Solid.FilePen"
                        ButtonType="ButtonType.Submit">
-                Create member
+                Save expense
             </MudButton>
         </DialogActions>
     </MudDialog>
