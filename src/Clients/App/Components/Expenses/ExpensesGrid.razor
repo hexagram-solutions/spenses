@@ -20,15 +20,43 @@
                    OnClick="CreateExpense">
             Create expense
         </MudButton>
-        <MudText>Filters</MudText>
-        <MudText>And actions</MudText>
-        <MudSpacer></MudSpacer>
-        <MudText>Go here</MudText>
+        <MudSelect T="Guid"
+                   Label="Categories"
+                   SelectedValues="Query.Categories"
+                   SelectedValuesChanged="OnCategoryFilter"
+                   MultiSelection
+                   Disabled="ExpensesState.Value.ExpenseFiltersRequesting">
+            @foreach (var category in ExpensesState.Value.ExpenseFilters.Categories)
+            {
+                <MudSelectItem T="Guid"
+                               Value="@category.Id">
+                    @category.Name
+                </MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect T="string"
+                   Label="Tags"
+                   SelectedValues="Query.Tags"
+                   SelectedValuesChanged="OnTagFilter"
+                   MultiSelection
+                   Disabled="ExpensesState.Value.ExpenseFiltersRequesting">
+            @foreach (var tag in ExpensesState.Value.ExpenseFilters.Tags)
+            {
+                <MudSelectItem T="string"
+                               Value="@tag">
+                    @tag
+                </MudSelectItem>
+            }
+        </MudSelect>
+        <MudDateRangePicker Label="Dates"
+                            DateRange="DateRangeValue"
+                            DateRangeChanged="OnDateFilterChanged"
+                            DateFormat="yyyy-MM-dd" />
     </ToolBarContent>
     <Columns>
         <PropertyColumn Property="x => x.Date"
                         Title="Date"
-                        Format="O"/>
+                        Format="yyyy-MM-dd"/>
         <PropertyColumn Property="x => x.Amount"
                         Title="Amount">
             <CellTemplate>
@@ -51,7 +79,8 @@
                 }
             </CellTemplate>
         </TemplateColumn>
-        <TemplateColumn Title="Actions" Sortable="false">
+        <TemplateColumn Title="Actions"
+                        Sortable="false">
             <CellTemplate>
                 <MudTooltip Text="Edit">
                     <MudIconButton Size="Size.Small"
@@ -135,23 +164,71 @@
         Dispatcher.Dispatch(new ExpenseDeletedAction(HomeId, expense.Id));
     }
 
+    private FilteredExpensesQuery Query { get; set; } = new()
+    {
+        OrderBy = nameof(ExpenseDigest.Date),
+        SortDirection = SortDirection.Desc
+    };
+
+    private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
+    {
+        Query.Categories = categoryIds;
+
+        return DataGridRef.ReloadServerData();
+    }
+
+    private Task OnTagFilter(IEnumerable<string> tags)
+    {
+        Query.Tags = tags;
+
+        return DataGridRef.ReloadServerData();
+    }
+
+    private DateRange? DateRangeValue
+    {
+        get
+        {
+            if (!Query.MinDate.HasValue && !Query.MaxDate.HasValue)
+                return null;
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            return new DateRange(
+                new DateTime(Query.MinDate.GetValueOrDefault(today), TimeOnly.MinValue),
+                new DateTime(Query.MaxDate.GetValueOrDefault(today), TimeOnly.MinValue));
+        }
+    }
+
+    private Task OnDateFilterChanged(DateRange? range)
+    {
+        if (range is null)
+        {
+            Query.MinDate = null;
+            Query.MaxDate = null;
+
+            return Task.CompletedTask;
+        }
+
+        Query.MinDate = range.Start.HasValue ? DateOnly.FromDateTime(range.Start.GetValueOrDefault()) : null;
+        Query.MaxDate = range.End.HasValue ? DateOnly.FromDateTime(range.End.GetValueOrDefault()) : null;
+
+        return DataGridRef.ReloadServerData();
+    }
+
     private async Task<GridData<ExpenseDigest>> GetServerData(GridState<ExpenseDigest> state)
     {
-        var query = new FilteredExpensesQuery
-        {
-            Skip = state.PageSize * state.Page,
-            Take = state.PageSize,
-        };
+        Query.Skip = state.PageSize * state.Page;
+        Query.Take = state.PageSize;
 
         var sortDefinition = state.SortDefinitions.SingleOrDefault();
 
         if (sortDefinition is not null)
         {
-            query.SortDirection = sortDefinition.Descending ? SortDirection.Desc : SortDirection.Asc;
-            query.OrderBy = sortDefinition.SortBy;
+            Query.SortDirection = sortDefinition.Descending ? SortDirection.Desc : SortDirection.Asc;
+            Query.OrderBy = sortDefinition.SortBy;
         }
 
-        var response = await ExpensesApi.GetExpenses(HomeId, query);
+        var response = await ExpensesApi.GetExpenses(HomeId, Query);
 
         return new GridData<ExpenseDigest>
         {
