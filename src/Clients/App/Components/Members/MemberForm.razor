@@ -13,7 +13,8 @@
                       Label="Name"
                       HelperText="This member's name"
                       Placeholder="Quackadilly Blip"
-                      Required />
+                      Required
+                      For="@(() => Member.Name)"/>
     </MudItem>
     <MudItem xs="6">
         <MudTextField @bind-Value="Member.ContactEmail"
@@ -21,25 +22,23 @@
                       HelperText="Add this member's email address if they should receive email notifications or reminders"
                       Placeholder="quackadilly.blip@auburn.edu"
                       Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Rounded.AlternateEmail"/>
+                      AdornmentIcon="@Icons.Material.Rounded.AlternateEmail"
+                      For="@(() => Member.ContactEmail)"/>
     </MudItem>
     <MudItem xs="12">
-        <MudNumericField @bind-Value="Member.DefaultSplitPercentage"
+        <MudNumericField @bind-Value="DefaultSplitPercentage"
                          Label="Default split percentage"
                          HelperText="The default ratio to use when splitting expenses with this member."
                          T="decimal"
-                         Format="P2"
-                         Placeholder="50.00"
+                         Format="F2"
+                         Step="1m"
+                         Min="0"
+                         Max="100"
                          Adornment="Adornment.End"
-                         AdornmentIcon="@Icons.Material.Rounded.Percent" />
+                         AdornmentIcon="@Icons.Material.Rounded.Percent"
+                         For="@(() => Member.DefaultSplitPercentage)" />
     </MudItem>
     <MudItem xs="12">
         <MemberSplitPercentageMessage @bind-IsValid="IsTotalHomeSplitPercentageValid" />
     </MudItem>
 </MudGrid>
-
-@code
-{
-
-    // TODO: Good candidate for a reactive model
-}

@@ -37,9 +37,9 @@ public partial class MembersTable
     private IDialogReference? EditDialog { get; set; }
 
 
-    private TableGroupDefinition<Member> _groupDefinition = new()
+    private readonly TableGroupDefinition<Member> _groupDefinition = new()
     {
-        GroupName = "Group",
+        GroupName = "Members",
         Indentation = false,
         Expandable = true,
         IsInitiallyExpanded = true,

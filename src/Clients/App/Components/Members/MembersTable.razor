@@ -17,7 +17,7 @@
         </MudTh>
     </HeaderContent>
     <GroupHeaderTemplate>
-        <MudTh colspan="4">@context.Key</MudTh>
+        <MudTh colspan="4">@($"{context.GroupName}: {((bool)context.Key ? "Active" : "Inactive")}")</MudTh>
     </GroupHeaderTemplate>
     <RowTemplate>
         <MudTd DataLabel="Name">@context.Name</MudTd>

@@ -8,12 +8,14 @@
               Label="Name"
               HelperText="The name of this expense category"
               Placeholder="Groceries"
-              Required/>
+              Required
+              For="@(() => Properties.Name)"/>
 
 <MudTextField @bind-Value="Properties.Description"
               Label="Description"
               HelperText="An optional description for this expense category."
-              Placeholder="Stuff to eat!" />
+              Placeholder="Stuff to eat!"
+              For="@(() => Properties.Description)"/>
 
 @code
 {
