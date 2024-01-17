@@ -6,7 +6,7 @@ using Spenses.Client.Http;
 
 namespace Spenses.App.Store.Homes;
 
-public class Effects(IHomesApi homes, IState<HomesState> state)
+public class Effects(IHomesApi homes, IState<RoutingState> routingState)
 {
     [EffectMethod]
     public async Task HandleHomesRequested(HomesRequestedAction _, IDispatcher dispatcher)
@@ -25,7 +25,10 @@ public class Effects(IHomesApi homes, IState<HomesState> state)
 
         dispatcher.Dispatch(new HomesReceivedAction(homeItems));
 
-        if (state.Value.CurrentHome is null && homeItems.Length > 0)
+        var currentPath = routingState.Value.GetAsUri().PathAndQuery;
+        var isNavigatingToRoot = string.IsNullOrEmpty(currentPath) || currentPath == Routes.Root;
+
+        if (homeItems.Length > 0 && isNavigatingToRoot)
             dispatcher.Dispatch(new GoAction(Routes.Homes.Dashboard(homeItems.First().Id)));
     }
 
