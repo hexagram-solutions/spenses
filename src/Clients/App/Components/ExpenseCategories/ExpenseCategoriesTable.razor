@@ -20,17 +20,11 @@
         <MudTd DataLabel="Actions"
                Style="text-align:right">
             <MudTooltip Text="Edit">
-                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Color="Color.Tertiary"
-                               Size="Size.Small"
-                               OnClick="@(args => OnEditClicked(args, context.Id))"/>
+                <EditIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>
             </MudTooltip>
 
             <MudTooltip Text="Delete">
-                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Color="Color.Error"
-                               Size="Size.Small"
-                               OnClick="OnDeleteClicked"/>
+                <DeleteIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>
             </MudTooltip>
         </MudTd>
     </RowTemplate>

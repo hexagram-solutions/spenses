@@ -1,0 +1,126 @@
+﻿@using Spenses.App.Store.Expenses
+@using Spenses.Shared.Models.Expenses
+@using SortDirection = Spenses.Shared.Models.Common.SortDirection;
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack>
+    <MudStack Row>
+        <MudText>Filters</MudText>
+        <MudText>And actions</MudText>
+        <MudText>Go here</MudText>
+    </MudStack>
+
+    <MudDataGrid @ref="DataGridRef"
+                 T="ExpenseDigest"
+                 Items="Expenses"
+                 FixedHeader
+                 Loading="ExpensesState.Value.ExpensesRequesting"
+                 SortMode="SortMode.Single"
+                 Virtualize
+                 Height="calc(100vh - 15rem);">
+        <Columns>
+            <PropertyColumn Property="x => x.Date"
+                            Title="Date"/>
+            <PropertyColumn Property="x => x.Amount"
+                            Title="Amount"/>
+            <PropertyColumn Property="x => x.PaidByMemberName"
+                            Title="Paid by"/>
+            <PropertyColumn Property="x => x.CategoryName"
+                            Title="Category"/>
+            <TemplateColumn Title="Tags">
+                <CellTemplate>
+                    @foreach (var tag in context.Item.Tags?.Split(' ').OrderBy(x => x) ?? Enumerable.Empty<string>())
+                    {
+                        <MudChip Size="Size.Small"
+                                 Variant="Variant.Text">
+                            @tag
+                        </MudChip>
+                    }
+                </CellTemplate>
+            </TemplateColumn>
+            <TemplateColumn Title="Actions">
+                <CellTemplate>
+                    <MudStack Row AlignItems="AlignItems.End">
+                        <MudTooltip Text="Edit">
+                            <MudIconButton Size="Size.Small"
+                                           Color="Color.Tertiary"
+                                           OnClick="@(args => OnEditClicked(args, context.Item.Id))"/>
+                        </MudTooltip>
+                        <MudTooltip Text="Delete">
+                            <MudIconButton Size="Size.Small"
+                                           Color="Color.Error"
+                                           OnClick="@(args => OnDeleteClicked(args, context.Item))"/>
+                        </MudTooltip>
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudStack>
+
+@code {
+    [Parameter] public Guid HomeId { get; init; }
+
+    [Inject] private IState<ExpensesState> ExpensesState { get; init; } = null!;
+
+    [Inject] private IDispatcher Dispatcher { get; init; } = null!;
+
+    [Inject] private IDialogService DialogService { get; init; } = null!;
+
+    [Inject] private ISnackbar Snackbar { get; init; } = null!;
+
+    private IEnumerable<ExpenseDigest> Expenses => ExpensesState.Value.Expenses.Items;
+
+    private MudDataGrid<ExpenseDigest> DataGridRef { get; set; } = new();
+
+    private FilteredExpensesQuery Query { get; set; } = new()
+    {
+        OrderBy = nameof(ExpenseDigest.Date),
+        SortDirection = SortDirection.Desc
+    };
+
+    private IDialogReference? CreateDialog { get; set; }
+
+    private IDialogReference? EditDialog { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        // todo: investigate data grid server data
+
+        SubscribeToAction<ExpenseCreationSucceededAction>(_ => CreateDialog?.Close());
+        SubscribeToAction<ExpenseUpdateSucceededAction>(_ => EditDialog?.Close());
+
+        Dispatcher.Dispatch(new ExpenseFiltersRequestedAction(HomeId));
+        Dispatcher.Dispatch(new ExpensesRequestedAction(HomeId, Query));
+    }
+
+    private Task OnAddExpenseClicked()
+    {
+        // return ModalService.Show<CreateExpenseModal>();
+        return Task.CompletedTask;
+    }
+
+    private Task OnEditClicked(MouseEventArgs _, Guid expenseId)
+    {
+        // return ModalService.Show<EditExpenseModal>(p => { p.Add(x => x.ExpenseId, expenseId); });
+        return Task.CompletedTask;
+    }
+
+    private async Task OnDeleteClicked(MouseEventArgs _, ExpenseDigest expense)
+    {
+        var confirmed = await DialogService.ShowMessageBox(
+            "Are you sure you want to delete this expense?",
+            $"{expense.Amount} paid by {expense.PaidByMemberName} on {expense.Date:O}",
+            "Delete expense",
+            cancelText: "Cancel");
+
+        if (confirmed != true)
+            return;
+
+        Dispatcher.Dispatch(new ExpenseDeletedAction(HomeId, expense.Id));
+    }
+
+}

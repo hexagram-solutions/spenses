@@ -1,6 +1,4 @@
-﻿@using Spenses.App.Store.Members
-@using Spenses.Shared.Models.Members
-@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <MudTable Items="MembersState.Value.Members"
           Loading="IsLoading"
@@ -41,22 +39,17 @@
             @if (context.IsActive)
             {
                 <MudTooltip Text="Edit">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                   Color="Color.Tertiary"
-                                   Size="Size.Small"
-                                   OnClick="@(args => OnEditClicked(args, context.Id))"/>
+                    <EditIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>
                 </MudTooltip>
 
                 <MudTooltip Text="Remove">
-                    <MudIconButton Icon="@Icons.Material.Filled.Remove"
-                                   Color="Color.Error"
-                                   Size="Size.Small"
-                                   OnClick="@(args => OnRemoveClicked(args, context))"/>
+                    <RemoveIconButton OnClick="@(args => OnRemoveClicked(args, context))"/>
                 </MudTooltip>
             }
             else
             {
-                <MudTooltip Text="Reactivate" Inline>
+                <MudTooltip Text="Reactivate"
+                            Inline>
                     <MudIconButton Icon="@Icons.Material.Filled.Refresh"
                                    Color="Color.Primary"
                                    Size="Size.Small"

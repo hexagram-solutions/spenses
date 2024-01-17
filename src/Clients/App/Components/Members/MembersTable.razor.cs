@@ -76,7 +76,8 @@ public partial class MembersTable
             "If this member has no expenses or payments associated with them, they be permanently removed from " +
             "this home. Otherwise, the member will be be deactivated with any existing payments or expenses " +
             "remaining associated with the member.",
-            "Remove member");
+            "Remove member",
+            cancelText: "Cancel");
 
         if (confirmed != true)
             return;
