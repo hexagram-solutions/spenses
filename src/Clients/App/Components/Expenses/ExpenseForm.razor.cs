@@ -54,11 +54,6 @@ public partial class ExpenseForm
         Expense.Tags.Add(tag);
     }
 
-    private void RemoveTag(string tag)
-    {
-        Expense.Tags.Remove(tag);
-    }
-
     protected override void OnInitialized()
     {
         base.OnInitialized();

@@ -1,0 +1,27 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<EditForm Model="Payment"
+          OnSubmit="Save">
+    <LoadingOverlay Visible="PaymentsState.Value.PaymentCreating"/>
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>
+            New payment
+        </TitleContent>
+        <DialogContent>
+            <PaymentForm Payment="Payment"/>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Color="Color.Warning"
+                       Variant="Variant.Filled"
+                       OnClick="Close">
+                Cancel
+            </MudButton>
+            <MudButton Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Rounded.Add"
+                       ButtonType="ButtonType.Submit">
+                Create payment
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

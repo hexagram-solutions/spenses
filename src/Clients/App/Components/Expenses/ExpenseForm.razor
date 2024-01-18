@@ -22,7 +22,7 @@
         <MudDatePicker @bind-Date="DateValue"
                        Label="Date"
                        HelperText="The date the expense was paid"
-                       AutoClose 
+                       AutoClose
                        Required/>
     </MudItem>
     <MudItem xs="6">
@@ -80,10 +80,11 @@
                          AdornmentIcon="@Icons.Material.Filled.Search"
                          AdornmentColor="Color.Primary"/>
 
-        <MudChipSet AllClosable="true" OnClose="chip => Expense.Tags.Remove(chip.Text)">
+        <MudChipSet AllClosable="true"
+                    OnClose="chip => Expense.Tags.Remove(chip.Text)">
             @foreach (var tag in Expense.Tags)
             {
-                <MudChip Text="@tag" />
+                <MudChip Text="@tag"/>
             }
         </MudChipSet>
     </MudItem>
