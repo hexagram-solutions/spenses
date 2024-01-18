@@ -3,6 +3,7 @@ namespace Spenses.Shared.Common;
 public static class ConfigConstants
 {
     public const string AzureCommunicationServicesConnectionString = "Spenses:Azure:CommunicationServices:ConnectionString";
+    public const string AzureStorageAccountConnectionString = "Spenses:Azure:StorageAccount:ConnectionString";
 
     public const string CommunicationEmailConfigurationSection = "Spenses:Communication:Email";
     public const string CommunicationSmtpOptionsSection = "Spenses:Communication:Email:Smtp";
@@ -21,7 +22,8 @@ public static class ConfigConstants
 
     public const string SpensesFeaturesErrorGenerationFrequency = "Spenses:Features:ErrorGeneration:Frequency";
 
-    public const string SpensesDataProtectionApplicationName = "Spenses:DataProtection:ApplicationName";
+    public const string SpensesDataProtectionApplicationName = $"Spenses:DataProtection:ApplicationName";
     public const string SpensesDataProtectionKeyIdentifier = "Spenses:DataProtection:KeyIdentifier";
-    public const string SpensesDataProtectionBlobStorageSasUri = "Spenses:DataProtection:BlobStorageSasUri";
+    public const string SpensesDataProtectionBlobStorageContainerName = "Spenses:DataProtection:BlobContainerName";
+    public const string SpensesDataProtectionBlobStorageBlobName = "Spenses:DataProtection:BlobName";
 }

@@ -114,15 +114,15 @@ public static class ProgramExtensions
     {
         if (!builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
         {
-            var blobStorageUri =
-                new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageSasUri));
-            var keyIdentifier =
-                new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionKeyIdentifier));
-
             builder.Services.AddDataProtection()
                 .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName))
-                .PersistKeysToAzureBlobStorage(blobStorageUri)
-                .ProtectKeysWithAzureKeyVault(keyIdentifier, new DefaultAzureCredential());
+                .PersistKeysToAzureBlobStorage(
+                    builder.Configuration.Require(ConfigConstants.AzureStorageAccountConnectionString),
+                    builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageContainerName),
+                    builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageBlobName))
+                .ProtectKeysWithAzureKeyVault(
+                    new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionKeyIdentifier)),
+                    new DefaultAzureCredential());
         }
 
         builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
