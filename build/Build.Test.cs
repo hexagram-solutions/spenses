@@ -17,18 +17,18 @@ partial class Build
 
     IEnumerable<Project> ITest.TestProjects => Partition.GetCurrent(Solution.GetAllProjects("*.Tests"));
 
-    public Configure<DotNetTestSettings> TestSettings => _ => _
+    public Configure<DotNetTestSettings> TestSettings => s => s
         .SetExcludeByFile("\\\"*.Generated.cs,**/Resources/Relational/**.cs\\\"");
 
-    Target RestoreTools => _ => _
+    Target RestoreTools => t => t
         .Executes(() =>
         {
-            DotNetToolRestore(_ => _);
+            DotNetToolRestore(s => s);
         });
 
     Project RelationalSetupTool => Solution.GetAllProjects("Spenses.Tools.Setup").Single();
 
-    Target MigrateDatabase => _ => _
+    Target MigrateDatabase => t => t
         .Description("Migrate the SQL Server database to the latest version.")
         .DependsOn(RestoreTools)
         .Requires(() => SqlServerConnectionString)
@@ -45,7 +45,7 @@ partial class Build
                 .SetApplicationArguments($"views --connection \"{SqlServerConnectionString}\""));
         });
 
-    Target IntegrationTestSetup => _ => _
+    Target IntegrationTestSetup => t => t
         .DependsOn(MigrateDatabase)
         .Requires(() => SqlServerConnectionString)
         .Requires(() => IntegrationTestDefaultUserPassword)
@@ -60,7 +60,7 @@ partial class Build
                 .SetApplicationArguments($"seed --connection \"{SqlServerConnectionString}\""));
         });
 
-    Target IntegrationTest => _ => _
+    Target IntegrationTest => t => t
         .DependsOn<IRestore>()
         .DependsOn(IntegrationTestSetup)
         .Requires(() => SqlServerConnectionString)
@@ -70,17 +70,17 @@ partial class Build
         {
             var integrationTestProjects = Solution.GetAllProjects("*.IntegrationTests");
 
-            DotNetTest(_ => _
+            DotNetTest(s => s
                 .Apply(this.FromComponent<ITest>().TestSettingsBase)
                 .Apply(TestSettings)
                 .SetVerbosity(DotNetVerbosity.Minimal)
                 .SetProcessEnvironmentVariable("Spenses:SqlServer:ConnectionString", SqlServerConnectionString)
-                .CombineWith(integrationTestProjects, (_, v) => _
+                .CombineWith(integrationTestProjects, (x, v) => x
                     .Apply(this.FromComponent<ITest>().TestProjectSettingsBase, v)),
                 completeOnFailure: true);
         });
 
-    Target IReportCoverage.ReportCoverage => _ => _
+    Target IReportCoverage.ReportCoverage => t => t
         .Inherit<IReportCoverage>()
         .TriggeredBy(IntegrationTest)
         .Consumes(IntegrationTest);

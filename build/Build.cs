@@ -57,7 +57,7 @@ partial class Build : NukeBuild,
             Solution.GetAllProjects("Spenses.Resources.Relational").Single().Directory / "Migrations"))
     };
 
-    Target ICompile.Compile => _ => _
+    Target ICompile.Compile => t => t
         .Inherit<ICompile>()
         .DependsOn<IFormat>(x => x.VerifyFormat);
 }

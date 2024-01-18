@@ -20,21 +20,19 @@ partial class Build
 
     Project WebProject => Solution.GetAllProjects("Spenses.App").Single();
 
-    Target Publish => _ => _
+    Target Publish => t => t
         .Description("Publish deployment artifacts.")
         .Executes(() =>
         {
-            DotNetPublish(_ => _
+            DotNetPublish(s => s
                 .SetProject(ApiProject)
                 .SetConfiguration("Release")
                 .SetVersion(GitVersion.NuGetVersionV2)
-                .SetProcessArgumentConfigurator(args => args
-                    .Add("/t:PublishContainer")
-                    .Add("--os linux")
-                    .Add("--arch x64")));
+                .AddProperty("PublishProfile", "DefaultContainer")
+                .AddProperty("ContainerImageTags", GitVersion.NuGetVersionV2));
         });
 
-    Target AzureLogin => _ => _
+    Target AzureLogin => t => t
         .Description("Log in with the Azure CLI.")
         .Requires(
             () => AzureUsername,
@@ -52,7 +50,7 @@ partial class Build
 
     string DockerImageName => $"spenses-api:{DockerTag}";
 
-    Target PushDockerImage => _ => _
+    Target PushDockerImage => t => t
         .Description("Push docker images to the registry.")
         .DependsOn(AzureLogin)
         .Executes(() =>
@@ -65,7 +63,7 @@ partial class Build
                 $"--file {dockerFilePath} {RootDirectory}");
         });
 
-    Target DeployApi => _ => _
+    Target DeployApi => t => t
         .Description("Deploy the API service to Azure Container Apps.")
         .DependsOn(PushDockerImage)
         .Requires(
@@ -89,21 +87,21 @@ partial class Build
                 $"--registry-password {ContainerRegistryPassword}");
         });
 
-    Target DeployWebApp => _ => _
+    Target DeployWebApp => t => t
         .Description("Deploy the front-end web app to Azure Static Web Apps.")
         .DependsOn<IClean>()
         .Requires(
             () => AzureStaticWebAppsApiToken)
         .Executes(() =>
         {
-            DotNetPublish(_ => _
+            DotNetPublish(s => s
                 .SetProject(WebProject)
                 .SetConfiguration(Configuration.Release)
                 .SetVersion(GitVersion.NuGetVersionV2)
                 .SetAssemblyVersion(GitVersion.AssemblySemVer)
                 .SetFileVersion(GitVersion.AssemblySemFileVer));
 
-            Npx($"@azure/static-web-apps-cli@1.1.4 deploy " +
+            Npx($"@azure/static-web-apps-cli deploy " +
                 $"{WebProject.Directory / "bin" / "Release" / "net8.0" / "publish" / "wwwroot"} " +
                 $"--deployment-token {AzureStaticWebAppsApiToken} " +
                 $"--env Production");
