@@ -1,66 +1,70 @@
-﻿@using Spenses.Shared.Models.Expenses
-@using Spenses.Shared.Models.Homes
-@using Spenses.Shared.Validators.Expenses
-@using Spenses.App.Store.Expenses
-@using Spenses.App.Store.Homes
-@using Spenses.Shared.Models.ExpenseCategories
-@using Spenses.App.Store.ExpenseCategories
+﻿@using Spenses.Shared.Validators.Expenses
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<ExpensePropertiesValidator>())"/>
 
 <MudGrid>
-    <MudItem xs="4">
+    <MudItem xs="6">
         <MudNumericField @bind-Value="Expense.Amount"
+                         T="decimal"
                          Label="Amount"
                          HelperText="The expense amount"
-                         Format="C"
+                         Format="N2"
+                         Step="1m"
                          Min="0.00m"
                          Max="999999.99m"
                          Required
-                         For="@(() => Expense.Amount)"/>
+                         For="@(() => Expense.Amount)"
+                         Adornment="Adornment.Start"
+                         AdornmentIcon="@Icons.Material.Rounded.AttachMoney"/>
     </MudItem>
-    <MudItem xs="4">
-        <MudDatePicker @bind-Value="DateValue"
+    <MudItem xs="6">
+        <MudDatePicker @bind-Date="DateValue"
                        Label="Date"
-                       HelperText="The date the expense was paid"/>
+                       HelperText="The date the expense was paid"
+                       AutoClose />
     </MudItem>
-    <MudItem xs="4">
+    <MudItem xs="6">
         <MudSelect T="Guid"
-                   @bind-SelectedValue="Expense.PaidByMemberId"
+                   @bind-Value="Expense.PaidByMemberId"
+                   ToStringFunc="@(v => Home.Members.SingleOrDefault(m => m.Id == v)?.Name ?? string.Empty)"
                    Label="Paid by"
                    HelperText="The home member that paid the expense"
                    For="@(() => Expense.PaidByMemberId)">
             @foreach (var member in Home.Members.OrderBy(m => m.Name))
             {
-                <MudSelectItem Value="@member.Id">
+                <MudSelectItem T="Guid"
+                               Value="@member.Id">
                     @member.Name
                 </MudSelectItem>
             }
         </MudSelect>
     </MudItem>
     <MudItem xs="6">
-        <MudTextField @bind-Value="Expense.Note"
-                      Label="Note"
-                      HelperText="Optional details for this expense"
-                      For="@(() => Expense.Note)">
-        </MudTextField>
-    </MudItem>
-    <MudItem xs="6">
         <MudSelect T="Guid"
-                   @bind-SelectedValue="Expense.CategoryId"
+                   @bind-Value="Expense.CategoryId"
+                   ToStringFunc="@(v => ExpenseCategoriesState.Value.ExpenseCategories.SingleOrDefault(m => m.Id == v)?.Name ?? string.Empty)"
                    Label="Category"
                    HelperText="The category this expense falls under"
+                   Disabled="ExpenseCategoriesState.Value.ExpenseCategoriesRequesting"
                    For="@(() => Expense.CategoryId)">
             @foreach (var category in Categories)
             {
-                <MudSelectItem Value="@category.Id">
+                <MudSelectItem T="Guid"
+                               Value="@category.Id">
                     @category.Name
                 </MudSelectItem>
             }
         </MudSelect>
     </MudItem>
     <MudItem xs="12">
+        <MudTextField @bind-Value="Expense.Note"
+                      Label="Note"
+                      HelperText="Optional details for this expense"
+                      For="@(() => Expense.Note)">
+        </MudTextField>
+    </MudItem>
+    @* <MudItem xs="12">
         <MudAutocomplete T="string"
                          Value="TagValue"
                          ValueChanged="s => ExpenseTags.Add(s)"
@@ -78,5 +82,5 @@
                 <MudChip Text="@tag" />
             }
         </MudChipSet>
-    </MudItem>
+    </MudItem> *@
 </MudGrid>

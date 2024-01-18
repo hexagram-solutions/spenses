@@ -1,4 +1,4 @@
-﻿using Fluxor;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Morris.Blazor.Validation.Extensions;
@@ -25,7 +25,11 @@ public partial class CreateExpenseDialog
     private IDispatcher Dispatcher { get; set; } = null!;
 
     private Home Home => HomesState.Value.CurrentHome!;
-    public ExpenseProperties Expense { get; set; } = new();
+
+    public ExpenseProperties Expense { get; set; } = new()
+    {
+        Amount = 0.00m, Date = DateOnly.FromDateTime(DateTime.Today)
+    };
 
     private void Close()
     {

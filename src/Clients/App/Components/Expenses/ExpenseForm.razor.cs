@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Spenses.App.Store.ExpenseCategories;
@@ -35,10 +36,14 @@ public partial class ExpenseForm
 
     private string TagValue { get; set; } = null!;
 
-    private DateTime DateValue
+    private DateTime? DateValue
     {
-        get => new(Expense.Date, TimeOnly.MinValue);
-        set => DateOnly.FromDateTime(value);
+        get => Expense.Date.ToDateTime(TimeOnly.MinValue);
+        set
+        {
+            if (value.HasValue)
+                Expense.Date = DateOnly.FromDateTime(value.GetValueOrDefault());
+        }
     }
 
     private List<string> ExpenseTags
