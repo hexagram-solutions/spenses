@@ -8,10 +8,6 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <UserSecretsId>a44855bf-a2bc-4ec3-bf4e-79d40a70e851</UserSecretsId>
     <ContainerRepository>spenses-api</ContainerRepository>
-    <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
-    <EnableSdkContainerDebugging>True</EnableSdkContainerDebugging>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,12 +32,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Spenses.Application.IntegrationTests" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ContainerEnvironmentVariable Include="ASPNETCORE_HTTPS_PORTS">
-      <Value>8081</Value>
-    </ContainerEnvironmentVariable>
   </ItemGroup>
 
 </Project>
