@@ -1,6 +1,6 @@
 using Refit;
-using Spenses.Application.Models.Common;
-using Spenses.Application.Models.Payments;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Client.Http;
 
@@ -10,7 +10,7 @@ public interface IPaymentsApi
     Task<IApiResponse<Payment>> PostPayment(Guid homeId, PaymentProperties props);
 
     [Get("/homes/{homeId}/payments")]
-    Task<IApiResponse<PagedResult<PaymentDigest>>> GetPayments(Guid homeId, [Query] FilteredPaymentQuery query);
+    Task<IApiResponse<PagedResult<PaymentDigest>>> GetPayments(Guid homeId, [Query] FilteredPaymentsQuery query);
 
     [Get("/homes/{homeId}/payments/{paymentId}")]
     Task<IApiResponse<Payment>> GetPayment(Guid homeId, Guid paymentId);

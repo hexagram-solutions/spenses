@@ -3,8 +3,8 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Spenses.Application.Common;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Common;
 
 namespace Spenses.Tools.Setup;
 

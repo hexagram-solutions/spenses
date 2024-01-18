@@ -1,0 +1,91 @@
+﻿@using Spenses.Shared.Validators.Expenses
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<ExpensePropertiesValidator>())"/>
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudNumericField @bind-Value="Expense.Amount"
+                         T="decimal"
+                         Label="Amount"
+                         HelperText="The expense amount"
+                         Format="N2"
+                         Step="1m"
+                         Min="0.00m"
+                         Max="999999.99m"
+                         Required
+                         For="@(() => Expense.Amount)"
+                         Adornment="Adornment.Start"
+                         AdornmentIcon="@Icons.Material.Rounded.AttachMoney"/>
+    </MudItem>
+    <MudItem xs="6">
+        <MudDatePicker @bind-Date="DateValue"
+                       Label="Date"
+                       HelperText="The date the expense was paid"
+                       AutoClose
+                       Required/>
+    </MudItem>
+    <MudItem xs="6">
+        <MudSelect T="Guid"
+                   @bind-Value="Expense.PaidByMemberId"
+                   ToStringFunc="@(v => Home.Members.SingleOrDefault(m => m.Id == v)?.Name ?? string.Empty)"
+                   Label="Paid by"
+                   HelperText="The home member that paid the expense"
+                   Required
+                   For="@(() => Expense.PaidByMemberId)">
+            @foreach (var member in Home.Members.OrderBy(m => m.Name))
+            {
+                <MudSelectItem T="Guid"
+                               Value="@member.Id">
+                    @member.Name
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="6">
+        <MudSelect T="Guid"
+                   @bind-Value="Expense.CategoryId"
+                   ToStringFunc="@(v => ExpenseCategoriesState.Value.ExpenseCategories.SingleOrDefault(m => m.Id == v)?.Name ?? string.Empty)"
+                   Label="Category"
+                   HelperText="The category this expense falls under"
+                   Disabled="ExpenseCategoriesState.Value.ExpenseCategoriesRequesting"
+                   Required
+                   For="@(() => Expense.CategoryId)">
+            @foreach (var category in Categories)
+            {
+                <MudSelectItem T="Guid"
+                               Value="@category.Id">
+                    @category.Name
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField @bind-Value="Expense.Note"
+                      Label="Note"
+                      HelperText="Optional details for this expense"
+                      For="@(() => Expense.Note)">
+        </MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudAutocomplete T="string"
+                         Value="TagValue"
+                         ValueChanged="OnTagValueChanged"
+                         Label="Tags"
+                         HelperText="Add or choose existing tags for this expense"
+                         SearchFunc="SearchTags"
+                         ResetValueOnEmptyText
+                         CoerceValue
+                         DebounceInterval="500"
+                         AdornmentIcon="@Icons.Material.Filled.Search"
+                         AdornmentColor="Color.Primary"/>
+
+        <MudChipSet AllClosable="true"
+                    OnClose="chip => Expense.Tags.Remove(chip.Text)">
+            @foreach (var tag in Expense.Tags)
+            {
+                <MudChip Text="@tag"/>
+            }
+        </MudChipSet>
+    </MudItem>
+</MudGrid>

@@ -1,0 +1,111 @@
+﻿@page "/login"
+@using Spenses.App.Infrastructure
+@using Spenses.Shared.Models.Identity
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<PageTitle>Log in</PageTitle>
+
+<MudStack>
+    <MudText Typo="Typo.h5">Log in</MudText>
+
+    <MudForm Model="LoginRequest"
+             @ref="FormRef"
+             Validation="@(_validator.ValidateValue())">
+        <MudStack Spacing="0">
+            
+            <MudTextField @bind-Value="LoginRequest.Email"
+                          Label="Email"
+                          For="@(() => LoginRequest.Email)"
+                          Required/>
+
+            <MudTextField @bind-Value="LoginRequest.Password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          For="@(() => LoginRequest.Password)"
+                          Required/>
+        </MudStack>
+    </MudForm>
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               OnClick="LogIn"
+               Disabled="IdentityState.Value.LoginRequesting">
+        Log in
+    </MudButton>
+
+    @if (IdentityState.Value.Errors.Length > 0)
+    {
+        @foreach (var error in IdentityState.Value.Errors)
+        {
+            switch (error)
+            {
+                case IdentityErrors.Login.InvalidCredentials:
+                    @InvalidCredentialsError
+                    break;
+
+                case IdentityErrors.Login.EmailVerificationRequired:
+                    @EmailVerificationRequiredError
+                    break;
+
+                case IdentityErrors.Login.LockedOut:
+                    @LockedOutError
+                    break;
+
+                default:
+                    @GenericLoginError(IdentityState.Value.Errors)
+                    break;
+            }
+        }
+    }
+
+    <MudStack>
+        <MudLink Href="@Routes.Identity.ForgotPassword">Forgot your password?</MudLink>
+        <div>
+            Don't have an account? <MudLink Href="@Routes.Identity.SignUp">Sign up</MudLink>
+        </div>
+    </MudStack>
+</MudStack>
+
+@code
+{
+    private RenderFragment InvalidCredentialsError => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            Your email or password was incorrect. Please try again.
+        </MudAlert>
+    };
+
+    private RenderFragment EmailVerificationRequiredError => __builder =>
+    {
+        <MudAlert Title="You need to verify your email address before you can log in."
+                  Intent="MessageIntent.Error">
+
+        </MudAlert>
+        <MudAlert Severity="Severity.Error">
+            You need to verify your email address before you can log in. You can request a new verification email
+            <MudLink Href="@Routes.Identity.EmailVerificationRequired">here.</MudLink>
+        </MudAlert>
+    };
+
+    private RenderFragment LockedOutError => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            This account is locked and cannot log in.
+        </MudAlert>
+    };
+
+    private RenderFragment GenericLoginError(string[] errors) => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            <p>
+                Unable to log in:
+            </p>
+            <ul>
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </MudAlert>
+    };
+}

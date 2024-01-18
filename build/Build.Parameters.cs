@@ -38,4 +38,8 @@ partial class Build
     [Secret]
     [Parameter]
     readonly string AzureStaticWebAppsApiToken;
+
+    [Secret]
+    [Parameter]
+    readonly string IntegrationTestDefaultUserPassword = "Password1!";
 }

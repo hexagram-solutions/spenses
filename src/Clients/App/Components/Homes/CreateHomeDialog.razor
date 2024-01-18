@@ -1,0 +1,28 @@
+﻿@using Spenses.App.Infrastructure
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<EditForm Model="Home"
+          OnSubmit="Save">
+    <LoadingOverlay Visible="HomesState.Value.HomeCreating"/>
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>
+            New home
+        </TitleContent>
+        <DialogContent>
+            <HomeForm Home="Home"/>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Color="Color.Warning"
+                       Variant="Variant.Filled"
+                       OnClick="Close">
+                Cancel
+            </MudButton>
+            <MudButton Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       StartIcon="@FontIcons.Solid.Plus"
+                       ButtonType="ButtonType.Submit">
+                Create home
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

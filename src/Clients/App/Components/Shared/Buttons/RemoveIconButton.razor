@@ -1,0 +1,8 @@
+﻿<MudIconButton Icon="@Icons.Material.Filled.Remove"
+               Color="Color.Error"
+               Size="Size.Small"
+               OnClick="OnClick" />
+
+@code {
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

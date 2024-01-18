@@ -29,8 +29,14 @@ public class AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUs
         if (context is null)
             return;
 
+        var currentUser = currentUserService.CurrentUser;
+
+        if (currentUser?.Identity?.IsAuthenticated != true)
+            return;
+
         var utcNow = DateTime.UtcNow;
-        var currentUserId = currentUserService.CurrentUser.GetId();
+
+        var currentUserId = currentUser.GetId();
 
         foreach (var entry in context.ChangeTracker.Entries<AggregateRoot>())
         {

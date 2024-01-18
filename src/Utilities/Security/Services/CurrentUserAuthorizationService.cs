@@ -7,11 +7,11 @@ public class CurrentUserAuthorizationService(IAuthorizationService innerAuthoriz
 {
     public Task<AuthorizationResult> AuthorizeAsync(object? resource, params IAuthorizationRequirement[] requirements)
     {
-        return innerAuthorizationService.AuthorizeAsync(currentUserService.CurrentUser, resource, requirements);
+        return innerAuthorizationService.AuthorizeAsync(currentUserService.CurrentUser!, resource, requirements);
     }
 
     public Task<AuthorizationResult> AuthorizeAsync(object? resource, string policyName)
     {
-        return innerAuthorizationService.AuthorizeAsync(currentUserService.CurrentUser, resource, policyName);
+        return innerAuthorizationService.AuthorizeAsync(currentUserService.CurrentUser!, resource, policyName);
     }
 }

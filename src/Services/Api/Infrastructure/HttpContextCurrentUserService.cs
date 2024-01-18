@@ -5,5 +5,5 @@ namespace Spenses.Api.Infrastructure;
 
 public class HttpContextCurrentUserService(IHttpContextAccessor httpContext) : ICurrentUserService
 {
-    public ClaimsPrincipal CurrentUser => httpContext.HttpContext!.User;
+    public ClaimsPrincipal? CurrentUser => httpContext.HttpContext?.User;
 }

@@ -17,10 +17,143 @@ namespace Spenses.Resources.Relational.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.13")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
 
             modelBuilder.Entity("Spenses.Resources.Relational.DigestModels.ExpenseDigest", b =>
                 {
@@ -126,6 +259,75 @@ namespace Spenses.Resources.Relational.Migrations
                         {
                             t.ExcludeFromMigrations();
                         });
+                });
+
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("ApplicationUser", (string)null);
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
@@ -407,26 +609,55 @@ namespace Spenses.Resources.Relational.Migrations
                     b.ToTable("Payment");
                 });
 
-            modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<string>("Issuer")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<string>("NickName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasKey("Id");
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.ToTable("UserIdentity");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
@@ -437,7 +668,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "CreatedBy")
                         .WithMany("CreatedExpenses")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -449,7 +680,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "ModifiedBy")
                         .WithMany("ModifiedExpenses")
                         .HasForeignKey("ModifiedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -474,7 +705,7 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.ExpenseCategory", b =>
                 {
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "CreatedBy")
                         .WithMany("CreatedExpenseCategories")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -486,7 +717,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "ModifiedBy")
                         .WithMany("ModifiedExpenseCategories")
                         .HasForeignKey("ModifiedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -531,13 +762,13 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Home", b =>
                 {
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "CreatedBy")
                         .WithMany("CreatedHomes")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "ModifiedBy")
                         .WithMany("ModifiedHomes")
                         .HasForeignKey("ModifiedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -550,7 +781,7 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Member", b =>
                 {
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "CreatedBy")
                         .WithMany("CreatedMembers")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -562,13 +793,13 @@ namespace Spenses.Resources.Relational.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "ModifiedBy")
                         .WithMany("ModifiedMembers")
                         .HasForeignKey("ModifiedById")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "User")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
@@ -583,7 +814,7 @@ namespace Spenses.Resources.Relational.Migrations
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Payment", b =>
                 {
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "CreatedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "CreatedBy")
                         .WithMany("CreatedPayments")
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -595,7 +826,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.UserIdentity", "ModifiedBy")
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "ModifiedBy")
                         .WithMany("ModifiedPayments")
                         .HasForeignKey("ModifiedById")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -622,6 +853,29 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("PaidByMember");
 
                     b.Navigation("PaidToMember");
+                });
+
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("CreatedExpenseCategories");
+
+                    b.Navigation("CreatedExpenses");
+
+                    b.Navigation("CreatedHomes");
+
+                    b.Navigation("CreatedMembers");
+
+                    b.Navigation("CreatedPayments");
+
+                    b.Navigation("ModifiedExpenseCategories");
+
+                    b.Navigation("ModifiedExpenses");
+
+                    b.Navigation("ModifiedHomes");
+
+                    b.Navigation("ModifiedMembers");
+
+                    b.Navigation("ModifiedPayments");
                 });
 
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Expense", b =>
@@ -656,29 +910,6 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("PaymentsPaid");
 
                     b.Navigation("PaymentsReceived");
-                });
-
-            modelBuilder.Entity("Spenses.Resources.Relational.Models.UserIdentity", b =>
-                {
-                    b.Navigation("CreatedExpenseCategories");
-
-                    b.Navigation("CreatedExpenses");
-
-                    b.Navigation("CreatedHomes");
-
-                    b.Navigation("CreatedMembers");
-
-                    b.Navigation("CreatedPayments");
-
-                    b.Navigation("ModifiedExpenseCategories");
-
-                    b.Navigation("ModifiedExpenses");
-
-                    b.Navigation("ModifiedHomes");
-
-                    b.Navigation("ModifiedMembers");
-
-                    b.Navigation("ModifiedPayments");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,27 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<EditForm Model="Member"
+          OnSubmit="Save">
+    <LoadingOverlay Visible="MembersState.Value.MemberCreating" />
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>
+            New member
+        </TitleContent>
+        <DialogContent>
+            <MemberForm Member="Member"/>
+        </DialogContent>
+        <DialogActions>
+            <MudButton Color="Color.Warning"
+                       Variant="Variant.Filled"
+                       OnClick="Close">
+                Cancel
+            </MudButton>
+            <MudButton Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Rounded.PersonAdd"
+                       ButtonType="ButtonType.Submit">
+                Create member
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

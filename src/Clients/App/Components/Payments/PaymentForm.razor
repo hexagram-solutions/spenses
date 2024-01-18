@@ -1,0 +1,69 @@
+﻿@using Spenses.Shared.Validators.Payments
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<PaymentPropertiesValidator>())"/>
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudNumericField @bind-Value="Payment.Amount"
+                         T="decimal"
+                         Label="Amount"
+                         HelperText="The Payment amount"
+                         Format="N2"
+                         Step="1m"
+                         Min="0.00m"
+                         Max="999999.99m"
+                         Required
+                         For="@(() => Payment.Amount)"
+                         Adornment="Adornment.Start"
+                         AdornmentIcon="@Icons.Material.Rounded.AttachMoney"/>
+    </MudItem>
+    <MudItem xs="6">
+        <MudDatePicker @bind-Date="DateValue"
+                       Label="Date"
+                       HelperText="The date the payment was paid"
+                       AutoClose
+                       Required/>
+    </MudItem>
+    <MudItem xs="6">
+        <MudSelect T="Guid"
+                   @bind-Value="Payment.PaidByMemberId"
+                   ToStringFunc="@(v => Home.Members.SingleOrDefault(m => m.Id == v)?.Name ?? string.Empty)"
+                   Label="Paid by"
+                   HelperText="The paying home member"
+                   Required
+                   For="@(() => Payment.PaidByMemberId)">
+            @foreach (var member in Home.Members.OrderBy(m => m.Name))
+            {
+                <MudSelectItem T="Guid"
+                               Value="@member.Id">
+                    @member.Name
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="6">
+        <MudSelect T="Guid"
+                   @bind-Value="Payment.PaidToMemberId"
+                   ToStringFunc="@(v => Home.Members.SingleOrDefault(m => m.Id == v)?.Name ?? string.Empty)"
+                   Label="Paid to"
+                   HelperText="The home member being paid"
+                   Required
+                   For="@(() => Payment.PaidToMemberId)">
+            @foreach (var member in Home.Members.OrderBy(m => m.Name))
+            {
+                <MudSelectItem T="Guid"
+                               Value="@member.Id">
+                    @member.Name
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField @bind-Value="Payment.Note"
+                      Label="Note"
+                      HelperText="Optional details for this payment"
+                      For="@(() => Payment.Note)">
+        </MudTextField>
+    </MudItem>
+</MudGrid>

@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Insights.Requests;
-using Spenses.Application.Models.Insights;
+using Spenses.Shared.Models.Insights;
 
 namespace Spenses.Api.Controllers;
 

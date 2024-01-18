@@ -7,17 +7,13 @@ namespace Spenses.Api.Infrastructure;
 
 public class ApplicationExceptionFilter : IAsyncExceptionFilter
 {
-    private readonly Dictionary<Type, Func<ExceptionContext, Task>> _exceptionHandlers;
-
-    public ApplicationExceptionFilter()
+    private readonly Dictionary<Type, Func<ExceptionContext, Task>> _exceptionHandlers = new()
     {
-        _exceptionHandlers = new()
-        {
-            { typeof(InvalidRequestException), HandleInvalidRequest },
-            { typeof(ForbiddenException), HandleForbidden },
-            { typeof(ResourceNotFoundException), HandleResourceNotFound }
-        };
-    }
+        { typeof(InvalidRequestException), HandleInvalidRequest },
+        { typeof(UnauthorizedException), HandleUnauthorized },
+        { typeof(ForbiddenException), HandleForbidden },
+        { typeof(ResourceNotFoundException), HandleResourceNotFound }
+    };
 
     public async Task OnExceptionAsync(ExceptionContext context)
     {
@@ -61,6 +57,13 @@ public class ApplicationExceptionFilter : IAsyncExceptionFilter
         var validationProblemDetails = new ValidationProblemDetails(modelStateDictionary);
 
         context.Result = new BadRequestObjectResult(validationProblemDetails);
+
+        return Task.CompletedTask;
+    }
+
+    public static Task HandleUnauthorized(ExceptionContext context)
+    {
+        context.Result = new UnauthorizedResult();
 
         return Task.CompletedTask;
     }

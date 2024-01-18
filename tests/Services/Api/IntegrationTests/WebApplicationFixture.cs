@@ -16,7 +16,7 @@ public class WebApplicationFixture<TStartup> : IAsyncLifetime
                 ctx.Subject.Should().BeCloseTo(ctx.Expectation, 100.Milliseconds())).WhenTypeIs<DateTime>());
     }
 
-    public TestWebApplicationFactory<TStartup> WebApplicationFactory { get; }
+    public virtual TestWebApplicationFactory<TStartup> WebApplicationFactory { get; }
 
     public Task InitializeAsync()
     {

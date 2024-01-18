@@ -1,0 +1,61 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudTable Items="MembersState.Value.Members"
+          Loading="IsLoading"
+          GroupBy="_groupDefinition">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Contact email</MudTh>
+        <MudTh>Default split %</MudTh>
+        <MudTh Style="text-align:right">
+            <MudIconButton Icon="@Icons.Material.Rounded.PersonAdd"
+                           Color="Color.Success"
+                           Size="Size.Small"
+                           OnClick="AddMember"/>
+        </MudTh>
+    </HeaderContent>
+    <GroupHeaderTemplate>
+        <MudTh colspan="4">@($"{context.GroupName}: {((bool)context.Key ? "Active" : "Inactive")}")</MudTh>
+    </GroupHeaderTemplate>
+    <RowTemplate>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Contact email">
+            @if (!string.IsNullOrEmpty(context.ContactEmail))
+            {
+                @context.ContactEmail
+            }
+            else
+            {
+                <MudText Color="Color.Secondary">None</MudText>
+            }
+        </MudTd>
+        <MudTd DataLabel="Default split percentage">
+            <samp>
+                @($"{context.DefaultSplitPercentage:P2}")
+            </samp>
+        </MudTd>
+        <MudTd DataLabel="Actions"
+               Style="text-align:right">
+            @if (context.IsActive)
+            {
+                <MudTooltip Text="Edit">
+                    <EditIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>
+                </MudTooltip>
+
+                <MudTooltip Text="Remove">
+                    <RemoveIconButton OnClick="@(args => OnRemoveClicked(args, context))"/>
+                </MudTooltip>
+            }
+            else
+            {
+                <MudTooltip Text="Reactivate"
+                            Inline>
+                    <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="@(args => OnReactivateClicked(args, context.Id))"/>
+                </MudTooltip>
+            }
+        </MudTd>
+    </RowTemplate>
+</MudTable>

@@ -1,0 +1,33 @@
+﻿@page "/verify-email"
+@using Spenses.App.Infrastructure
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<PageTitle>Email verification</PageTitle>
+
+<h2>Email verification</h2>
+
+<MudStack Spacing="4">
+    @if (Succeeded == true)
+    {
+        <MudAlert Severity="Severity.Success">
+            Your email address was successfully verified. You will be redirected to the
+            <MudLink Href="@Routes.Identity.Login()">
+                login page
+            </MudLink>
+            shortly.
+        </MudAlert>
+    }
+    else if (Succeeded == false)
+    {
+        <MudAlert Severity="Severity.Error">
+            We were unable to verify your email address. You can request a new verification email
+            <MudLink Href="@Routes.Identity.EmailVerificationRequired">
+                here.
+            </MudLink>
+        </MudAlert>
+    }
+    else
+    {
+        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+    }
+</MudStack>

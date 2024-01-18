@@ -1,0 +1,80 @@
+﻿@using Spenses.App.Store.Homes
+@using Fluxor.Blazor.Web.Middlewares.Routing
+@using Spenses.App.Components.Homes
+@using Spenses.App.Infrastructure
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudNavMenu>
+    @if (HomesState.Value.HomesRequesting)
+    {
+        <MudText>Loading...</MudText>
+    }
+    else
+    {
+        @foreach (var home in HomesState.Value.Homes)
+        {
+            <MudNavGroup Expanded="RoutingState.Value.Uri.Contains(home.Id.ToString())"
+                         Icon="@Icons.Material.Filled.Home"
+                         Title="@home.Name">
+                <MudNavLink Href="@(Routes.Homes.Dashboard(home.Id))"
+                            Match="NavLinkMatch.All"
+                            Icon="@Icons.Material.Filled.Dashboard">
+                    Dashboard
+                </MudNavLink>
+                <MudNavLink Href="@(Routes.Homes.Expenses(home.Id))"
+                            Match="NavLinkMatch.All"
+                            Icon="@Icons.Material.Filled.ReceiptLong"
+                            ForceLoad="false">
+                    Expenses
+                </MudNavLink>
+                <MudNavLink Href="@(Routes.Homes.Payments(home.Id))"
+                            Match="NavLinkMatch.All"
+                            Icon="@Icons.Material.Filled.CreditCard"
+                            ForceLoad="false">
+                    Payments
+                </MudNavLink>
+                <MudNavLink Href="@(Routes.Homes.Insights(home.Id))"
+                            Match="NavLinkMatch.All"
+                            Icon="@Icons.Material.Filled.Lightbulb"
+                            ForceLoad="false">
+                    Insights
+                </MudNavLink>
+                <MudNavLink Href="@(Routes.Homes.Settings(home.Id))"
+                            Match="NavLinkMatch.All"
+                            Icon="@Icons.Material.Filled.Settings"
+                            ForceLoad="false">
+                    Settings
+                </MudNavLink>
+            </MudNavGroup>
+        }
+
+        <MudNavLink OnClick="ShowCreateHomeDialog"
+                    IconColor="Color.Primary"
+                    Icon="@FontIcons.Solid.Plus">
+            New home
+        </MudNavLink>
+    }
+</MudNavMenu>
+
+@code
+{
+    [Inject] private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject] private IState<RoutingState> RoutingState { get; set; } = null!;
+
+    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+
+    [Inject] public IDialogService DialogService { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Dispatcher.Dispatch(new HomesRequestedAction());
+    }
+
+    private void ShowCreateHomeDialog()
+    {
+        DialogService.Show<CreateHomeDialog>();
+    }
+}

@@ -4,5 +4,5 @@ namespace Spenses.Utilities.Security.Services;
 
 public interface ICurrentUserService
 {
-    ClaimsPrincipal CurrentUser { get; }
+    ClaimsPrincipal? CurrentUser { get; }
 }

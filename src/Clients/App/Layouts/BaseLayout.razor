@@ -1,0 +1,59 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider @ref="@_mudThemeProvider"
+                  @bind-IsDarkMode="@_isDarkMode"
+                  Theme="_theme"/>
+<MudDialogProvider FullWidth="true"
+                   MaxWidth="MaxWidth.Small"
+                   CloseButton="true"
+                   CloseOnEscapeKey="true"/>
+<MudSnackbarProvider/>
+<Fluxor.Blazor.Web.StoreInitializer/>
+
+<MudLayout>
+    <MudMainContent>
+        <ErrorBoundary>
+            <ChildContent>
+                @Body
+            </ChildContent>
+            <ErrorContent Context="ex">
+                <div class="blazor-error-boundary">@ex.Message</div>
+            </ErrorContent>
+        </ErrorBoundary>
+    </MudMainContent>
+</MudLayout>
+
+@code
+{
+    private bool _isDarkMode;
+    private MudThemeProvider _mudThemeProvider = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            StateHasChanged();
+        }
+    }
+
+    readonly MudTheme _theme = new()
+    {
+        Palette = new PaletteLight
+        {
+            Primary = "#00809e",
+            AppbarBackground = "#00809e"
+        },
+        PaletteDark = new PaletteDark
+        {
+            Primary = "#3a8ea8"
+        },
+        Typography = new Typography
+        {
+            Button = new Button
+            {
+                TextTransform = "none"
+            }
+        }
+    };
+}

@@ -1,5 +1,5 @@
 using System.Net;
-using Spenses.Application.Models.Payments;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Api.IntegrationTests.Payments;
 
@@ -10,7 +10,7 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentQuery
+        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
         {
             Skip = 0,
             Take = 100
@@ -46,7 +46,7 @@ public partial class PaymentsIntegrationTests
 
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentQuery
+        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
         {
             Skip = 0,
             Take = 100
@@ -71,7 +71,7 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentQuery
+        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
         {
             Skip = 0,
             Take = 100
@@ -96,7 +96,7 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var paymentId = (await _payments.GetPayments(home.Id, new FilteredPaymentQuery())).Content!.Items.First().Id;
+        var paymentId = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery())).Content!.Items.First().Id;
 
         var properties = new PaymentProperties
         {

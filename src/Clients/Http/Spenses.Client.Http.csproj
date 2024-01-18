@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Application\Spenses.Application.csproj" />
+    <ProjectReference Include="..\..\Shared\Spenses.Shared.csproj" />
   </ItemGroup>
 
 </Project>

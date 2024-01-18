@@ -249,6 +249,9 @@ end_of_line = lf
 charset = utf-8-bom
 indent_size = 4
 
+# ReSharper properties
+resharper_html_attribute_style=first_attribute_on_single_line
+
 [*.{cs,vb}]
 # CA1018: Mark attributes with AttributeUsageAttribute
 dotnet_diagnostic.CA1018.severity = warning

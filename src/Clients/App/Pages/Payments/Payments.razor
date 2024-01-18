@@ -1,0 +1,35 @@
+﻿@page "/homes/{homeId:guid}/payments"
+@using Spenses.App.Components.Payments
+@using Spenses.App.Store.Homes
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<PageTitle>Payments: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</PageTitle>
+
+<MudText Typo="Typo.h4"
+         GutterBottom>
+    Payments: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")
+</MudText>
+
+<PaymentsGrid HomeId="HomeId" />
+
+@code {
+
+    [Parameter]
+    public Guid HomeId { get; set; }
+
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (HomesState.Value.CurrentHome?.Id == HomeId)
+            return;
+
+        Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
+    }
+}

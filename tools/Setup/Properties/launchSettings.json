@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Spenses.Tools.Setup": {
+      "commandName": "Project",
+      "commandLineArgs": "reset"
+    }
+  }
+}

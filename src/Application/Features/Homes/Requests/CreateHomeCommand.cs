@@ -1,8 +1,10 @@
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
-using Spenses.Application.Models.Homes;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Spenses.Resources.Relational;
-using Spenses.Utilities.Security;
+using Spenses.Shared.Models.Homes;
 using Spenses.Utilities.Security.Services;
 using DbModels = Spenses.Resources.Relational.Models;
 
@@ -10,21 +12,22 @@ namespace Spenses.Application.Features.Homes.Requests;
 
 public record CreateHomeCommand(HomeProperties Props) : IRequest<Home>;
 
-public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, ICurrentUserService currentUserService)
+public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, ICurrentUserService currentUserService,
+    UserManager<DbModels.ApplicationUser> userManager)
     : IRequestHandler<CreateHomeCommand, Home>
 {
     public async Task<Home> Handle(CreateHomeCommand request, CancellationToken cancellationToken)
     {
         var home = mapper.Map<DbModels.Home>(request.Props);
 
-        var currentUser = currentUserService.CurrentUser;
+        var currentUser = await userManager.GetUserAsync(currentUserService.CurrentUser!);
 
         home.Members.Add(new DbModels.Member
         {
-            Name = currentUser.FindFirst(ApplicationClaimTypes.NickName)!.Value,
-            ContactEmail = currentUser.FindFirst(ApplicationClaimTypes.Email)!.Value,
+            Name = currentUser!.DisplayName,
+            ContactEmail = currentUser.Email,
             DefaultSplitPercentage = 1m,
-            UserId = currentUser.GetId()
+            UserId = currentUser.Id
         });
 
         home.ExpenseCategories.Add(new DbModels.ExpenseCategory
@@ -39,6 +42,10 @@ public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, I
 
         await db.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<Home>(entry.Entity);
+        var createdHome = await db.Homes
+            .ProjectTo<Home>(mapper.ConfigurationProvider)
+            .SingleAsync(h => h.Id == entry.Entity.Id, cancellationToken);
+
+        return mapper.Map<Home>(createdHome);
     }
 }

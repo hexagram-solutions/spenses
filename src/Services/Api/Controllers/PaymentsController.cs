@@ -3,7 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Payments.Requests;
-using Spenses.Application.Models.Payments;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Api.Controllers;
 
@@ -37,7 +37,7 @@ public class PaymentsController(IMediator mediator) : ControllerBase
     [HttpGet]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<PaymentDigest>>> GetPayments(Guid homeId,
-        [FromQuery] FilteredPaymentQuery query)
+        [FromQuery] FilteredPaymentsQuery query)
     {
         var payments = await mediator.Send(new PaymentsQuery(homeId)
         {

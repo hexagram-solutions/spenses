@@ -3,7 +3,7 @@ name: continuous
 on:
   push:
     branches:
-      - "main"
+      - main
     paths-ignore:
       - "README.md"
   pull_request:

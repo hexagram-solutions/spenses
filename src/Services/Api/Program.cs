@@ -4,37 +4,35 @@ using Microsoft.IdentityModel.Logging;
 using Spenses.Api;
 using Spenses.Api.Infrastructure;
 using Spenses.Application;
-using Spenses.Application.Common;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.BuildConfiguration();
+builder.BuildConfiguration();
 
 const string corsPolicyName = "AllowSpecificOrigins";
 
+builder
+    .AddWebApiServices(corsPolicyName)
+    .AddIdentityServices()
+    .AddAuthorizationServices();
+
 builder.Services
-    .AddWebApiServices(builder.Configuration, corsPolicyName)
     .AddApplicationServices()
-    .AddAuthorizationServices()
     .AddRelationalServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString));
 
-builder.Services.AddAuthenticatedOpenApiDocument(
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
-
-builder.Services.AddAuth0Authentication(
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
+builder.Services.AddAuthenticatedOpenApiDocument();
 
 var app = builder.Build();
 
 app.UseHttpLogging();
 
-if (app.Environment.IsEnvironment(EnvironmentNames.Local) ||
+if (app.Environment.IsEnvironment(EnvironmentNames.Development) ||
     app.Environment.IsEnvironment(EnvironmentNames.IntegrationTest) ||
     app.Environment.IsEnvironment(EnvironmentNames.Test))
 {
+    // TODO: Use global exception handler instead of error controller? (see twitter bookmarks)
     app.UseExceptionHandler("/error-development");
     app.UseHttpLogging();
 
@@ -46,7 +44,7 @@ else
     app.UseExceptionHandler("/error");
 }
 
-app.AddSwaggerUi(app.Configuration.Require(ConfigConstants.SpensesOpenIdClientId));
+app.AddSwaggerUi();
 
 app.UseHttpsRedirection();
 
@@ -73,7 +71,5 @@ namespace Spenses.Api
     // ReSharper disable once PartialTypeWithSinglePart
     // This allows this class to be used in as an entry point for integration tests.
     // See: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0#basic-tests-with-the-default-webapplicationfactory
-    public partial class Program
-    {
-    }
+    public partial class Program;
 }

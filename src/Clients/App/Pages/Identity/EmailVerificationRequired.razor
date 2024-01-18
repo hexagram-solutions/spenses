@@ -1,0 +1,36 @@
+﻿@page "/email-verification-required"
+
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<PageTitle>Verification required</PageTitle>
+
+<h2>Verify your email address</h2>
+
+<MudStack>
+    <p>
+        Before you can start using Spenses, we need to verify your email address.
+    </p>
+    <p>
+        We have sent a verification link to
+        <b>
+            <samp>@Email</samp>
+        </b>. Follow the link to verify your email address and get started.
+    </p>
+    <MudStack>
+        <div>
+            If you didn't receive an email, we can send you a new one.
+        </div>
+        <MudButton Variant="Variant.Outlined"
+                   OnClick="ResendVerificationEmail"
+                   Disabled="State.ResendVerificationEmailRequesting">
+            Resend verification email
+        </MudButton>
+    </MudStack>
+
+    @if (VerificationEmailReSent)
+    {
+        <MudAlert Severity="Severity.Success">
+            Verification email re-sent to @Email
+        </MudAlert>
+    }
+</MudStack>

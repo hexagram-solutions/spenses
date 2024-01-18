@@ -2,8 +2,8 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Models.Homes;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Models.Homes;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;
 
@@ -16,7 +16,7 @@ public class HomesQueryHandler(ApplicationDbContext db, IMapper mapper, ICurrent
 {
     public async Task<IEnumerable<Home>> Handle(HomesQuery request, CancellationToken cancellationToken)
     {
-        var currentUserId = currentUserService.CurrentUser.GetId();
+        var currentUserId = currentUserService.CurrentUser!.GetId();
 
         var homes = await db.Homes
             .Where(h => h.Members.Select(m => m.UserId).Contains(currentUserId))

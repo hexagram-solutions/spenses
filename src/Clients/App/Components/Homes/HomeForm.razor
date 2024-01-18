@@ -1,0 +1,35 @@
+﻿@using Spenses.Shared.Models.Homes
+@using Spenses.Shared.Validators.Homes
+
+<Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<HomePropertiesValidator>())"
+          OnTransformModel="OnTransformModel"/>
+
+<MudTextField @bind-Value="Home.Name"
+              Label="Name"
+              HelperText="The name of this home"
+              Placeholder="My household"
+              Required/>
+
+<MudTextField @bind-Value="Home.Description"
+              Label="Description"
+              HelperText="An optional description of this home"
+              Placeholder="2411 4th St NW"/>
+
+@code
+{
+    [Parameter] public HomeProperties Home { get; set; } = null!;
+
+    private static object OnTransformModel(object model)
+    {
+        if (model is Home home)
+        {
+            return new HomeProperties
+            {
+                Name = home.Name,
+                Description = home.Description
+            };
+        }
+
+        return model;
+    }
+}

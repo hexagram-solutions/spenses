@@ -1,0 +1,67 @@
+﻿@using Spenses.App.Store.Payments
+@using Spenses.Client.Http
+@using Spenses.Shared.Models.Payments
+@using SortDirection = Spenses.Shared.Models.Common.SortDirection;
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudDataGrid @ref="DataGridRef"
+             T="PaymentDigest"
+             FixedHeader
+             Virtualize
+             SortMode="SortMode.Single"
+             ServerData="GetServerData"
+             Height="calc(100vh - 16rem);"
+             CurrentPage="0"
+             RowsPerPage="200">
+    <ToolBarContent>
+        <MudStack Row>
+            <MudButton Color="Color.Primary"
+                       Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Rounded.Add"
+                       OnClick="CreatePayment">
+                Create payment
+            </MudButton>
+
+            <MudDateRangePicker Label="Dates"
+                                DateRange="DateRangeValue"
+                                DateRangeChanged="OnDateFilterChanged"
+                                DateFormat="yyyy-MM-dd" />
+        </MudStack>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Date"
+                        Title="Date"
+                        Format="yyyy-MM-dd" />
+        <PropertyColumn Property="x => x.Amount"
+                        Title="Amount">
+            <CellTemplate>
+                <samp>@($"{context.Item.Amount:C}")</samp>
+            </CellTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="x => x.PaidByMemberName"
+                        Title="Paid by" />
+
+        <PropertyColumn Property="x => x.PaidToMemberName"
+                        Title="Paid to" />
+        <PropertyColumn Property="x => x.Note"
+                        Title="Note"
+                        Sortable="false"/>
+        <TemplateColumn Title="Actions"
+                        Sortable="false">
+            <CellTemplate>
+                <MudTooltip Text="Edit">
+                    <MudIconButton Size="Size.Small"
+                                   Color="Color.Tertiary"
+                                   Icon="@Icons.Material.Rounded.Edit"
+                                   OnClick="@(args => OnEditClicked(args, context.Item.Id))" />
+                </MudTooltip>
+                <MudTooltip Text="Delete">
+                    <MudIconButton Size="Size.Small"
+                                   Color="Color.Error"
+                                   Icon="@Icons.Material.Rounded.Delete"
+                                   OnClick="@(args => OnDeleteClicked(args, context.Item))" />
+                </MudTooltip>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>

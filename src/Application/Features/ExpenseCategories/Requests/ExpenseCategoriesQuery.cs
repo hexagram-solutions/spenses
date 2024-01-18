@@ -3,10 +3,10 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Behaviors;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Application.Models.ExpenseCategories;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Models.ExpenseCategories;
 
 namespace Spenses.Application.Features.ExpenseCategories.Requests;
 

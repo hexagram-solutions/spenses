@@ -1,6 +1,6 @@
 using System.Net;
-using Spenses.Application.Models.Common;
-using Spenses.Application.Models.Payments;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Api.IntegrationTests.Payments;
 
@@ -9,7 +9,7 @@ public partial class PaymentsIntegrationTests
     [Fact]
     public async Task Get_payments_with_invalid_identifiers_yields_not_found()
     {
-        var homeNotFoundResult = await _payments.GetPayments(Guid.NewGuid(), new FilteredPaymentQuery());
+        var homeNotFoundResult = await _payments.GetPayments(Guid.NewGuid(), new FilteredPaymentsQuery());
 
         homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -20,7 +20,7 @@ public partial class PaymentsIntegrationTests
         var home = (await _homes.GetHomes()).Content!.First();
 
         var unfilteredPayments =
-            (await _payments.GetPayments(home.Id, new FilteredPaymentQuery { Skip = 0, Take = 100 })).Content!
+            (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery { Skip = 0, Take = 100 })).Content!
             .Items.ToList();
 
         var earliestPaymentDate = unfilteredPayments.MinBy(x => x.Date)!.Date;
@@ -30,7 +30,7 @@ public partial class PaymentsIntegrationTests
         var maxDateFilterValue = latestPaymentDate.AddDays(-1);
 
         var filteredPayments = (await _payments.GetPayments(home.Id,
-            new FilteredPaymentQuery
+            new FilteredPaymentsQuery
             {
                 Skip = 0,
                 Take = 100,
@@ -50,7 +50,7 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var query = new FilteredPaymentQuery
+        var query = new FilteredPaymentsQuery
         {
             Skip = 0,
             Take = 25,

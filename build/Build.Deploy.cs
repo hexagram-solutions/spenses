@@ -18,7 +18,7 @@ partial class Build
 
     Project ApiProject => Solution.GetAllProjects("Spenses.Api").Single();
 
-    Project WebProject => Solution.GetAllProjects("Spenses.Client.Web").Single();
+    Project WebProject => Solution.GetAllProjects("Spenses.App").Single();
 
     Target Publish => _ => _
         .Description("Publish deployment artifacts.")

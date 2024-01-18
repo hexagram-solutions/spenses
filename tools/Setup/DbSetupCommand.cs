@@ -8,7 +8,6 @@ using Microsoft.SqlServer.Management.Smo;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Tools.Setup.SeedData;
-using SqlServer = Microsoft.SqlServer.Management.Smo;
 
 namespace Spenses.Tools.Setup;
 
@@ -111,9 +110,9 @@ public class DbSetupCommand : RootCommand
 
         var sql = string.Empty;
 
-        foreach (SqlServer.Table? table in db.Tables)
+        foreach (Table? table in db.Tables)
         {
-            sql = table!.ForeignKeys.Cast<SqlServer.ForeignKey?>().Aggregate(sql,
+            sql = table!.ForeignKeys.Cast<ForeignKey?>().Aggregate(sql,
                 (current, fk) => $"ALTER TABLE [{table.Name}] DROP CONSTRAINT [{fk!.Name}];\n" + current);
 
             sql += $"DROP TABLE [{table.Name}];\n";
@@ -122,14 +121,14 @@ public class DbSetupCommand : RootCommand
 
         _logger.LogWarning("Dropping views...");
 
-        foreach (var view in db.Views.Cast<SqlServer.View>().Where(v => !v.IsSystemObject))
+        foreach (var view in db.Views.Cast<View>().Where(v => !v.IsSystemObject))
         {
             db.ExecuteNonQuery($"DROP VIEW [{view!.Name}]");
         }
 
         _logger.LogWarning("Dropping sequences...");
 
-        foreach (var sequence in db.Sequences.Cast<SqlServer.Sequence>())
+        foreach (var sequence in db.Sequences.Cast<Sequence>())
         {
             db.ExecuteNonQuery($"DROP SEQUENCE [{sequence!.Name}]");
         }

@@ -1,22 +1,26 @@
-using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Azure.Identity;
 using Hexagrams.Extensions.Configuration;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
-using Microsoft.IdentityModel.Tokens;
-using NSwag;
-using NSwag.AspNetCore;
+using PwnedPasswords.Validator;
 using Spenses.Api.Infrastructure;
-using Spenses.Application.Common;
 using Spenses.Application.Features.Homes.Authorization;
+using Spenses.Application.Features.Identity;
+using Spenses.Application.Services.Identity;
+using Spenses.Application.Services.Identity.Passwords;
+using Spenses.Resources.Communication;
+using Spenses.Resources.Relational;
+using Spenses.Resources.Relational.Models;
+using Spenses.Shared.Common;
 using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api;
@@ -25,17 +29,20 @@ public static class ProgramExtensions
 {
     private const string OpenApiDocumentTitle = "Spenses API";
 
-    public static ConfigurationManager BuildConfiguration(this ConfigurationManager configuration)
+    public static bool IsDevelopmentOrIntegrationTestEnvironment(this IWebHostEnvironment environment)
     {
-        var environment = configuration.Require(ConfigConstants.AspNetCoreEnvironment);
+        return environment.IsEnvironment(EnvironmentNames.Development) ||
+            environment.IsEnvironment(EnvironmentNames.IntegrationTest);
+    }
 
-        if (environment != EnvironmentNames.Local &&
-            environment != EnvironmentNames.IntegrationTest)
+    public static WebApplicationBuilder BuildConfiguration(this WebApplicationBuilder builder)
+    {
+        if (!builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
         {
             var appConfigurationConnectionString =
-                configuration.Require(ConfigConstants.SpensesAppConfigurationConnectionString);
+                builder.Configuration.Require(ConfigConstants.SpensesAppConfigurationConnectionString);
 
-            configuration.AddAzureAppConfiguration(options =>
+            builder.Configuration.AddAzureAppConfiguration(options =>
             {
                 options.Connect(appConfigurationConnectionString)
                     .ConfigureKeyVault(kv => { kv.SetCredential(new DefaultAzureCredential()); })
@@ -45,21 +52,20 @@ public static class ProgramExtensions
         }
         else
         {
-            configuration.AddUserSecrets<Program>();
+            builder.Configuration.AddUserSecrets<Program>();
         }
 
-        configuration.SetKeyDelimiters(":", "_", "-", ".");
+        builder.Configuration.SetKeyDelimiters(":", "_", "-", ".");
 
-        return configuration;
+        return builder;
     }
 
-    public static IServiceCollection AddWebApiServices(this IServiceCollection services, IConfiguration configuration,
+    public static WebApplicationBuilder AddWebApiServices(this WebApplicationBuilder builder,
         string corsPolicyName)
     {
-        services
+        builder.Services
             .AddControllers(options =>
             {
-                options.Filters.Add<UserSyncFilter>();
                 options.Filters.Add<ApplicationExceptionFilter>();
             })
             .AddJsonOptions(options =>
@@ -67,64 +73,122 @@ public static class ProgramExtensions
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-        services.AddRouting(opts =>
+        builder.Services.AddRouting(opts =>
         {
             opts.LowercaseUrls = true;
             opts.LowercaseQueryStrings = true;
         });
 
         // Disables data annotations model validation, we only want to use FluentValidation
-        services.Configure<ApiBehaviorOptions>(options =>
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
             options.SuppressModelStateInvalidFilter = true);
 
-        services.AddApiVersioning(options =>
+        builder.Services.AddApiVersioning(options =>
         {
             options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
             options.DefaultApiVersion = new ApiVersion(1, 0);
             options.AssumeDefaultVersionWhenUnspecified = true;
         });
 
-        services.AddHttpLogging(_ => { });
+        builder.Services.AddHttpLogging(_ => { });
 
-        services.AddCors(opts =>
+        builder.Services.AddCors(opts =>
         {
             opts.AddPolicy(corsPolicyName,
                 policy =>
                 {
-                    policy.WithOrigins(configuration.Collection(ConfigConstants.SpensesApiAllowedOrigins))
+                    policy.WithOrigins(builder.Configuration.Collection(ConfigConstants.SpensesApiAllowedOrigins))
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials();
                 });
         });
 
-        services.AddFeatureManagement();
+        builder.Services.AddFeatureManagement();
 
-        return services;
+        return builder;
     }
 
-    public static IServiceCollection AddAuth0Authentication(this IServiceCollection services, string authority,
-        string audience)
+    public static WebApplicationBuilder AddIdentityServices(this WebApplicationBuilder builder)
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = authority;
-                options.Audience = audience;
+        //var dataProtectionBuilder = builder.Services.AddDataProtection()
+        //    .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName));
 
-                options.TokenValidationParameters = new TokenValidationParameters
+        //if (!builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
+        //{
+        //    var blobStorageUri =
+        //        new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageSasUri));
+        //    var keyIdentifier =
+        //        new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionKeyIdentifier));
+
+        //    dataProtectionBuilder
+        //        .PersistKeysToAzureBlobStorage(blobStorageUri)
+        //        .ProtectKeysWithAzureKeyVault(keyIdentifier, new DefaultAzureCredential());
+        //}
+
+        builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
+            .AddIdentityCookies()
+            .ApplicationCookie!.Configure(opt => opt.Events = new CookieAuthenticationEvents
+            {
+                OnRedirectToLogin = ctx =>
                 {
-                    NameClaimType = ClaimTypes.NameIdentifier,
-                    ValidAudience = audience,
-                    ValidIssuer = authority
-                };
+                    ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                }
             });
 
-        return services;
+        builder.Services.AddAuthorizationBuilder();
+
+        builder.Services.AddPwnedPasswordHttpClient(minimumFrequencyToConsiderPwned: 3)
+            .AddStandardResilienceHandler();
+
+        builder.Services.AddIdentityCore<ApplicationUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders()
+            .AddPasswordValidator<UserNameAsPasswordValidator>()
+            .AddPasswordValidator<EmailAsPasswordValidator>()
+            .AddPasswordValidator<PwnedPasswordValidator<ApplicationUser>>()
+            .AddPwnedPasswordErrorDescriber<PwnedPasswordErrorDescriber>();
+
+        // We specify a minimum password length and no other requirements. We compare submitted passwords to a list
+        // of common passwords to validate them instead.
+        builder.Services.Configure<IdentityOptions>(options =>
+        {
+            options.Password.RequireDigit = false;
+            options.Password.RequireLowercase = false;
+            options.Password.RequireUppercase = false;
+            options.Password.RequireNonAlphanumeric = false;
+            options.Password.RequiredUniqueChars = 3;
+            options.Password.RequiredLength = 8;
+        });
+
+        builder.Services.AddTransient<IEmailSender<ApplicationUser>, IdentityEmailSender>();
+
+        if (builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
+        {
+            builder.Services.AddSmtpEmailServices(
+                builder.Configuration.GetRequiredSection(ConfigConstants.CommunicationEmailConfigurationSection),
+                builder.Configuration.GetRequiredSection(ConfigConstants.CommunicationSmtpOptionsSection));
+        }
+        else
+        {
+            builder.Services.AddAzureEmailServices(
+                builder.Configuration.GetRequiredSection(ConfigConstants.CommunicationEmailConfigurationSection),
+                builder.Configuration.Require(ConfigConstants.AzureCommunicationServicesConnectionString));
+        }
+
+        builder.Services.Configure<IdentityEmailOptions>(
+            builder.Configuration.GetRequiredSection(ConfigConstants.SpensesIdentityEmailConfigurationSection));
+
+        return builder;
     }
 
-    public static IServiceCollection AddAuthenticatedOpenApiDocument(this IServiceCollection services, string authority,
-        string audience)
+    public static IServiceCollection AddAuthenticatedOpenApiDocument(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
 
@@ -133,67 +197,34 @@ public static class ProgramExtensions
             document.Title = OpenApiDocumentTitle;
             document.SchemaSettings.FlattenInheritanceHierarchy = true;
             document.SchemaSettings.AllowReferencesWithProperties = true;
-
-            var authorityUri = new Uri(authority);
-            var authorizationUrl = new Uri(authorityUri, $"authorize?audience={audience}").ToString();
-            var tokenUrl = new Uri(authorityUri, "oauth/token").ToString();
-
-            document.AddSecurity(JwtBearerDefaults.AuthenticationScheme, Enumerable.Empty<string>(),
-                new OpenApiSecurityScheme
-                {
-                    Type = OpenApiSecuritySchemeType.OAuth2,
-                    Description = "Bearer Authentication",
-                    Flows = new OpenApiOAuthFlows
-                    {
-                        AuthorizationCode = new OpenApiOAuthFlow
-                        {
-                            AuthorizationUrl = authorizationUrl,
-                            TokenUrl = tokenUrl,
-                            Scopes = new Dictionary<string, string>
-                            {
-                                { "openid", "Allows the user be uniquely identified" },
-                                { "profile", "Basic profile information" },
-                                { "email", "Email and verification information" }
-                            }
-                        }
-                    }
-                });
         });
 
         return services;
     }
 
-    public static IServiceCollection AddAuthorizationServices(this IServiceCollection services)
+    public static WebApplicationBuilder AddAuthorizationServices(this WebApplicationBuilder builder)
     {
-        services.AddAuthorization();
-        services.AddHttpContextAccessor();
-        services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
-        services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
+        builder.Services.AddAuthorization();
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
+        builder.Services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
 
-        services.Scan(scan => scan
+        builder.Services.Scan(scan => scan
             .FromAssemblyOf<HomeMemberRequirement>()
             .AddClasses(classes => classes.AssignableTo<IAuthorizationHandler>())
             .AsImplementedInterfaces()
             .WithTransientLifetime());
 
-        return services;
+        return builder;
     }
 
-    public static IApplicationBuilder AddSwaggerUi(this IApplicationBuilder app, string clientId)
+    public static IApplicationBuilder AddSwaggerUi(this IApplicationBuilder app)
     {
         app.UseOpenApi();
 
         app.UseSwaggerUi(config =>
         {
             config.DocumentTitle = OpenApiDocumentTitle;
-
-            config.OAuth2Client = new OAuth2ClientSettings
-            {
-                AppName = OpenApiDocumentTitle,
-                ClientId = clientId,
-                ClientSecret = string.Empty,
-                UsePkceWithAuthorizationCodeGrant = true
-            };
         });
 
         return app;

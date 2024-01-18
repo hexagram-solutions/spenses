@@ -1,0 +1,127 @@
+﻿@using Spenses.App.Infrastructure
+@using Spenses.Shared.Models.Identity
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack AlignItems="AlignItems.Start">
+    <MudText Typo="Typo.h5">
+        Email
+    </MudText>
+
+    <MudStack Row
+              Justify="Justify.SpaceBetween">
+
+        <MudText>
+            The email associated with your account. You use it to log in and receive emails from Spenses.
+        </MudText>
+
+        <MudSpacer/>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Tertiary"
+                   OnClick="ToggleEditMode"
+                   StartIcon="@(IsEditing ? Icons.Material.Filled.EditOff : Icons.Material.Filled.Edit)">
+            @if (IsEditing)
+            {
+                <MudText>Cancel</MudText>
+            }
+            else
+            {
+                <MudText>Edit</MudText>
+            }
+        </MudButton>
+    </MudStack>
+
+    <div class="d-flex flex-grow-1">
+        <MudForm Model="Request"
+                 @ref="FormRef"
+                 Validation="@(_validator.ValidateValue())">
+
+            <MudTextField @bind-Value="Request.NewEmail"
+                          @ref="EmailTextFieldRef"
+                          Label="Email"
+                          For="@(() => Request.NewEmail)"
+                          Immediate
+                          DebounceInterval="250"
+                          Required
+                          Disabled="!IsEditing"
+                          FullWidth/>
+        </MudForm>
+
+    </div>
+
+    <MudStack Row>
+        @if (IsEditing)
+        {
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       OnClick="ChangeEmail"
+                       Disabled="!ChangeEmailEnabled">
+                <MudText>Confirm new email</MudText>
+            </MudButton>
+
+            @if (MeState.Value.ChangeEmailErrors.Length > 0)
+            {
+                @foreach (var error in MeState.Value.ChangeEmailErrors)
+                {
+                    switch (error)
+                    {
+                        case IdentityErrors.Register.InvalidEmail:
+                        case IdentityErrors.Register.InvalidUserName:
+                            @InvalidUserNameOrEmailError
+                            break;
+
+                        case IdentityErrors.Register.DuplicateEmail:
+                        case IdentityErrors.Register.DuplicateUserName:
+                            @DuplicateUserNameOrEmailError
+                            break;
+
+                        default:
+                            @GenericError(MeState.Value.ChangeEmailErrors)
+                            break;
+                    }
+                }
+            }
+
+            @if (VerificationEmailSent)
+            {
+                <MudAlert Severity="Severity.Success">
+                    A verification email has been sent to <b>@Request.NewEmail</b>. Once you verify your new email, you can
+                    use it to log in.
+                </MudAlert>
+            }
+        }
+    </MudStack>
+</MudStack>
+
+@code
+{
+    private RenderFragment InvalidUserNameOrEmailError => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            The email address you entered is invalid.
+        </MudAlert>
+    };
+
+    private RenderFragment DuplicateUserNameOrEmailError => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            It looks like you may already have an account with us under this email address. Use your credentials to
+            <MudLink Href="@Routes.Identity.Login()">log in.</MudLink>
+        </MudAlert>
+    };
+
+    private RenderFragment GenericError(string[] errors) => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            <p>
+                Unable to change email:
+            </p>
+            <ul>
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </MudAlert>
+    };
+}

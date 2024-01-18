@@ -2,12 +2,12 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using Spenses.Application.Common.Behaviors;
+using Spenses.Application.Behaviors;
 using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
-using Spenses.Application.Models.Common;
-using Spenses.Application.Models.Members;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Members;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Members.Requests;
