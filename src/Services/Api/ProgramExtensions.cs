@@ -6,6 +6,7 @@ using Azure.Identity;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -111,20 +112,18 @@ public static class ProgramExtensions
 
     public static WebApplicationBuilder AddIdentityServices(this WebApplicationBuilder builder)
     {
-        //var dataProtectionBuilder = builder.Services.AddDataProtection()
-        //    .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName));
+        if (!builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
+        {
+            var blobStorageUri =
+                new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageSasUri));
+            var keyIdentifier =
+                new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionKeyIdentifier));
 
-        //if (!builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
-        //{
-        //    var blobStorageUri =
-        //        new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageSasUri));
-        //    var keyIdentifier =
-        //        new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionKeyIdentifier));
-
-        //    dataProtectionBuilder
-        //        .PersistKeysToAzureBlobStorage(blobStorageUri)
-        //        .ProtectKeysWithAzureKeyVault(keyIdentifier, new DefaultAzureCredential());
-        //}
+            builder.Services.AddDataProtection()
+                .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName))
+                .PersistKeysToAzureBlobStorage(blobStorageUri)
+                .ProtectKeysWithAzureKeyVault(keyIdentifier, new DefaultAzureCredential());
+        }
 
         builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme)
             .AddIdentityCookies()
