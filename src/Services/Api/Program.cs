@@ -22,18 +22,17 @@ builder.Services
     .AddApplicationServices()
     .AddRelationalServices(builder.Configuration.Require(ConfigConstants.SqlServerConnectionString));
 
-builder.Services.AddAuthenticatedOpenApiDocument(
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAuthority),
-    builder.Configuration.Require(ConfigConstants.SpensesOpenIdAudience));
+builder.Services.AddAuthenticatedOpenApiDocument();
 
 var app = builder.Build();
 
 app.UseHttpLogging();
 
-if (app.Environment.IsEnvironment(EnvironmentNames.Local) ||
+if (app.Environment.IsEnvironment(EnvironmentNames.Development) ||
     app.Environment.IsEnvironment(EnvironmentNames.IntegrationTest) ||
     app.Environment.IsEnvironment(EnvironmentNames.Test))
 {
+    // TODO: Use global exception handler instead of error controller? (see twitter bookmarks)
     app.UseExceptionHandler("/error-development");
     app.UseHttpLogging();
 
@@ -45,7 +44,7 @@ else
     app.UseExceptionHandler("/error");
 }
 
-app.AddSwaggerUi(app.Configuration.Require(ConfigConstants.SpensesOpenIdClientId));
+app.AddSwaggerUi();
 
 app.UseHttpsRedirection();
 

@@ -19,10 +19,6 @@ public static class ConfigConstants
     public const string SpensesAppConfigurationConnectionString = "Spenses-AppConfiguration-ConnectionString";
     public const string SpensesAppConfigurationSentinel = "Spenses:AppConfiguration:Sentinel";
 
-    public const string SpensesOpenIdAuthority = "Spenses:OpenId:Authority";
-    public const string SpensesOpenIdAudience = "Spenses:OpenId:Audience";
-    public const string SpensesOpenIdClientId = "Spenses:OpenId:ClientId";
-
     public const string SpensesFeaturesErrorGenerationFrequency = "Spenses:Features:ErrorGeneration:Frequency";
 
     public const string SpensesDataProtectionApplicationName = "Spenses:DataProtection:ApplicationName";

@@ -5,15 +5,12 @@ using Asp.Versioning;
 using Azure.Identity;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
-using NSwag;
-using NSwag.AspNetCore;
 using PwnedPasswords.Validator;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Homes.Authorization;
@@ -32,15 +29,15 @@ public static class ProgramExtensions
 {
     private const string OpenApiDocumentTitle = "Spenses API";
 
-    public static bool IsLocalOrIntegrationTestEnvironment(this IWebHostEnvironment environment)
+    public static bool IsDevelopmentOrIntegrationTestEnvironment(this IWebHostEnvironment environment)
     {
-        return environment.IsEnvironment(EnvironmentNames.Local) ||
+        return environment.IsEnvironment(EnvironmentNames.Development) ||
             environment.IsEnvironment(EnvironmentNames.IntegrationTest);
     }
 
     public static WebApplicationBuilder BuildConfiguration(this WebApplicationBuilder builder)
     {
-        if (!builder.Environment.IsLocalOrIntegrationTestEnvironment())
+        if (!builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
         {
             var appConfigurationConnectionString =
                 builder.Configuration.Require(ConfigConstants.SpensesAppConfigurationConnectionString);
@@ -117,7 +114,7 @@ public static class ProgramExtensions
         //var dataProtectionBuilder = builder.Services.AddDataProtection()
         //    .SetApplicationName(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionApplicationName));
 
-        //if (!builder.Environment.IsLocalOrIntegrationTestEnvironment())
+        //if (!builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
         //{
         //    var blobStorageUri =
         //        new Uri(builder.Configuration.Require(ConfigConstants.SpensesDataProtectionBlobStorageSasUri));
@@ -172,7 +169,7 @@ public static class ProgramExtensions
 
         builder.Services.AddTransient<IEmailSender<ApplicationUser>, IdentityEmailSender>();
 
-        if (builder.Environment.IsLocalOrIntegrationTestEnvironment())
+        if (builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
         {
             builder.Services.AddSmtpEmailServices(
                 builder.Configuration.GetRequiredSection(ConfigConstants.CommunicationEmailConfigurationSection),
@@ -191,8 +188,7 @@ public static class ProgramExtensions
         return builder;
     }
 
-    public static IServiceCollection AddAuthenticatedOpenApiDocument(this IServiceCollection services, string authority,
-        string audience)
+    public static IServiceCollection AddAuthenticatedOpenApiDocument(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
 
@@ -201,31 +197,6 @@ public static class ProgramExtensions
             document.Title = OpenApiDocumentTitle;
             document.SchemaSettings.FlattenInheritanceHierarchy = true;
             document.SchemaSettings.AllowReferencesWithProperties = true;
-
-            var authorityUri = new Uri(authority);
-            var authorizationUrl = new Uri(authorityUri, $"authorize?audience={audience}").ToString();
-            var tokenUrl = new Uri(authorityUri, "oauth/token").ToString();
-
-            document.AddSecurity(JwtBearerDefaults.AuthenticationScheme, Enumerable.Empty<string>(),
-                new OpenApiSecurityScheme
-                {
-                    Type = OpenApiSecuritySchemeType.OAuth2,
-                    Description = "Bearer Authentication",
-                    Flows = new OpenApiOAuthFlows
-                    {
-                        AuthorizationCode = new OpenApiOAuthFlow
-                        {
-                            AuthorizationUrl = authorizationUrl,
-                            TokenUrl = tokenUrl,
-                            Scopes = new Dictionary<string, string>
-                            {
-                                { "openid", "Allows the user be uniquely identified" },
-                                { "profile", "Basic profile information" },
-                                { "email", "Email and verification information" }
-                            }
-                        }
-                    }
-                });
         });
 
         return services;
@@ -247,21 +218,13 @@ public static class ProgramExtensions
         return builder;
     }
 
-    public static IApplicationBuilder AddSwaggerUi(this IApplicationBuilder app, string clientId)
+    public static IApplicationBuilder AddSwaggerUi(this IApplicationBuilder app)
     {
         app.UseOpenApi();
 
         app.UseSwaggerUi(config =>
         {
             config.DocumentTitle = OpenApiDocumentTitle;
-
-            config.OAuth2Client = new OAuth2ClientSettings
-            {
-                AppName = OpenApiDocumentTitle,
-                ClientId = clientId,
-                ClientSecret = string.Empty,
-                UsePkceWithAuthorizationCodeGrant = true
-            };
         });
 
         return app;

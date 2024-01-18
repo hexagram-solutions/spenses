@@ -57,7 +57,7 @@ public partial class ExpensesIntegrationTests
             Note = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = tags,
+            Tags = tags.ToList(),
             CategoryId = category.Id,
             PaidByMemberId = home.Members.First().Id
         })).Content!;
