@@ -4,6 +4,7 @@ using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Morris.Blazor.Validation;
+using MudBlazor;
 using MudBlazor.Services;
 using Refit;
 using Spenses.App.Infrastructure;
@@ -21,7 +22,10 @@ internal static class ProgramExtensions
     {
         builder.Services
             .AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) })
-            .AddMudServices();
+            .AddMudServices(config =>
+            {
+                config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+            });
 
         builder.Services.AddFormValidation(config => config.AddFluentValidation(typeof(HomePropertiesValidator).Assembly));
 

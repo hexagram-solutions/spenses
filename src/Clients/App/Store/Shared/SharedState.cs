@@ -13,14 +13,3 @@ public record SharedState
 
     public ApplicationError? Error { get; set; }
 }
-
-public record ApplicationErrorAction(ApplicationError Error);
-
-public static class Reducers
-{
-    [ReducerMethod]
-    public static SharedState ReduceApiError(SharedState state, ApplicationErrorAction action)
-    {
-        return state with { Error = action.Error };
-    }
-}
