@@ -10,15 +10,17 @@
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:8081;http://localhost:8080"
     },
-    "Container (.NET SDK)": {
-      "commandName": "SdkContainer",
+    "Docker": {
+      "commandName": "Docker",
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081",
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_URLS": "https://+:443;http://+:80",
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "httpPort": 8080,
+      "sslPort": 8081
     }
   }
 }
