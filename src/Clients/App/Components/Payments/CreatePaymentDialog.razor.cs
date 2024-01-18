@@ -28,7 +28,8 @@ public partial class CreatePaymentDialog
 
     public PaymentProperties Payment { get; set; } = new()
     {
-        Amount = 0.00m, Date = DateOnly.FromDateTime(DateTime.Today)
+        Amount = 0.00m,
+        Date = DateOnly.FromDateTime(DateTime.Today)
     };
 
     private void Close()

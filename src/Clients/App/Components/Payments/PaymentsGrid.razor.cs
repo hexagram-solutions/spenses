@@ -86,7 +86,8 @@ public partial class PaymentsGrid
 
     private FilteredPaymentsQuery Query { get; set; } = new()
     {
-        OrderBy = nameof(PaymentDigest.Date), SortDirection = SortDirection.Desc
+        OrderBy = nameof(PaymentDigest.Date),
+        SortDirection = SortDirection.Desc
     };
 
     private DateRange? DateRangeValue
@@ -137,7 +138,8 @@ public partial class PaymentsGrid
 
         return new GridData<PaymentDigest>
         {
-            Items = response.Content!.Items, TotalItems = response.Content.TotalCount
+            Items = response.Content!.Items,
+            TotalItems = response.Content.TotalCount
         };
     }
 }

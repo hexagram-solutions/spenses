@@ -93,7 +93,8 @@ public partial class ExpensesGrid
 
     private FilteredExpensesQuery Query { get; set; } = new()
     {
-        OrderBy = nameof(ExpenseDigest.Date), SortDirection = SortDirection.Desc
+        OrderBy = nameof(ExpenseDigest.Date),
+        SortDirection = SortDirection.Desc
     };
 
     private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
@@ -158,7 +159,8 @@ public partial class ExpensesGrid
 
         return new GridData<ExpenseDigest>
         {
-            Items = response.Content!.Items, TotalItems = response.Content.TotalCount
+            Items = response.Content!.Items,
+            TotalItems = response.Content.TotalCount
         };
     }
 }
