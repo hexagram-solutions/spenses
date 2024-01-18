@@ -14,7 +14,7 @@ COPY ["src/Resources/Communication/Spenses.Resources.Communication.csproj", "src
 COPY ["src/Resources/Relational/Spenses.Resources.Relational.csproj", "src/Resources/Relational/"]
 COPY ["src/Utilities/Security/Spenses.Utilities.Security.csproj", "src/Utilities/Security/"]
 COPY ["src/Shared/Spenses.Shared.csproj", "src/Shared/"]
-RUN dotnet restore "./src/Services/Api/Spenses.Api.csproj
+RUN dotnet restore "./src/Services/Api/Spenses.Api.csproj"
 COPY . .
 WORKDIR "/src/src/Services/Api"
 RUN dotnet build "./Spenses.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
