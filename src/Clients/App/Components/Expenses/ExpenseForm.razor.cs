@@ -34,8 +34,6 @@ public partial class ExpenseForm
 
     private IEnumerable<string> AvailableTags => ExpensesState.Value.ExpenseFilters.Tags;
 
-    private string TagValue { get; set; } = null!;
-
     private DateTime? DateValue
     {
         get => Expense.Date.ToDateTime(TimeOnly.MinValue);
@@ -46,10 +44,19 @@ public partial class ExpenseForm
         }
     }
 
-    private List<string> ExpenseTags
+    private string TagValue { get; set; } = null!;
+
+    private void OnTagValueChanged(string tag)
     {
-        get => Expense.Tags.ToList();
-        set => Expense.Tags = [.. value];
+        if (Expense.Tags.Contains(tag, StringComparer.CurrentCultureIgnoreCase))
+            return;
+
+        Expense.Tags.Add(tag);
+    }
+
+    private void RemoveTag(string tag)
+    {
+        Expense.Tags.Remove(tag);
     }
 
     protected override void OnInitialized()

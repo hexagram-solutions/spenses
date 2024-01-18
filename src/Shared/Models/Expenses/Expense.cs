@@ -18,8 +18,8 @@ public abstract record ExpenseBase
     [Range(0, 999_999.99)]
     public decimal Amount { get; set; }
 
-    [JsonConverter(typeof(LowerCaseNormalizingStringArrayConverter))]
-    public string[] Tags { get; set; } = Array.Empty<string>();
+    [JsonConverter(typeof(LowerCaseNormalizingStringListConverter))]
+    public List<string> Tags { get; set; } = [];
 }
 
 public record ExpenseProperties : ExpenseBase

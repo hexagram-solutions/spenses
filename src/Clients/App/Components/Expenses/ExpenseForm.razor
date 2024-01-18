@@ -22,7 +22,8 @@
         <MudDatePicker @bind-Date="DateValue"
                        Label="Date"
                        HelperText="The date the expense was paid"
-                       AutoClose />
+                       AutoClose 
+                       Required/>
     </MudItem>
     <MudItem xs="6">
         <MudSelect T="Guid"
@@ -30,6 +31,7 @@
                    ToStringFunc="@(v => Home.Members.SingleOrDefault(m => m.Id == v)?.Name ?? string.Empty)"
                    Label="Paid by"
                    HelperText="The home member that paid the expense"
+                   Required
                    For="@(() => Expense.PaidByMemberId)">
             @foreach (var member in Home.Members.OrderBy(m => m.Name))
             {
@@ -47,6 +49,7 @@
                    Label="Category"
                    HelperText="The category this expense falls under"
                    Disabled="ExpenseCategoriesState.Value.ExpenseCategoriesRequesting"
+                   Required
                    For="@(() => Expense.CategoryId)">
             @foreach (var category in Categories)
             {
@@ -64,23 +67,24 @@
                       For="@(() => Expense.Note)">
         </MudTextField>
     </MudItem>
-    @* <MudItem xs="12">
+    <MudItem xs="12">
         <MudAutocomplete T="string"
                          Value="TagValue"
-                         ValueChanged="s => ExpenseTags.Add(s)"
+                         ValueChanged="OnTagValueChanged"
                          Label="Tags"
                          HelperText="Add or choose existing tags for this expense"
                          SearchFunc="SearchTags"
                          ResetValueOnEmptyText
                          CoerceValue
+                         DebounceInterval="500"
                          AdornmentIcon="@Icons.Material.Filled.Search"
                          AdornmentColor="Color.Primary"/>
 
-        <MudChipSet AllClosable="true" OnClose="chip => ExpenseTags.Remove(chip.Text)">
-            @foreach (var tag in ExpenseTags)
+        <MudChipSet AllClosable="true" OnClose="chip => Expense.Tags.Remove(chip.Text)">
+            @foreach (var tag in Expense.Tags)
             {
                 <MudChip Text="@tag" />
             }
         </MudChipSet>
-    </MudItem> *@
+    </MudItem>
 </MudGrid>

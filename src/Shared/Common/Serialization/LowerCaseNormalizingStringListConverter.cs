@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace Spenses.Shared.Common.Serialization;
 
-public class LowerCaseNormalizingStringArrayConverter : JsonConverter<string[]>
+public class LowerCaseNormalizingStringListConverter : JsonConverter<List<string>>
 {
-    public override string[] Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override List<string> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartArray)
             throw new JsonException();
@@ -24,7 +24,7 @@ public class LowerCaseNormalizingStringArrayConverter : JsonConverter<string[]>
         return [.. elements];
     }
 
-    public override void Write(Utf8JsonWriter writer, string[] value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, List<string> value, JsonSerializerOptions options)
     {
         writer.WriteStartArray();
 
