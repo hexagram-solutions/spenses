@@ -16,8 +16,8 @@
 <body>
     <div id="app">
         <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%"/>
-            <circle r="40%" cx="50%" cy="50%"/>
+            <circle r="40%" cx="50%" cy="50%" />
+            <circle r="40%" cx="50%" cy="50%" />
         </svg>
         <div class="loading-progress-text"></div>
     </div>
@@ -27,9 +27,28 @@
         <a href="." class="reload">Reload</a>
         <span class="dismiss">🗙</span>
     </div>
+    
+    <script src="_framework/blazor.webassembly.js" autostart="false"></script>
+    <script>
+        const hostName = window.location.hostname;
+        if (hostName.includes("localhost")) {
+            Blazor.start({
+                environment: "Development"
+            });
+        } else if (hostName.startsWith("test")) {
+            Blazor.start({
+                environment: "Test"
+            });
+        } else if (hostName.startsWith("staging")) {
+            Blazor.start({
+                environment: "Staging"
+            });
+        } else {
+            Blazor.start();
+        }
+    </script>
     <script src="_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    <script src="_framework/blazor.webassembly.js"></script>
 </body>
 
 </html>

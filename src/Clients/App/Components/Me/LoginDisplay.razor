@@ -1,6 +1,8 @@
 ﻿@using Spenses.App.Infrastructure
 @using Fluxor.Blazor.Web.Middlewares.Routing
+@using Microsoft.AspNetCore.Components.WebAssembly.Hosting
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
+@inject IWebAssemblyHostEnvironment Env
 
 <MudStack Row="true"
           AlignItems="AlignItems.Center">
@@ -43,6 +45,12 @@
                              OnClick="LogOut">
                     Log out
                 </MudMenuItem>
+                @if (!Env.IsProduction())
+                {
+                    <MudMenuItem>
+                        Environment: @Env.Environment
+                    </MudMenuItem>
+                }
             </ChildContent>
         </MudMenu>
     }

@@ -22,7 +22,7 @@ public static class ConfigConstants
 
     public const string SpensesFeaturesErrorGenerationFrequency = "Spenses:Features:ErrorGeneration:Frequency";
 
-    public const string SpensesDataProtectionApplicationName = $"Spenses:DataProtection:ApplicationName";
+    public const string SpensesDataProtectionApplicationName = "Spenses:DataProtection:ApplicationName";
     public const string SpensesDataProtectionKeyIdentifier = "Spenses:DataProtection:KeyIdentifier";
     public const string SpensesDataProtectionBlobStorageContainerName = "Spenses:DataProtection:BlobContainerName";
     public const string SpensesDataProtectionBlobStorageBlobName = "Spenses:DataProtection:BlobName";
