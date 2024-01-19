@@ -1,0 +1,37 @@
+﻿@inherits MudButton
+
+<MudButton HtmlTag="@HtmlTag"
+           ButtonType="@ButtonType"
+           Href="@Href"
+           Target="@Target"
+           Rel="@Rel"
+           Disabled="@(Loading || Disabled)"
+           ClickPropagation="@ClickPropagation"
+           DisableElevation="@DisableElevation"
+           DisableRipple="@DisableRipple"
+           OnClick="@OnClick"
+           StartIcon="@StartIcon"
+           EndIcon="@EndIcon"
+           IconColor="@IconColor"
+           IconSize="@IconSize"
+           IconClass="@IconClass"
+           Color="@Color"
+           Size="@Size"
+           Variant="@Variant"
+           Style="@Style">
+    <div>
+        @ChildContent
+        <MudOverlay Visible="Loading"
+                    DarkBackground
+                    Absolute>
+            <MudProgressCircular Color="Color.Primary"
+                                 Indeterminate
+                                 Size="Size.Small"
+                                 Class="mt-2"/>
+        </MudOverlay>
+    </div>
+</MudButton>
+
+@code {
+    [Parameter] [EditorRequired] public bool Loading { get; set; }
+}

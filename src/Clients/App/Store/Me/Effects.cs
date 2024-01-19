@@ -87,6 +87,15 @@ public class Effects(IMeApi me)
 
         var problemDetails = await result.Error.GetContentAsAsync<ProblemDetails>();
 
+
+
+        if (problemDetails!.Errors.ContainsKey(IdentityErrors.Password.PasswordMismatch))
+        {
+            dispatcher.Dispatch(new ChangePasswordFailedAction([IdentityErrors.Password.PasswordMismatch]));
+
+            return;
+        }
+
         if (problemDetails!.Errors.ContainsKey(IdentityErrors.Password.PasswordTooShort))
         {
             dispatcher.Dispatch(new ChangePasswordFailedAction([IdentityErrors.Password.PasswordTooShort]));

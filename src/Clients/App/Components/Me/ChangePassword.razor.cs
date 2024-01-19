@@ -7,35 +7,33 @@ using Spenses.Shared.Models.Me;
 
 namespace Spenses.App.Components.Me;
 
-public partial class Profile
+public partial class ChangePassword
 {
-    [Parameter]
-    public UserProfileProperties Properties { get; set; } = new();
-
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
 
     [Inject]
     private IState<MeState> MeState { get; set; } = null!;
 
-    private bool IsDirty => Properties.DisplayName != MeState.Value.CurrentUser?.DisplayName;
+    public ChangePasswordRequest Request { get; set; } = new();
 
-    private bool? UpdateSucceeded { get; set; }
+    private bool IsEditing { get; set; }
 
-    private bool UpdateEnabled => IsDirty && !MeState.Value.CurrentUserUpdating;
+    private bool? Succeeded { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        SubscribeToAction<CurrentUserUpdateSucceededAction>(_ => UpdateSucceeded = true);
+        SubscribeToAction<ChangePasswordFailedAction>(_ => Succeeded = false);
+        SubscribeToAction<ChangePasswordSucceededAction>(_ => Succeeded = true);
     }
 
-    private void UpdateInformation(EditContext editContext)
+    private void SubmitChangePassword(EditContext editContext)
     {
         if (!editContext.ValidateObjectTree())
             return;
 
-        Dispatcher.Dispatch(new CurrentUserUpdatedAction(Properties));
+        Dispatcher.Dispatch(new ChangePasswordRequestedAction(Request));
     }
 }
