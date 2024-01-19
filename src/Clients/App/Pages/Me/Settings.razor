@@ -20,6 +20,19 @@
     <MudPaper Class="pa-6">
         <Email Request="ChangeEmailRequest"/>
     </MudPaper>
+
+    <MudPaper Class="pa-6">
+        <MudStack>
+            <MudText Typo="Typo.h5">
+                Security
+            </MudText>
+            <ChangePassword />
+            <MudDivider/>
+            <TwoStepVerification />
+            <MudDivider/>
+            <RecoveryCodes />
+        </MudStack>
+    </MudPaper>
 </MudStack>
 
 @code

@@ -52,7 +52,7 @@ public class ResetPasswordRequestValidatorTests
     }
 
     [Fact]
-    public void New_password_must_be_at_least_10_characters_long()
+    public void New_password_must_be_at_least_8_characters_long()
     {
         var model = new ResetPasswordRequest
         {
@@ -64,10 +64,10 @@ public class ResetPasswordRequestValidatorTests
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.NewPassword);
 
-        _validator.TestValidate(model with { NewPassword = new string('a', 9) })
+        _validator.TestValidate(model with { NewPassword = new string('a', 7) })
             .ShouldHaveValidationErrorFor(x => x.NewPassword);
 
-        _validator.TestValidate(model with { NewPassword = new string('a', 10) })
+        _validator.TestValidate(model with { NewPassword = new string('a', 8) })
             .ShouldNotHaveValidationErrorFor(x => x.NewPassword);
     }
 }

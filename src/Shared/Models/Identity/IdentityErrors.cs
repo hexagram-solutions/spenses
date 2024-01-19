@@ -33,6 +33,8 @@ public static class IdentityErrors
         public const string UserNameAsPassword = nameof(UserNameAsPassword);
 
         public const string EmailAsPassword = nameof(EmailAsPassword);
+
+        public const string PasswordMismatch = nameof(PasswordMismatch);
     }
 
     public static class EmailVerification

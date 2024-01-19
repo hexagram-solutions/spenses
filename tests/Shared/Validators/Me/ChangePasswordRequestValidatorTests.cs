@@ -25,7 +25,7 @@ public class ChangePasswordRequestValidatorTests
     }
 
     [Fact]
-    public void NewPassword_must_be_at_least_10_characters_long()
+    public void NewPassword_must_be_at_least_8_characters_long()
     {
         var model = new ChangePasswordRequest
         {

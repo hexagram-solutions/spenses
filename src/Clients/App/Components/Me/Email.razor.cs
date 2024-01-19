@@ -1,16 +1,15 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Morris.Blazor.Validation.Extensions;
 using MudBlazor;
 using Spenses.App.Store.Me;
 using Spenses.Shared.Models.Me;
-using Spenses.Shared.Validators.Me;
 
 namespace Spenses.App.Components.Me;
 
 public partial class Email
 {
-    private readonly ChangeEmailRequestValidator _validator = new();
-
     [Parameter]
     public ChangeEmailRequest Request { get; set; } = null!;
 
@@ -19,8 +18,6 @@ public partial class Email
 
     [Inject]
     private IState<MeState> MeState { get; set; } = null!;
-
-    private MudForm FormRef { get; set; } = null!;
 
     private MudTextField<string> EmailTextFieldRef { get; set; } = null!;
 
@@ -49,13 +46,9 @@ public partial class Email
             await EmailTextFieldRef.FocusAsync();
     }
 
-    private async Task ChangeEmail()
+    private void ChangeEmail(EditContext editContext)
     {
-        VerificationEmailSent = false;
-
-        await FormRef.Validate();
-
-        if (!FormRef.IsValid)
+        if (!editContext.ValidateObjectTree())
             return;
 
         Dispatcher.Dispatch(new ChangeEmailRequestedAction(Request));

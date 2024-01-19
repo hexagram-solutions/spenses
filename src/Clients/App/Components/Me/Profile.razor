@@ -1,16 +1,19 @@
 ﻿@using Spenses.App.Infrastructure
+@using Spenses.Shared.Validators.Me
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <MudStack AlignItems="AlignItems.Start">
     <MudText Typo="Typo.h5">
         Profile
     </MudText>
-    <MudText Typo="Typo.body1">
+    <MudText>
         Your personal profile. This information is shown to other Spenses users.
     </MudText>
-    <MudForm Model="Properties"
-             @ref="FormRef"
-             Validation="@(_validator.ValidateValue())">
+
+    <EditForm Model="Properties"
+              OnSubmit="UpdateInformation">
+
+        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<UserProfilePropertiesValidator>())"/>
 
         <MudTextField @bind-Value="Properties.DisplayName"
                       Label="Display name"
@@ -20,21 +23,18 @@
                       Required
                       HelperText="The name shown to other members to identify you."
                       Adornment="@(UpdateSucceeded == true ? Adornment.End : Adornment.None)"
-                      AdornmentIcon="@Icons.Material.Filled.Check"
-                      AdornmentColor="Color.Success"/>
-    </MudForm>
+                      AdornmentIcon="@Icons.Material.Rounded.Check"
+                      AdornmentColor="Color.Success"
+                      Style="width: 500px"/>
 
-    <MudButton Variant="Variant.Filled"
-               Color="Color.Primary"
-               OnClick="UpdateInformation"
-               Disabled="!UpdateEnabled">
-        @if (MeState.Value.CurrentUserUpdating)
-        {
-            <MudProgressCircular Class="ms-n1"
-                                 Size="Size.Small"
-                                 Indeterminate="true"/>
-        }
-        <MudText>Update profile</MudText>
-    </MudButton>
+        <LoadingButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Disabled="!UpdateEnabled"
+                       Loading="MeState.Value.CurrentUserUpdating"
+                       Style="width: 240px">
+            Update profile
+        </LoadingButton>
+    </EditForm>
 
 </MudStack>
