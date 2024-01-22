@@ -1,9 +1,9 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
+using Microsoft.AspNetCore.Components.Forms;
+using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
-using Spenses.Shared.Validators.Identity;
 
 namespace Spenses.App.Pages.Identity;
 
@@ -19,10 +19,6 @@ public partial class ForgotPassword
 
     private bool? Succeeded { get; set; }
 
-    private MudForm FormRef { get; set; } = null!;
-
-    private readonly ForgotPasswordRequestValidator _validator = new();
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -31,13 +27,11 @@ public partial class ForgotPassword
         SubscribeToAction<ForgotPasswordFailedAction>(_ => Succeeded = false);
     }
 
-    private async Task RequestPasswordReset()
+    private void RequestPasswordReset(EditContext editContext)
     {
         Succeeded = null;
 
-        await FormRef.Validate();
-
-        if (!FormRef.IsValid)
+        if (!editContext.ValidateObjectTree())
             return;
 
         Dispatcher.Dispatch(new ForgotPasswordRequestedAction(Request.Email));

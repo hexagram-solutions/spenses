@@ -1,6 +1,7 @@
 ﻿@page "/login"
 @using Spenses.App.Infrastructure
 @using Spenses.Shared.Models.Identity
+@using Spenses.Shared.Validators.Identity
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Log in</PageTitle>
@@ -8,30 +9,32 @@
 <MudStack>
     <MudText Typo="Typo.h5">Log in</MudText>
 
-    <MudForm Model="LoginRequest"
-             @ref="FormRef"
-             Validation="@(_validator.ValidateValue())">
-        <MudStack Spacing="0">
-            
+    <EditForm Model="LoginRequest"
+              OnSubmit="LogIn">
+        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<LoginRequestValidator>())"/>
+
+        <MudStack>
             <MudTextField @bind-Value="LoginRequest.Email"
                           Label="Email"
                           For="@(() => LoginRequest.Email)"
-                          Required/>
+                          Required />
 
             <MudTextField @bind-Value="LoginRequest.Password"
                           Label="Password"
                           InputType="InputType.Password"
                           For="@(() => LoginRequest.Password)"
-                          Required/>
-        </MudStack>
-    </MudForm>
+                          Required />
 
-    <MudButton Variant="Variant.Filled"
-               Color="Color.Primary"
-               OnClick="LogIn"
-               Disabled="IdentityState.Value.LoginRequesting">
-        Log in
-    </MudButton>
+            <div>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           ButtonType="ButtonType.Submit"
+                           Disabled="IdentityState.Value.LoginRequesting">
+                    Log in
+                </MudButton>
+            </div>
+        </MudStack>
+    </EditForm>
 
     @if (IdentityState.Value.Errors.Length > 0)
     {
@@ -65,7 +68,8 @@
         </div>
     </MudStack>
 </MudStack>
-
+@* ReSharper disable InconsistentNaming *@
+@* ReSharper disable UnusedParameter.Local *@
 @code
 {
     private RenderFragment InvalidCredentialsError => __builder =>

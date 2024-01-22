@@ -12,7 +12,7 @@ namespace Spenses.App.Pages.Identity;
 public partial class EmailVerificationRequired
 {
     [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+    public Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
@@ -21,7 +21,9 @@ public partial class EmailVerificationRequired
     private IState<IdentityState> IdentityState { get; set; } = null!;
 
     private IdentityState State => IdentityState.Value;
+
     private bool VerificationEmailReSent { get; set; }
+
     public string Email { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
@@ -37,8 +39,6 @@ public partial class EmailVerificationRequired
             return;
         }
 
-        // sub to email sent success to set verification email re-sent
-
         Email = currentUser.GetEmail();
 
         SubscribeToAction<ResendVerificationEmailSucceededAction>(_ => { VerificationEmailReSent = true; });
@@ -46,6 +46,6 @@ public partial class EmailVerificationRequired
 
     private void ResendVerificationEmail()
     {
-        Dispatcher.Dispatch(new ResendVerificationEmailRequest(Email));
+        Dispatcher.Dispatch(new ResendVerificationEmailRequestedAction(Email));
     }
 }

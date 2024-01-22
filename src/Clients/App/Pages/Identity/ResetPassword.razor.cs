@@ -1,6 +1,8 @@
 using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Morris.Blazor.Validation.Extensions;
 using MudBlazor;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
@@ -33,10 +35,6 @@ public partial class ResetPassword
 
     private ResetPasswordRequest Request { get; set; } = new();
 
-    private MudForm FormRef { get; set; } = null!;
-
-    private readonly ResetPasswordRequestValidator _validator = new();
-
     private bool? Succeeded { get; set; }
 
     protected override void OnInitialized()
@@ -60,11 +58,9 @@ public partial class ResetPassword
         Dispatcher.Dispatch(new GoAction(Routes.Identity.Login()));
     }
 
-    private async Task UpdatePassword()
+    private void UpdatePassword(EditContext context)
     {
-        await FormRef.Validate();
-
-        if (!FormRef.IsValid)
+        if (!context.ValidateObjectTree())
             return;
 
         Dispatcher.Dispatch(new ResetPasswordRequestedAction(Request));

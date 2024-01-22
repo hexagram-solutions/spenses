@@ -136,6 +136,12 @@ public static class ProgramExtensions
                 }
             });
 
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.SlidingExpiration = true;
+            options.ExpireTimeSpan = TimeSpan.FromDays(14);
+        });
+
         builder.Services.AddAuthorizationBuilder();
 
         builder.Services.AddPwnedPasswordHttpClient(minimumFrequencyToConsiderPwned: 3)
@@ -143,8 +149,16 @@ public static class ProgramExtensions
 
         builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = true;
                 options.User.RequireUniqueEmail = true;
+
+                // We specify a minimum password length and no other requirements. We compare submitted passwords to
+                // the HIBP password database to validate them instead.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredUniqueChars = 3;
+                options.Password.RequiredLength = 8;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
@@ -153,18 +167,6 @@ public static class ProgramExtensions
             .AddPasswordValidator<EmailAsPasswordValidator>()
             .AddPasswordValidator<PwnedPasswordValidator<ApplicationUser>>()
             .AddPwnedPasswordErrorDescriber<PwnedPasswordErrorDescriber>();
-
-        // We specify a minimum password length and no other requirements. We compare submitted passwords to a list
-        // of common passwords to validate them instead.
-        builder.Services.Configure<IdentityOptions>(options =>
-        {
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequiredUniqueChars = 3;
-            options.Password.RequiredLength = 8;
-        });
 
         builder.Services.AddTransient<IEmailSender<ApplicationUser>, IdentityEmailSender>();
 

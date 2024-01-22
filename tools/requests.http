@@ -6,9 +6,9 @@ POST {{HOST}}/identity/register
 Content-Type: application/json
 
 {
-  "name": "Tyroil Smoochie Wallace",
+  "displayName": "Tyroil Smoochie Wallace",
   "email": "tyroil@bar.ca",
-  "password": "foobarfoobar"
+  "password": "foobarfoobar!@#!@@%!"
 }
 
 ###
