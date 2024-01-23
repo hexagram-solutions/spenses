@@ -3,11 +3,9 @@ using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Morris.Blazor.Validation.Extensions;
-using MudBlazor;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
-using Spenses.Shared.Validators.Identity;
 
 namespace Spenses.App.Pages.Identity;
 

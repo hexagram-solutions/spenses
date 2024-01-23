@@ -1,5 +1,3 @@
-using System.Text.Encodings.Web;
-
 namespace Spenses.App.Infrastructure;
 
 public static class Routes

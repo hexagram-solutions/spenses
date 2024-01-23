@@ -4,7 +4,6 @@ using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
-using Spenses.App.Components.Me;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
 using Spenses.Utilities.Security;
