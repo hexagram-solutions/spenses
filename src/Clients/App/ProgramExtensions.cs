@@ -7,7 +7,6 @@ using Morris.Blazor.Validation;
 using MudBlazor;
 using MudBlazor.Services;
 using Refit;
-using Spenses.App.Infrastructure;
 using Spenses.App.Infrastructure.Authentication;
 using Spenses.Client.Http;
 using Spenses.Shared.Common;

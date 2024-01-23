@@ -133,6 +133,11 @@ public static class ProgramExtensions
                 {
                     ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     return Task.CompletedTask;
+                },
+                OnRedirectToAccessDenied = ctx =>
+                {
+                    ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
                 }
             });
 
@@ -142,14 +147,14 @@ public static class ProgramExtensions
             options.ExpireTimeSpan = TimeSpan.FromDays(14);
         });
 
-        builder.Services.AddAuthorizationBuilder();
-
         builder.Services.AddPwnedPasswordHttpClient(minimumFrequencyToConsiderPwned: 3)
             .AddStandardResilienceHandler();
 
         builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
                 options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedAccount = true;
 
                 // We specify a minimum password length and no other requirements. We compare submitted passwords to
                 // the HIBP password database to validate them instead.
@@ -205,7 +210,7 @@ public static class ProgramExtensions
 
     public static WebApplicationBuilder AddAuthorizationServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorizationBuilder();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
         builder.Services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();

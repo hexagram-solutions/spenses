@@ -87,7 +87,7 @@
         </MudAlert>
         <MudAlert Severity="Severity.Error">
             You need to verify your email address before you can log in. You can request a new verification email
-            <MudLink Href="@Routes.Identity.EmailVerificationRequired">here.</MudLink>
+            <MudLink Href="@Routes.Identity.EmailVerificationRequired(LoginRequest.Email)">here.</MudLink>
         </MudAlert>
     };
 

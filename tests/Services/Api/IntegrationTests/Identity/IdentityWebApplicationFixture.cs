@@ -112,4 +112,12 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
         return new Uri(verificationAnchorValue);
     }
+
+    // todo: register a new user (optionally verify as well)
+
+    // todo: verify a user
+
+    // todo: logn/get an authenticated API client
+
+    // todo: log out
 }

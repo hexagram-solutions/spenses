@@ -47,7 +47,7 @@ public class Effects(IIdentityApi identityApi, IAuthenticationService authentica
         if (result.Succeeded)
         {
             dispatcher.Dispatch(new RegistrationSucceededAction());
-            dispatcher.Dispatch(new GoAction(Routes.Identity.EmailVerificationRequired));
+            dispatcher.Dispatch(new GoAction(Routes.Identity.EmailVerificationRequired(action.Request.Email)));
 
             return;
         }

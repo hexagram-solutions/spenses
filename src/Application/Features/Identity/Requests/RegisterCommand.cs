@@ -10,10 +10,7 @@ namespace Spenses.Application.Features.Identity.Requests;
 
 public record RegisterCommand(RegisterRequest Request) : IRequest<CurrentUser>;
 
-public class RegisterCommandHandler(
-    UserManager<ApplicationUser> userManager,
-    ISender sender,
-    SignInManager<ApplicationUser> signInManager)
+public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, ISender sender)
     : IRequestHandler<RegisterCommand, CurrentUser>
 {
     public async Task<CurrentUser> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -32,10 +29,6 @@ public class RegisterCommandHandler(
 
             throw new InvalidRequestException(result.Errors.Select(e => new ValidationFailure(e.Code, e.Description)));
         }
-
-        // Sign-in the user to set the cookie with their email address for the email verification step of the
-        // registration flow.
-        await signInManager.SignInAsync(user, false);
 
         await sender.Send(new SendVerificationEmailCommand(email), cancellationToken);
 

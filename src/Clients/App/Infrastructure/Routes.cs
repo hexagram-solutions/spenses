@@ -1,3 +1,5 @@
+using System.Text.Encodings.Web;
+
 namespace Spenses.App.Infrastructure;
 
 public static class Routes
@@ -26,7 +28,9 @@ public static class Routes
 
         public static string ForgotPassword => "/forgot-password";
 
-        public static string EmailVerificationRequired => "/email-verification-required";
+        public static string EmailVerificationRequired(string? email = null) => string.IsNullOrEmpty(email)
+            ? "/email-verification-required"
+            : $"/email-verification-required?email={Uri.EscapeDataString(email)}";
 
         public static string VerifyEmail => "/verify-email";
     }

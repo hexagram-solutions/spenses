@@ -27,14 +27,16 @@
                       AdornmentColor="Color.Success"
                       Style="width: 500px"/>
 
-        <LoadingButton ButtonType="ButtonType.Submit"
-                       Variant="Variant.Filled"
-                       Color="Color.Primary"
-                       Disabled="!UpdateEnabled"
-                       Loading="MeState.Value.CurrentUserUpdating"
-                       Style="width: 240px">
-            Update profile
-        </LoadingButton>
+        <div>
+            <LoadingButton ButtonType="ButtonType.Submit"
+                           Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Disabled="!UpdateEnabled"
+                           Loading="MeState.Value.CurrentUserUpdating"
+                           Style="width: 240px">
+                Update profile
+            </LoadingButton>
+        </div>
     </EditForm>
 
 </MudStack>
