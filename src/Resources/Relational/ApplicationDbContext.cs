@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Resources.Relational.DigestModels;
@@ -6,7 +7,7 @@ using Spenses.Resources.Relational.Models;
 
 namespace Spenses.Resources.Relational;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
 {
     private readonly AuditableEntitySaveChangesInterceptor? _auditableEntitySaveChangesInterceptor;
 
@@ -145,5 +146,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         configurationBuilder.Properties<DateOnly?>()
             .HaveConversion<NullableDateOnlyConverter>()
             .HaveColumnType("date");
+
+        configurationBuilder.Properties<string>()
+            .HaveMaxLength(4000);
     }
 }

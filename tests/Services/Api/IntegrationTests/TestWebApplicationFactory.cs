@@ -20,7 +20,7 @@ public class TestWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEnt
         {
             services.Configure<TestAuthenticationHandlerOptions>(options =>
             {
-                options.DefaultUserIdentifier = "integration-test-user";
+                options.DefaultUserIdentifier = "00000000-0000-0000-0000-000000000001";
                 options.DefaultUserEmail = "george@vandelayindustries.com";
             });
 

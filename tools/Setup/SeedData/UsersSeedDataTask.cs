@@ -22,7 +22,7 @@ public class UsersSeedDataTask(
     {
         // Sub in the DB context to make sure that the target database configured by command-line args is used
         using var userManager = new UserManager<ApplicationUser>(
-            new UserStore<ApplicationUser>(db),
+            new UserStore<ApplicationUser, IdentityRole<Guid>, ApplicationDbContext, Guid>(db),
             identityOptions,
             innerUserManager.PasswordHasher,
             innerUserManager.UserValidators,
@@ -38,12 +38,14 @@ public class UsersSeedDataTask(
             $"A value for {defaultUserPasswordSettingKey} must be set in user secrets.");
 
         await AddUser(SystemCurrentUserService.SystemUserId, "system@spenses.ca", "System User");
-        await AddUser("integration-test-user", "george@vandelayindustries.com", "George Costanza");
-        await AddUser(Guid.NewGuid().ToString(), "ericsondergard+spensesuser@fastmail.com", "esond");
+        await AddUser(Guid.Parse("00000000-0000-0000-0000-000000000002"), "george@vandelayindustries.com", "George Costanza");
+        await AddUser(Guid.NewGuid(), "ericsondergard+spensesuser@fastmail.com", "esond");
+
+        await db.SaveChangesAsync();
 
         return;
 
-        Task<IdentityResult> AddUser(string id, string email, string displayName)
+        Task<IdentityResult> AddUser(Guid id, string email, string displayName)
         {
             var user = new ApplicationUser
             {
