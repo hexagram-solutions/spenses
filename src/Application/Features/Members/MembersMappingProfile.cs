@@ -1,5 +1,6 @@
 using AutoMapper;
 using Spenses.Shared.Models.Members;
+using Spenses.Shared.Utilities;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Members;
@@ -8,7 +9,16 @@ public class MembersMappingProfile : Profile
 {
     public MembersMappingProfile()
     {
-        CreateMap<DbModels.Member, Member>();
+        CreateMap<DbModels.Member, Member>()
+            .ForMember(dest => dest.AvatarUrl, opts => opts.MapFrom(m => m.User != null ? m.User!.AvatarUrl : null))
+            .AfterMap((_, member) =>
+            {
+                if (!string.IsNullOrEmpty(member.AvatarUrl))
+                    return;
+
+                member.AvatarUrl = AvatarHelper.GetGravatarUri(string.Empty, 80, true, GravatarDefaultType.Mp)
+                    .ToString();
+            });
 
         CreateMap<MemberProperties, DbModels.Member>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())

@@ -1,6 +1,7 @@
 ﻿@using Spenses.App.Infrastructure
 @using Fluxor.Blazor.Web.Middlewares.Routing
 @using Microsoft.AspNetCore.Components.WebAssembly.Hosting
+@using Spenses.Shared.Utilities
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 @inject IWebAssemblyHostEnvironment Env
 
@@ -25,7 +26,7 @@
                 <MudStack Row="true"
                           AlignItems="AlignItems.Center">
                     <MudAvatar Size="Size.Medium">
-                        <MudImage Src="@(AvatarHelper.GetGravatarUri(MeState.Value.CurrentUser!.Email).ToString())"/>
+                        <MudImage Src="@MeState.Value.CurrentUser!.AvatarUrl"/>
                     </MudAvatar>
                     <MudStack Justify="Justify.Center"
                               Spacing="0">

@@ -22,12 +22,14 @@ public partial class MeIntegrationTests
 
         var applicationUser = await userManager.GetUserAsync(currentUserService.CurrentUser!);
 
-        response.Content!.Should().BeEquivalentTo(new CurrentUser
-        {
-            Email = applicationUser!.Email!,
-            EmailVerified = applicationUser.EmailConfirmed,
-            DisplayName = props.DisplayName
-        });
+        response.Content!.Should().BeEquivalentTo(
+            new CurrentUser
+            {
+                Email = applicationUser!.Email!,
+                EmailVerified = applicationUser.EmailConfirmed,
+                DisplayName = props.DisplayName
+            },
+            opts => opts.Excluding(u => u.AvatarUrl));
     }
 
     [Fact]

@@ -5,6 +5,7 @@ using Spenses.Application.Exceptions;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Me;
+using Spenses.Shared.Utilities;
 
 namespace Spenses.Application.Features.Identity.Requests;
 
@@ -17,7 +18,11 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IS
     {
         var (email, password, displayName) = request.Request;
 
-        var user = new ApplicationUser { DisplayName = displayName };
+        var user = new ApplicationUser
+        {
+            DisplayName = displayName,
+            AvatarUrl = AvatarHelper.GetGravatarUri(email).ToString()
+        };
 
         await userManager.SetUserNameAsync(user, email);
         await userManager.SetEmailAsync(user, email);

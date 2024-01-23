@@ -16,4 +16,7 @@ public record CurrentUser : UserProfileProperties
 
     [Required]
     public bool EmailVerified { get; set; }
+
+    [Required]
+    public string AvatarUrl { get; set; } = null!;
 }

@@ -22,6 +22,7 @@ public partial class HomesIntegrationTests
                 .ExcludingMissingMembers());
 
         var fetchedHome = await _homes.GetHome(updatedHome.Id);
-        fetchedHome.Content.Should().BeEquivalentTo(updatedHome);
+        fetchedHome.Content.Should().BeEquivalentTo(updatedHome,
+            opts => opts.For(h => h.Members).Exclude(m => m.AvatarUrl));
     }
 }

@@ -7,6 +7,8 @@ public class ApplicationUser : IdentityUser<Guid>
     [PersonalData]
     public string DisplayName { get; set; } = null!;
 
+    public string AvatarUrl { get; set; } = null!;
+
     public ICollection<Payment> CreatedPayments { get; set; } = [];
 
     public ICollection<Payment> ModifiedPayments { get; set; } = [];
