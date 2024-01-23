@@ -52,7 +52,7 @@ GET {{HOST}}/homes
 
 ###
 # @name expenses
-GET {{HOST}}/homes/9c9bdda5-5740-420e-8395-33eaee08af08/expenses
+GET {{HOST}}/homes/{{homeId}}/expenses
 
 ###
 # @name payments

@@ -1,101 +1,65 @@
+using System.Diagnostics;
+using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Spenses.Application.Exceptions;
 
 namespace Spenses.Api.Infrastructure;
 
 public class ApplicationExceptionFilter : IAsyncExceptionFilter
 {
-    private readonly Dictionary<Type, Func<ExceptionContext, Task>> _exceptionHandlers = new()
-    {
-        { typeof(InvalidRequestException), HandleInvalidRequest },
-        { typeof(UnauthorizedException), HandleUnauthorized },
-        { typeof(ForbiddenException), HandleForbidden },
-        { typeof(ResourceNotFoundException), HandleResourceNotFound }
-    };
-
-    public async Task OnExceptionAsync(ExceptionContext context)
+    public Task OnExceptionAsync(ExceptionContext context)
     {
         var exception = context.Exception;
+        var type = context.Exception.GetType();
 
-        if (!_exceptionHandlers.TryGetValue(exception.GetType(), out var handle))
-            return;
-
-        await handle(context);
-
-        context.ExceptionHandled = true;
-    }
-
-    private static Task HandleInvalidRequest(ExceptionContext context)
-    {
-        var exception = (InvalidRequestException) context.Exception;
-
-        if (!exception.Errors.Any())
+        var problemDetails = exception switch
         {
-            context.Result = new BadRequestObjectResult(new ProblemDetails
+            _ when type == typeof(InvalidRequestException) => new HttpValidationProblemDetails(
+                ((InvalidRequestException) exception).Errors)
             {
-                Title = "Bad request",
+                Title = "Bad Request",
                 Detail = exception.Message,
                 Status = StatusCodes.Status400BadRequest,
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1"
-            });
-
-            return Task.CompletedTask;
-        }
-
-        var modelStateDictionary = new ModelStateDictionary();
-
-        foreach (var (propertyName, errors) in exception.Errors)
-        {
-            foreach (var error in errors)
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1"
+            },
+            _ when type == typeof(UnauthorizedException) => new ProblemDetails
             {
-                modelStateDictionary.AddModelError(propertyName, error);
-            }
-        }
-
-        var validationProblemDetails = new ValidationProblemDetails(modelStateDictionary);
-
-        context.Result = new BadRequestObjectResult(validationProblemDetails);
-
-        return Task.CompletedTask;
-    }
-
-    public static Task HandleUnauthorized(ExceptionContext context)
-    {
-        context.Result = new UnauthorizedResult();
-
-        return Task.CompletedTask;
-    }
-
-    private static Task HandleForbidden(ExceptionContext context)
-    {
-        var problemDetails = new ProblemDetails
-        {
-            Title = "Forbidden",
-            Status = StatusCodes.Status403Forbidden,
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.3"
+                Title = "Unauthorized",
+                Status = StatusCodes.Status401Unauthorized,
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.2"
+            },
+            _ when type == typeof(ForbiddenException) => new ProblemDetails
+            {
+                Title = "Forbidden",
+                Status = StatusCodes.Status403Forbidden,
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.4"
+            },
+            _ when type == typeof(ResourceNotFoundException) => new ProblemDetails
+            {
+                Title = "The specified resource was not found.",
+                Detail = ((ResourceNotFoundException) exception).ResourceIdentifier,
+                Status = StatusCodes.Status404NotFound,
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5"
+            },
+            _ => null
         };
 
-        context.Result = new ObjectResult(problemDetails)
+        if (problemDetails is null)
+            return Task.CompletedTask;
+
+        var traceId = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier;
+
+        problemDetails.Extensions.Add("traceId", traceId);
+
+        context.Result = new ContentResult
         {
-            StatusCode = StatusCodes.Status403Forbidden
+            ContentType = "application/problem+json",
+            StatusCode = problemDetails.Status,
+            Content = problemDetails.ToJson()
         };
 
-        return Task.CompletedTask;
-    }
-
-    private static Task HandleResourceNotFound(ExceptionContext context)
-    {
-        var exception = (ResourceNotFoundException) context.Exception;
-
-        context.Result = new NotFoundObjectResult(new ProblemDetails
-        {
-            Title = "The specified resource was not found.",
-            Detail = exception.ResourceIdentifier,
-            Status = StatusCodes.Status404NotFound,
-            Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4"
-        });
+        context.ExceptionHandled = true;
 
         return Task.CompletedTask;
     }
