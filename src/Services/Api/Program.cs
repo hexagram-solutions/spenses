@@ -27,21 +27,15 @@ builder.Services.AddAuthenticatedOpenApiDocument();
 var app = builder.Build();
 
 app.UseHttpLogging();
+app.UseExceptionHandler();
 
-if (app.Environment.IsEnvironment(EnvironmentNames.Development) ||
-    app.Environment.IsEnvironment(EnvironmentNames.IntegrationTest) ||
-    app.Environment.IsEnvironment(EnvironmentNames.Test))
+if (builder.Environment.IsDevelopmentOrIntegrationTestEnvironment())
 {
-    // TODO: Use global exception handler instead of error controller? (see twitter bookmarks)
-    app.UseExceptionHandler("/error-development");
-    app.UseHttpLogging();
-
     IdentityModelEventSource.ShowPII = true;
 }
 else
 {
     app.UseHsts();
-    app.UseExceptionHandler("/error");
 }
 
 app.AddSwaggerUi();

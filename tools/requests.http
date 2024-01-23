@@ -17,7 +17,7 @@ POST {{HOST}}/identity/resend-verification-email
 Content-Type: application/json
 
 {
-  "email": "asdf@bar.ca"
+  "email": "tyroil@bar.ca"
 }
 
 ###

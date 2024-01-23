@@ -69,6 +69,11 @@ public static class ProgramExtensions
             {
                 options.Filters.Add<ApplicationExceptionFilter>();
             })
+            .ConfigureApiBehaviorOptions(options =>
+            {
+                // Disables data annotations model validation, we only want to use FluentValidation
+                options.SuppressModelStateInvalidFilter = true;
+            })
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -79,10 +84,6 @@ public static class ProgramExtensions
             opts.LowercaseUrls = true;
             opts.LowercaseQueryStrings = true;
         });
-
-        // Disables data annotations model validation, we only want to use FluentValidation
-        builder.Services.Configure<ApiBehaviorOptions>(options =>
-            options.SuppressModelStateInvalidFilter = true);
 
         builder.Services.AddApiVersioning(options =>
         {
@@ -106,6 +107,8 @@ public static class ProgramExtensions
         });
 
         builder.Services.AddFeatureManagement();
+
+        builder.Services.AddProblemDetails();
 
         return builder;
     }
