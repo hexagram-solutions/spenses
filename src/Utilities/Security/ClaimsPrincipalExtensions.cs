@@ -15,11 +15,11 @@ public static class ClaimsPrincipalExtensions
             throw new InvalidOperationException("Current user is not authenticated.");
     }
 
-    public static string GetId(this ClaimsPrincipal user)
+    public static Guid GetId(this ClaimsPrincipal user)
     {
         user.EnsureAuthenticated();
 
-        return user.FindFirst(ApplicationClaimTypes.Identifier)!.Value;
+        return Guid.Parse(user.FindFirst(ApplicationClaimTypes.Identifier)!.Value);
     }
 
     public static string GetEmail(this ClaimsPrincipal user)

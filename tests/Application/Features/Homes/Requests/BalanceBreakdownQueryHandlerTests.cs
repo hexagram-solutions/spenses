@@ -13,7 +13,7 @@ namespace Spenses.Application.Tests.Features.Homes.Requests;
 
 public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 {
-    private const string TestUserId = "test";
+    private readonly Guid _testUserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
 
     private readonly IDbContextFactory _dbFactory;
 
@@ -23,7 +23,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
         A.CallTo(() => fakeCurrentUserService.CurrentUser).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
         {
-            new Claim(ApplicationClaimTypes.Identifier, TestUserId)
+            new Claim(ApplicationClaimTypes.Identifier, _testUserId.ToString())
         })));
 
         _dbFactory = new InMemoryDbContextFactory(fakeCurrentUserService);
@@ -98,7 +98,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
         await db.Users.AddAsync(new DbModels.ApplicationUser
         {
-            Id = TestUserId,
+            Id = _testUserId,
             Email = "test@example.com",
             UserName = "test@example.com",
             DisplayName = "test"
@@ -107,8 +107,8 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
         var homeEntry = await db.Homes.AddAsync(new DbModels.Home
         {
             Name = "Test home",
-            CreatedById = TestUserId,
-            ModifiedById = TestUserId
+            CreatedById = _testUserId,
+            ModifiedById = _testUserId
         });
 
         var oneThirdMember = (await db.Members.AddAsync(
@@ -117,8 +117,8 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                 Name = "Hingle McCringleberry",
                 DefaultSplitPercentage = 0.34m,
                 HomeId = homeEntry.Entity.Id,
-                CreatedById = TestUserId,
-                ModifiedById = TestUserId
+                CreatedById = _testUserId,
+                ModifiedById = _testUserId
             })).Entity;
 
         var twoThirdsMember = (await db.Members.AddAsync(
@@ -127,8 +127,8 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                 Name = "Grunky Peep",
                 DefaultSplitPercentage = 0.66m,
                 HomeId = homeEntry.Entity.Id,
-                CreatedById = TestUserId,
-                ModifiedById = TestUserId
+                CreatedById = _testUserId,
+                ModifiedById = _testUserId
             })).Entity;
 
         await db.SaveChangesAsync();
@@ -162,11 +162,11 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                     {
                         Name = Guid.NewGuid().ToString(),
                         HomeId = homeEntry.Entity.Id,
-                        CreatedById = TestUserId,
-                        ModifiedById = TestUserId
+                        CreatedById = _testUserId,
+                        ModifiedById = _testUserId
                     },
-                    CreatedById = TestUserId,
-                    ModifiedById = TestUserId
+                    CreatedById = _testUserId,
+                    ModifiedById = _testUserId
                 });
 
                 await db.Payments.AddAsync(new DbModels.Payment
@@ -176,8 +176,8 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                     PaidByMemberId = member.Id,
                     PaidToMemberId = db.Members.First(m => m.Id != member.Id).Id,
                     HomeId = homeEntry.Entity.Id,
-                    CreatedById = TestUserId,
-                    ModifiedById = TestUserId
+                    CreatedById = _testUserId,
+                    ModifiedById = _testUserId
                 });
             }
         }

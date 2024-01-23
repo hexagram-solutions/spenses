@@ -32,7 +32,7 @@ public class ChangeEmailCommandHandler(UserManager<ApplicationUser> userManager,
 
         var queryParameters = new Dictionary<string, string?>
         {
-            { "userId", user.Id },
+            { "userId", user.Id.ToString() },
             { "code", code },
             { "newEmail", newEmail }
         };

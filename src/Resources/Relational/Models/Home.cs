@@ -6,11 +6,11 @@ public class Home : AggregateRoot
 
     public string? Description { get; set; }
 
-    public ICollection<Member> Members { get; set; } = new HashSet<Member>();
+    public ICollection<Member> Members { get; set; } = [];
 
-    public ICollection<ExpenseCategory> ExpenseCategories { get; set; } = new HashSet<ExpenseCategory>();
+    public ICollection<ExpenseCategory> ExpenseCategories { get; set; } = [];
 
-    public ICollection<Expense> Expenses { get; set; } = new HashSet<Expense>();
+    public ICollection<Expense> Expenses { get; set; } = [];
 
-    public ICollection<Payment> Payments { get; set; } = new HashSet<Payment>();
+    public ICollection<Payment> Payments { get; set; } = [];
 }

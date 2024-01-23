@@ -12,5 +12,5 @@ public class ExpenseCategory : AggregateRoot
 
     public Home Home { get; set; } = null!;
 
-    public ICollection<Expense> Expenses { get; set; } = new HashSet<Expense>();
+    public ICollection<Expense> Expenses { get; set; } = [];
 }

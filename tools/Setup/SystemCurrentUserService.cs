@@ -6,12 +6,12 @@ namespace Spenses.Tools.Setup;
 
 public class SystemCurrentUserService : ICurrentUserService
 {
-    public const string SystemUserId = "system";
+    public static Guid SystemUserId = Guid.Parse("00000000-0000-0000-0000-000000000001");
 
-    public ClaimsPrincipal CurrentUser => new(new ClaimsIdentity(new[]
-    {
-        new Claim(ApplicationClaimTypes.Identifier, SystemUserId),
+    public ClaimsPrincipal CurrentUser => new(new ClaimsIdentity(
+    [
+        new Claim(ApplicationClaimTypes.Identifier, SystemUserId.ToString()),
         new Claim(ApplicationClaimTypes.Email, "system@spenses.ca"),
         new Claim(ApplicationClaimTypes.EmailVerified, true.ToString())
-    }, nameof(SystemCurrentUserService)));
+    ], nameof(SystemCurrentUserService)));
 }

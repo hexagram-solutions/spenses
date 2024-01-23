@@ -19,15 +19,15 @@ public class Member : AggregateRoot
 
     public Home Home { get; set; } = null!;
 
-    public string? UserId { get; set; }
+    public Guid? UserId { get; set; }
 
     public ApplicationUser? User { get; set; }
 
-    public ICollection<Expense> ExpensesPaid { get; set; } = new HashSet<Expense>();
+    public ICollection<Expense> ExpensesPaid { get; set; } = [];
 
-    public ICollection<ExpenseShare> ExpenseShares { get; set; } = new HashSet<ExpenseShare>();
+    public ICollection<ExpenseShare> ExpenseShares { get; set; } = [];
 
-    public ICollection<Payment> PaymentsPaid { get; set; } = new HashSet<Payment>();
+    public ICollection<Payment> PaymentsPaid { get; set; } = [];
 
-    public ICollection<Payment> PaymentsReceived { get; set; } = new HashSet<Payment>();
+    public ICollection<Payment> PaymentsReceived { get; set; } = [];
 }
