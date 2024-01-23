@@ -38,9 +38,6 @@ else
     app.UseHsts();
 }
 
-
-app.UseExceptionHandler();
-
 app.AddSwaggerUi();
 
 app.UseHttpsRedirection();
