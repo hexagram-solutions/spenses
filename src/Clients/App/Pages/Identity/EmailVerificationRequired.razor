@@ -4,33 +4,62 @@
 
 <PageTitle>Verification required</PageTitle>
 
-<h2>Verify your email address</h2>
-
 <MudStack>
-    <p>
-        Before you can start using Spenses, we need to verify your email address.
-    </p>
-    <p>
-        We have sent a verification link to
-        <b>
-            <samp>@Email</samp>
-        </b>. Follow the link to verify your email address and get started.
-    </p>
-    <MudStack>
+    <MudText Typo="Typo.h5">Verify your email address</MudText>
+
+    <MudText>Before you can start using Spenses, we need to verify your email address.</MudText>
+
+    @if (!string.IsNullOrEmpty(Email))
+    {
+        <MudText>We have sent a verification link to </MudText>
+        <MudText>
+            <b>
+                <samp>@Email</samp>
+            </b>
+        </MudText>
+
+        <MudText>
+            Follow the link to verify your email address and get started. If you didn't receive an email, we can
+            send you a new one.
+        </MudText>
+
         <div>
-            If you didn't receive an email, we can send you a new one.
+            <MudButton Variant="Variant.Outlined"
+                       OnClick="@(args => ResendVerificationEmail(args, Email))"
+                       Disabled="State.ResendVerificationEmailRequesting">
+                Resend verification email
+            </MudButton>
         </div>
-        <MudButton Variant="Variant.Outlined"
-                   OnClick="ResendVerificationEmail"
-                   Disabled="State.ResendVerificationEmailRequesting">
-            Resend verification email
-        </MudButton>
-    </MudStack>
+    }
+    else
+    {
+        <MudText>If you didn't receive an email, we can send you a new one.</MudText>
+
+        <EditForm Model="@_model"
+                  OnValidSubmit="Submit">
+            <MudStack>
+
+                <MudTextField @bind-Value="_model.Email"
+                              Label="Email"
+                              HelperText="The email you used when signing up"
+                              For="@(() => _model.Email)"
+                              Required/>
+                <div>
+                    <LoadingButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Loading="State.ResendVerificationEmailRequesting">
+                        Send verification email
+                    </LoadingButton>
+                </div>
+            </MudStack>
+        </EditForm>
+    }
 
     @if (VerificationEmailReSent)
     {
         <MudAlert Severity="Severity.Success">
-            Verification email re-sent to @Email
+            Verification email re-sent to @(string.IsNullOrEmpty(Email) ? _model.Email : Email)
         </MudAlert>
     }
 </MudStack>

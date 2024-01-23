@@ -1,4 +1,4 @@
-namespace Spenses.App.Infrastructure;
+namespace Spenses.Utilities.Security;
 
 public static class AuthorizationConstants
 {

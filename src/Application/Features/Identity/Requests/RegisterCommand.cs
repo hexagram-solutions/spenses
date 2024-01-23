@@ -17,10 +17,7 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IS
     {
         var (email, password, displayName) = request.Request;
 
-        var user = new ApplicationUser
-        {
-            DisplayName = displayName
-        };
+        var user = new ApplicationUser { DisplayName = displayName };
 
         await userManager.SetUserNameAsync(user, email);
         await userManager.SetEmailAsync(user, email);
@@ -39,7 +36,7 @@ public class RegisterCommandHandler(UserManager<ApplicationUser> userManager, IS
         {
             Email = user.Email!,
             DisplayName = user.DisplayName,
-            EmailVerified = false,
+            EmailVerified = false
         };
     }
 }

@@ -1,13 +1,16 @@
 ﻿@page "/sign-up"
 @using Spenses.App.Infrastructure
 @using Spenses.Shared.Models.Identity
+@using Spenses.Shared.Validators.Identity
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Sign up</PageTitle>
 
-<h2>Sign up</h2>
+<MudStack>
+    <MudText Typo="Typo.h5">Sign up</MudText>
 
-<MudCard>
+    <MudText>Get started by creating your new Spenses account.</MudText>
+
     @foreach (var error in IdentityState.Value.Errors)
     {
         switch (error)
@@ -41,38 +44,46 @@
         }
     }
 
-    <MudForm Model="RegisterRequest"
-             @ref="FormRef"
-             Validation="@(_validator.ValidateValue())">
+    <EditForm Model="RegisterRequest"
+              OnSubmit="Register">
 
-        <MudCardContent>
+        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<RegisterRequestValidator>())"/>
+
+        <MudStack>
             <MudTextField @bind-Value="RegisterRequest.DisplayName"
-                          Label="Name"
+                          Label="Display name"
                           Placeholder="Hingle McCringleberry"
+                          HelperText="Your real name, nickname, or something totally unique!"
+                          For="@(() => RegisterRequest.DisplayName)"
                           Required/>
 
             <MudTextField @bind-Value="RegisterRequest.Email"
                           Label="Email"
                           Placeholder="hmccringleberry@psu.edu"
+                          For="@(() => RegisterRequest.Email)"
                           Required/>
 
             <MudTextField @bind-Value="RegisterRequest.Password"
                           Label="Password"
                           InputType="InputType.Password"
+                          For="@(() => RegisterRequest.Password)"
                           Required/>
-        </MudCardContent>
-    </MudForm>
 
-    <MudCardActions>
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   Class="ml-auto"
-                   OnClick="Register"
-                   Disabled="IdentityState.Value.RegistrationRequesting">
-            Sign up
-        </MudButton>
-    </MudCardActions>
-</MudCard>
+            <div>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           ButtonType="ButtonType.Submit"
+                           Disabled="IdentityState.Value.RegistrationRequesting">
+                    Sign up
+                </MudButton>
+            </div>
+        </MudStack>
+    </EditForm>
+</MudStack>
+
+
+@* ReSharper disable InconsistentNaming *@
+@* ReSharper disable UnusedParameter.Local *@
 
 @code
 {

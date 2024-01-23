@@ -37,14 +37,15 @@
 
             @if (IsEditing)
             {
-                <LoadingButton ButtonType="ButtonType.Submit"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               Disabled="!ChangeEmailEnabled"
-                               Loading="MeState.Value.ChangeEmailRequesting">
-                    Confirm new email
-                </LoadingButton>
-
+                <div>
+                    <LoadingButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   Disabled="!ChangeEmailEnabled"
+                                   Loading="MeState.Value.ChangeEmailRequesting">
+                        Confirm new email
+                    </LoadingButton>
+                </div>
                 @if (MeState.Value.ChangeEmailErrors.Length > 0)
                 {
                     @foreach (var error in MeState.Value.ChangeEmailErrors)

@@ -12,7 +12,6 @@ namespace Spenses.Api.Controllers;
 [Route("homes")]
 public class HomesController(IMediator mediator) : ControllerBase
 {
-
     /// <summary>
     /// Create a new home.
     /// </summary>

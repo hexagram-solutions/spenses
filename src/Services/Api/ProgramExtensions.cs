@@ -133,18 +133,37 @@ public static class ProgramExtensions
                 {
                     ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     return Task.CompletedTask;
+                },
+                OnRedirectToAccessDenied = ctx =>
+                {
+                    ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
                 }
             });
 
-        builder.Services.AddAuthorizationBuilder();
+        builder.Services.ConfigureApplicationCookie(options =>
+        {
+            options.SlidingExpiration = true;
+            options.ExpireTimeSpan = TimeSpan.FromDays(14);
+        });
 
         builder.Services.AddPwnedPasswordHttpClient(minimumFrequencyToConsiderPwned: 3)
             .AddStandardResilienceHandler();
 
         builder.Services.AddIdentityCore<ApplicationUser>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = true;
                 options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedAccount = true;
+
+                // We specify a minimum password length and no other requirements. We compare submitted passwords to
+                // the HIBP password database to validate them instead.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredUniqueChars = 3;
+                options.Password.RequiredLength = 8;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager()
@@ -153,18 +172,6 @@ public static class ProgramExtensions
             .AddPasswordValidator<EmailAsPasswordValidator>()
             .AddPasswordValidator<PwnedPasswordValidator<ApplicationUser>>()
             .AddPwnedPasswordErrorDescriber<PwnedPasswordErrorDescriber>();
-
-        // We specify a minimum password length and no other requirements. We compare submitted passwords to a list
-        // of common passwords to validate them instead.
-        builder.Services.Configure<IdentityOptions>(options =>
-        {
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequiredUniqueChars = 3;
-            options.Password.RequiredLength = 8;
-        });
 
         builder.Services.AddTransient<IEmailSender<ApplicationUser>, IdentityEmailSender>();
 
@@ -203,7 +210,7 @@ public static class ProgramExtensions
 
     public static WebApplicationBuilder AddAuthorizationServices(this WebApplicationBuilder builder)
     {
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorizationBuilder();
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
         builder.Services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();

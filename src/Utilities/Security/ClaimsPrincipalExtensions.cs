@@ -24,8 +24,6 @@ public static class ClaimsPrincipalExtensions
 
     public static string GetEmail(this ClaimsPrincipal user)
     {
-        user.EnsureAuthenticated();
-
         return user.FindFirst(ApplicationClaimTypes.Email)!.Value;
     }
 }
