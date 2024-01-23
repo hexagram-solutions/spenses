@@ -17,7 +17,7 @@ POST {{HOST}}/identity/resend-verification-email
 Content-Type: application/json
 
 {
-  "email": "asdf@bar.ca"
+  "email": "tyroil@bar.ca"
 }
 
 ###
@@ -52,7 +52,7 @@ GET {{HOST}}/homes
 
 ###
 # @name expenses
-GET {{HOST}}/homes/{{homeId}}/expenses
+GET {{HOST}}/homes/9c9bdda5-5740-420e-8395-33eaee08af08/expenses
 
 ###
 # @name payments

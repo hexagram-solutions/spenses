@@ -65,10 +65,7 @@ public static class ProgramExtensions
         string corsPolicyName)
     {
         builder.Services
-            .AddControllers(options =>
-            {
-                options.Filters.Add<ApplicationExceptionFilter>();
-            })
+            .AddControllers()
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -106,6 +103,9 @@ public static class ProgramExtensions
         });
 
         builder.Services.AddFeatureManagement();
+
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
 
         return builder;
     }

@@ -2,6 +2,7 @@ using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
+using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Requests;
 using Spenses.Shared.Models.Homes;
 
