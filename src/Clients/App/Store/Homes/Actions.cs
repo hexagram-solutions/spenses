@@ -25,3 +25,11 @@ public record HomeUpdatedAction(Guid HomeId, HomeProperties Props);
 public record HomeUpdateSucceededAction(Home Home);
 
 public record HomeUpdateFailedAction;
+
+public record BalanceBreakdownRequestedAction(Guid HomeId, DateOnly PeriodStart, DateOnly PeriodEnd);
+
+public record BalanceBreakdownReceivedAction(BalanceBreakdown BalanceBreakdown);
+
+public record BalanceBreakdownRequestFailedAction;
+
+
