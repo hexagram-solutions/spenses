@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Spenses.Application.Exceptions;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Utilities;
 
 namespace Spenses.Application.Features.Identity.Requests;
 
@@ -50,6 +51,11 @@ public class VerifyEmailCommandHandler(
             throw new UnauthorizedException();
 
         if (isEmailChange)
+        {
+            user.AvatarUrl = AvatarHelper.GetGravatarUri(newEmail!).ToString();
+            await userManager.UpdateAsync(user);
+
             await signInManager.SignOutAsync(); // Log the user out to make them re-authenticate with new email
+        }
     }
 }

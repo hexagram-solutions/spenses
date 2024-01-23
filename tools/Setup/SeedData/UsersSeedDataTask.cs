@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
+using Spenses.Shared.Utilities;
 
 namespace Spenses.Tools.Setup.SeedData;
 
@@ -53,7 +54,8 @@ public class UsersSeedDataTask(
                 UserName = email,
                 Email = email,
                 DisplayName = displayName,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                AvatarUrl = AvatarHelper.GetGravatarUri(email).ToString()
             };
 
             return userManager.CreateAsync(user, defaultPassword);

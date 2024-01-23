@@ -9,6 +9,9 @@ public record Member : MemberProperties
 
     [Required]
     public bool IsActive { get; set; }
+
+    [Required]
+    public string AvatarUrl { get; set; } = null!;
 }
 
 public record MemberProperties

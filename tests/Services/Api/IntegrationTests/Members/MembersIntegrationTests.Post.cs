@@ -30,7 +30,8 @@ public partial class MembersIntegrationTests
         createdMember.IsActive.Should().BeTrue();
 
         var members = (await _members.GetMembers(home.Id)).Content;
-        members.Should().ContainEquivalentOf(createdMember);
+        members.Should().ContainEquivalentOf(createdMember,
+            opts => opts.Excluding(u => u.AvatarUrl));
 
         await _members.DeleteMember(home.Id, createdMember.Id);
     }
