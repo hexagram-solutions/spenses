@@ -9,7 +9,10 @@
 
 <MudText Typo="Typo.h3">Dashboard: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</MudText>
 
-<BalanceBreakdownWidget />
+@if (HomesState.Value.CurrentHome is not null)
+{
+    <BalanceBreakdownWidget />
+}
 
 @code {
 

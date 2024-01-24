@@ -45,20 +45,29 @@ POST {{HOST}}/identity/logout
 
 ###
 
+@homeId = {{homes.response.body.$[0].id}}
+
 # @name homes
 GET {{HOST}}/homes
 
 ###
 
-@homeId = {{homes.response.body.$[0].id}}
+@expenseId = {{expenses.response.body.$.items[0].id}}
 
 # @name expenses
 GET {{HOST}}/homes/{{homeId}}/expenses
 
 ###
+
+# @name expense
+GET {{HOST}}/homes/{{homeId}}/expenses/{{expenseId}}
+
+###
+
+
 # @name payments
 GET {{HOST}}/homes/{{homeId}}/payments
 
 ###
 # @name members
-GET {{HOST}}/homes/{{homeId}}/members
+GET {{HOST}}/homes/{{homeId}}/balance-breakdown

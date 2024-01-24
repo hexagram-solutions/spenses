@@ -31,7 +31,7 @@ public class ExpensesSeedDataTask : ISeedDataTask
                 var expense = new Expense
                 {
                     Note = faker.Lorem.Sentence(3),
-                    Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-180, 0)),
+                    Date = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(Random.Shared.Next(-60, 0)),
                     Amount = Random.Shared.NextDecimal(5, 500, 2),
                     PaidByMember = Random.Shared.NextItem(home.Members),
                     Category = Random.Shared.NextItem(home.ExpenseCategories),
@@ -44,10 +44,7 @@ public class ExpensesSeedDataTask : ISeedDataTask
                     {
                         OwedByMemberId = member.Id,
                         OwedPercentage = member.DefaultSplitPercentage,
-                        // Only add owing amounts for the other members; the member that paid the expense owes nothing.
-                        OwedAmount = member.Id != expense.PaidByMemberId
-                            ? expense.Amount * member.DefaultSplitPercentage
-                            : 0.00m
+                        OwedAmount = expense.Amount * member.DefaultSplitPercentage
                     });
                 }
 

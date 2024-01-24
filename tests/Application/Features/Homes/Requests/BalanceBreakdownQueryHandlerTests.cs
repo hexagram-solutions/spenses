@@ -59,11 +59,8 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             var balanceBreakdown = await handler.Handle(query, CancellationToken.None);
 
             var allExpensesSum = home.Expenses.Sum(e => e.Amount);
-            var allPaymentsSum = home.Payments.Sum(c => c.Amount);
 
             balanceBreakdown.TotalExpenses.Should().Be(allExpensesSum);
-            balanceBreakdown.TotalPayments.Should().Be(allPaymentsSum);
-            balanceBreakdown.TotalBalance.Should().Be(allExpensesSum - allPaymentsSum);
 
             foreach (var memberBalance in balanceBreakdown.MemberBalances)
             {
@@ -72,12 +69,24 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
                 memberBalance.TotalPaid.Should().Be(memberPaid);
 
+                // this is also the debts kinda?
                 var expectedMemberOwed = home.Expenses
                     .SelectMany(e => e.ExpenseShares)
                     .Where(es => es.OwedByMemberId == dbMember.Id)
                     .Sum(es => es.OwedAmount);
 
-                memberBalance.TotalOwed.Should().Be(expectedMemberOwed);
+                // grunky should owe $99
+
+                memberBalance.TotalOwing.Should().Be(expectedMemberOwed);
+                memberBalance.TotalOwing.Should().Be(memberBalance.Debts.Sum(d => d.BalanceOwing));
+
+                memberBalance.Debts.Length.Should().Be(home.Members.Count - 1);
+                memberBalance.Debts.Should().NotContain(d => d.OwedTo.Id == dbMember.Id);
+
+                foreach (var debt in memberBalance.Debts)
+                {
+                    
+                }
             }
         }
 

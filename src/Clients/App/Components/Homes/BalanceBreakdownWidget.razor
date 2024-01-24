@@ -2,62 +2,71 @@
 @using Spenses.Shared.Models.Homes
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudTable Items="BalanceBreakdown?.MemberBalances"
-          Loading="HomesState.Value.BalanceBreakdownRequesting">
-    <ToolBarContent>
-        <MudText Typo="Typo.h5">Balance Breakdown</MudText>
-        <MudSpacer />
-        <MudMenu Label="Select period"
-                 Variant="Variant.Filled"
-                 Color="Color.Primary"
+<MudPaper Class="pa-4">
+    <MudStack>
+        <div class="align-start d-flex">
+            <MudText Typo="Typo.h5">Balance Breakdown</MudText>
+            <MudSpacer/>
+            <MudMenu Label="Select period"
+                     Variant="Variant.Filled"
+                     Color="Color.Primary"
                      FullWidth="true"
                      AnchorOrigin="Origin.BottomCenter"
                      TransformOrigin="Origin.TopCenter">
                 <MudMenuItem>This month</MudMenuItem>
                 <MudMenuItem>Last month</MudMenuItem>
-                <MudMenuItem>Custom</MudMenuItem> @*open month picker in dialog mode*@
+                <MudMenuItem>Custom</MudMenuItem> @* TODO: open month picker in dialog mode*@
             </MudMenu>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>Member</MudTh>
-        <MudTh>Total Owed</MudTh>
-        <MudTh>Total Paid</MudTh>
-        <MudTh>Balance</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Member">
-            <MudStack Row>
-                <MudAvatar Size="Size.Small">
-                    <MudImage Src="@context.Member.AvatarUrl" />
-                </MudAvatar>
-                <MudText>@context.Member.Name</MudText>
-            </MudStack>
-        </MudTd>
-        <MudTd DataLabel="Expenses">@context.TotalOwed</MudTd>
-        <MudTd DataLabel="Payments">@context.TotalPaid</MudTd>
-        <MudTd DataLabel="Balance">@context.Balance</MudTd>
-    </RowTemplate>
-    <FooterContent>
-        <MudTFootRow Class="bold-text">
-            <MudTd DataLabel="Member">
-                <MudStack Row>
-                    <MudIcon Icon="@Icons.Material.Rounded.Home" />
-                    <MudText>@Home?.Name</MudText>
-                </MudStack>
-            </MudTd>
-            <MudTd DataLabel="Expenses">@BalanceBreakdown?.TotalExpenses</MudTd>
-            <MudTd DataLabel="Payments">@BalanceBreakdown?.TotalPayments</MudTd>
-            <MudTd DataLabel="Balance">@BalanceBreakdown?.TotalBalance</MudTd>
-        </MudTFootRow>
-    </FooterContent>
-</MudTable>
+        </div>
+        <MudExpansionPanels MultiExpansion="true">
+            @foreach (var balance in BalanceBreakdown?.MemberBalances ?? [])
+            {
+                <MudExpansionPanel IsExpanded>
+                    <TitleContent>
+                        <MudStack Row
+                                  AlignItems="AlignItems.Center">
+                            <MudAvatar Size="Size.Small">
+                                <MudImage Src="@balance.Member.AvatarUrl"/>
+                            </MudAvatar>
+                            <MudText>@balance.Member.Name</MudText>
+                        </MudStack>
+                    </TitleContent>
+                    <ChildContent>
+                        <MudTable Items="balance.Debts"
+                                  Dense>
+                            <HeaderContent>
+                                <MudTh>Owed to</MudTh>
+                                <MudTh>Total owed</MudTh>
+                                <MudTh>Total paid</MudTh>
+                                <MudTh>Balance owing</MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd DataLabel="Owed member">
+                                    <MudStack Row>
+                                        <MudAvatar Size="Size.Small">
+                                            <MudImage Src="@context.OwedTo.AvatarUrl"/>
+                                        </MudAvatar>
+                                        <MudText>@context.OwedTo.Name</MudText>
+                                    </MudStack>
+                                </MudTd>
+                                <MudTd DataLabel="Expenses">@context.TotalOwed</MudTd>
+                                <MudTd DataLabel="Payments">@context.TotalPaid</MudTd>
+                                <MudTd DataLabel="Balance owing">@context.BalanceOwing</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
+        </MudExpansionPanels>
+    </MudStack>
+</MudPaper>
 
 @code {
     [Inject] private IState<HomesState> HomesState { get; set; } = null!;
 
     [Inject] private IDispatcher Dispatcher { get; set; } = null!;
 
-    private Home? Home => HomesState.Value.CurrentHome;
+    private Home Home => HomesState.Value.CurrentHome!;
 
     private static readonly DateTime Today = DateTime.Today;
 
@@ -71,14 +80,6 @@
     {
         base.OnInitialized();
 
-        if (HomesState.Value.CurrentHome is null)
-        {
-            SubscribeToAction<HomeReceivedAction>(a =>
-                Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(a.Home.Id, PeriodStart, PeriodEnd)));
-        }
-        else
-        {
-            Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(Home.Id, PeriodStart, PeriodEnd));
-        }
+        Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(Home.Id, PeriodStart, PeriodEnd));
     }
 }
