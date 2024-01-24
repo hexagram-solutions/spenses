@@ -73,7 +73,7 @@ partial class Build
             DotNetTest(s => s
                 .Apply(this.FromComponent<ITest>().TestSettingsBase)
                 .Apply(TestSettings)
-                .SetVerbosity(DotNetVerbosity.Minimal)
+                .SetVerbosity(DotNetVerbosity.minimal)
                 .SetProcessEnvironmentVariable("Spenses:SqlServer:ConnectionString", SqlServerConnectionString)
                 .CombineWith(integrationTestProjects, (x, v) => x
                     .Apply(this.FromComponent<ITest>().TestProjectSettingsBase, v)),
