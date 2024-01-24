@@ -14,7 +14,7 @@ public record ExpensesState
 
     public Expense? CurrentExpense { get; init; }
 
-    public PagedResult<ExpenseDigest> Expenses { get; init; } = new(0, Enumerable.Empty<ExpenseDigest>());
+    public PagedResult<ExpenseDigest> Expenses { get; init; } = new(0, []);
 
     public ExpenseFilters ExpenseFilters { get; init; } = new();
 

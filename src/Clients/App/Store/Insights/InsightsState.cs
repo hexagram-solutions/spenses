@@ -11,7 +11,7 @@ public record InsightsState
         return new InsightsState();
     }
 
-    public ExpenseTotalItem[] ExpensesOverTime { get; init; } = Array.Empty<ExpenseTotalItem>();
+    public ExpenseTotalItem[] ExpensesOverTime { get; init; } = [];
 
     public bool ExpensesOverTimeRequesting { get; init; }
 }

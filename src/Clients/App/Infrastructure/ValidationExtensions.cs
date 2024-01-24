@@ -17,7 +17,7 @@ public static class ValidationExtensions
                 ValidationContext<TValue>.CreateWithOptions((TValue) model,
                     x => x.IncludeProperties(property)));
 
-            return result.IsValid ? Array.Empty<string>() : result.Errors.Select(e => e.ErrorMessage);
+            return result.IsValid ? [] : result.Errors.Select(e => e.ErrorMessage);
         };
     }
 }

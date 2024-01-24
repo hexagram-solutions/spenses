@@ -21,7 +21,7 @@ public class FilteredExpensesQueryValidator : AbstractValidator<FilteredExpenses
         RuleFor(x => x.Tags)
             .Must(x =>
             {
-                var tagsArray = x?.ToArray() ?? Array.Empty<string>();
+                var tagsArray = x?.ToArray() ?? [];
                 return tagsArray.Distinct().Count() == tagsArray.Length;
             })
             .WithMessage("Tags must be unique")

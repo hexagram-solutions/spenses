@@ -14,7 +14,7 @@ public record PaymentsState
 
     public Payment? CurrentPayment { get; init; }
 
-    public PagedResult<PaymentDigest> Payments { get; init; } = new(0, Enumerable.Empty<PaymentDigest>());
+    public PagedResult<PaymentDigest> Payments { get; init; } = new(0, []);
 
     public bool PaymentsRequesting { get; init; }
 

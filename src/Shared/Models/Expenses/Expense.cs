@@ -41,7 +41,7 @@ public record Expense : ExpenseBase
 
     public ExpenseCategory Category { get; set; } = null!;
 
-    public ExpenseShare[] ExpenseShares { get; set; } = Array.Empty<ExpenseShare>();
+    public ExpenseShare[] ExpenseShares { get; set; } = [];
 
     [Required]
     public User CreatedBy { get; set; } = null!;
