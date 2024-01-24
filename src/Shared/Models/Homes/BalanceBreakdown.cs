@@ -27,24 +27,6 @@ public record MemberBalance
     public Member Member { get; set; } = null!;
 
     /// <summary>
-    /// The total amount that the member owes all other members of the home for the period.
-    /// </summary>
-    [Required]
-    public decimal TotalOwing { get; set; }
-
-    /// <summary>
-    /// The total amount of payments the member made to other members of the home for the period.
-    /// </summary>
-    [Required]
-    public decimal TotalPaid { get; set; }
-
-    /// <summary>
-    /// The difference between the member's owing total and paid total.
-    /// </summary>
-    [Required]
-    public decimal Balance { get; set; }
-
-    /// <summary>
     /// Debts that the member owes to other members of the home.
     /// </summary>
     [Required]

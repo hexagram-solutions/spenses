@@ -71,9 +71,6 @@ public class BalanceBreakdownQueryHandler(ApplicationDbContext db, IMapper mappe
             return new MemberBalance
             {
                 Member = mapper.Map<Member>(member),
-                TotalOwing = totalOwingByMember,
-                TotalPaid = totalPaidByMember,
-                Balance = totalOwingByMember - totalPaidByMember,
                 Debts = [.. debts]
             };
         }).ToArray();
