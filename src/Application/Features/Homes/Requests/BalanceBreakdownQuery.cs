@@ -23,6 +23,8 @@ public class BalanceBreakdownQueryHandler(ApplicationDbContext db, IMapper mappe
             .Include(h => h.Payments.Where(e => e.Date >= periodStart && e.Date <= periodEnd))
             .Include(h => h.Members)
                 .ThenInclude(member => member.PaymentsPaid)
+            .Include(h => h.Members)
+                .ThenInclude(member => member.User)
             .FirstOrDefaultAsync(h => h.Id == homeId, cancellationToken);
 
         if (home is null)

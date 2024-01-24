@@ -1,0 +1,84 @@
+﻿@using Spenses.App.Store.Homes
+@using Spenses.Shared.Models.Homes
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudTable Items="BalanceBreakdown?.MemberBalances"
+          Loading="HomesState.Value.BalanceBreakdownRequesting">
+    <ToolBarContent>
+        <MudText Typo="Typo.h5">Balance Breakdown</MudText>
+        <MudSpacer />
+        <MudMenu Label="Select period"
+                 Variant="Variant.Filled"
+                 Color="Color.Primary"
+                     FullWidth="true"
+                     AnchorOrigin="Origin.BottomCenter"
+                     TransformOrigin="Origin.TopCenter">
+                <MudMenuItem>This month</MudMenuItem>
+                <MudMenuItem>Last month</MudMenuItem>
+                <MudMenuItem>Custom</MudMenuItem> @*open month picker in dialog mode*@
+            </MudMenu>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Member</MudTh>
+        <MudTh>Total Owed</MudTh>
+        <MudTh>Total Paid</MudTh>
+        <MudTh>Balance</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Member">
+            <MudStack Row>
+                <MudAvatar Size="Size.Small">
+                    <MudImage Src="@context.Member.AvatarUrl" />
+                </MudAvatar>
+                <MudText>@context.Member.Name</MudText>
+            </MudStack>
+        </MudTd>
+        <MudTd DataLabel="Expenses">@context.TotalOwed</MudTd>
+        <MudTd DataLabel="Payments">@context.TotalPaid</MudTd>
+        <MudTd DataLabel="Balance">@context.Balance</MudTd>
+    </RowTemplate>
+    <FooterContent>
+        <MudTFootRow Class="bold-text">
+            <MudTd DataLabel="Member">
+                <MudStack Row>
+                    <MudIcon Icon="@Icons.Material.Rounded.Home" />
+                    <MudText>@Home?.Name</MudText>
+                </MudStack>
+            </MudTd>
+            <MudTd DataLabel="Expenses">@BalanceBreakdown?.TotalExpenses</MudTd>
+            <MudTd DataLabel="Payments">@BalanceBreakdown?.TotalPayments</MudTd>
+            <MudTd DataLabel="Balance">@BalanceBreakdown?.TotalBalance</MudTd>
+        </MudTFootRow>
+    </FooterContent>
+</MudTable>
+
+@code {
+    [Inject] private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+
+    private Home? Home => HomesState.Value.CurrentHome;
+
+    private static readonly DateTime Today = DateTime.Today;
+
+    private DateOnly PeriodStart { get; } = new(Today.Year, Today.Month, 1);
+
+    private DateOnly PeriodEnd { get; } = new(Today.Year, Today.Month, DateTime.DaysInMonth(Today.Year, Today.Month));
+
+    private BalanceBreakdown? BalanceBreakdown => HomesState.Value.BalanceBreakdown;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (HomesState.Value.CurrentHome is null)
+        {
+            SubscribeToAction<HomeReceivedAction>(a =>
+                Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(a.Home.Id, PeriodStart, PeriodEnd)));
+        }
+        else
+        {
+            Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(Home.Id, PeriodStart, PeriodEnd));
+        }
+    }
+}
