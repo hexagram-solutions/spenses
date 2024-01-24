@@ -10,7 +10,7 @@ public record Home : HomeProperties
     public Guid Id { get; set; }
 
     [Required]
-    public Member[] Members { get; set; } = Array.Empty<Member>();
+    public Member[] Members { get; set; } = [];
 
     [Required]
     public User CreatedBy { get; set; } = null!;

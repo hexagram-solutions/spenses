@@ -13,7 +13,7 @@ public record ExpenseCategoriesState
 
     public ExpenseCategory? CurrentExpenseCategory { get; init; }
 
-    public ExpenseCategory[] ExpenseCategories { get; init; } = Array.Empty<ExpenseCategory>();
+    public ExpenseCategory[] ExpenseCategories { get; init; } = [];
 
     public bool ExpenseCategoriesRequesting { get; init; }
 

@@ -13,7 +13,7 @@ public record MembersState
 
     public Member? CurrentMember { get; init; }
 
-    public Member[] Members { get; init; } = Array.Empty<Member>();
+    public Member[] Members { get; init; } = [];
 
     public bool MembersRequesting { get; init; }
 

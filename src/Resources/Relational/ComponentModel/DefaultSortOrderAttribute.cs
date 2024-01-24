@@ -15,5 +15,5 @@ public sealed class DefaultSortOrderAttribute : Attribute
         Paths = properties.Select(p => p.Split('.')).ToArray();
     }
 
-    public string[][] Paths { get; set; } = Array.Empty<string[]>();
+    public string[][] Paths { get; set; } = [];
 }

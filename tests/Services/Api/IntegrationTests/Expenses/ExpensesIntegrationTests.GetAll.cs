@@ -27,7 +27,7 @@ public partial class ExpensesIntegrationTests
         })).Content!.Items;
 
         var distinctTags = expenses
-            .SelectMany(t => t.Tags?.Split(' ') ?? Array.Empty<string>())
+            .SelectMany(t => t.Tags?.Split(' ') ?? [])
             .Distinct();
 
         var categories = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!;

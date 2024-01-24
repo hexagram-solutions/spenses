@@ -8,15 +8,12 @@
     <NukeRootDirectory>..</NukeRootDirectory>
     <NukeScriptDirectory>..</NukeScriptDirectory>
     <NukeTelemetryVersion>1</NukeTelemetryVersion>
-    <!-- Required to make GitVersion tooling work until this is fixed by NUKE -->
-    <!-- https://github.com/nuke-build/nuke/issues/818 -->
-    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Hexagrams.Extensions.Common" Version="0.5.1" />
-    <PackageReference Include="Hexagrams.Nuke.Components" Version="1.0.0" />
-    <PackageReference Include="Nuke.Common" Version="7.0.6" />
+    <PackageReference Include="Hexagrams.Nuke.Components" Version="2.0.0" />
+    <PackageReference Include="Nuke.Common" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

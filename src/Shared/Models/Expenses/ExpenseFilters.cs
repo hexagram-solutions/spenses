@@ -6,8 +6,8 @@ namespace Spenses.Shared.Models.Expenses;
 public record ExpenseFilters
 {
     [Required]
-    public IEnumerable<string> Tags { get; set; } = Enumerable.Empty<string>();
+    public IEnumerable<string> Tags { get; set; } = [];
 
     [Required]
-    public IEnumerable<ExpenseCategory> Categories { get; set; } = Enumerable.Empty<ExpenseCategory>();
+    public IEnumerable<ExpenseCategory> Categories { get; set; } = [];
 }
