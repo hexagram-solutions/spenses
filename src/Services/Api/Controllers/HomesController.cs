@@ -10,7 +10,7 @@ namespace Spenses.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("homes")]
-public class HomesController(IMediator mediator) : ControllerBase
+public class HomesController(ISender sender) : ControllerBase
 {
     /// <summary>
     /// Create a new home.
@@ -21,7 +21,7 @@ public class HomesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<Home>> PostHome(HomeProperties props)
     {
-        var home = await mediator.Send(new CreateHomeCommand(props));
+        var home = await sender.Send(new CreateHomeCommand(props));
 
         return CreatedAtAction(nameof(GetHome), new { homeId = home.Id }, home);
     }
@@ -34,7 +34,7 @@ public class HomesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<Home>>> GetHomes()
     {
-        var homes = await mediator.Send(new HomesQuery());
+        var homes = await sender.Send(new HomesQuery());
 
         return Ok(homes);
     }
@@ -48,7 +48,7 @@ public class HomesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<Home>> GetHome(Guid homeId)
     {
-        var home = await mediator.Send(new HomeQuery(homeId));
+        var home = await sender.Send(new HomeQuery(homeId));
 
         return Ok(home);
     }
@@ -63,7 +63,7 @@ public class HomesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
     public async Task<ActionResult<Home>> PutHome(Guid homeId, HomeProperties props)
     {
-        var home = await mediator.Send(new UpdateHomeCommand(homeId, props));
+        var home = await sender.Send(new UpdateHomeCommand(homeId, props));
 
         return Ok(home);
     }
@@ -76,7 +76,7 @@ public class HomesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
     public async Task<ActionResult> DeleteHome(Guid homeId)
     {
-        await mediator.Send(new DeleteHomeCommand(homeId));
+        await sender.Send(new DeleteHomeCommand(homeId));
 
         return NoContent();
     }
@@ -93,7 +93,7 @@ public class HomesController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<BalanceBreakdown>> GetBalanceBreakdown(Guid homeId, DateOnly periodStart,
         DateOnly periodEnd)
     {
-        var balance = await mediator.Send(new BalanceBreakdownQuery(homeId, periodStart, periodEnd));
+        var balance = await sender.Send(new BalanceBreakdownQuery(homeId, periodStart, periodEnd));
 
         return Ok(balance);
     }

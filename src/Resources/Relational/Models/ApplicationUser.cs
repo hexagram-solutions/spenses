@@ -28,4 +28,8 @@ public class ApplicationUser : IdentityUser<Guid>
     public ICollection<Member> CreatedMembers { get; set; } = [];
 
     public ICollection<Member> ModifiedMembers { get; set; } = [];
+
+    public ICollection<Invitation> CreatedInvitations { get; set; } = [];
+
+    public ICollection<Invitation> ModifiedInvitations { get; set; } = [];
 }
