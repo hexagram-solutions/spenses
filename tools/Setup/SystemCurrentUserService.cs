@@ -11,7 +11,7 @@ public class SystemCurrentUserService : ICurrentUserService
     public ClaimsPrincipal CurrentUser => new(new ClaimsIdentity(
     [
         new Claim(ApplicationClaimTypes.Identifier, SystemUserId.ToString()),
-        new Claim(ApplicationClaimTypes.Email, "system@spenses.ca"),
+        new Claim(ApplicationClaimTypes.Email, "system@spenses.money"),
         new Claim(ApplicationClaimTypes.EmailVerified, true.ToString())
     ], nameof(SystemCurrentUserService)));
 }
