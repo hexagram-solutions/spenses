@@ -2,6 +2,7 @@ using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
+using Spenses.Application.Features.Invitations.Requests;
 using Spenses.Shared.Models.Invitations;
 
 namespace Spenses.Api.Controllers;
@@ -21,7 +22,7 @@ public class InvitationsController(ISender sender) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<Invitation>> PostInvitation(Guid homeId, InvitationProperties props)
     {
-        var invitation = new Invitation();
+        var invitation = await sender.Send(new CreateInvitationCommand(homeId, props));
 
         return CreatedAtAction(nameof(GetInvitation), new { homeId, invitation.Id }, invitation);
     }
@@ -35,7 +36,7 @@ public class InvitationsController(ISender sender) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<Invitation[]>> GetInvitations(Guid homeId)
     {
-        var invitations = new[] { new Invitation() };
+        var invitations = await sender.Send(new InvitationsQuery(homeId));
 
         return Ok(invitations);
     }
@@ -50,7 +51,9 @@ public class InvitationsController(ISender sender) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<Invitation>> GetInvitation(Guid homeId, Guid invitationId)
     {
-        throw new NotImplementedException();
+        var invitation = await sender.Send(new InvitationQuery(homeId, invitationId));
+
+        return Ok(invitation);
     }
 
     /// <summary>
@@ -60,9 +63,11 @@ public class InvitationsController(ISender sender) : ControllerBase
     /// <param name="invitationId">The invitation identifier.</param>
     [HttpPatch("{invitationId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Patch))]
-    public async Task<ActionResult<Invitation>> AcceptInvitation(Guid homeId, Guid invitationId)
+    public async Task<ActionResult> AcceptInvitation(Guid homeId, Guid invitationId)
     {
-        throw new NotImplementedException();
+        await sender.Send(new AcceptInvitationCommand(homeId, invitationId));
+
+        return NoContent();
     }
 
     /// <summary>
@@ -74,7 +79,8 @@ public class InvitationsController(ISender sender) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
     public async Task<ActionResult> CancelInvitation(Guid homeId, Guid invitationId)
     {
+        await sender.Send(new CancelInvitationCommand(homeId, invitationId));
+
         return NoContent();
     }
-
 }
