@@ -1,4 +1,5 @@
 ﻿@page "/homes/{homeId:guid}/dashboard"
+@using Spenses.App.Components.Homes
 @using Spenses.App.Store.Homes
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
@@ -8,7 +9,10 @@
 
 <MudText Typo="Typo.h3">Dashboard: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</MudText>
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/iO22QpNGq7k?si=CVutH8FfliJ8C7gh" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+@if (HomesState.Value.CurrentHome is not null)
+{
+    <BalanceBreakdownWidget />
+}
 
 @code {
 

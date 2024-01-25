@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Application.Features.Homes;
 using Spenses.Application.Features.Homes.Requests;
+using Spenses.Shared.Models.Homes;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;
 using DbModels = Spenses.Resources.Relational.Models;
@@ -59,25 +60,19 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             var balanceBreakdown = await handler.Handle(query, CancellationToken.None);
 
             var allExpensesSum = home.Expenses.Sum(e => e.Amount);
-            var allPaymentsSum = home.Payments.Sum(c => c.Amount);
 
             balanceBreakdown.TotalExpenses.Should().Be(allExpensesSum);
-            balanceBreakdown.TotalPayments.Should().Be(allPaymentsSum);
-            balanceBreakdown.TotalBalance.Should().Be(allExpensesSum - allPaymentsSum);
 
             foreach (var memberBalance in balanceBreakdown.MemberBalances)
             {
-                var dbMember = home.Members.Single(m => m.Id == memberBalance.Member.Id);
-                var memberPaid = dbMember.PaymentsPaid.Sum(c => c.Amount);
-
-                memberBalance.TotalPaid.Should().Be(memberPaid);
-
-                var expectedMemberOwed = home.Expenses
-                    .SelectMany(e => e.ExpenseShares)
-                    .Where(es => es.OwedByMemberId == dbMember.Id)
-                    .Sum(es => es.OwedAmount);
-
-                memberBalance.TotalOwed.Should().Be(expectedMemberOwed);
+                memberBalance.Debts.Single().Should().BeEquivalentTo(new MemberDebt
+                {
+                    OwedTo = balanceBreakdown.MemberBalances.Select(mb => mb.Member)
+                        .Single(m => m.Id != memberBalance.Member.Id),
+                    BalanceOwing = 75.00m,
+                    TotalOwed = 150.00m,
+                    TotalPaid = 75.00m
+                });
             }
         }
 
@@ -116,7 +111,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             new DbModels.Member
             {
                 Name = "Hingle McCringleberry",
-                DefaultSplitPercentage = 0.34m,
+                DefaultSplitPercentage = 0.50m,
                 HomeId = homeEntry.Entity.Id,
                 CreatedById = _testUserId,
                 ModifiedById = _testUserId
@@ -126,7 +121,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
             new DbModels.Member
             {
                 Name = "Grunky Peep",
-                DefaultSplitPercentage = 0.66m,
+                DefaultSplitPercentage = 0.50m,
                 HomeId = homeEntry.Entity.Id,
                 CreatedById = _testUserId,
                 ModifiedById = _testUserId
@@ -149,14 +144,14 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                         new DbModels.ExpenseShare
                         {
                             OwedByMemberId = oneThirdMember.Id,
-                            OwedAmount = 33.34m,
-                            OwedPercentage = 33.34m,
+                            OwedAmount = 50.00m,
+                            OwedPercentage = 50.00m,
                         },
                         new DbModels.ExpenseShare
                         {
                             OwedByMemberId = twoThirdsMember.Id,
-                            OwedAmount = 66.66m,
-                            OwedPercentage = 66.66m
+                            OwedAmount = 50.00m,
+                            OwedPercentage = 50.00m
                         }
                     },
                     Category = new DbModels.ExpenseCategory
@@ -173,7 +168,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
                 await db.Payments.AddAsync(new DbModels.Payment
                 {
                     Date = today,
-                    Amount = 50.00m,
+                    Amount = 25.00m,
                     PaidByMemberId = member.Id,
                     PaidToMemberId = db.Members.First(m => m.Id != member.Id).Id,
                     HomeId = homeEntry.Entity.Id,

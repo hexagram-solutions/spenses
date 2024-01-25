@@ -28,11 +28,13 @@
                     <MudAvatar Size="Size.Medium">
                         <MudImage Src="@MeState.Value.CurrentUser!.AvatarUrl"/>
                     </MudAvatar>
-                    <MudStack Justify="Justify.Center"
-                              Spacing="0">
-                        <MudText Typo="Typo.body1">@MeState.Value.CurrentUser.DisplayName</MudText>
-                        <MudText Typo="Typo.body2">@MeState.Value.CurrentUser.Email</MudText>
-                    </MudStack>
+                    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                        <MudStack Justify="Justify.Center"
+                                  Spacing="0">
+                            <MudText Typo="Typo.body1">@MeState.Value.CurrentUser.DisplayName</MudText>
+                            <MudText Typo="Typo.body2">@MeState.Value.CurrentUser.Email</MudText>
+                        </MudStack>
+                    </MudHidden>
                     <MudIcon Icon="@(MenuRef.IsOpen ? Icons.Material.Filled.ExpandLess : Icons.Material.Filled.ExpandMore)"/>
                 </MudStack>
             </ActivatorContent>
