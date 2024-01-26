@@ -4,19 +4,14 @@ using Spenses.Shared.Models.Users;
 
 namespace Spenses.Shared.Models.Invitations;
 
-public record InvitationBase
+public record InvitationProperties
 {
     [Required]
     [EmailAddress]
     public string Email { get; set; } = null!;
 }
 
-public record InvitationProperties : InvitationBase
-{
-    public Guid? MemberId { get; set; }
-}
-
-public record Invitation : InvitationBase
+public record Invitation : InvitationProperties
 {
     [Required]
     public Guid Id { get; set; }
@@ -24,7 +19,7 @@ public record Invitation : InvitationBase
     [Required]
     public InvitationStatus Status { get; set; }
 
-    public Member? Member { get; set; }
+    public Member Member { get; set; } = null!;
 
     [Required]
     public User CreatedBy { get; set; } = null!;

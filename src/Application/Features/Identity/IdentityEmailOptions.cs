@@ -7,4 +7,6 @@ public class IdentityEmailOptions
     public string VerificationPath { get; set; } = null!;
 
     public string PasswordResetPath { get; set; } = null!;
+
+    public string AcceptInvitationPath { get; set; } = null!;
 }

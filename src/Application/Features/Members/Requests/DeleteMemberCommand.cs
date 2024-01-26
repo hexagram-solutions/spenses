@@ -26,6 +26,7 @@ public class DeleteMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
 
         var member = await db.Members
             .Where(e => e.Home.Id == homeId)
+            .Include(e => e.Invitations)
             .FirstOrDefaultAsync(e => e.Id == memberId, cancellationToken);
 
         if (member is null)
@@ -43,10 +44,13 @@ public class DeleteMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
             when (ex.Entries.SingleOrDefault(e => (e.Entity as DbModels.Member)?.Id == memberId) is not null)
         {
             // The member has associated entities and can't be deleted, so we'll deactivate the member instead.
-            member.IsActive = false;
+            member.Status = DbModels.MemberStatus.Inactive;
 
             // "Undo" the prior removal
             db.Members.Entry(member).State = EntityState.Modified;
+
+            foreach (var invitation in member.Invitations)
+                invitation.Status = DbModels.InvitationStatus.Cancelled;
 
             await db.SaveChangesAsync(cancellationToken);
 

@@ -9,9 +9,5 @@ public class InvitationPropertiesValidator : AbstractValidator<InvitationPropert
     {
         RuleFor(x => x.Email)
             .EmailAddress();
-
-        RuleFor(x => x.MemberId)
-            .Must(x => x != Guid.Empty)
-            .When(x => x.MemberId is not null);
     }
 }

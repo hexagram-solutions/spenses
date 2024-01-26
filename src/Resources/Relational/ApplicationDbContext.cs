@@ -44,6 +44,8 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
 
     public DbSet<Home> Homes => Set<Home>();
 
+    public DbSet<Invitation> Invitations => Set<Invitation>();
+
     public DbSet<Member> Members => Set<Member>();
 
     public DbSet<Payment> Payments => Set<Payment>();

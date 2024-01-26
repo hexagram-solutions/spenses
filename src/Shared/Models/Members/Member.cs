@@ -8,10 +8,16 @@ public record Member : MemberProperties
     public Guid Id { get; set; }
 
     [Required]
-    public bool IsActive { get; set; }
+    public MemberStatus Status { get; set; }
 
     [Required]
     public string AvatarUrl { get; set; } = null!;
+}
+
+public record CreateMemberProperties : MemberProperties
+{
+    [Required]
+    public bool ShouldInvite { get; set; }
 }
 
 public record MemberProperties

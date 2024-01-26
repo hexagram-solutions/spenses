@@ -13,7 +13,7 @@ public class Member : AggregateRoot
     [Range(0.00, 1.00)]
     public decimal DefaultSplitPercentage { get; set; }
 
-    public bool IsActive { get; set; } = true;
+    public MemberStatus Status { get; set; }
 
     public Guid HomeId { get; set; }
 
@@ -30,4 +30,6 @@ public class Member : AggregateRoot
     public ICollection<Payment> PaymentsPaid { get; set; } = [];
 
     public ICollection<Payment> PaymentsReceived { get; set; } = [];
+
+    public ICollection<Invitation> Invitations { get; set; } = [];
 }

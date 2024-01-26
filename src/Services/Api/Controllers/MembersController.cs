@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Members.Requests;
 using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.Controllers;
@@ -96,12 +97,74 @@ public class MembersController(ISender sender) : ControllerBase
     /// <param name="homeId">The home identifier.</param>
     /// <param name="memberId">the member identifier.</param>
     /// <returns>The activated member.</returns>
-    [HttpPut("{memberId:guid}/activate")]
-    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
+    [HttpPatch("{memberId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Patch))]
     public async Task<ActionResult<Member>> ActivateMember(Guid homeId, Guid memberId)
     {
         var result = await sender.Send(new ActivateMemberCommand(homeId, memberId));
 
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Invite a user to join the home as the specified member.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">The member identifier.</param>
+    /// <param name="props">The invitation properties.</param>
+    /// <returns>The created invitation.</returns>
+    [HttpPost("{memberId:guid}/invitations")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
+    public async Task<ActionResult<Invitation>> PostInvitation(Guid homeId, Guid memberId, InvitationProperties props)
+    {
+        var invitation = await sender.Send(new InviteExistingMemberCommand(homeId, memberId, props));
+
+        return CreatedAtAction(nameof(GetInvitation), new { homeId, memberId, invitation.Id }, invitation);
+    }
+
+    /// <summary>
+    /// Fetch a member's invitations
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">The member identifier.</param>
+    /// <returns>The invitation.</returns>
+    [HttpGet("{memberId:guid}/invitations")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
+    public async Task<ActionResult<Invitation[]>> GetInvitations(Guid homeId, Guid memberId)
+    {
+        var invitations = await sender.Send(new MemberInvitationsQuery(homeId, memberId));
+
+        return Ok(invitations);
+    }
+
+    /// <summary>
+    /// Fetch a member invitation.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">The member identifier.</param>
+    /// <param name="invitationId">The invitation identifier.</param>
+    /// <returns>The invitation.</returns>
+    [HttpGet("{memberId:guid}/invitations/{invitationId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
+    public async Task<ActionResult<Invitation>> GetInvitation(Guid homeId, Guid memberId, Guid invitationId)
+    {
+        var invitation = await sender.Send(new MemberInvitationQuery(homeId, memberId, invitationId));
+
+        return Ok(invitation);
+    }
+
+    /// <summary>
+    /// Cancel a pending member invitation.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">The member identifier.</param>
+    /// <param name="invitationId">The invitation identifier.</param>
+    [HttpDelete("invitations/{invitationId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
+    public async Task<ActionResult> CancelInvitation(Guid homeId, Guid memberId, Guid invitationId)
+    {
+        await sender.Send(new CancelInvitationCommand(homeId, memberId, invitationId));
+
+        return NoContent();
     }
 }

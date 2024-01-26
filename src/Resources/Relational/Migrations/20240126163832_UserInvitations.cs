@@ -11,6 +11,17 @@ namespace Spenses.Resources.Relational.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "IsActive",
+                table: "Member");
+
+            migrationBuilder.AddColumn<int>(
+                name: "Status",
+                table: "Member",
+                type: "int",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.CreateTable(
                 name: "Invitation",
                 columns: table => new
@@ -18,8 +29,7 @@ namespace Spenses.Resources.Relational.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    HomeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -41,27 +51,17 @@ namespace Spenses.Resources.Relational.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Invitation_Home_HomeId",
-                        column: x => x.HomeId,
-                        principalTable: "Home",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Invitation_Member_MemberId",
                         column: x => x.MemberId,
                         principalTable: "Member",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Invitation_CreatedById",
                 table: "Invitation",
                 column: "CreatedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Invitation_HomeId",
-                table: "Invitation",
-                column: "HomeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Invitation_MemberId",
@@ -79,6 +79,17 @@ namespace Spenses.Resources.Relational.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Invitation");
+
+            migrationBuilder.DropColumn(
+                name: "Status",
+                table: "Member");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsActive",
+                table: "Member",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
         }
     }
 }

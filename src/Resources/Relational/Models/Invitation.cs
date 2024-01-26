@@ -6,11 +6,7 @@ public class Invitation : AggregateRoot
 
     public InvitationStatus Status { get; set; }
 
-    public Guid? MemberId { get; set; }
+    public Guid MemberId { get; set; }
 
-    public Member? Member { get; set; }
-
-    public Guid HomeId { get; set; }
-
-    public Home Home { get; set; } = null!;
+    public Member Member { get; set; } = null!;
 }

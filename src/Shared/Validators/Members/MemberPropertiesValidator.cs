@@ -18,3 +18,11 @@ public class MemberPropertiesValidator : AbstractValidator<MemberProperties>
             .InclusiveBetween(0.00m, 1.00m);
     }
 }
+
+public class CreateMemberPropertiesValidator : AbstractValidator<CreateMemberProperties>
+{
+    public CreateMemberPropertiesValidator()
+    {
+        Include(new MemberPropertiesValidator());
+    }
+}

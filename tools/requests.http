@@ -58,16 +58,22 @@ GET {{HOST}}/homes
 GET {{HOST}}/homes/{{homeId}}/expenses
 
 ###
-
 # @name expense
 GET {{HOST}}/homes/{{homeId}}/expenses/{{expenseId}}
 
 ###
-
-
 # @name payments
 GET {{HOST}}/homes/{{homeId}}/payments
 
 ###
 # @name members
-GET {{HOST}}/homes/{{homeId}}/balance-breakdown
+GET {{HOST}}/homes/{{homeId}}/members
+
+###
+
+POST {{HOST}}/homes/{{homeId}}/invitations
+Content-Type: application/json
+
+{
+  "email": "ericsondergard+invited@fastmail.com",
+}

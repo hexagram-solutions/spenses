@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240125200526_UserInvitations")]
+    [Migration("20240126163832_UserInvitations")]
     partial class UserInvitations
     {
         /// <inheritdoc />
@@ -554,10 +554,7 @@ namespace Spenses.Resources.Relational.Migrations
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
 
-                    b.Property<Guid>("HomeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("MemberId")
+                    b.Property<Guid>("MemberId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("ModifiedAt")
@@ -572,8 +569,6 @@ namespace Spenses.Resources.Relational.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
-
-                    b.HasIndex("HomeId");
 
                     b.HasIndex("MemberId");
 
@@ -604,9 +599,6 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
@@ -617,6 +609,9 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -864,15 +859,11 @@ namespace Spenses.Resources.Relational.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Spenses.Resources.Relational.Models.Home", "Home")
+                    b.HasOne("Spenses.Resources.Relational.Models.Member", "Member")
                         .WithMany("Invitations")
-                        .HasForeignKey("HomeId")
+                        .HasForeignKey("MemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Spenses.Resources.Relational.Models.Member", "Member")
-                        .WithMany()
-                        .HasForeignKey("MemberId");
 
                     b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "ModifiedBy")
                         .WithMany("ModifiedInvitations")
@@ -881,8 +872,6 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired();
 
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("Home");
 
                     b.Navigation("Member");
 
@@ -1010,8 +999,6 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.Navigation("Expenses");
 
-                    b.Navigation("Invitations");
-
                     b.Navigation("Members");
 
                     b.Navigation("Payments");
@@ -1022,6 +1009,8 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("ExpenseShares");
 
                     b.Navigation("ExpensesPaid");
+
+                    b.Navigation("Invitations");
 
                     b.Navigation("PaymentsPaid");
 

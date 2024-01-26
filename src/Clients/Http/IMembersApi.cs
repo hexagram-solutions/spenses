@@ -1,5 +1,6 @@
 using Refit;
 using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Members;
 
 namespace Spenses.Client.Http;
@@ -21,6 +22,18 @@ public interface IMembersApi
     [Delete("/homes/{homeId}/members/{memberId}")]
     Task<IApiResponse<DeletionResult<Member>>> DeleteMember(Guid homeId, Guid memberId);
 
-    [Put("/homes/{homeId}/members/{memberId}/activate")]
+    [Patch("/homes/{homeId}/members/{memberId}")]
     Task<IApiResponse<Member>> ActivateMember(Guid homeId, Guid memberId);
+
+    [Post("/homes/{homeId}/members/{memberId}/invitations")]
+    Task<IApiResponse<Invitation>> InviteMember(Guid homeId, Guid memberId, InvitationProperties props);
+
+    [Get("/homes/{homeId}/members/{memberId}/invitations")]
+    Task<IApiResponse<Invitation>> GetMemberInvitations(Guid homeId, Guid memberId);
+
+    [Get("/homes/{homeId}/members/{memberId}/invitations/{invitationId}")]
+    Task<IApiResponse<Invitation>> GetMemberInvitation(Guid homeId, Guid memberId, Guid invitationId);
+
+    [Delete("/homes/{homeId}/members/{memberId}/invitations/{invitationId}")]
+    Task<IApiResponse> CancelMemberInvitation(Guid homeId, Guid memberId, Guid invitationId);
 }

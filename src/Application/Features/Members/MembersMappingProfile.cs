@@ -22,7 +22,7 @@ public class MembersMappingProfile : Profile
 
         CreateMap<MemberProperties, DbModels.Member>()
             .ForMember(dest => dest.Id, opts => opts.Ignore())
-            .ForMember(dest => dest.IsActive, opts => opts.Ignore())
+            .ForMember(dest => dest.Status, opts => opts.Ignore())
             .ForMember(dest => dest.Home, opts => opts.Ignore())
             .ForMember(dest => dest.HomeId, opts => opts.Ignore())
             .ForMember(dest => dest.User, opts => opts.Ignore())

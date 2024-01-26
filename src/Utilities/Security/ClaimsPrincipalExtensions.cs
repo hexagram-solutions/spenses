@@ -26,4 +26,11 @@ public static class ClaimsPrincipalExtensions
     {
         return user.FindFirst(ApplicationClaimTypes.Email)!.Value;
     }
+
+    public static Guid GetDisplayName(this ClaimsPrincipal user)
+    {
+        user.EnsureAuthenticated();
+
+        return Guid.Parse(user.FindFirst(ApplicationClaimTypes.DisplayName)!.Value);
+    }
 }

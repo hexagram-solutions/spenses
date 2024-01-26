@@ -13,6 +13,4 @@ public class Home : AggregateRoot
     public ICollection<Expense> Expenses { get; set; } = [];
 
     public ICollection<Payment> Payments { get; set; } = [];
-
-    public ICollection<Invitation> Invitations { get; set; } = [];
 }
