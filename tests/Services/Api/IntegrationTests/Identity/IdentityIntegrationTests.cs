@@ -7,5 +7,5 @@ namespace Spenses.Api.IntegrationTests.Identity;
 public partial class IdentityIntegrationTests(IdentityWebApplicationFixture<Program> fixture)
 {
     private readonly IIdentityApi _identityApi =
-        RestService.For<IIdentityApi>(fixture.WebApplicationFactory.CreateClient());
+        RestService.For<IIdentityApi>(fixture.CreateClient());
 }

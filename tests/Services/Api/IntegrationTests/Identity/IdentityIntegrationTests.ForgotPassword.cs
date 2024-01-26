@@ -29,7 +29,7 @@ public partial class IdentityIntegrationTests
             Password = new Faker().Internet.Password()
         };
 
-        await _identityApi.Register(registerRequest);
+        await fixture.Register(registerRequest);
 
         var response = await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = registerRequest.Email });
 

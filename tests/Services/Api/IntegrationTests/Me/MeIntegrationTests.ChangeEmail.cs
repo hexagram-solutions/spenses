@@ -2,7 +2,6 @@ using System.Net;
 using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
 using Refit;
 using Spenses.Api.IntegrationTests.Identity;
 using Spenses.Client.Http;
@@ -21,9 +20,7 @@ public partial class MeIntegrationTests
 
         await identityFixture.InitializeAsync();
 
-        using var httpClient = identityFixture.WebApplicationFactory.CreateClient();
-
-        var identityApi = RestService.For<IIdentityApi>(httpClient);
+        var identityApi = RestService.For<IIdentityApi>(identityFixture.CreateClient());
 
         // Register a new user
         var registerRequest = new RegisterRequest
@@ -33,30 +30,19 @@ public partial class MeIntegrationTests
             Password = new Faker().Internet.Password()
         };
 
-        var registrationResponse = await identityApi.Register(registerRequest);
+        await identityFixture.Register(registerRequest, true);
 
-        registrationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        await identityFixture.Login(new LoginRequest
+        {
+            Email = registerRequest.Email, Password = registerRequest.Password
+        });
 
-        var (verificationUserId, verificationCode, _) = identityFixture.GetVerificationParametersForEmail(registerRequest.Email);
-
-        var initialVerificationResponse = await identityApi.VerifyEmail(new VerifyEmailRequest(verificationUserId, verificationCode));
-
-        initialVerificationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        // Log in as the new user
-        var loginResponse = await identityApi.Login(new LoginRequest { Email = registerRequest.Email, Password = registerRequest.Password });
-
-        var (authCookieName, authCookieValue) = GetAuthCookieFromResponse(loginResponse);
-
-        using var authenticatedClient = identityFixture.WebApplicationFactory.CreateClient();
-        authenticatedClient.DefaultRequestHeaders.Add("Cookie", $"{authCookieName}={authCookieValue}");
-
-        var authenticatedMeApi = RestService.For<IMeApi>(authenticatedClient);
+        var meApi = RestService.For<IMeApi>(identityFixture.CreateClient());
 
         // Request the email change
         var expectedEmail = "quackadilly.blip2@auburn.edu";
 
-        var changeEmailResponse = await authenticatedMeApi.ChangeEmail(new ChangeEmailRequest { NewEmail = expectedEmail });
+        var changeEmailResponse = await meApi.ChangeEmail(new ChangeEmailRequest { NewEmail = expectedEmail });
 
         changeEmailResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -67,10 +53,11 @@ public partial class MeIntegrationTests
         verificationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         // Ensure the user was logged out
-        var (_, logoutCookieValue) = GetAuthCookieFromResponse(verificationResponse);
+        var meResponse = await meApi.GetMe();
 
-        logoutCookieValue.Should().BeEmpty();
+        meResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
+        // Verify that the user's email was changed in the database
         var userManager = fixture.WebApplicationFactory.Services.GetRequiredService<UserManager<ApplicationUser>>();
 
         var user = await userManager.FindByIdAsync(userId);
@@ -80,15 +67,5 @@ public partial class MeIntegrationTests
         user.EmailConfirmed.Should().Be(true);
 
         await identityFixture.DeleteUser(expectedEmail);
-    }
-
-    private (string authCookieName, string authCookieValue) GetAuthCookieFromResponse(IApiResponse response)
-    {
-        var setCookieHeader = response.Headers.GetValues("Set-Cookie")
-            .Single(v => v.StartsWith(".AspNetCore.Identity.Application"));
-
-        var setCookieHeaderValue = SetCookieHeaderValue.Parse(setCookieHeader);
-
-        return (setCookieHeaderValue.Name.ToString(), setCookieHeaderValue.Value.ToString());
     }
 }

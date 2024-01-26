@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240126163832_UserInvitations")]
+    [Migration("20240126185231_UserInvitations")]
     partial class UserInvitations
     {
         /// <inheritdoc />

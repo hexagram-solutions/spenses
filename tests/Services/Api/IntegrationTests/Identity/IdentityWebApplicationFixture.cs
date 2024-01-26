@@ -16,9 +16,14 @@ namespace Spenses.Api.IntegrationTests.Identity;
 public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
     where TStartup : class
 {
+    private readonly HttpClient _authenticatedHttpClient;
+    private readonly IdentityWebApplicationFactory<TStartup> _webApplicationFactory;
+
     public IdentityWebApplicationFixture()
     {
-        WebApplicationFactory = new IdentityWebApplicationFactory<TStartup>();
+        _webApplicationFactory = new IdentityWebApplicationFactory<TStartup>();
+
+        _authenticatedHttpClient = _webApplicationFactory.CreateClient();
 
         // Since this is static, it will set equivalency rules for the entire test run. This could be configured
         // anywhere, but this class is "global" enough for such configuration.
@@ -27,54 +32,91 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
                 ctx.Subject.Should().BeCloseTo(ctx.Expectation, 100.Milliseconds())).WhenTypeIs<DateTime>());
     }
 
-    public IdentityWebApplicationFactory<TStartup> WebApplicationFactory { get; }
-
     public CurrentUser VerifiedUser { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
-        var identityApi = RestService.For<IIdentityApi>(WebApplicationFactory.CreateClient());
+        var email = "grunky.peep@georgiasouthern.edu";
+        var password = new Faker().Internet.Password();
 
-        var registerRequest = new RegisterRequest
+        var registerResponse = await Register(new RegisterRequest
         {
-            Email = "grunky.peep@georgiasouthern.edu",
-            Password = new Faker().Internet.Password(),
+            Email = email,
+            Password = password,
             DisplayName = "Grunky Peep"
-        };
+        }, true);
 
-        var response = await identityApi.Register(registerRequest);
+        VerifiedUser = registerResponse.Content!;
 
-        VerifiedUser = response.Content!;
-
-        var (userId, code, _) = GetVerificationParametersForEmail(registerRequest.Email);
-
-        await identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
-
-        VerifiedUser.EmailVerified = true;
+        await Login(new LoginRequest { Email = email, Password = password });
     }
 
     public async Task DisposeAsync()
     {
         await DeleteUser("grunky.peep@georgiasouthern.edu");
 
-        var emailClient = WebApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
-        emailClient.EmailMessages.Clear();
+        await _webApplicationFactory.DisposeAsync();
+    }
 
-        await WebApplicationFactory.DisposeAsync();
+    public HttpClient CreateClient()
+    {
+        return _authenticatedHttpClient;
+    }
+
+    public async Task<IApiResponse<CurrentUser>> Register(RegisterRequest request, bool verify = false)
+    {
+        var identityApi = RestService.For<IIdentityApi>(CreateClient());
+
+        var response = await identityApi.Register(request);
+
+        if (!verify)
+            return response;
+
+        var currentUser = response.Content!;
+
+        await VerifyUser(currentUser.Email);
+
+        currentUser.EmailVerified = true;
+
+        return response;
+    }
+
+    public Task<IApiResponse> VerifyUser(string email)
+    {
+        var (userId, code, _) = GetVerificationParametersForEmail(email);
+
+        var identityApi = RestService.For<IIdentityApi>(CreateClient());
+
+        return identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
+    }
+
+    public Task<IApiResponse<LoginResult>> Login(LoginRequest loginRequest)
+    {
+        var identityApi = RestService.For<IIdentityApi>(CreateClient());
+
+        return identityApi.Login(loginRequest);
+    }
+
+    public Task<IApiResponse> Logout()
+    {
+        var identityApi = RestService.For<IIdentityApi>(CreateClient());
+
+        return identityApi.Logout();
     }
 
     public async Task DeleteUser(string email)
     {
-        var userManager = WebApplicationFactory.Services.GetRequiredService<UserManager<ApplicationUser>>();
+        var userManager = _webApplicationFactory.Services.GetRequiredService<UserManager<ApplicationUser>>();
 
-        var user = await userManager.FindByEmailAsync(email);
+        if (await userManager.FindByEmailAsync(email) is not { } user)
+            return;
 
-        await userManager.DeleteAsync(user!);
+        await userManager.DeleteAsync(user);
     }
 
     public CapturedEmailMessage GetLastMessageForEmail(string email)
     {
-        var emailClient = WebApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
+        var emailClient = _webApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
 
         return emailClient.EmailMessages
             .Last(e => e.RecipientAddress == email);
@@ -112,12 +154,4 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
         return new Uri(verificationAnchorValue);
     }
-
-    // todo: register a new user (optionally verify as well)
-
-    // todo: verify a user
-
-    // todo: logn/get an authenticated API client
-
-    // todo: log out
 }

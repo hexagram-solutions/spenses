@@ -16,11 +16,9 @@ public partial class IdentityIntegrationTests
             Password = new Faker().Internet.Password()
         };
 
-        await _identityApi.Register(registerRequest);
+        await fixture.Register(registerRequest, false);
 
-        var (userId, code, _) = fixture.GetVerificationParametersForEmail(registerRequest.Email);
-
-        var response = await _identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
+        var response = await fixture.VerifyUser(registerRequest.Email);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 

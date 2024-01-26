@@ -16,13 +16,13 @@ public partial class IdentityIntegrationTests
             DisplayName = "DONKEY TEETH"
         };
 
-        await _identityApi.Register(registerRequest);
+        await fixture.Register(registerRequest);
 
         var (userId, code, _) = fixture.GetVerificationParametersForEmail(registerRequest.Email);
 
         await _identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
 
-        var response = await _identityApi.Login(new LoginRequest
+        var response = await fixture.Login(new LoginRequest
         {
             Email = registerRequest.Email,
             Password = registerRequest.Password
@@ -31,9 +31,6 @@ public partial class IdentityIntegrationTests
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         response.Content!.Succeeded.Should().BeTrue();
-
-        response.Headers.GetValues("Set-Cookie").Single()
-            .Should().StartWith(".AspNetCore.Identity.Application");
 
         await fixture.DeleteUser(registerRequest.Email);
     }
@@ -64,12 +61,11 @@ public partial class IdentityIntegrationTests
             DisplayName = "DONKEY TEETH"
         };
 
-        await _identityApi.Register(registerRequest);
+        await fixture.Register(registerRequest);
 
-        var response = await _identityApi.Login(new LoginRequest
+        var response = await fixture.Login(new LoginRequest
         {
-            Email = registerRequest.Email,
-            Password = registerRequest.Password
+            Email = registerRequest.Email, Password = registerRequest.Password
         });
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
