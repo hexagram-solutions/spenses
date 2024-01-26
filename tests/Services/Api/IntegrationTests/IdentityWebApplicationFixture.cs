@@ -1,12 +1,15 @@
 using System.Text.RegularExpressions;
 using System.Web;
 using FluentAssertions.Extensions;
+using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational.Models;
+using Spenses.Shared.Common;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Me;
 
@@ -51,8 +54,10 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         if (_isAuthenticated)
             return _authenticatedHttpClient;
 
-        var email = "grunky.peep@georgiasouthern.edu";
-        var password = "Password1!"; // todo: get from config
+        var config = WebApplicationFactory.Services.GetRequiredService<IConfiguration>();
+
+        var email = config.Require(ConfigConstants.SpensesTestIntegrationTestUserEmail);
+        var password = config.Require(ConfigConstants.SpensesTestDefaultUserPassword);
 
         _ = Login(new LoginRequest { Email = email, Password = password }).Result;
 
