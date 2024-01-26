@@ -8,7 +8,7 @@ namespace Spenses.Client.Http;
 public interface IMembersApi
 {
     [Post("/homes/{homeId}/members")]
-    Task<IApiResponse<Member>> PostMember(Guid homeId, MemberProperties props);
+    Task<IApiResponse<Member>> PostMember(Guid homeId, CreateMemberProperties props);
 
     [Get("/homes/{homeId}/members")]
     Task<IApiResponse<IEnumerable<Member>>> GetMembers(Guid homeId);

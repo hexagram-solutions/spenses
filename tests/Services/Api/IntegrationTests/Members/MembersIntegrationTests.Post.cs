@@ -10,7 +10,7 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var properties = new MemberProperties
+        var properties = new CreateMemberProperties
         {
             Name = "Bob",
             DefaultSplitPercentage = 0.0m,
@@ -27,7 +27,7 @@ public partial class MembersIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        createdMember.IsActive.Should().BeTrue();
+        createdMember.Status.Should().Be(MemberStatus.Active);
 
         var members = (await _members.GetMembers(home.Id)).Content;
         members.Should().ContainEquivalentOf(createdMember,
@@ -41,7 +41,7 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var result = await _members.PostMember(home.Id, new MemberProperties());
+        var result = await _members.PostMember(home.Id, new CreateMemberProperties());
 
         result.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
@@ -49,7 +49,7 @@ public partial class MembersIntegrationTests
     [Fact]
     public async Task Post_home_member_with_invalid_identifiers_yields_not_found()
     {
-        var homeNotFoundResult = await _members.PostMember(Guid.NewGuid(), new MemberProperties
+        var homeNotFoundResult = await _members.PostMember(Guid.NewGuid(), new CreateMemberProperties
         {
             Name = "Grunky Peep",
             DefaultSplitPercentage = 0.0m,
@@ -57,5 +57,17 @@ public partial class MembersIntegrationTests
         });
 
         homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task Post_home_member_with_should_invite_set_sends_invitation()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Fact]
+    public async Task Post_home_member_with_should_invite_and_no_contact_email_yields_bad_request()
+    {
+        throw new NotImplementedException();
     }
 }

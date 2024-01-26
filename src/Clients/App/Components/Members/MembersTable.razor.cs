@@ -43,7 +43,7 @@ public partial class MembersTable
         Indentation = false,
         Expandable = true,
         IsInitiallyExpanded = true,
-        Selector = m => m.IsActive
+        Selector = m => m.Status
     };
 
     protected override void OnInitialized()

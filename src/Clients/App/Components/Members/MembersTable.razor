@@ -1,4 +1,5 @@
-﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+﻿@using Spenses.Shared.Models.Members
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <MudTable Items="MembersState.Value.Members"
           Loading="IsLoading"
@@ -36,7 +37,7 @@
         </MudTd>
         <MudTd DataLabel="Actions"
                Style="text-align:right">
-            @if (context.IsActive)
+            @if (context.Status is MemberStatus.Active or MemberStatus.Invited)
             {
                 <MudTooltip Text="Edit">
                     <EditIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>

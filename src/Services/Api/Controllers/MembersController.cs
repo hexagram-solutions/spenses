@@ -23,7 +23,7 @@ public class MembersController(ISender sender) : ControllerBase
     /// <returns>The new home member.</returns>
     [HttpPost]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
-    public async Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
+    public async Task<ActionResult<Member>> PostMember(Guid homeId, CreateMemberProperties props)
     {
         var member = await sender.Send(new CreateMemberCommand(homeId, props));
 

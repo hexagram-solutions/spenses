@@ -27,7 +27,7 @@ public partial class MembersIntegrationTests
     {
         var homeId = (await _homes.GetHomes()).Content!.First().Id;
 
-        var newMember = (await _members.PostMember(homeId, new MemberProperties
+        var newMember = (await _members.PostMember(homeId, new CreateMemberProperties
         {
             Name = "Grunky Peep",
             DefaultSplitPercentage = 0.0m,
@@ -64,21 +64,33 @@ public partial class MembersIntegrationTests
         var deleteMemberResult = deleteMemberResponse.Content!;
 
         deleteMemberResult.Model.Should().BeEquivalentTo(member, opts =>
-            opts.Excluding(m => m.IsActive));
+            opts.Excluding(m => m.Status));
 
-        deleteMemberResult.Model.IsActive.Should().BeFalse();
+        deleteMemberResult.Model.Status.Should().Be(MemberStatus.Inactive);
 
         deleteMemberResult.Type.Should().Be(DeletionType.Deactivated);
 
         var deactivatedMember = (await _members.GetMember(home.Id, member.Id)).Content!;
-        deactivatedMember.IsActive.Should().BeFalse();
+        deactivatedMember.Status.Should().Be(MemberStatus.Inactive);
 
         var members = (await _members.GetMembers(home.Id)).Content!;
-        members.Should().Contain(x => x.Id == deactivatedMember.Id && !x.IsActive);
+        members.Should().Contain(x => x.Id == deactivatedMember.Id && x.Status == MemberStatus.Inactive);
 
         var homeMembers = (await _homes.GetHome(home.Id)).Content!.Members;
-        homeMembers.Should().Contain(x => x.Id == deactivatedMember.Id && !x.IsActive);
+        homeMembers.Should().Contain(x => x.Id == deactivatedMember.Id && x.Status == MemberStatus.Inactive);
 
         await _members.ActivateMember(home.Id, member.Id);
+    }
+
+    [Fact]
+    public async Task Delete_member_with_no_associations_and_pending_invitation_deletes_invitation()
+    {
+        throw new NotImplementedException();
+    }
+
+    [Fact]
+    public async Task Delete_member_with_associations_and_pending_invitation_cancels_invitation()
+    {
+        throw new NotImplementedException();
     }
 }

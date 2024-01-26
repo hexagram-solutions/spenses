@@ -20,11 +20,15 @@ public class MemberPropertiesValidatorTests
     }
 
     [Fact]
-    public void Contact_email_must_be_valid()
+    public void Contact_email_must_be_valid_when_set()
     {
-        var model = new MemberProperties { ContactEmail = "foobar" };
+        var model = new MemberProperties { ContactEmail = null };
 
-        _validator.TestValidate(model).ShouldHaveValidationErrorFor(x => x.ContactEmail);
+        _validator.TestValidate(model)
+            .ShouldNotHaveValidationErrorFor(x => x.ContactEmail);
+
+        _validator.TestValidate(model with { ContactEmail = "foobar" })
+            .ShouldHaveValidationErrorFor(x => x.ContactEmail);
 
         _validator.TestValidate(model with { ContactEmail = "george@vandelayindustries.com" })
             .ShouldNotHaveValidationErrorFor(x => x.ContactEmail);

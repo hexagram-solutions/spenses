@@ -7,17 +7,18 @@ using Spenses.Application.Behaviors;
 using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Resources.Relational;
+using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Members;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Members.Requests;
 
-public record CreateMemberCommand(Guid HomeId, MemberProperties Props) : IAuthorizedRequest<Member>
+public record CreateMemberCommand(Guid HomeId, CreateMemberProperties Props) : IAuthorizedRequest<Member>
 {
     public AuthorizationPolicy Policy => Policies.MemberOfHomePolicy(HomeId);
 }
 
-public class CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
+public class CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper, ISender sender)
     : IRequestHandler<CreateMemberCommand, Member>
 {
     public async Task<Member> Handle(CreateMemberCommand request, CancellationToken cancellationToken)
@@ -43,6 +44,14 @@ public class CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
 
         await db.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<Member>(db.Entry(member).Entity);
+        var memberEntity = db.Entry(member).Entity;
+
+        if (props.ShouldInvite)
+        {
+            await sender.Send(new InviteExistingMemberCommand(home.Id, memberEntity.Id,
+                new InvitationProperties { Email = member.ContactEmail! }), cancellationToken);
+        }
+
+        return mapper.Map<Member>(memberEntity);
     }
 }

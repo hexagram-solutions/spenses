@@ -15,7 +15,7 @@ public record MemberReceivedAction(Member Member);
 
 public record MemberRequestFailedAction;
 
-public record MemberCreatedAction(Guid HomeId, MemberProperties Props);
+public record MemberCreatedAction(Guid HomeId, CreateMemberProperties Props);
 
 public record MemberCreationSucceededAction(Member Member);
 

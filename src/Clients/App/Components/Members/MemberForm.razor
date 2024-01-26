@@ -25,6 +25,16 @@
                       AdornmentIcon="@Icons.Material.Rounded.AlternateEmail"
                       For="@(() => Member.ContactEmail)"/>
     </MudItem>
+    @if (Member is CreateMemberProperties createMemberProperties)
+    {
+        <MudItem xs="12">
+            <MudTooltip Text="Send an invitation to join this home to the member's contact email address.">
+                <MudCheckBox @bind-Value="createMemberProperties.ShouldInvite"
+                             Label="Invite to home"
+                             For="@(() => createMemberProperties.ShouldInvite)"/>
+            </MudTooltip>
+        </MudItem>
+    }
     <MudItem xs="12">
         <MudNumericField @bind-Value="DefaultSplitPercentage"
                          Label="Default split percentage"

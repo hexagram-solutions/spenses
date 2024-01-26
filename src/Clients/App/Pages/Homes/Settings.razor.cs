@@ -5,6 +5,7 @@ using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Store.Homes;
 using Spenses.App.Store.Members;
 using Spenses.Shared.Models.Homes;
+using Spenses.Shared.Models.Members;
 
 namespace Spenses.App.Pages.Homes;
 
@@ -29,7 +30,7 @@ public partial class Settings
         get
         {
             var totalHomeSplitPercentages = MembersState.Value.Members
-                .Where(m => m.IsActive)
+                .Where(m => m.Status is MemberStatus.Active or MemberStatus.Inactive)
                 .Sum(x => x.DefaultSplitPercentage);
 
             return totalHomeSplitPercentages == 1m;

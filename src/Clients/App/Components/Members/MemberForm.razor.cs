@@ -61,7 +61,7 @@ public partial class MemberForm
             .ToList();
 
         var totalHomeSplitPercentages = otherHomeMembers
-            .Where(m => m.IsActive)
+            .Where(m => m.Status is MemberStatus.Active or MemberStatus.Invited)
             .Sum(x => x.DefaultSplitPercentage) + Member.DefaultSplitPercentage;
 
         IsTotalHomeSplitPercentageValid = totalHomeSplitPercentages == 1m;
