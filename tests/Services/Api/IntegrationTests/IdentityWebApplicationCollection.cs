@@ -1,4 +1,4 @@
-namespace Spenses.Api.IntegrationTests.Identity;
+namespace Spenses.Api.IntegrationTests;
 
 [CollectionDefinition(CollectionName, DisableParallelization = true)]
 public class IdentityWebApplicationCollection : ICollectionFixture<IdentityWebApplicationFixture<Program>>

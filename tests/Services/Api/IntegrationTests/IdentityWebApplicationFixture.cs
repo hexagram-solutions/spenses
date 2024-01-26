@@ -10,12 +10,14 @@ using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Me;
 
-namespace Spenses.Api.IntegrationTests.Identity;
+namespace Spenses.Api.IntegrationTests;
 
 public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
     where TStartup : class
 {
     private readonly HttpClient _authenticatedHttpClient;
+
+    private bool _isAuthenticated;
 
     public IdentityWebApplicationFixture()
     {
@@ -36,32 +38,24 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        var email = "grunky.peep@georgiasouthern.edu";
-        var password = "Password1!"; // todo: get from config
-
-        //var registerResponse = await Register(new RegisterRequest
-        //{
-        //    Email = email,
-        //    Password = password,
-        //    DisplayName = "Grunky Peep"
-        //}, true);
-
-        //VerifiedUser = registerResponse.Content!;
-
-        var resp = await Login(new LoginRequest { Email = email, Password = password });
-
         VerifiedUser = (await RestService.For<IMeApi>(CreateClient()).GetMe()).Content!;
     }
 
     public async Task DisposeAsync()
     {
-        //await DeleteUser("grunky.peep@georgiasouthern.edu");
-
         await WebApplicationFactory.DisposeAsync();
     }
 
     public HttpClient CreateClient()
     {
+        if (_isAuthenticated)
+            return _authenticatedHttpClient;
+
+        var email = "grunky.peep@georgiasouthern.edu";
+        var password = "Password1!"; // todo: get from config
+
+        _ = Login(new LoginRequest { Email = email, Password = password }).Result;
+
         return _authenticatedHttpClient;
     }
 
@@ -92,18 +86,26 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         return identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
     }
 
-    public Task<IApiResponse<LoginResult>> Login(LoginRequest loginRequest)
+    public async Task<IApiResponse<LoginResult>> Login(LoginRequest loginRequest)
     {
-        var identityApi = RestService.For<IIdentityApi>(CreateClient());
+        var identityApi = RestService.For<IIdentityApi>(_authenticatedHttpClient);
 
-        return identityApi.Login(loginRequest);
+        var response = await identityApi.Login(loginRequest);
+
+        _isAuthenticated = response.IsSuccessStatusCode;
+
+        return response;
     }
 
-    public Task<IApiResponse> Logout()
+    public async Task<IApiResponse> Logout()
     {
         var identityApi = RestService.For<IIdentityApi>(CreateClient());
 
-        return identityApi.Logout();
+        var response = await identityApi.Logout();
+
+        _isAuthenticated = !response.IsSuccessStatusCode;
+
+        return response;
     }
 
     public async Task DeleteUser(string email)

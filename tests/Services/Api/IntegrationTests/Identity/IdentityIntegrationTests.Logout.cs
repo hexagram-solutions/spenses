@@ -7,7 +7,7 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Logout_unauthenticated_request_yields_success()
     {
-        var logoutResponse = await _identityApi.Logout();
+        var logoutResponse = await fixture.Logout();
 
         logoutResponse.StatusCode.Should().Be(HttpStatusCode.OK);
     }

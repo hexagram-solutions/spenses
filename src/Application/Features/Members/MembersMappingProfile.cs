@@ -31,6 +31,7 @@ public class MembersMappingProfile : Profile
             .ForMember(dest => dest.ExpenseShares, opts => opts.Ignore())
             .ForMember(dest => dest.PaymentsPaid, opts => opts.Ignore())
             .ForMember(dest => dest.PaymentsReceived, opts => opts.Ignore())
+            .ForMember(dest => dest.Invitations, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedById, opts => opts.Ignore())
             .ForMember(dest => dest.CreatedBy, opts => opts.Ignore())
             .ForMember(dest => dest.ModifiedById, opts => opts.Ignore())

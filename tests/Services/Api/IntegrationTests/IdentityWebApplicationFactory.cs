@@ -6,7 +6,7 @@ using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Resources.Communication;
 using Spenses.Shared.Common;
 
-namespace Spenses.Api.IntegrationTests.Identity;
+namespace Spenses.Api.IntegrationTests;
 
 public class IdentityWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class

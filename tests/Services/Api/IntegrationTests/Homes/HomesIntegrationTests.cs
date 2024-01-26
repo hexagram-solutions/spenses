@@ -1,5 +1,4 @@
 using Refit;
-using Spenses.Api.IntegrationTests.Identity;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Homes;
