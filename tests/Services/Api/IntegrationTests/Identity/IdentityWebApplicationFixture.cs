@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using System.Web;
-using Bogus;
 using FluentAssertions.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,13 +16,12 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
     where TStartup : class
 {
     private readonly HttpClient _authenticatedHttpClient;
-    private readonly IdentityWebApplicationFactory<TStartup> _webApplicationFactory;
 
     public IdentityWebApplicationFixture()
     {
-        _webApplicationFactory = new IdentityWebApplicationFactory<TStartup>();
+        WebApplicationFactory = new IdentityWebApplicationFactory<TStartup>();
 
-        _authenticatedHttpClient = _webApplicationFactory.CreateClient();
+        _authenticatedHttpClient = WebApplicationFactory.CreateClient();
 
         // Since this is static, it will set equivalency rules for the entire test run. This could be configured
         // anywhere, but this class is "global" enough for such configuration.
@@ -32,30 +30,34 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
                 ctx.Subject.Should().BeCloseTo(ctx.Expectation, 100.Milliseconds())).WhenTypeIs<DateTime>());
     }
 
+    public IdentityWebApplicationFactory<TStartup> WebApplicationFactory { get; }
+
     public CurrentUser VerifiedUser { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
         var email = "grunky.peep@georgiasouthern.edu";
-        var password = new Faker().Internet.Password();
+        var password = "Password1!"; // todo: get from config
 
-        var registerResponse = await Register(new RegisterRequest
-        {
-            Email = email,
-            Password = password,
-            DisplayName = "Grunky Peep"
-        }, true);
+        //var registerResponse = await Register(new RegisterRequest
+        //{
+        //    Email = email,
+        //    Password = password,
+        //    DisplayName = "Grunky Peep"
+        //}, true);
 
-        VerifiedUser = registerResponse.Content!;
+        //VerifiedUser = registerResponse.Content!;
 
-        await Login(new LoginRequest { Email = email, Password = password });
+        var resp = await Login(new LoginRequest { Email = email, Password = password });
+
+        VerifiedUser = (await RestService.For<IMeApi>(CreateClient()).GetMe()).Content!;
     }
 
     public async Task DisposeAsync()
     {
-        await DeleteUser("grunky.peep@georgiasouthern.edu");
+        //await DeleteUser("grunky.peep@georgiasouthern.edu");
 
-        await _webApplicationFactory.DisposeAsync();
+        await WebApplicationFactory.DisposeAsync();
     }
 
     public HttpClient CreateClient()
@@ -106,7 +108,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public async Task DeleteUser(string email)
     {
-        var userManager = _webApplicationFactory.Services.GetRequiredService<UserManager<ApplicationUser>>();
+        var userManager = WebApplicationFactory.Services.GetRequiredService<UserManager<ApplicationUser>>();
 
         if (await userManager.FindByEmailAsync(email) is not { } user)
             return;
@@ -116,7 +118,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public CapturedEmailMessage GetLastMessageForEmail(string email)
     {
-        var emailClient = _webApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
+        var emailClient = WebApplicationFactory.Services.GetRequiredService<CapturingEmailClient>();
 
         return emailClient.EmailMessages
             .Last(e => e.RecipientAddress == email);

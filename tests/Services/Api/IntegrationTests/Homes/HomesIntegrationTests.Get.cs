@@ -25,7 +25,12 @@ public partial class HomesIntegrationTests
 
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var homeEntry = await db.Homes.AddAsync(new DbModels.Home { Name = "foo" });
+            var homeEntry = await db.Homes.AddAsync(new DbModels.Home
+            {
+                Name = "foo",
+                CreatedById = Guid.Parse("00000000-0000-0000-0000-000000000001"), // todo: need this to be a constant or option somewhere
+                ModifiedById = Guid.Parse("00000000-0000-0000-0000-000000000001")
+            });
 
             await db.SaveChangesAsync();
 

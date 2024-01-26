@@ -39,7 +39,7 @@ public class UsersSeedDataTask(
             $"A value for {defaultUserPasswordSettingKey} must be set in user secrets.");
 
         await AddUser(SystemCurrentUserService.SystemUserId, "system@spenses.ca", "System User");
-        await AddUser(Guid.Parse("00000000-0000-0000-0000-000000000002"), "george@vandelayindustries.com", "George Costanza");
+        await AddUser(Guid.Parse("00000000-0000-0000-0000-000000000002"), "grunky.peep@georgiasouthern.edu", "Grunky Peep");
         await AddUser(Guid.NewGuid(), "ericsondergard+spensesuser@fastmail.com", "esond");
 
         await db.SaveChangesAsync();
