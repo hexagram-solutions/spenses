@@ -11,6 +11,9 @@ public record UserProfileProperties
 public record CurrentUser : UserProfileProperties
 {
     [Required]
+    public Guid Id { get; set; }
+
+    [Required]
     [EmailAddress]
     public string Email { get; set; } = null!;
 

@@ -1,0 +1,23 @@
+﻿@using Spenses.Shared.Models.Members
+@using Spenses.App.Store.Me
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack Row
+          AlignItems="AlignItems.Center">
+    <MudAvatar Size="Size.Small">
+        <MudImage Src="@Member.AvatarUrl"/>
+    </MudAvatar>
+    <MudText>@Member.Name</MudText>
+    @if (MeState.Value.CurrentUser?.Id == Member.User?.Id)
+    {
+        <MudText Typo="Typo.body2" Class="mud-text-secondary">
+            (you)
+        </MudText>
+    }
+</MudStack>
+
+@code {
+    [Parameter] [EditorRequired] public Member Member { get; set; } = null!;
+
+    [Inject] private IState<MeState> MeState { get; set; } = null!;
+}
