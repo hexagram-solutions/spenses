@@ -163,12 +163,12 @@ public class MembersController(ISender sender) : ControllerBase
     /// <param name="homeId">The home identifier.</param>
     /// <param name="memberId">The member identifier.</param>
     /// <param name="invitationId">The invitation identifier.</param>
-    [HttpDelete("invitations/{invitationId:guid}")]
+    [HttpDelete("{memberId:guid}/invitations/{invitationId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
-    public async Task<ActionResult> CancelInvitation(Guid homeId, Guid memberId, Guid invitationId)
+    public async Task<ActionResult<Invitation>> CancelInvitation(Guid homeId, Guid memberId, Guid invitationId)
     {
-        await sender.Send(new CancelInvitationCommand(homeId, memberId, invitationId));
+        var invitation = await sender.Send(new CancelInvitationCommand(homeId, memberId, invitationId));
 
-        return NoContent();
+        return Ok(invitation);
     }
 }

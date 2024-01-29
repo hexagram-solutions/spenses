@@ -1,6 +1,12 @@
 using System.Net;
+using Microsoft.EntityFrameworkCore;
+using Refit;
+using Spenses.Client.Http;
 using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Members;
+using Spenses.Shared.Models.Payments;
+using InvitationStatus = Spenses.Resources.Relational.Models.InvitationStatus;
 
 namespace Spenses.Api.IntegrationTests.Members;
 
@@ -85,12 +91,74 @@ public partial class MembersIntegrationTests
     [Fact]
     public async Task Delete_member_with_no_associations_and_pending_invitation_deletes_invitation()
     {
-        throw new NotImplementedException();
+        var homeId = (await _homes.GetHomes()).Content!.First().Id;
+
+        var createdMember = (await _members.PostMember(homeId,
+            new CreateMemberProperties
+            {
+                Name = "Grunky Peep",
+                DefaultSplitPercentage = 0.0m,
+                ContactEmail = "grunky.peep@georgiasouthern.edu"
+            })).Content!;
+
+        await _members.PostMemberInvitation(homeId, createdMember.Id,
+            new InvitationProperties { Email = createdMember.ContactEmail! });
+
+        var deleteMemberResponse = await _members.DeleteMember(homeId, createdMember.Id);
+
+        deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        deleteMemberResponse.Content!.Type.Should().Be(DeletionType.Deleted);
+
+        await fixture.ExecuteDbContextAction(async db =>
+        {
+            var invitations = await db.Invitations
+                .Where(i => i.MemberId == createdMember.Id)
+                .ToListAsync();
+
+            invitations.Should().BeEmpty();
+        });
     }
 
     [Fact]
     public async Task Delete_member_with_associations_and_pending_invitation_cancels_invitation()
     {
-        throw new NotImplementedException();
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var createdMember = (await _members.PostMember(home.Id,
+            new CreateMemberProperties
+            {
+                Name = "Grunky Peep",
+                DefaultSplitPercentage = 0.0m,
+                ContactEmail = "grunky.peep@georgiasouthern.edu"
+            })).Content!;
+
+        await _members.PostMemberInvitation(home.Id, createdMember.Id,
+            new InvitationProperties { Email = createdMember.ContactEmail! });
+
+        var payments = RestService.For<IPaymentsApi>(fixture.CreateClient());
+
+        var paymentResponse = await payments.PostPayment(home.Id, new PaymentProperties
+        {
+            Amount = 1.00m,
+            Date = DateOnly.FromDateTime(DateTime.Today),
+            PaidByMemberId = createdMember.Id,
+            PaidToMemberId = home.Members.First().Id
+        });
+
+        var deleteMemberResponse = await _members.DeleteMember(home.Id, createdMember.Id);
+
+        deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        deleteMemberResponse.Content!.Type.Should().Be(DeletionType.Deactivated);
+
+        await fixture.ExecuteDbContextAction(async db =>
+        {
+            var invitation = await db.Invitations
+                .SingleAsync(i => i.MemberId == createdMember.Id);
+
+            invitation.Status.Should().Be(InvitationStatus.Cancelled);
+        });
+
+        await payments.DeletePayment(home.Id, paymentResponse.Content!.Id);
+        await _members.DeleteMember(home.Id, createdMember.Id);
     }
 }

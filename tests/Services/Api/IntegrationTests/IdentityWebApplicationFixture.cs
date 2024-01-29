@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Client.Http;
+using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Common;
 using Spenses.Shared.Models.Identity;
@@ -47,6 +48,15 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
     public async Task DisposeAsync()
     {
         await WebApplicationFactory.DisposeAsync();
+    }
+
+    public async Task ExecuteDbContextAction(Func<ApplicationDbContext, Task> action)
+    {
+        await using var scope = WebApplicationFactory.Services.CreateAsyncScope();
+
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        await action(db);
     }
 
     public HttpClient CreateClient()

@@ -88,6 +88,8 @@ public partial class MembersIntegrationTests
         invitationMessage.RecipientAddress.Should().Be(email);
         invitationMessage.Subject.Should().Contain(home.Name);
         invitationMessage.PlainTextMessage.Should().Contain("?token=");
+
+        await _members.DeleteMember(home.Id, createdMember.Id);
     }
 
     [Fact]

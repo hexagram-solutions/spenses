@@ -50,7 +50,10 @@ public class DeleteMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
             db.Members.Entry(member).State = EntityState.Modified;
 
             foreach (var invitation in member.Invitations)
+            {
+                db.Invitations.Entry(invitation).State = EntityState.Modified;
                 invitation.Status = DbModels.InvitationStatus.Cancelled;
+            }
 
             await db.SaveChangesAsync(cancellationToken);
 

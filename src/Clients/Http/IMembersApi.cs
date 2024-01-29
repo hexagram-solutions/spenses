@@ -35,5 +35,5 @@ public interface IMembersApi
     Task<IApiResponse<Invitation>> GetMemberInvitation(Guid homeId, Guid memberId, Guid invitationId);
 
     [Delete("/homes/{homeId}/members/{memberId}/invitations/{invitationId}")]
-    Task<IApiResponse> CancelMemberInvitation(Guid homeId, Guid memberId, Guid invitationId);
+    Task<IApiResponse<Invitation>> CancelMemberInvitation(Guid homeId, Guid memberId, Guid invitationId);
 }
