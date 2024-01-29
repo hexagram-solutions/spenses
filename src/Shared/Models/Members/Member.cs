@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Spenses.Shared.Models.Users;
 
 namespace Spenses.Shared.Models.Members;
 
@@ -12,6 +13,8 @@ public record Member : MemberProperties
 
     [Required]
     public string AvatarUrl { get; set; } = null!;
+
+    public User? User { get; set; }
 }
 
 public record CreateMemberProperties : MemberProperties

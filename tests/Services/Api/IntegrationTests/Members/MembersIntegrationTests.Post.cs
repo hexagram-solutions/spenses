@@ -106,8 +106,6 @@ public partial class MembersIntegrationTests
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var validationProblem = await response.Error!.GetContentAsAsync<ValidationProblemDetails>();
-
-        validationProblem!.Errors.Should().ContainKey(nameof(CreateMemberProperties.ContactEmail));
+        response.Should().HaveValidationErrorFor(x => x.ContactEmail);
     }
 }

@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
@@ -45,11 +46,17 @@ public class InviteExistingMemberCommandHandler(
 
         if (member.UserId.HasValue)
         {
-            throw new InvalidRequestException(
-                $"Member {memberId} is already associated with a user.");
+            throw new InvalidRequestException(new ValidationFailure(nameof(memberId),
+                $"Member {memberId} is already associated with a user."));
         }
 
         member.Status = DbModels.MemberStatus.Invited;
+
+        var existingPendingInvitations = await db.Invitations
+            .Where(i => i.MemberId == member.Id && i.Status == DbModels.InvitationStatus.Pending)
+            .ToListAsync(cancellationToken);
+
+        existingPendingInvitations.ForEach(i => i.Status = DbModels.InvitationStatus.Cancelled);
 
         var entry = await db.AddAsync(new DbModels.Invitation
         {

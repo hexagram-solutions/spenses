@@ -106,7 +106,7 @@ public class MembersController(ISender sender) : ControllerBase
     }
 
     /// <summary>
-    /// Invite a user to join the home as the specified member.
+    /// Invite a user to join a home as the specified member.
     /// </summary>
     /// <param name="homeId">The home identifier.</param>
     /// <param name="memberId">The member identifier.</param>
@@ -118,7 +118,12 @@ public class MembersController(ISender sender) : ControllerBase
     {
         var invitation = await sender.Send(new InviteExistingMemberCommand(homeId, memberId, props));
 
-        return CreatedAtAction(nameof(GetInvitation), new { homeId, memberId, invitation.Id }, invitation);
+        return CreatedAtAction(nameof(GetInvitation), new
+        {
+            homeId,
+            memberId,
+            invitationid = invitation.Id
+        }, invitation);
     }
 
     /// <summary>

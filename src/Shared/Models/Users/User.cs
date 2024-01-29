@@ -5,8 +5,8 @@ namespace Spenses.Shared.Models.Users;
 public record User
 {
     [Required]
-    public string Id { get; init; } = null!;
+    public Guid Id { get; init; }
 
     [Required]
-    public string Name { get; init; } = null!;
+    public string DisplayName { get; init; } = null!;
 }

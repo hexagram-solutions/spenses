@@ -66,8 +66,22 @@ GET {{HOST}}/homes/{{homeId}}/expenses/{{expenseId}}
 GET {{HOST}}/homes/{{homeId}}/payments
 
 ###
+
+@memberId = {{members.response.body.$[0].id}}
+
 # @name members
 GET {{HOST}}/homes/{{homeId}}/members
+
+###
+
+# @prompt memberEmail
+
+POST {{HOST}}/homes/{{homeId}}/members/{{memberId}}/invitations
+Content-Type: application/json
+
+{
+  "email": "{{memberEmail}}"
+}
 
 ###
 

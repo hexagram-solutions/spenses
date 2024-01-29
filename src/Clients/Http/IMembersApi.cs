@@ -26,10 +26,10 @@ public interface IMembersApi
     Task<IApiResponse<Member>> ActivateMember(Guid homeId, Guid memberId);
 
     [Post("/homes/{homeId}/members/{memberId}/invitations")]
-    Task<IApiResponse<Invitation>> InviteMember(Guid homeId, Guid memberId, InvitationProperties props);
+    Task<IApiResponse<Invitation>> PostMemberInvitation(Guid homeId, Guid memberId, InvitationProperties props);
 
     [Get("/homes/{homeId}/members/{memberId}/invitations")]
-    Task<IApiResponse<Invitation>> GetMemberInvitations(Guid homeId, Guid memberId);
+    Task<IApiResponse<Invitation[]>> GetMemberInvitations(Guid homeId, Guid memberId);
 
     [Get("/homes/{homeId}/members/{memberId}/invitations/{invitationId}")]
     Task<IApiResponse<Invitation>> GetMemberInvitation(Guid homeId, Guid memberId, Guid invitationId);

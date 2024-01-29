@@ -11,7 +11,7 @@ public class UsersMappingProfile : Profile
     {
         CreateMap<DbModels.ApplicationUser, User>()
             .ForMember(dest => dest.Id, opts => opts.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Name, opts => opts.MapFrom(src => src.UserName))
+            .ForMember(dest => dest.DisplayName, opts => opts.MapFrom(src => src.DisplayName))
             .ForAllOtherMembers(opts => opts.Ignore());
     }
 }
