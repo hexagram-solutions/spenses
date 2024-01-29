@@ -39,7 +39,7 @@ public class AcceptInvitationCommandHandler(ApplicationDbContext db, InvitationT
             return; // Nothing to do here
 
         if (invitation.Status != DbModels.InvitationStatus.Pending)
-            throw new UnauthorizedException();
+            throw new ForbiddenException();
 
         invitation.Status = DbModels.InvitationStatus.Accepted;
 

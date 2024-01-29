@@ -64,14 +64,19 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         if (_isAuthenticated)
             return _authenticatedHttpClient;
 
+        LoginAsTestUser().Wait();
+
+        return _authenticatedHttpClient;
+    }
+
+    public async Task LoginAsTestUser()
+    {
         var config = WebApplicationFactory.Services.GetRequiredService<IConfiguration>();
 
         var email = config.Require(ConfigConstants.SpensesTestIntegrationTestUserEmail);
         var password = config.Require(ConfigConstants.SpensesTestDefaultUserPassword);
 
-        _ = Login(new LoginRequest { Email = email, Password = password }).Result;
-
-        return _authenticatedHttpClient;
+        await Login(new LoginRequest { Email = email, Password = password });
     }
 
     public async Task<IApiResponse<CurrentUser>> Register(RegisterRequest request, bool verify = false)
@@ -161,6 +166,17 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         var parameters = HttpUtility.ParseQueryString(confirmationUri.Query);
 
         return (parameters["email"]!, parameters["code"]!);
+    }
+
+    public string GetInvitationTokenForEmail(string email)
+    {
+        var message = GetLastMessageForEmail(email);
+
+        var invitationAcceptUri = GetLinkFromEmailMessage(message);
+
+        var parameters = HttpUtility.ParseQueryString(invitationAcceptUri.Query);
+
+        return parameters["token"]!;
     }
 
     private static Uri GetLinkFromEmailMessage(CapturedEmailMessage message)

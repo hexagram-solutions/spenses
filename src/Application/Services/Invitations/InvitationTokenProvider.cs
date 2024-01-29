@@ -12,9 +12,9 @@ public class InvitationTokenProvider(IDataProtectionProvider dataProtection)
     public string ProtectInvitationData(InvitationData data)
     {
         var protector = dataProtection.CreateProtector(Purpose);
-        var protectedToken = protector.Protect(data.InvitationId.ToJson());
+        var protectedData = protector.Protect(data.ToJson());
 
-        return protectedToken;
+        return protectedData;
     }
 
     public InvitationData UnprotectInvitationData(string token)

@@ -19,7 +19,13 @@
         <MudTh colspan="4">@($"{context.GroupName}: {((bool)context.Key ? "Active" : "Inactive")}")</MudTh>
     </GroupHeaderTemplate>
     <RowTemplate>
-        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Name">
+            @* TODO: Component to display member name and avatar, and whether the current user is "you" *@
+            <MudStack Row
+                      AlignItems="AlignItems.Center">
+                <MudText>@context.Name</MudText>
+            </MudStack>
+        </MudTd>
         <MudTd DataLabel="Contact email">
             @if (!string.IsNullOrEmpty(context.ContactEmail))
             {
