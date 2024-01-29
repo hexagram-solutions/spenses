@@ -49,6 +49,8 @@ public class InviteExistingMemberCommandHandler(
                 $"Member {memberId} is already associated with a user.");
         }
 
+        member.Status = DbModels.MemberStatus.Invited;
+
         var entry = await db.AddAsync(new DbModels.Invitation
         {
             MemberId = memberId,
@@ -70,7 +72,7 @@ public class InviteExistingMemberCommandHandler(
     {
         var invitationToken = tokenProvider.ProtectInvitationData(new InvitationData(invitation.Id));
 
-        var acceptInvitationPath = QueryHelpers.AddQueryString(emailOptions.Value.PasswordResetPath,
+        var acceptInvitationPath = QueryHelpers.AddQueryString(emailOptions.Value.AcceptInvitationPath,
             new Dictionary<string, string?> { { "token", invitationToken } });
 
         var acceptInvitationUrl = new Uri(new Uri(emailOptions.Value.WebApplicationBaseUrl), acceptInvitationPath);

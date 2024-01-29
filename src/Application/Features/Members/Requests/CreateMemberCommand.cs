@@ -40,18 +40,18 @@ public class CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper,
 
         var member = mapper.Map<DbModels.Member>(props);
 
+        member.Status = DbModels.MemberStatus.Active;
+
         home.Members.Add(member);
 
         await db.SaveChangesAsync(cancellationToken);
 
-        var memberEntity = db.Entry(member).Entity;
-
         if (props.ShouldInvite)
         {
-            await sender.Send(new InviteExistingMemberCommand(home.Id, memberEntity.Id,
+            await sender.Send(new InviteExistingMemberCommand(home.Id, member.Id,
                 new InvitationProperties { Email = member.ContactEmail! }), cancellationToken);
         }
 
-        return mapper.Map<Member>(memberEntity);
+        return mapper.Map<Member>(member);
     }
 }

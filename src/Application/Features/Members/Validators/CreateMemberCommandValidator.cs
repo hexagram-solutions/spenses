@@ -9,6 +9,6 @@ public class CreateMemberCommandValidator : AbstractValidator<CreateMemberComman
     public CreateMemberCommandValidator()
     {
         RuleFor(x => x.Props)
-            .SetValidator(new MemberPropertiesValidator());
+            .SetValidator(new CreateMemberPropertiesValidator());
     }
 }

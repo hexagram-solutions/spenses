@@ -14,7 +14,6 @@ namespace Spenses.Api.Controllers;
 [Route("/homes/{homeId:guid}/members")]
 public class MembersController(ISender sender) : ControllerBase
 {
-
     /// <summary>
     /// Add a new member to a home.
     /// </summary>

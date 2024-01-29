@@ -21,6 +21,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 {
                     Name = u.DisplayName,
                     DefaultSplitPercentage = 1m / userIdentities.Count,
+                    Status = MemberStatus.Active,
                     UserId = u.Id
                 }).ToList(),
                 ExpenseCategories =

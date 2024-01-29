@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.IntegrationTests.Members;
@@ -62,12 +63,51 @@ public partial class MembersIntegrationTests
     [Fact]
     public async Task Post_home_member_with_should_invite_set_sends_invitation()
     {
-        throw new NotImplementedException();
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        const string email = "quatro.quatro@sjsu.edu";
+
+        var properties = new CreateMemberProperties
+        {
+            Name = "Quatro Quatro",
+            DefaultSplitPercentage = 0.0m,
+            ContactEmail = email,
+            ShouldInvite = true
+        };
+
+        var createdMemberResponse = await _members.PostMember(home.Id, properties);
+
+        createdMemberResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var createdMember = createdMemberResponse.Content!;
+
+        createdMember.Status.Should().Be(MemberStatus.Invited);
+
+        var invitationMessage = fixture.GetLastMessageForEmail(email);
+
+        invitationMessage.RecipientAddress.Should().Be(email);
+        invitationMessage.Subject.Should().Contain(home.Name);
+        invitationMessage.PlainTextMessage.Should().Contain("?token=");
     }
 
     [Fact]
     public async Task Post_home_member_with_should_invite_and_no_contact_email_yields_bad_request()
     {
-        throw new NotImplementedException();
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var properties = new CreateMemberProperties
+        {
+            Name = "Quatro Quatro",
+            DefaultSplitPercentage = 0.0m,
+            ShouldInvite = true
+        };
+
+        var response = await _members.PostMember(home.Id, properties);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var validationProblem = await response.Error!.GetContentAsAsync<ValidationProblemDetails>();
+
+        validationProblem!.Errors.Should().ContainKey(nameof(CreateMemberProperties.ContactEmail));
     }
 }
