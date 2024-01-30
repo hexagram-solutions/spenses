@@ -7,12 +7,12 @@
     <MudAvatar Size="Size.Small">
         <MudImage Src="@Member.AvatarUrl"/>
     </MudAvatar>
-    <MudText>@Member.Name</MudText>
+    <div>@Member.Name</div>
     @if (MeState.Value.CurrentUser?.Id == Member.User?.Id)
     {
-        <MudText Typo="Typo.body2" Class="mud-text-secondary">
-            (you)
-        </MudText>
+        <div class="mud-text-secondary">
+            <em>(you)</em>
+        </div>
     }
 </MudStack>
 

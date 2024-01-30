@@ -7,7 +7,7 @@
         <MudText Typo="Typo.h5">
             Members
         </MudText>
-        <MudSpacer />
+        <MudSpacer/>
         <MudButton Variant="Variant.Filled"
                    Color="Color.Success"
                    StartIcon="@Icons.Material.Rounded.PersonAdd"
@@ -27,7 +27,7 @@
                      BadgeData="@(InactiveMembers.Length > 0 ? InactiveMembers.Length : null)">
             <MembersTable Members="InactiveMembers"/>
         </MudTabPanel>
-        </MudTabs>
+    </MudTabs>
 </MudStack>
 
 @code {

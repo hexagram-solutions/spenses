@@ -1,0 +1,50 @@
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack>
+    <div class="align-content-center d-flex">
+        <MudText Typo="Typo.h5">
+            Expense categories
+        </MudText>
+        <MudSpacer/>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Rounded.Add"
+                   OnClick="AddExpenseCategory">
+            Add category
+        </MudButton>
+    </div>
+
+    <MudTable Items="ExpenseCategories"
+              Loading="IsLoading">
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh Style="text-align:right">Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Description">
+                @if (!string.IsNullOrEmpty(context.Description))
+                {
+                    @context.Description
+                }
+                else
+                {
+                    <div class="mud-text-secondary">
+                        <i>None</i>
+                    </div>
+                }
+            </MudTd>
+            <MudTd DataLabel="Actions"
+                   Style="text-align:right">
+                <MudTooltip Text="Edit">
+                    <EditIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>
+                </MudTooltip>
+
+                <MudTooltip Text="Delete">
+                    <DeleteIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>
+                </MudTooltip>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudStack>
