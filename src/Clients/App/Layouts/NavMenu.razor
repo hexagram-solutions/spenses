@@ -13,7 +13,7 @@
     {
         @foreach (var home in HomesState.Value.Homes)
         {
-            <MudNavGroup Expanded="RoutingState.Value.Uri.Contains(home.Id.ToString())"
+            <MudNavGroup Expanded="@(CurrentHomeId.GetValueOrDefault() == home.Id)"
                          Icon="@Icons.Material.Filled.Home"
                          Title="@home.Name">
                 <MudNavLink Href="@(Routes.Homes.Dashboard(home.Id))"
@@ -58,20 +58,11 @@
 
 @code
 {
+    [CascadingParameter] Guid? CurrentHomeId { get; set; }
+
     [Inject] private IState<HomesState> HomesState { get; set; } = null!;
 
-    [Inject] private IState<RoutingState> RoutingState { get; set; } = null!;
-
-    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
-
     [Inject] public IDialogService DialogService { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        Dispatcher.Dispatch(new HomesRequestedAction());
-    }
 
     private void ShowCreateHomeDialog()
     {

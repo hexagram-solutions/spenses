@@ -1,18 +1,21 @@
 ﻿@using Spenses.App.Components.Identity
-
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData"
-                                DefaultLayout="@typeof(BaseLayout)">
-                <Authorizing>
-                    <h4>Logging you in...</h4>
-                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
-                </Authorizing>
-                <NotAuthorized>
-                    <RedirectToLogin/>
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            <CascadingValue Value="@routeData">
+                <AuthorizeRouteView RouteData="@routeData"
+                                    DefaultLayout="@typeof(BaseLayout)">
+                    <Authorizing>
+                        <h4>Logging you in...</h4>
+                        <MudProgressLinear Color="Color.Primary"
+                                           Indeterminate="true"
+                                           Class="my-7"/>
+                    </Authorizing>
+                    <NotAuthorized>
+                        <RedirectToLogin/>
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+            </CascadingValue>
         </Found>
         <NotFound>
             <PageTitle>Not found</PageTitle>
