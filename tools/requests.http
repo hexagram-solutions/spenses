@@ -91,3 +91,12 @@ Content-Type: application/json
 {
   "email": "ericsondergard+invited@fastmail.com",
 }
+
+###
+
+PATCH {{HOST}}/invitations
+Content-Type: application/json
+
+{
+  "token": ""
+}

@@ -1,23 +1,15 @@
 ﻿@using Spenses.Shared.Models.Members
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<MudTable Items="MembersState.Value.Members"
-          Loading="IsLoading"
-          GroupBy="_groupDefinition">
+<MudTable Items="Members"
+          Loading="IsLoading">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Contact email</MudTh>
         <MudTh>Default split %</MudTh>
-        <MudTh Style="text-align:right">
-            <MudIconButton Icon="@Icons.Material.Rounded.PersonAdd"
-                           Color="Color.Success"
-                           Size="Size.Small"
-                           OnClick="AddMember"/>
-        </MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh Style="text-align:right">Actions</MudTh>
     </HeaderContent>
-    <GroupHeaderTemplate>
-        <MudTh colspan="4">@($"{context.GroupName}: {context.Key}")</MudTh>
-    </GroupHeaderTemplate>
     <RowTemplate>
         <MudTd DataLabel="Name">
             <MemberNameDisplay Member="@context"></MemberNameDisplay>
@@ -36,6 +28,9 @@
             <samp>
                 @($"{context.DefaultSplitPercentage:P2}")
             </samp>
+        </MudTd>
+        <MudTd DataLabel="Status">
+            @StatusChip(context.Status)
         </MudTd>
         <MudTd DataLabel="Actions"
                Style="text-align:right">
@@ -62,3 +57,23 @@
         </MudTd>
     </RowTemplate>
 </MudTable>
+
+@* ReSharper disable InconsistentNaming *@
+@* ReSharper disable UnusedParameter.Local *@
+
+@code
+{
+    private RenderFragment StatusChip(MemberStatus status) => __builder =>
+    {
+        var color = status switch
+        {
+            MemberStatus.Invited => Color.Info,
+            MemberStatus.Active => Color.Success,
+            MemberStatus.Inactive => Color.Default,
+            _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
+        };
+
+        <MudChip Text="@status.ToString()"
+                 Color="color"/>
+    };
+}

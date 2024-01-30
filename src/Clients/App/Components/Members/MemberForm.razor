@@ -11,7 +11,7 @@
     <MudItem xs="6">
         <MudTextField @bind-Value="Member.Name"
                       Label="Name"
-                      HelperText="This member's name"
+                      HelperText="The member's name"
                       Placeholder="Quackadilly Blip"
                       Required
                       For="@(() => Member.Name)"/>
@@ -19,7 +19,7 @@
     <MudItem xs="6">
         <MudTextField @bind-Value="Member.ContactEmail"
                       Label="Contact email"
-                      HelperText="Add this member's email address if they should receive email notifications or reminders"
+                      HelperText="Add an email address if the member should receive email notifications or reminders"
                       Placeholder="quackadilly.blip@auburn.edu"
                       Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Rounded.AlternateEmail"
@@ -30,7 +30,7 @@
         <MudItem xs="12">
             <MudTooltip Text="Send an invitation to join this home to the member's contact email address.">
                 <MudCheckBox @bind-Value="createMemberProperties.ShouldInvite"
-                             Label="Invite to home"
+                             Label="Send invitation"
                              For="@(() => createMemberProperties.ShouldInvite)"/>
             </MudTooltip>
         </MudItem>

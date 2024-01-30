@@ -9,9 +9,12 @@ namespace Spenses.App.Components.Members;
 
 public partial class MembersTable
 {
+    [CascadingParameter]
+    public Guid? CurrentHomeId { get; set; }
+
     [Parameter]
     [EditorRequired]
-    public Guid HomeId { get; set; }
+    public Member[] Members { get; set; } = [];
 
     [Inject]
     private IState<MembersState> MembersState { get; set; } = null!;
@@ -32,33 +35,13 @@ public partial class MembersTable
         MembersState.Value.MemberDeleting ||
         MembersState.Value.MemberActivating;
 
-    private IDialogReference? CreateDialog { get; set; }
-
     private IDialogReference? EditDialog { get; set; }
-
-
-    private readonly TableGroupDefinition<Member> _groupDefinition = new()
-    {
-        GroupName = "Members",
-        Indentation = false,
-        Expandable = true,
-        IsInitiallyExpanded = true,
-        Selector = m => m.Status
-    };
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        Dispatcher.Dispatch(new MembersRequestedAction(HomeId));
-
-        SubscribeToAction<MemberCreationSucceededAction>(_ => CreateDialog?.Close());
         SubscribeToAction<MemberUpdateSucceededAction>(_ => EditDialog?.Close());
-    }
-
-    private async Task AddMember()
-    {
-        CreateDialog = await DialogService.ShowAsync<CreateMemberDialog>();
     }
 
     private async Task OnEditClicked(MouseEventArgs _, Guid memberId)
@@ -82,11 +65,11 @@ public partial class MembersTable
         if (confirmed != true)
             return;
 
-        Dispatcher.Dispatch(new MemberDeletedAction(HomeId, member.Id));
+        Dispatcher.Dispatch(new MemberDeletedAction(CurrentHomeId.GetValueOrDefault(), member.Id));
     }
 
     private void OnReactivateClicked(MouseEventArgs _, Guid memberId)
     {
-        Dispatcher.Dispatch(new MemberActivatedAction(HomeId, memberId));
+        Dispatcher.Dispatch(new MemberActivatedAction(CurrentHomeId.GetValueOrDefault(), memberId));
     }
 }

@@ -1,0 +1,78 @@
+﻿@using Spenses.App.Store.Members
+@using Spenses.Shared.Models.Members
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack>
+    <div class="align-content-center d-flex">
+        <MudText Typo="Typo.h5">
+            Members
+        </MudText>
+        <MudSpacer />
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Rounded.PersonAdd"
+                   OnClick="AddMember">
+            Add member
+        </MudButton>
+    </div>
+
+    <MemberSplitPercentageMessage IsValid="IsTotalHomeSplitPercentageValid"/>
+
+    <MudTabs ApplyEffectsToContainer>
+        <MudTabPanel Text="Active"
+                     BadgeData="@(ActiveMembers.Length > 0 ? ActiveMembers.Length : null)">
+            <MembersTable Members="ActiveMembers"/>
+        </MudTabPanel>
+        <MudTabPanel Text="Inactive"
+                     BadgeData="@(InactiveMembers.Length > 0 ? InactiveMembers.Length : null)">
+            <MembersTable Members="InactiveMembers"/>
+        </MudTabPanel>
+        </MudTabs>
+</MudStack>
+
+@code {
+    [CascadingParameter] public Guid? CurrentHomeId { get; set; }
+
+    [Inject] private IState<MembersState> MembersState { get; set; } = null!;
+
+    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+
+    [Inject] public IDialogService DialogService { get; init; } = null!;
+
+    private IDialogReference? CreateDialog { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Dispatcher.Dispatch(new MembersRequestedAction(CurrentHomeId.GetValueOrDefault()));
+
+        SubscribeToAction<MemberCreationSucceededAction>(_ => CreateDialog?.Close());
+    }
+
+    public bool IsTotalHomeSplitPercentageValid
+    {
+        get
+        {
+            var totalHomeSplitPercentages = MembersState.Value.Members
+                .Where(m => m.Status is MemberStatus.Active or MemberStatus.Invited)
+                .Sum(x => x.DefaultSplitPercentage);
+
+            return totalHomeSplitPercentages == 1m;
+        }
+    }
+
+    public Member[] ActiveMembers => MembersState.Value.Members
+        .Where(m => m.Status is MemberStatus.Active or MemberStatus.Invited)
+        .ToArray();
+
+    public Member[] InactiveMembers => MembersState.Value.Members
+        .Where(m => m.Status is MemberStatus.Inactive)
+        .ToArray();
+
+    private async Task AddMember()
+    {
+        CreateDialog = await DialogService.ShowAsync<CreateMemberDialog>();
+    }
+
+}
