@@ -59,26 +59,32 @@ public class DbSetupCommand : RootCommand
     private Command GetResetDatabaseCommand()
     {
         var resetDatabaseCommand = new Command("reset", "Reset the target database by dropping all tables and views, " +
-            "applying all migrations, replacing all views, and seeding the database with data.");
+            "applying all migrations, and rebuilding all tables and views.");
 
-        var forceOption = new Option<bool>(
-            new[] { "--force", "-f" },
+        var forceOption = new Option<bool>(["--force", "-f"],
             description: "Bypass confirmation before resetting the database.",
             getDefaultValue: () => false);
 
-        resetDatabaseCommand.SetHandler(async (connection, force) =>
+        var seedOption = new Option<bool>(["--seed", "-s"],
+            description: "Seed the database with data after rebuilding.",
+            getDefaultValue: () => false);
+
+        resetDatabaseCommand.SetHandler(async (connection, force, shouldSeed) =>
         {
             if (!await DropDatabase(connection, force))
                 return;
 
             await MigrateDatabase(connection);
             await RebuildViews(connection);
-            await SeedDatabase(connection);
+
+            if (shouldSeed)
+                await SeedDatabase(connection);
 
             _logger.LogInformation("Done resetting database!");
-        }, ConnectionOption, forceOption);
+        }, ConnectionOption, forceOption, seedOption);
 
         resetDatabaseCommand.AddOption(forceOption);
+        resetDatabaseCommand.AddOption(seedOption);
 
         return resetDatabaseCommand;
     }

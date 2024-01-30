@@ -34,13 +34,11 @@ public class UsersSeedDataTask(
             services,
             userManagerLogger);
 
-        const string defaultUserPasswordSettingKey = "DefaultUserPassword";
-
         var systemUserId = configuration.Require<Guid>(ConfigConstants.SpensesTestSystemUserId);
         var testUserId = configuration.Require<Guid>(ConfigConstants.SpensesTestIntegrationTestUserId);
         var testUserEmail = configuration.Require(ConfigConstants.SpensesTestIntegrationTestUserEmail);
         var defaultPassword = configuration.Require(ConfigConstants.SpensesTestDefaultUserPassword,
-            $"A value for {defaultUserPasswordSettingKey} must be set in user secrets.");
+            $"A value for {ConfigConstants.SpensesTestDefaultUserPassword} must be set in user secrets.");
 
         await AddUser(systemUserId, "system@spenses.money", "System User");
         await AddUser(testUserId, testUserEmail, "Grunky Peep");
