@@ -20,6 +20,7 @@ public class HomesSeedDataTask : ISeedDataTask
                 Members = userIdentities.Select(u => new Member
                 {
                     Name = u.DisplayName,
+                    ContactEmail = u.Email,
                     DefaultSplitPercentage = 1m / userIdentities.Count,
                     Status = MemberStatus.Active,
                     UserId = u.Id
@@ -47,8 +48,10 @@ public class HomesSeedDataTask : ISeedDataTask
                 Description = "Second test home",
                 Members = userIdentities.Select(u => new Member
                 {
-                    Name = u.UserName!,
+                    Name = u.DisplayName,
+                    ContactEmail = u.Email,
                     DefaultSplitPercentage = 1m / userIdentities.Count,
+                    Status = MemberStatus.Active,
                     UserId = u.Id
                 }).ToList(),
                 ExpenseCategories =
