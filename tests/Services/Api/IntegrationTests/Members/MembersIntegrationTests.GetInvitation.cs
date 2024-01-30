@@ -1,5 +1,6 @@
 using System.Net;
 using Spenses.Shared.Models.Invitations;
+using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.IntegrationTests.Members;
 
@@ -16,7 +17,10 @@ public partial class MembersIntegrationTests
         response = await _members.GetMemberInvitation(homeId, Guid.NewGuid(), Guid.NewGuid());
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        var member = (await _members.GetMembers(homeId)).Content!.First(m => m.User == null);
+        var memberResponse = await _members.PostMember(homeId,
+            new CreateMemberProperties { Name = "Tyroil Smoochie Wallace", DefaultSplitPercentage = 0.00m });
+
+        var member = memberResponse.Content!;
 
         var invitationProperties = new InvitationProperties { Email = "foo@bar.com" };
 
@@ -28,5 +32,7 @@ public partial class MembersIntegrationTests
         response = await _members.GetMemberInvitation(homeId, member.Id, invitationResponse.Content!.Id);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         response.Content.Should().BeEquivalentTo(invitationProperties);
+
+        await _members.DeleteMember(homeId, member.Id);
     }
 }

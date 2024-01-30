@@ -83,7 +83,7 @@ public partial class ExpensesGrid
             "Are you sure you want to delete this expense?",
             $"{expense.Amount} paid by {expense.PaidByMemberName} on {expense.Date:O}",
             "Delete expense",
-            cancelText: "Cancel");
+            cancelText: "Close");
 
         if (confirmed != true)
             return;

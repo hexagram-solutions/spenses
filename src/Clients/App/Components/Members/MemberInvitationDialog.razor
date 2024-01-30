@@ -1,0 +1,85 @@
+﻿@using Spenses.Shared.Models.Members
+@using Spenses.App.Store.Members
+@using Spenses.App.Store.Homes
+@using Spenses.Shared.Models.Invitations
+@using Spenses.Shared.Validators.Invitations
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<EditForm Model="Invitation"
+          OnSubmit="Save">
+
+    <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<InvitationPropertiesValidator>())"/>
+
+    <MudDialog DefaultFocus="DefaultFocus.FirstChild">
+        <TitleContent>
+            Invite someone to @HomesState.Value.CurrentHome?.Name
+        </TitleContent>
+        <DialogContent>
+            <MudStack>
+                <MudText>
+                    The person you invite will be associated with the home member <b>@Member.Name</b> when they accept
+                    the invitation.
+                </MudText>
+
+                <MudTextField @bind-Value="Invitation.Email"
+                              Label="Email"
+                              HelperText="The email address to send the invitation to."
+                              Placeholder="quatro.quatro@sjsu.edu"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Rounded.AlternateEmail"
+                              For="@(() => Invitation.Email)"
+                              Required/>
+            </MudStack>
+            
+        </DialogContent>
+        <DialogActions>
+            <MudButton Color="Color.Default"
+                       Variant="Variant.Filled"
+                       OnClick="Close">
+                Close
+            </MudButton>
+            <LoadingButton Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           StartIcon="@Icons.Material.Rounded.Send"
+                           ButtonType="ButtonType.Submit"
+                           Loading="MembersState.Value.MemberInviting">
+                Send invitation
+            </LoadingButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [Parameter, EditorRequired]
+    public Guid HomeId { get; set; }
+
+    [Parameter, EditorRequired]
+    public Member Member { get; set; } = null!;
+
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    [Inject]
+    private IState<MembersState> MembersState { get; set; } = null!;
+
+    [Inject]
+    private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
+
+    private InvitationProperties Invitation { get; set; } = new();
+
+    private void Close()
+    {
+        Dialog.Cancel();
+    }
+
+    private void Save(EditContext editContext)
+    {
+        if (!editContext.ValidateObjectTree())
+            return;
+
+        Dispatcher.Dispatch(new MemberInvitedAction(HomeId, Member.Id, Invitation));
+    }
+}

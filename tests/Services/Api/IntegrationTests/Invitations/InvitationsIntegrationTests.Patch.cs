@@ -75,9 +75,9 @@ public partial class InvitationsIntegrationTests
         var home = (await _homes.GetHomes()).Content!.First();
         var email = "quatro.quatro@sjsu.edu";
 
-        var (memberId, invitationId) = await CreateAndInviteMember(home.Id, email);
+        var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        await _members.CancelMemberInvitation(home.Id, memberId, invitationId);
+        await _members.CancelMemberInvitations(home.Id, memberId);
 
         var token = fixture.GetInvitationTokenForEmail(email);
 

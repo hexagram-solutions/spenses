@@ -1,4 +1,6 @@
 using Fluxor;
+using Hexagrams.Extensions.Common;
+using Spenses.Shared.Models.Members;
 
 namespace Spenses.App.Store.Members;
 
@@ -17,7 +19,7 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMembersRequestFailed(MembersState state, MembersRequestFailedAction action)
+    public static MembersState ReduceMembersRequestFailed(MembersState state, MembersRequestFailedAction _)
     {
         return state with { MembersRequesting = false };
     }
@@ -35,7 +37,7 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberRequestedFailed(MembersState state, MemberRequestFailedAction action)
+    public static MembersState ReduceMemberRequestedFailed(MembersState state, MemberRequestFailedAction _)
     {
         return state with { MemberRequesting = false };
     }
@@ -54,7 +56,7 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberCreationFailed(MembersState state, MemberCreationFailedAction action)
+    public static MembersState ReduceMemberCreationFailed(MembersState state, MemberCreationFailedAction _)
     {
         return state with { MemberCreating = false };
     }
@@ -72,7 +74,7 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberUpdateFailed(MembersState state, MemberUpdateFailedAction action)
+    public static MembersState ReduceMemberUpdateFailed(MembersState state, MemberUpdateFailedAction _)
     {
         return state with { MemberUpdating = false };
     }
@@ -90,7 +92,7 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberDeleteFailed(MembersState state, MemberDeletionFailedAction action)
+    public static MembersState ReduceMemberDeleteFailed(MembersState state, MemberDeletionFailedAction _)
     {
         return state with { MemberDeleting = false };
     }
@@ -102,14 +104,65 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberActivationSucceeded(MembersState state, MemberDeletionSucceededAction _)
+    public static MembersState ReduceMemberActivationSucceeded(MembersState state, MemberActivationSucceededAction _)
     {
         return state with { MemberActivating = false };
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberActivationFailed(MembersState state, MemberDeletionFailedAction action)
+    public static MembersState ReduceMemberActivationFailed(MembersState state, MemberActivationFailedAction _)
     {
         return state with { MemberActivating = false };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceMemberInvited(MembersState state, MemberInvitedAction _)
+    {
+        return state with { MemberInviting = true };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceMemberInvitationSucceeded(MembersState state,
+        MemberInvitationSucceededAction action)
+    {
+        var invitedMember = state.Members.Single(m => m.Id == action.Invitation.Member.Id);
+
+        return state with
+        {
+            MemberInviting = false,
+            Members = state.Members.Replace(invitedMember, action.Invitation.Member).ToArray()
+        };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceMemberInvitationFailed(MembersState state, MemberInvitationFailedAction _)
+    {
+        return state with { MemberInviting = false };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceMemberInvitationsCancelled(MembersState state, MemberInvitationsCancelledAction _)
+    {
+        return state with { MemberInvitationsCancelling = true };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceMemberInvitationsCancellationSucceeded(MembersState state,
+        MemberInvitationsCancellationSucceededAction action)
+    {
+        var member = state.Members.Single(m => m.Id == action.MemberId);
+
+        return state with
+        {
+            MemberInvitationsCancelling = false,
+            Members = state.Members.Replace(member, member with { Status = MemberStatus.Active }).ToArray()
+        };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceMemberInvitationsCancellationFailed(MembersState state,
+        MemberInvitationsCancellationFailedAction _)
+    {
+        return state with { MemberInvitationsCancelling = false };
     }
 }

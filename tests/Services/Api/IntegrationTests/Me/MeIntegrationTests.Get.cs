@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Me;
-using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api.IntegrationTests.Me;
 
@@ -20,7 +19,8 @@ public partial class MeIntegrationTests
         response.Content!.Should().BeEquivalentTo(
             new CurrentUser
             {
-                Email = applicationUser!.Email!,
+                Id = applicationUser!.Id,
+                Email = applicationUser.Email!,
                 EmailVerified = applicationUser.EmailConfirmed,
                 DisplayName = applicationUser.DisplayName
             },

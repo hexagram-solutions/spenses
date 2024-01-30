@@ -36,8 +36,29 @@
         </MudTd>
         <MudTd DataLabel="Actions"
                Style="text-align:right">
+            @if (context.Status is MemberStatus.Active && context.User is null)
+            {
+                <MudTooltip Text="Invite">
+                    <MudIconButton Icon="@Icons.Material.Filled.Send"
+                                   Color="Color.Info"
+                                   Size="Size.Small"
+                                   OnClick="@(args => SendInvitation(args, context))" />
+                </MudTooltip>
+            }
+
+            @if (context.Status is MemberStatus.Invited)
+            {
+                <MudTooltip Text="Cancel invitation">
+                    <MudIconButton Icon="@Icons.Material.Filled.CancelScheduleSend"
+                                   Color="Color.Warning"
+                                   Size="Size.Small"
+                                   OnClick="@(args => CancelInvitation(args, context))" />
+                </MudTooltip>
+            }
+
             @if (context.Status is MemberStatus.Active or MemberStatus.Invited)
             {
+
                 <MudTooltip Text="Edit">
                     <EditIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>
                 </MudTooltip>

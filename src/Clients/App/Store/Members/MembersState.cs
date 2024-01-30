@@ -26,4 +26,8 @@ public record MembersState
     public bool MemberDeleting { get; init; }
 
     public bool MemberActivating { get; init; }
+
+    public bool MemberInviting { get; init; }
+
+    public bool MemberInvitationsCancelling { get; init; }
 }

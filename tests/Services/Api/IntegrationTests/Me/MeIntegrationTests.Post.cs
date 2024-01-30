@@ -24,7 +24,8 @@ public partial class MeIntegrationTests
         response.Content!.Should().BeEquivalentTo(
             new CurrentUser
             {
-                Email = applicationUser!.Email!,
+                Id = applicationUser!.Id,
+                Email = applicationUser.Email!,
                 EmailVerified = applicationUser.EmailConfirmed,
                 DisplayName = props.DisplayName
             },

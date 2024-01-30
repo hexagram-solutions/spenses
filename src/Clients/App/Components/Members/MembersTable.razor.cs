@@ -25,23 +25,25 @@ public partial class MembersTable
     [Inject]
     public IDialogService DialogService { get; init; } = null!;
 
-    [Inject]
-    public ISnackbar Snackbar { get; set; } = null!;
-
     private bool IsLoading => MembersState.Value.MembersRequesting ||
         MembersState.Value.MemberCreating ||
         MembersState.Value.MemberUpdating ||
         MembersState.Value.MemberDeleting ||
         MembersState.Value.MemberDeleting ||
-        MembersState.Value.MemberActivating;
+        MembersState.Value.MemberActivating ||
+        MembersState.Value.MemberInviting ||
+        MembersState.Value.MemberInvitationsCancelling;
 
     private IDialogReference? EditDialog { get; set; }
+
+    private IDialogReference? InvitationDialog { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
         SubscribeToAction<MemberUpdateSucceededAction>(_ => EditDialog?.Close());
+        SubscribeToAction<MemberInvitationSucceededAction>(_ => InvitationDialog?.Close());
     }
 
     private async Task OnEditClicked(MouseEventArgs _, Guid memberId)
@@ -59,8 +61,8 @@ public partial class MembersTable
             "If this member has no expenses or payments associated with them, they be permanently removed from " +
             "this home. Otherwise, the member will be be deactivated with any existing payments or expenses " +
             "remaining associated with the member.",
-            "Remove member",
-            cancelText: "Cancel");
+            yesText: "Remove member",
+            cancelText: "Close");
 
         if (confirmed != true)
             return;
@@ -71,5 +73,30 @@ public partial class MembersTable
     private void OnReactivateClicked(MouseEventArgs _, Guid memberId)
     {
         Dispatcher.Dispatch(new MemberActivatedAction(CurrentHomeId.GetValueOrDefault(), memberId));
+    }
+
+    private async Task SendInvitation(MouseEventArgs _, Member member)
+    {
+        var parameters = new DialogParameters<MemberInvitationDialog>
+        {
+            { x => x.HomeId, CurrentHomeId.GetValueOrDefault() },
+            { x => x.Member, member }
+        };
+
+        InvitationDialog = await DialogService.ShowAsync<MemberInvitationDialog>("Send invitation", parameters);
+    }
+
+    private async Task CancelInvitation(MouseEventArgs _, Member member)
+    {
+        var confirmed = await DialogService.ShowMessageBox(
+            $"Are you sure you want to cancel the invitation for {member.Name}?",
+            "The person you invited will not be able to join this home unless you invite them again.",
+            yesText: "Cancel invitation",
+            cancelText: "Close");
+
+        if (confirmed != true)
+            return;
+
+        Dispatcher.Dispatch(new MemberInvitationsCancelledAction(CurrentHomeId.GetValueOrDefault(), member.Id));
     }
 }

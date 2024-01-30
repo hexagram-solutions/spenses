@@ -70,7 +70,8 @@ public partial class MembersIntegrationTests
         var deleteMemberResult = deleteMemberResponse.Content!;
 
         deleteMemberResult.Model.Should().BeEquivalentTo(member, opts =>
-            opts.Excluding(m => m.Status));
+            opts.Excluding(m => m.Status)
+                .Excluding(m => m.AvatarUrl));
 
         deleteMemberResult.Model.Status.Should().Be(MemberStatus.Inactive);
 

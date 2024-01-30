@@ -158,17 +158,17 @@ public class MembersController(ISender sender) : ControllerBase
     }
 
     /// <summary>
-    /// Cancel a pending member invitation.
+    /// Cancel pending invitations for a member.
     /// </summary>
     /// <param name="homeId">The home identifier.</param>
     /// <param name="memberId">The member identifier.</param>
     /// <param name="invitationId">The invitation identifier.</param>
-    [HttpDelete("{memberId:guid}/invitations/{invitationId:guid}")]
+    [HttpDelete("{memberId:guid}/invitations")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
-    public async Task<ActionResult<Invitation>> CancelInvitation(Guid homeId, Guid memberId, Guid invitationId)
+    public async Task<ActionResult> CancelInvitation(Guid homeId, Guid memberId)
     {
-        var invitation = await sender.Send(new CancelInvitationCommand(homeId, memberId, invitationId));
+        await sender.Send(new CancelMemberInvitationsCommand(homeId, memberId));
 
-        return Ok(invitation);
+        return NoContent();
     }
 }
