@@ -92,11 +92,11 @@ public class InviteExistingMemberCommandHandler(
 
         var subject = $"[Spenses] {invitingUserName} has invited you to join their home {home.Name}";
 
-        var html = $"{invitingUserName} ({invitingUserEmail}) has invited you to join their home <b>{home.Name}</b>" +
-            $"on Spenses. <a href=\"{acceptInvitationUrl}\">Accept the invitation</a> to join.";
+        var html = $"{invitingUserName} ({invitingUserEmail}) has invited you to join their home <b>{home.Name}</b> " +
+            $"on Spenses. </br></br> <a href=\"{acceptInvitationUrl}\">Accept the invitation</a> to join.";
 
         var plainText = $"{invitingUserName} ({invitingUserEmail}) has invited you to join their home \"{home.Name}\" " +
-            $"on Spenses. Follow this link to join: {acceptInvitationUrl}";
+            $"on Spenses. \r\n\r\n Follow this link to join: {acceptInvitationUrl}";
 
         await emailClient.SendEmail(email, subject, html, plainText, cancellationToken);
     }

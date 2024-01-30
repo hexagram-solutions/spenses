@@ -12,6 +12,6 @@ public class CreateMemberPropertiesValidator : AbstractValidator<CreateMemberPro
         RuleFor(x => x.ContactEmail)
             .NotEmpty()
             .When(x => x.ShouldInvite)
-            .WithMessage("A contact email must be set in order to invite this member to join the home.");
+            .WithMessage("A contact email must be set to invite this member to the home.");
     }
 }

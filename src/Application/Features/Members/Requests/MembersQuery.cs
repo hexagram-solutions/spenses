@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +22,8 @@ public class MembersQueryHandler(ApplicationDbContext db, IMapper mapper)
         var members = await db.Members
             .Where(m => m.HomeId == request.HomeId)
             .OrderBy(m => m.Name)
-            .ProjectTo<Member>(mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        return members;
+        return members.Select(mapper.Map<Member>);
     }
 }

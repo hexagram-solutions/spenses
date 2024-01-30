@@ -1,54 +1,52 @@
-﻿@using Spenses.Shared.Models.Members
-@using Spenses.Shared.Validators.Members
-@using Spenses.App.Store.Homes
-@using Spenses.Shared.Models.Homes
+﻿@using Spenses.Shared.Validators.Members
+@using Spenses.Shared.Models.Members
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<MemberPropertiesValidator>())"
-          OnTransformModel="OnTransformModel" />
+          OnTransformModel="OnTransformModel"/>
 
-<MudGrid>
-    <MudItem xs="6">
-        <MudTextField @bind-Value="Member.Name"
-                      Label="Name"
-                      HelperText="The member's name"
-                      Placeholder="Quackadilly Blip"
-                      Required
-                      For="@(() => Member.Name)"/>
-    </MudItem>
-    <MudItem xs="6">
-        <MudTextField @bind-Value="Member.ContactEmail"
-                      Label="Contact email"
-                      HelperText="Add an email address if the member should receive email notifications or reminders"
-                      Placeholder="quackadilly.blip@auburn.edu"
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Rounded.AlternateEmail"
-                      For="@(() => Member.ContactEmail)"/>
-    </MudItem>
+<MudStack>
+    <MudTextField @bind-Value="Member.Name"
+                  Label="Name"
+                  HelperText="The member's name"
+                  Placeholder="Quackadilly Blip"
+                  Required
+                  For="@(() => Member.Name)"/>
+
+    <MudTextField @bind-Value="Member.ContactEmail"
+                  Label="Contact email"
+                  HelperText="Add an email address if the member should receive email notifications or reminders"
+                  Placeholder="quackadilly.blip@auburn.edu"
+                  Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Rounded.AlternateEmail"
+                  For="@(() => Member.ContactEmail)"
+                  Required="(Member as CreateMemberProperties)?.ShouldInvite ?? false"/>
+
     @if (Member is CreateMemberProperties createMemberProperties)
     {
-        <MudItem xs="12">
-            <MudTooltip Text="Send an invitation to join this home to the member's contact email address.">
-                <MudCheckBox @bind-Value="createMemberProperties.ShouldInvite"
-                             Label="Send invitation"
-                             For="@(() => createMemberProperties.ShouldInvite)"/>
-            </MudTooltip>
-        </MudItem>
+        <MudStack Spacing="1">
+            <MudCheckBox @bind-Value="createMemberProperties.ShouldInvite"
+                         Label="Send invitation"
+                         For="@(() => createMemberProperties.ShouldInvite)"
+                         Dense
+                         Class="ml-n2"/>
+            <MudText Typo="Typo.caption">
+                Send the member an invitation to join this home.
+            </MudText>
+        </MudStack>
     }
-    <MudItem xs="12">
-        <MudNumericField @bind-Value="DefaultSplitPercentage"
-                         Label="Default split percentage"
-                         HelperText="The default ratio to use when splitting expenses with this member."
-                         T="decimal"
-                         Format="F2"
-                         Step="1m"
-                         Min="0"
-                         Max="100"
-                         Adornment="Adornment.End"
-                         AdornmentIcon="@Icons.Material.Rounded.Percent"
-                         For="@(() => Member.DefaultSplitPercentage)" />
-    </MudItem>
-    <MudItem xs="12">
-        <MemberSplitPercentageMessage @bind-IsValid="IsTotalHomeSplitPercentageValid" />
-    </MudItem>
-</MudGrid>
+
+    <MudNumericField @bind-Value="DefaultSplitPercentage"
+                     Label="Default split percentage"
+                     HelperText="The default ratio to use when splitting expenses with this member."
+                     T="decimal"
+                     Format="F2"
+                     Step="1m"
+                     Min="0"
+                     Max="100"
+                     Adornment="Adornment.End"
+                     AdornmentIcon="@Icons.Material.Rounded.Percent"
+                     For="@(() => Member.DefaultSplitPercentage)"/>
+
+    <MemberSplitPercentageMessage @bind-IsValid="IsTotalHomeSplitPercentageValid"/>
+</MudStack>
