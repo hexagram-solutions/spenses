@@ -1,8 +1,6 @@
-using System.Security.Cryptography;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Application.Exceptions;
-using Spenses.Application.Services.Invitations;
 using Spenses.Resources.Relational;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;
@@ -10,30 +8,26 @@ using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Invitations.Requests;
 
-public record AcceptInvitationCommand(string Token) : IRequest;
+public record AcceptInvitationCommand(Guid InvitationId) : IRequest;
 
-public class AcceptInvitationCommandHandler(ApplicationDbContext db, InvitationTokenProvider tokenProvider,
-    ICurrentUserService currentUserService)
+public class AcceptInvitationCommandHandler(ApplicationDbContext db, ICurrentUserService currentUserService)
     : IRequestHandler<AcceptInvitationCommand>
 {
     public async Task Handle(AcceptInvitationCommand request, CancellationToken cancellationToken)
     {
-        InvitationData invitationData;
+        var invitationId = request.InvitationId;
 
-        try
-        {
-            invitationData = tokenProvider.UnprotectInvitationData(request.Token);
-        }
-        catch (CryptographicException)
-        {
-            throw new UnauthorizedException();
-        }
+        var currentUser = currentUserService.CurrentUser!;
 
-        var invitationId = invitationData.InvitationId;
+        var currentUserEmail = currentUser.GetEmail();
 
+        // todo: test that invitation must be for currently authenticated user
         var invitation = await db.Invitations
             .Include(i => i.Member)
-            .FirstOrDefaultAsync(i => i.Id == invitationId, cancellationToken) ?? throw new UnauthorizedException();
+            .FirstOrDefaultAsync(i => i.Id == invitationId && i.Email == currentUserEmail, cancellationToken);
+
+        if (invitation is null)
+            throw new ResourceNotFoundException(invitationId);
 
         if (invitation.Status == DbModels.InvitationStatus.Accepted)
             return; // Nothing to do here
@@ -43,9 +37,7 @@ public class AcceptInvitationCommandHandler(ApplicationDbContext db, InvitationT
 
         invitation.Status = DbModels.InvitationStatus.Accepted;
 
-        var currentUser = currentUserService.CurrentUser!;
-
-        invitation.Member.ContactEmail = currentUser.GetEmail();
+        invitation.Member.ContactEmail = currentUserEmail;
         invitation.Member.UserId = currentUser.GetId();
         invitation.Member.Status = DbModels.MemberStatus.Active;
 

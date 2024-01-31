@@ -122,7 +122,7 @@ public class MembersController(ISender sender) : ControllerBase
         {
             homeId,
             memberId,
-            invitationid = invitation.Id
+            invitationId = invitation.Id
         }, invitation);
     }
 

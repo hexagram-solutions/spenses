@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Spenses.Shared.Models.Homes;
 using Spenses.Shared.Models.Members;
 using Spenses.Shared.Models.Users;
 
@@ -19,7 +20,12 @@ public record Invitation : InvitationProperties
     [Required]
     public InvitationStatus Status { get; set; }
 
+    [Required]
     public Member Member { get; set; } = null!;
+
+    //TODO: Remove members from home object
+    [Required]
+    public Home Home { get; set; } = null!;
 
     [Required]
     public User CreatedBy { get; set; } = null!;

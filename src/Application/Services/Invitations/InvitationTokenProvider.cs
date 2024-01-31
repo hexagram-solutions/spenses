@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.DataProtection;
 
@@ -23,5 +24,21 @@ public class InvitationTokenProvider(IDataProtectionProvider dataProtection)
         var unprotectedToken = protector.Unprotect(token);
 
         return unprotectedToken.FromJson<InvitationData>()!;
+    }
+
+    public bool TryUnprotectInvitationData(string token, out InvitationData? invitationData)
+    {
+        invitationData = null;
+
+        try
+        {
+            invitationData = UnprotectInvitationData(token);
+
+            return true;
+        }
+        catch (CryptographicException)
+        {
+            return false;
+        }
     }
 }

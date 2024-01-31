@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Api.IntegrationTests.Identity.Services;
+using Spenses.Application.Services.Invitations;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
@@ -168,7 +169,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         return (parameters["email"]!, parameters["code"]!);
     }
 
-    public string GetInvitationTokenForEmail(string email)
+    public Guid GetInvitationIdForEmail(string email)
     {
         var message = GetLastMessageForEmail(email);
 
@@ -176,7 +177,11 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
         var parameters = HttpUtility.ParseQueryString(invitationAcceptUri.Query);
 
-        return parameters["invitationToken"]!;
+        var token = parameters["invitationToken"]!;
+
+        var tokenProvider = WebApplicationFactory.Services.GetRequiredService<InvitationTokenProvider>();
+
+        return tokenProvider.UnprotectInvitationData(token).InvitationId;
     }
 
     private static Uri GetLinkFromEmailMessage(CapturedEmailMessage message)

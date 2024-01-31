@@ -14,13 +14,25 @@ public class InvitationsController(ISender sender) : ControllerBase
     /// <summary>
     /// Accept an invitation for the currently authenticated user.
     /// </summary>
-    /// <param name="token">The invitation token from the email sent to the user.</param>
-    [HttpPatch]
+    /// <param name="invitationId">The invitation identifier.</param>
+    [HttpPatch("{invitationId:guid}")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Patch))]
-    public async Task<ActionResult> AcceptInvitation(string token)
+    // TODO: Can this be moved to the home controller? would need to put full link to home in email
+    public async Task<ActionResult> AcceptInvitation(Guid invitationId)
     {
-        await sender.Send(new AcceptInvitationCommand(token));
+        await sender.Send(new AcceptInvitationCommand(invitationId));
 
         return NoContent();
+    }
+
+    /// <summary>
+    /// Decline an invitation for the currently authenticated user.
+    /// </summary>
+    /// <param name="invitationId">The invitation identifier.</param>
+    [HttpDelete("{invitationId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
+    public async Task<ActionResult> DeclineInvitation(Guid invitationId)
+    {
+        throw new NotImplementedException();
     }
 }

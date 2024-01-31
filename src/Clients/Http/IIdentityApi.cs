@@ -1,5 +1,6 @@
 using Refit;
 using Spenses.Shared.Models.Identity;
+using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Me;
 
 namespace Spenses.Client.Http;
@@ -29,4 +30,7 @@ public interface IIdentityApi
 
     [Post("/identity/reset-password")]
     public Task<IApiResponse> ResetPassword(ResetPasswordRequest request);
+
+    [Get("/identity/invitation")]
+    Task<IApiResponse<Invitation>> GetInvitation(string token);
 }

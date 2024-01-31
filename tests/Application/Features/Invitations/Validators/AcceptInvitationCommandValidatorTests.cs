@@ -11,10 +11,10 @@ public class AcceptInvitationCommandValidatorTests
     [Fact]
     public void Token_must_not_be_empty()
     {
-        _validator.TestValidate(new AcceptInvitationCommand(string.Empty))
-            .ShouldHaveValidationErrorFor(x => x.Token);
+        _validator.TestValidate(new AcceptInvitationCommand(Guid.Empty))
+            .ShouldHaveValidationErrorFor(x => x.InvitationId);
 
-        _validator.TestValidate(new AcceptInvitationCommand("foobar"))
-            .ShouldNotHaveValidationErrorFor(x => x.Token);
+        _validator.TestValidate(new AcceptInvitationCommand(Guid.NewGuid()))
+            .ShouldNotHaveValidationErrorFor(x => x.InvitationId);
     }
 }

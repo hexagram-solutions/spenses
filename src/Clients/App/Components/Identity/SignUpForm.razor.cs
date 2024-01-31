@@ -1,19 +1,16 @@
 using Fluxor;
-using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Morris.Blazor.Validation.Extensions;
-using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
 
-namespace Spenses.App.Pages.Identity;
+namespace Spenses.App.Components.Identity;
 
-public partial class SignUp
+public partial class SignUpForm
 {
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+    [Parameter]
+    public string? InvitationToken { get; set; }
 
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
@@ -21,23 +18,15 @@ public partial class SignUp
     [Inject]
     private IState<IdentityState> IdentityState { get; set; } = null!;
 
-    [Inject]
-    public required ILogger<SignUp> Logger { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        if ((await AuthenticationState).User.Identity?.IsAuthenticated == true)
-            Dispatcher.Dispatch(new GoAction(Routes.Root));
-    }
-
     private RegisterRequest RegisterRequest { get; } = new();
 
     private void Register(EditContext editContext)
     {
         if (!editContext.ValidateObjectTree())
             return;
+
+        if (!string.IsNullOrEmpty(InvitationToken))
+            RegisterRequest.InvitationToken = InvitationToken;
 
         Dispatcher.Dispatch(new RegistrationRequestedAction(RegisterRequest));
     }

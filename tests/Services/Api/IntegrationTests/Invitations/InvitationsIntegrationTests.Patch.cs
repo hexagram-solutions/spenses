@@ -16,7 +16,7 @@ public partial class InvitationsIntegrationTests
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var token = fixture.GetInvitationTokenForEmail(email);
+        var invitationId = fixture.GetInvitationIdForEmail(email);
 
         // Register and log in as a new user who will accept the invitation
         await RegisterAndLogIn(email);
@@ -26,7 +26,7 @@ public partial class InvitationsIntegrationTests
         homes.Content!.Should().BeEmpty();
 
         // Accept the invitation
-        var invitationResponse = await _invitations.AcceptInvitation(token);
+        var invitationResponse = await _invitations.AcceptInvitation(invitationId);
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         // User should now be a part of the home
@@ -48,7 +48,7 @@ public partial class InvitationsIntegrationTests
         var email = "quatro.quatro@sjsu.edu";
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
-        var token = fixture.GetInvitationTokenForEmail(email);
+        var invitationId = fixture.GetInvitationIdForEmail(email);
 
         // Register and log in as a new user who will accept the invitation
         await RegisterAndLogIn(email);
@@ -58,10 +58,10 @@ public partial class InvitationsIntegrationTests
         homes.Content!.Should().BeEmpty();
 
         // Accept the invitation
-        var invitationResponse = await _invitations.AcceptInvitation(token);
+        var invitationResponse = await _invitations.AcceptInvitation(invitationId);
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-        invitationResponse = await _invitations.AcceptInvitation(token);
+        invitationResponse = await _invitations.AcceptInvitation(invitationId);
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         await _members.DeleteMember(home.Id, memberId);
@@ -79,11 +79,11 @@ public partial class InvitationsIntegrationTests
 
         await _members.CancelMemberInvitations(home.Id, memberId);
 
-        var token = fixture.GetInvitationTokenForEmail(email);
+        var invitationId = fixture.GetInvitationIdForEmail(email);
 
         await RegisterAndLogIn(email);
 
-        var invitationResponse = await _invitations.AcceptInvitation(token);
+        var invitationResponse = await _invitations.AcceptInvitation(invitationId);
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
         await _members.DeleteMember(home.Id, memberId);
@@ -92,11 +92,11 @@ public partial class InvitationsIntegrationTests
     }
 
     [Fact]
-    public async Task Patch_invitation_with_invalid_token_yields_unauthorized()
+    public async Task Patch_invitation_with_invalid_parameters_yields_bad_request()
     {
-        var invitationResponse = await _invitations.AcceptInvitation("foobar");
+        var invitationResponse = await _invitations.AcceptInvitation(Guid.Empty);
 
-        invitationResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        invitationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     private async Task<(Guid memberId, Guid invitationid)> CreateAndInviteMember(Guid homeId, string email)
