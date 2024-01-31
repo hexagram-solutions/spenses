@@ -80,7 +80,7 @@ public class InviteExistingMemberCommandHandler(
         var invitationToken = tokenProvider.ProtectInvitationData(new InvitationData(invitation.Id));
 
         var acceptInvitationPath = QueryHelpers.AddQueryString(emailOptions.Value.AcceptInvitationPath,
-            new Dictionary<string, string?> { { "token", invitationToken } });
+            new Dictionary<string, string?> { { "invitationToken", invitationToken } });
 
         var acceptInvitationUrl = new Uri(new Uri(emailOptions.Value.WebApplicationBaseUrl), acceptInvitationPath);
 

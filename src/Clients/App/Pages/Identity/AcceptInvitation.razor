@@ -1,0 +1,22 @@
+﻿@page "/accept-invitation"
+
+<PageTitle>Accept invitation</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <MudStack>
+            Accept invitation thingy with email match verification
+            - look up invitation using token to get info
+        </MudStack>
+    </Authorized>
+    <NotAuthorized>
+        Register and/or sign up?
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string? InvitationToken { get; set; } // todo: how to validate that this is mandatory
+
+
+}

@@ -7,7 +7,7 @@ public record InvitationData(Guid InvitationId);
 
 public class InvitationTokenProvider(IDataProtectionProvider dataProtection)
 {
-    private const string Purpose = "invitation";
+    private const string Purpose = "invitation-token";
 
     public string ProtectInvitationData(InvitationData data)
     {

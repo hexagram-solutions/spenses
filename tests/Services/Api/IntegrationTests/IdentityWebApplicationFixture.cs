@@ -176,7 +176,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
         var parameters = HttpUtility.ParseQueryString(invitationAcceptUri.Query);
 
-        return parameters["token"]!;
+        return parameters["invitationToken"]!;
     }
 
     private static Uri GetLinkFromEmailMessage(CapturedEmailMessage message)
