@@ -26,10 +26,10 @@ partial class Build
     readonly string ContainerAppEnvironment = "cae-spenses-test";
 
     [Parameter]
-    readonly string ContainerRegistryServer = "crspensestest.azurecr.io";
+    readonly string ContainerRegistryServer = "crspensesshared";
 
     [Parameter]
-    readonly string ContainerRegistryUsername = "crspensestest";
+    readonly string ContainerRegistryUsername = "crspensesshared";
 
     [Secret]
     [Parameter]
@@ -37,7 +37,7 @@ partial class Build
 
     [Secret]
     [Parameter]
-    readonly string AzureStaticWebAppsApiToken;
+    readonly string AzureStaticWebAppsDeploymentToken;
 
     [Secret]
     [Parameter]
