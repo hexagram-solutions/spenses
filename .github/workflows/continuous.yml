@@ -90,10 +90,10 @@ jobs:
           IS_MAIN_BRANCH=${{ github.ref == 'refs/heads/main' }}
           echo "Building main branch? $IS_MAIN_BRANCH"
 
-          IS_PRERELEASE=${{ github.event.release.prerelease }}
+          IS_PRERELEASE=${{ github.event.release.prerelease != '' }}
           echo "Building a prerelease? $IS_PRERELEASE"
 
-          IS_RELEASE=${{ !github.event.release }}
+          IS_RELEASE=${{ github.event.release != '' }}
           echo "Building a release (will be true for prerelases)? $IS_RELEASE"
 
           if [[ -n "${{ inputs.deployment-environment }}" ]]; then
