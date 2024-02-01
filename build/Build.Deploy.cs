@@ -76,7 +76,7 @@ partial class Build
         .Executes(() =>
         {
             var containerAppImage = $"{ContainerRegistryServer}/{DockerImageName}";
-            var containerAppName = "ca-spenses-test";
+            var containerAppName = "spenses-api";
 
             Az("containerapp up " +
                 $"--name {containerAppName} " +
