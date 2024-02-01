@@ -73,14 +73,14 @@ partial class Build
             () => ContainerRegistryServer,
             () => ContainerRegistryUsername,
             () => ContainerRegistryPassword,
+            () => ContainerAppName,
             () => ContainerAppEnvironment)
         .Executes(() =>
         {
             var containerAppImage = $"{ContainerRegistryServer}/{DockerImageName}";
-            var containerAppName = "spenses-api";
 
             Az("containerapp up " +
-                $"--name {containerAppName} " +
+                $"--name {ContainerAppName} " +
                 $"--resource-group {AzureResourceGroup} " +
                 $"--environment {ContainerAppEnvironment} " +
                 $"--image {containerAppImage} " +

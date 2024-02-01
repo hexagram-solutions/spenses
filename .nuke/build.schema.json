@@ -33,6 +33,9 @@
         "ContainerAppEnvironment": {
           "type": "string"
         },
+        "ContainerAppName": {
+          "type": "string"
+        },
         "ContainerRegistryName": {
           "type": "string"
         },

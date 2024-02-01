@@ -23,6 +23,9 @@ partial class Build
     readonly string AzureResourceGroup = "rg-spenses-test";
 
     [Parameter]
+    readonly string ContainerAppName = "ca-spenses-api-test";
+
+    [Parameter]
     readonly string ContainerAppEnvironment = "cae-spenses-test";
 
     [Parameter]
