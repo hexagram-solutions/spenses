@@ -53,13 +53,13 @@ partial class Build
     Target PushDockerImage => t => t
         .Description("Push docker images to the registry.")
         .DependsOn(AzureLogin)
-        .Requires(() => ContainerRegistryServer)
+        .Requires(() => ContainerRegistryName)
         .Executes(() =>
         {
             var dockerFilePath = ApiProject.Directory / "Dockerfile";
 
             Az("acr build " +
-                $"--registry {ContainerRegistryServer} " +
+                $"--registry {ContainerRegistryName} " +
                 $"--image {DockerImageName} " +
                 $"--file {dockerFilePath} {RootDirectory}");
         });
@@ -69,6 +69,7 @@ partial class Build
         .DependsOn(PushDockerImage)
         .Requires(
             () => AzureResourceGroup,
+            () => ContainerRegistryName,
             () => ContainerRegistryServer,
             () => ContainerRegistryUsername,
             () => ContainerRegistryPassword,
