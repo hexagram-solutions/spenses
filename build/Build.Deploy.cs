@@ -53,6 +53,7 @@ partial class Build
     Target PushDockerImage => t => t
         .Description("Push docker images to the registry.")
         .DependsOn(AzureLogin)
+        .Requires(() => ContainerRegistryServer)
         .Executes(() =>
         {
             var dockerFilePath = ApiProject.Directory / "Dockerfile";
@@ -67,9 +68,11 @@ partial class Build
         .Description("Deploy the API service to Azure Container Apps.")
         .DependsOn(PushDockerImage)
         .Requires(
+            () => AzureResourceGroup,
             () => ContainerRegistryServer,
             () => ContainerRegistryUsername,
-            () => ContainerRegistryPassword)
+            () => ContainerRegistryPassword,
+            () => ContainerAppEnvironment)
         .Executes(() =>
         {
             var containerAppImage = $"{ContainerRegistryServer}/{DockerImageName}";
@@ -80,9 +83,8 @@ partial class Build
                 $"--resource-group {AzureResourceGroup} " +
                 $"--environment {ContainerAppEnvironment} " +
                 $"--image {containerAppImage} " +
-                "--target-port 80 " +
+                "--target-port 8080 " +
                 "--ingress external " +
-                $"--registry-server {ContainerRegistryServer} " +
                 $"--registry-username {ContainerRegistryUsername} " +
                 $"--registry-password {ContainerRegistryPassword}");
         });
@@ -91,7 +93,7 @@ partial class Build
         .Description("Deploy the front-end web app to Azure Static Web Apps.")
         .DependsOn<IClean>()
         .Requires(
-            () => AzureStaticWebAppsApiToken)
+            () => AzureStaticWebAppsDeploymentToken)
         .Executes(() =>
         {
             DotNetPublish(s => s
@@ -103,7 +105,7 @@ partial class Build
 
             Npx($"@azure/static-web-apps-cli deploy " +
                 $"{WebProject.Directory / "bin" / "Release" / "net8.0" / "publish" / "wwwroot"} " +
-                $"--deployment-token {AzureStaticWebAppsApiToken} " +
+                $"--deployment-token {AzureStaticWebAppsDeploymentToken} " +
                 $"--env Production");
         });
 }
