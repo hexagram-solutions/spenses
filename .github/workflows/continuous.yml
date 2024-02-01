@@ -81,7 +81,8 @@ jobs:
     if: ${{ inputs.deployment-environment || github.event.release || (github.ref == 'refs/heads/main' && !github.event.pull_request)}}
     outputs:
       deployment-environment: ${{ steps.set-deployment-targets.outputs.target-environment-name }}
-      deployment-url: ${{ steps.set-deployment-targets.outputs.target-environment-url }}
+      deployment-url-api: ${{ steps.set-deployment-targets.outputs.target-environment-url-api }}
+      deployment-url-app: ${{ steps.set-deployment-targets.outputs.target-environment-url-app }}
 
     steps:
       - name: Determine target deployment environment
@@ -108,21 +109,26 @@ jobs:
 
           case "$TARGET_ENV_NAME" in
             "test")
-              TARGET_ENV_URL="https://test-app.spenses.money"
+              TARGET_ENV_URL_API="https://test-api.spenses.money"
+              TARGET_ENV_URL_APP="https://test-app.spenses.money"
               ;;
             "staging")
-              TARGET_ENV_URL="https://staging-app.spenses.money"
+              TARGET_ENV_URL_API="https://staging-api.spenses.money"
+              TARGET_ENV_URL_APP="https://staging-app.spenses.money"
               ;;
             "production")
-              TARGET_ENV_URL="https://app.spenses.money"
+              TARGET_ENV_URL_API="https://api.spenses.money"
+              TARGET_ENV_URL_APP="https://app.spenses.money"
               ;;
           esac
 
-          echo "Target deployment environment is $TARGET_ENV_NAME"
-          echo "Target deployment URL is $TARGET_ENV_URL"
+          echo "Target deployment environment is '$TARGET_ENV_NAME'"
+          echo "Target deployment URL for API is '$TARGET_ENV_URL_API'"
+          echo "Target deployment URL for web application is '$TARGET_ENV_URL_APP'"
 
           echo "target-environment-name=$TARGET_ENV_NAME" >> $GITHUB_OUTPUT
-          echo "target-environment-url=$TARGET_ENV_URL" >> $GITHUB_OUTPUT
+          echo "target-environment-url-api=$TARGET_ENV_URL_API" >> $GITHUB_OUTPUT
+          echo "target-environment-url-app=$TARGET_ENV_URL_APP" >> $GITHUB_OUTPUT
 
   deploy_api:
     name: "🚀⚙ Deploy API"
@@ -130,7 +136,7 @@ jobs:
     needs: setup
     environment:
       name: ${{ needs.setup.outputs.deployment-environment }}
-      url: ${{ needs.setup.outputs.deployment-url }}
+      url: ${{ needs.setup.outputs.deployment-url-api }}
 
     steps:
       - uses: actions/checkout@v3
@@ -173,7 +179,7 @@ jobs:
     needs: setup
     environment:
       name: ${{ needs.setup.outputs.deployment-environment }}
-      url: ${{ needs.setup.outputs.deployment-url }}
+      url: ${{ needs.setup.outputs.deployment-url-app }}
 
     steps:
       - uses: actions/checkout@v3
@@ -192,6 +198,9 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           global-json-file: global.json
+
+      - name: Install WASM tools workload
+        run: dotnet workload install wasm-tools
 
       - name: "Deploy web app"
         run: ./build.cmd deploy-web-app
