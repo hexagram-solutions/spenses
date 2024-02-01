@@ -85,6 +85,7 @@ partial class Build
                 $"--image {containerAppImage} " +
                 "--target-port 8080 " +
                 "--ingress external " +
+                $"--registry-server {ContainerRegistryServer} " +
                 $"--registry-username {ContainerRegistryUsername} " +
                 $"--registry-password {ContainerRegistryPassword}");
         });
