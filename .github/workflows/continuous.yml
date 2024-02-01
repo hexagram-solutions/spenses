@@ -201,9 +201,6 @@ jobs:
         with:
           global-json-file: global.json
 
-      - name: Install WASM tools workload
-        run: dotnet workload install wasm-tools
-
       - name: "Deploy web app"
         run: ./build.cmd deploy-web-app
         env:
