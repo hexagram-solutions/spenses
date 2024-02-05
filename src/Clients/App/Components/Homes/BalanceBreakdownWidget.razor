@@ -1,4 +1,5 @@
-﻿@using Spenses.App.Store.Homes
+﻿@using Spenses.App.Components.Members
+@using Spenses.App.Store.Homes
 @using Spenses.Shared.Models.Homes
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
@@ -23,13 +24,7 @@
             {
                 <MudExpansionPanel IsExpanded>
                     <TitleContent>
-                        <MudStack Row
-                                  AlignItems="AlignItems.Center">
-                            <MudAvatar Size="Size.Small">
-                                <MudImage Src="@balance.Member.AvatarUrl"/>
-                            </MudAvatar>
-                            <MudText>@balance.Member.Name</MudText>
-                        </MudStack>
+                        <MemberNameDisplay Member="@balance.Member" />
                     </TitleContent>
                     <ChildContent>
                         <MudTable Items="balance.Debts"
@@ -42,12 +37,7 @@
                             </HeaderContent>
                             <RowTemplate>
                                 <MudTd DataLabel="Owed member">
-                                    <MudStack Row>
-                                        <MudAvatar Size="Size.Small">
-                                            <MudImage Src="@context.OwedTo.AvatarUrl"/>
-                                        </MudAvatar>
-                                        <MudText>@context.OwedTo.Name</MudText>
-                                    </MudStack>
+                                    <MemberNameDisplay Member="@context.OwedTo" />
                                 </MudTd>
                                 <MudTd DataLabel="Expenses">@context.TotalOwed</MudTd>
                                 <MudTd DataLabel="Payments">@context.TotalPaid</MudTd>

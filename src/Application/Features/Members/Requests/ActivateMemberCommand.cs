@@ -8,6 +8,7 @@ using Spenses.Application.Exceptions;
 using Spenses.Application.Features.Homes.Authorization;
 using Spenses.Resources.Relational;
 using Spenses.Shared.Models.Members;
+using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Members.Requests;
 
@@ -29,14 +30,13 @@ public class ActivateMemberCommandHandler(ApplicationDbContext db, IMapper mappe
         if (homeMember is null)
             throw new ResourceNotFoundException(memberId);
 
-        homeMember.IsActive = true;
+        homeMember.Status = DbModels.MemberStatus.Active;
 
         await db.SaveChangesAsync(cancellationToken);
 
         var updatedMember = await db.Members
-            .ProjectTo<Member>(mapper.ConfigurationProvider)
             .FirstAsync(x => x.Id == memberId, cancellationToken);
 
-        return updatedMember;
+        return mapper.Map<Member>(updatedMember);
     }
 }

@@ -1,4 +1,5 @@
 ﻿@page "/homes/{homeId:guid}/settings"
+@using Spenses.App.Store.Homes
 @using Spenses.App.Components.Homes
 @using Spenses.App.Components.Members
 @using Spenses.App.Components.ExpenseCategories
@@ -8,41 +9,28 @@
 
 <MudText Typo="Typo.h4"
          GutterBottom>
-    Settings: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")
+    @(HomesState.Value.CurrentHome?.Name ?? "Loading...")
 </MudText>
 
 <MudGrid>
     <MudItem md="6"
-             sm="12">
-        <MudPaper Class="pa-4">
-            <EditForm Model="Home"
-                      OnSubmit="Save">
-                <LoadingOverlay Visible="HomesState.Value.HomeRequesting || HomesState.Value.HomeUpdating"/>
-                <HomeForm Home="Home"/>
-                <MudButton ButtonType="ButtonType.Submit"
-                           Color="Color.Primary"
-                           Variant="Variant.Filled">
-                    Save
-                </MudButton>
-            </EditForm>
-        </MudPaper>
+             xs="12">
+        <SettingsPanel/>
     </MudItem>
     <MudItem md="6"
-             sm="12"
+             xs="12"
              Style="pa-4">
-        <MudText Typo="Typo.h5"
-                 GutterBottom>
-            Expense categories
-        </MudText>
-        <ExpenseCategoriesTable HomeId="HomeId"/>
+        <ExpenseCategoriesPanel/>
     </MudItem>
     <MudItem xs="12"
              Style="pa-4">
-        <MudText Typo="Typo.h5"
-                 GutterBottom>
-            Members
-        </MudText>
-        <MemberSplitPercentageMessage IsValid="IsTotalHomeSplitPercentageValid" />
-        <MembersTable HomeId="HomeId"/>
+        <MembersPanel/>
     </MudItem>
 </MudGrid>
+
+@code
+{
+    [Parameter] public Guid HomeId { get; set; }
+
+    [Inject] private IState<HomesState> HomesState { get; set; } = null!;
+}

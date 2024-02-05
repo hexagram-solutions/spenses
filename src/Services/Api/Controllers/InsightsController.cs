@@ -10,14 +10,14 @@ namespace Spenses.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/insights")]
-public class InsightsController(IMediator mediator) : ControllerBase
+public class InsightsController(ISender sender) : ControllerBase
 {
     [HttpGet("expenses-over-time")]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<ExpenseTotalItem>>> GetExpensesOverTime(Guid homeId,
         ExpenseDateGrouping period)
     {
-        var data = await mediator.Send(new TotalExpensesOverTimeQuery(homeId, period));
+        var data = await sender.Send(new TotalExpensesOverTimeQuery(homeId, period));
 
         return Ok(data);
     }

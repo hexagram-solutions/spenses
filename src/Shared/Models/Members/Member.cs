@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Spenses.Shared.Models.Users;
 
 namespace Spenses.Shared.Models.Members;
 
@@ -8,10 +9,18 @@ public record Member : MemberProperties
     public Guid Id { get; set; }
 
     [Required]
-    public bool IsActive { get; set; }
+    public MemberStatus Status { get; set; }
 
     [Required]
     public string AvatarUrl { get; set; } = null!;
+
+    public User? User { get; set; }
+}
+
+public record CreateMemberProperties : MemberProperties
+{
+    [Required]
+    public bool ShouldInvite { get; set; }
 }
 
 public record MemberProperties

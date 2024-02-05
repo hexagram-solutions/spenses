@@ -1,0 +1,56 @@
+﻿@using Spenses.App.Store.Homes
+@using Spenses.Shared.Models.Homes
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack>
+    <MudText Typo="Typo.h5">
+        Settings
+    </MudText>
+
+    <MudPaper Class="pa-4">
+        <LoadingOverlay Visible="HomesState.Value.HomeRequesting"/>
+
+        <EditForm Model="Home"
+                  OnSubmit="Save">
+
+            <MudStack>
+                <HomeForm Home="Home"/>
+
+                <div>
+                    <LoadingButton ButtonType="ButtonType.Submit"
+                                   Color="Color.Primary"
+                                   Variant="Variant.Filled"
+                                   Loading="HomesState.Value.HomeUpdating">
+                        Save
+                    </LoadingButton>
+                </div>
+            </MudStack>
+        </EditForm>
+    </MudPaper>
+</MudStack>
+
+@code {
+    [CascadingParameter] public Guid? CurrentHomeId { get; set; }
+
+    [Inject] private IState<HomesState> HomesState { get; set; } = null!;
+
+    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+
+    private Home Home => HomesState.Value.CurrentHome ?? new Home();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Dispatcher.Dispatch(new HomeRequestedAction(CurrentHomeId.GetValueOrDefault()));
+    }
+
+    private void Save(EditContext editContext)
+    {
+        if (!editContext.ValidateObjectTree())
+            return;
+
+        Dispatcher.Dispatch(new HomeUpdatedAction(CurrentHomeId.GetValueOrDefault(), Home!));
+    }
+
+}

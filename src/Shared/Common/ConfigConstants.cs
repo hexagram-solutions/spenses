@@ -26,4 +26,9 @@ public static class ConfigConstants
     public const string SpensesDataProtectionKeyIdentifier = "Spenses:DataProtection:KeyIdentifier";
     public const string SpensesDataProtectionBlobStorageContainerName = "Spenses:DataProtection:BlobContainerName";
     public const string SpensesDataProtectionBlobStorageBlobName = "Spenses:DataProtection:BlobName";
+
+    public const string SpensesTestDefaultUserPassword = "Spenses:Test:DefaultUserPassword";
+    public const string SpensesTestSystemUserId = "Spenses:Test:SystemUserId";
+    public const string SpensesTestIntegrationTestUserId = "Spenses:Test:IntegrationTestUserId";
+    public const string SpensesTestIntegrationTestUserEmail = "Spenses:Test:IntegrationTestUserEmail";
 }

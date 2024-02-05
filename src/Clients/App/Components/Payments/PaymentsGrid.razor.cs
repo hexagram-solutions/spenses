@@ -76,7 +76,7 @@ public partial class PaymentsGrid
             "Are you sure you want to delete this payment?",
             $"{payment.Amount} paid by {payment.PaidByMemberName} on {payment.Date:O}",
             "Delete payment",
-            cancelText: "Cancel");
+            cancelText: "Close");
 
         if (confirmed != true)
             return;

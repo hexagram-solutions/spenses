@@ -25,7 +25,8 @@ public partial class CreateMemberDialog
     private IDispatcher Dispatcher { get; set; } = null!;
 
     private Home Home => HomesState.Value.CurrentHome!;
-    public MemberProperties Member { get; set; } = new();
+
+    public CreateMemberProperties Member { get; set; } = new();
 
     private void Close()
     {

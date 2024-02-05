@@ -10,7 +10,7 @@ namespace Spenses.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/payments")]
-public class PaymentsController(IMediator mediator) : ControllerBase
+public class PaymentsController(ISender sender) : ControllerBase
 {
 
     /// <summary>
@@ -23,7 +23,7 @@ public class PaymentsController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<Payment>> PostPayment(Guid homeId, PaymentProperties props)
     {
-        var payment = await mediator.Send(new CreatePaymentCommand(homeId, props));
+        var payment = await sender.Send(new CreatePaymentCommand(homeId, props));
 
         return CreatedAtAction(nameof(GetPayment), new { homeId, paymentId = payment.Id }, payment);
     }
@@ -39,7 +39,7 @@ public class PaymentsController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<IEnumerable<PaymentDigest>>> GetPayments(Guid homeId,
         [FromQuery] FilteredPaymentsQuery query)
     {
-        var payments = await mediator.Send(new PaymentsQuery(homeId)
+        var payments = await sender.Send(new PaymentsQuery(homeId)
         {
             Skip = query.Skip,
             Take = query.Take,
@@ -62,7 +62,7 @@ public class PaymentsController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<Payment>> GetPayment(Guid homeId, Guid paymentId)
     {
-        var payment = await mediator.Send(new PaymentQuery(homeId, paymentId));
+        var payment = await sender.Send(new PaymentQuery(homeId, paymentId));
 
         return Ok(payment);
     }
@@ -78,7 +78,7 @@ public class PaymentsController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
     public async Task<ActionResult<Payment>> PutPayment(Guid homeId, Guid paymentId, PaymentProperties props)
     {
-        var payment = await mediator.Send(new UpdatePaymentCommand(homeId, paymentId, props));
+        var payment = await sender.Send(new UpdatePaymentCommand(homeId, paymentId, props));
 
         return Ok(payment);
     }
@@ -92,7 +92,7 @@ public class PaymentsController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
     public async Task<ActionResult> DeletePayment(Guid homeId, Guid paymentId)
     {
-        await mediator.Send(new DeletePaymentCommand(homeId, paymentId));
+        await sender.Send(new DeletePaymentCommand(homeId, paymentId));
 
         return NoContent();
     }

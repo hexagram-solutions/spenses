@@ -1,0 +1,144 @@
+﻿@using Spenses.App.Infrastructure
+@using Spenses.Shared.Models.Identity
+@using Spenses.Shared.Validators.Identity
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<MudStack>
+    @foreach (var error in IdentityState.Value.Errors)
+    {
+        switch (error)
+        {
+            case IdentityErrors.Register.InvalidEmail:
+            case IdentityErrors.Register.InvalidUserName:
+                @InvalidUserNameOrEmailError
+                break;
+
+            case IdentityErrors.Register.DuplicateEmail:
+            case IdentityErrors.Register.DuplicateUserName:
+                @DuplicateUserNameOrEmailError
+                break;
+
+            case IdentityErrors.Password.PasswordTooShort:
+                @PasswordTooShortError
+                break;
+
+            case IdentityErrors.Password.PwnedPassword:
+                @_pwnedPasswordError
+                break;
+
+            case IdentityErrors.Password.UserNameAsPassword:
+            case IdentityErrors.Password.EmailAsPassword:
+                @UserNameOrEmailAsPasswordError
+                break;
+
+            default:
+                @GenericSignUpError(IdentityState.Value.Errors)
+                break;
+        }
+    }
+
+    <EditForm Model="RegisterRequest"
+              OnSubmit="Register">
+
+        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<RegisterRequestValidator>())"/>
+
+        <MudStack>
+            <MudTextField @bind-Value="RegisterRequest.DisplayName"
+                          Label="Display name"
+                          Placeholder="Hingle McCringleberry"
+                          HelperText="Your real name, nickname, or something totally unique!"
+                          For="@(() => RegisterRequest.DisplayName)"
+                          Required/>
+
+            <MudTextField @bind-Value="RegisterRequest.Email"
+                          Label="Email"
+                          Placeholder="hmccringleberry@psu.edu"
+                          For="@(() => RegisterRequest.Email)"
+                          Required/>
+
+            <MudTextField @bind-Value="RegisterRequest.Password"
+                          Label="Password"
+                          InputType="InputType.Password"
+                          For="@(() => RegisterRequest.Password)"
+                          Required/>
+
+            <div>
+                <LoadingButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               ButtonType="ButtonType.Submit"
+                               Loading="IdentityState.Value.RegistrationRequesting">
+                    @if (InvitationToken is not null)
+                    {
+                        <text>Sign up and join</text>
+                    }
+                    else
+                    {
+                        <text>Sign up</text>
+                    }
+                </LoadingButton>
+            </div>
+        </MudStack>
+    </EditForm>
+</MudStack>
+
+@* ReSharper disable InconsistentNaming *@
+@* ReSharper disable UnusedParameter.Local *@
+
+@code
+{
+    private RenderFragment InvalidUserNameOrEmailError => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            The email address you entered is invalid.
+        </MudAlert>
+    };
+
+    private RenderFragment DuplicateUserNameOrEmailError => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            It looks like you may already have an account with us. Use your credentials to
+            <MudLink Href="@Routes.Identity.Login()">log in.</MudLink>
+        </MudAlert>
+    };
+
+    private RenderFragment PasswordTooShortError => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            Passwords must have a minimum of 8 characters.
+        </MudAlert>
+    };
+
+    private RenderFragment UserNameOrEmailAsPasswordError => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            You cannot use your email address as your password.
+        </MudAlert>
+    };
+
+    private readonly RenderFragment _pwnedPasswordError = __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            <p>
+                The password you've entered appears in multiple public data breaches and is therefore insecure. Please enter a different password.
+            </p>
+            <p>
+                See <MudLink Href="https://haveibeenpwned.com/Passwords">this page</MudLink> for more information.
+            </p>
+        </MudAlert>
+    };
+
+    private RenderFragment GenericSignUpError(string[] errors) => __builder =>
+    {
+        <MudAlert Severity="Severity.Error">
+            <p>
+                Unable to sign up:
+            </p>
+            <ul>
+                @foreach (var error in errors)
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        </MudAlert>
+    };
+}

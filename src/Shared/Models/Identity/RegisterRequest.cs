@@ -15,8 +15,10 @@ public record RegisterRequest
     [Required]
     public string DisplayName { get; set; } = null!;
 
-    public void Deconstruct(out string email, out string password, out string displayName)
+    public string? InvitationToken { get; set; }
+
+    public void Deconstruct(out string email, out string password, out string displayName, out string? invitationToken)
     {
-        (email, password, displayName) = (Email, Password, DisplayName);
+        (email, password, displayName, invitationToken) = (Email, Password, DisplayName, InvitationToken);
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.SqlServer.Management.Smo;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Tools.Setup.SeedData;
+using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Tools.Setup;
 
@@ -19,13 +20,15 @@ public class DbSetupCommand : RootCommand
     private readonly DbContextOptionsFactory _dbContextOptionsFactory;
     private readonly ILogger<DbSetupCommand> _logger;
     private readonly IEnumerable<ISeedDataTask> _seedDataTasks;
+    private readonly ICurrentUserService _currentUserService;
 
     public DbSetupCommand(DbContextOptionsFactory dbContextOptionsFactory, ILogger<DbSetupCommand> logger,
-        IEnumerable<ISeedDataTask> seedDataTasks)
+        IEnumerable<ISeedDataTask> seedDataTasks, ICurrentUserService currentUserService)
         : base("Perform database setup tasks")
     {
         _logger = logger;
         _seedDataTasks = seedDataTasks;
+        _currentUserService = currentUserService;
         _dbContextOptionsFactory = dbContextOptionsFactory;
 
         Add(GetSeedDatabaseCommand());
@@ -56,26 +59,32 @@ public class DbSetupCommand : RootCommand
     private Command GetResetDatabaseCommand()
     {
         var resetDatabaseCommand = new Command("reset", "Reset the target database by dropping all tables and views, " +
-            "applying all migrations, replacing all views, and seeding the database with data.");
+            "applying all migrations, and rebuilding all tables and views.");
 
-        var forceOption = new Option<bool>(
-            new[] { "--force", "-f" },
+        var forceOption = new Option<bool>(["--force", "-f"],
             description: "Bypass confirmation before resetting the database.",
             getDefaultValue: () => false);
 
-        resetDatabaseCommand.SetHandler(async (connection, force) =>
+        var seedOption = new Option<bool>(["--seed", "-s"],
+            description: "Seed the database with data after rebuilding.",
+            getDefaultValue: () => false);
+
+        resetDatabaseCommand.SetHandler(async (connection, force, shouldSeed) =>
         {
             if (!await DropDatabase(connection, force))
                 return;
 
             await MigrateDatabase(connection);
             await RebuildViews(connection);
-            await SeedDatabase(connection);
+
+            if (shouldSeed)
+                await SeedDatabase(connection);
 
             _logger.LogInformation("Done resetting database!");
-        }, ConnectionOption, forceOption);
+        }, ConnectionOption, forceOption, seedOption);
 
         resetDatabaseCommand.AddOption(forceOption);
+        resetDatabaseCommand.AddOption(seedOption);
 
         return resetDatabaseCommand;
     }
@@ -170,7 +179,7 @@ public class DbSetupCommand : RootCommand
     private ApplicationDbContext CreateDbContext(string? connection)
     {
         return new ApplicationDbContext(_dbContextOptionsFactory.Create(connection),
-            new AuditableEntitySaveChangesInterceptor(new SystemCurrentUserService()));
+            new AuditableEntitySaveChangesInterceptor(_currentUserService));
     }
 
     private static bool Confirm(string prompt)

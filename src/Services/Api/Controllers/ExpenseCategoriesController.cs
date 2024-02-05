@@ -10,7 +10,7 @@ namespace Spenses.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/expense-categories")]
-public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
+public class ExpenseCategoriesController(ISender sender) : ControllerBase
 {
     /// <summary>
     /// Create a new expense category.
@@ -22,7 +22,7 @@ public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
     public async Task<ActionResult<ExpenseCategory>> PostExpenseCategory(Guid homeId, ExpenseCategoryProperties props)
     {
-        var category = await mediator.Send(new CreateExpenseCategoryCommand(homeId, props));
+        var category = await sender.Send(new CreateExpenseCategoryCommand(homeId, props));
 
         return CreatedAtAction(nameof(GetExpenseCategory), new { homeId, expenseCategoryId = category.Id }, category);
     }
@@ -36,7 +36,7 @@ public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<ExpenseCategory>>> GetExpenseCategories(Guid homeId)
     {
-        var categories = await mediator.Send(new ExpenseCategoriesQuery(homeId));
+        var categories = await sender.Send(new ExpenseCategoriesQuery(homeId));
 
         return Ok(categories);
     }
@@ -51,7 +51,7 @@ public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<ExpenseCategory>> GetExpenseCategory(Guid homeId, Guid expenseCategoryId)
     {
-        var category = await mediator.Send(new ExpenseCategoryQuery(homeId, expenseCategoryId));
+        var category = await sender.Send(new ExpenseCategoryQuery(homeId, expenseCategoryId));
 
         return Ok(category);
     }
@@ -68,7 +68,7 @@ public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
     public async Task<ActionResult<ExpenseCategory>> PutExpenseCategory(Guid homeId, Guid expenseCategoryId,
         ExpenseCategoryProperties props)
     {
-        var category = await mediator.Send(new UpdateExpenseCategoryCommand(homeId, expenseCategoryId, props));
+        var category = await sender.Send(new UpdateExpenseCategoryCommand(homeId, expenseCategoryId, props));
 
         return Ok(category);
     }
@@ -82,7 +82,7 @@ public class ExpenseCategoriesController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
     public async Task<ActionResult> DeleteExpenseCategory(Guid homeId, Guid expenseCategoryId)
     {
-        await mediator.Send(new DeleteExpenseCategoryCommand(homeId, expenseCategoryId));
+        await sender.Send(new DeleteExpenseCategoryCommand(homeId, expenseCategoryId));
 
         return NoContent();
     }

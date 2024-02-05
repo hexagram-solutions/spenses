@@ -76,11 +76,12 @@ internal static class ProgramExtensions
                 clientBuilder.AddStandardResilienceHandler();
         }
 
-        AddApiClient<IIdentityApi>();
         AddApiClient<IExpenseCategoriesApi>();
         AddApiClient<IExpensesApi>();
         AddApiClient<IHomesApi>();
+        AddApiClient<IIdentityApi>();
         AddApiClient<IInsightsApi>();
+        AddApiClient<IInvitationsApi>();
         AddApiClient<IMeApi>();
         AddApiClient<IMembersApi>();
         AddApiClient<IPaymentsApi>();

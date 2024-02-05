@@ -3,11 +3,11 @@ using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 
-[Collection(WebApplicationCollection.CollectionName)]
-public partial class HomesIntegrationTests(WebApplicationFixture<Program> fixture)
+[Collection(IdentityWebApplicationCollection.CollectionName)]
+public partial class HomesIntegrationTests(IdentityWebApplicationFixture<Program> fixture)
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.WebApplicationFactory.CreateClient());
+    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateClient());
 
     private readonly IExpenseCategoriesApi _expenseCategories =
-        RestService.For<IExpenseCategoriesApi>(fixture.WebApplicationFactory.CreateClient());
+        RestService.For<IExpenseCategoriesApi>(fixture.CreateClient());
 }

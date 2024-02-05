@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Spenses.Api.Infrastructure;
 using Spenses.Application.Features.Members.Requests;
 using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.Controllers;
@@ -11,9 +12,8 @@ namespace Spenses.Api.Controllers;
 [ApiController]
 [ApiVersion("1.0")]
 [Route("/homes/{homeId:guid}/members")]
-public class MembersController(IMediator mediator) : ControllerBase
+public class MembersController(ISender sender) : ControllerBase
 {
-
     /// <summary>
     /// Add a new member to a home.
     /// </summary>
@@ -22,9 +22,9 @@ public class MembersController(IMediator mediator) : ControllerBase
     /// <returns>The new home member.</returns>
     [HttpPost]
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
-    public async Task<ActionResult<Member>> PostMember(Guid homeId, MemberProperties props)
+    public async Task<ActionResult<Member>> PostMember(Guid homeId, CreateMemberProperties props)
     {
-        var member = await mediator.Send(new CreateMemberCommand(homeId, props));
+        var member = await sender.Send(new CreateMemberCommand(homeId, props));
 
         return CreatedAtAction(nameof(GetMember), new { homeId, memberId = member.Id }, member);
     }
@@ -38,7 +38,7 @@ public class MembersController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
     public async Task<ActionResult<IEnumerable<Member>>> GetMembers(Guid homeId)
     {
-        var members = await mediator.Send(new MembersQuery(homeId));
+        var members = await sender.Send(new MembersQuery(homeId));
 
         return Ok(members);
     }
@@ -53,7 +53,7 @@ public class MembersController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
     public async Task<ActionResult<Member>> GetMember(Guid homeId, Guid memberId)
     {
-        var member = await mediator.Send(new MemberQuery(homeId, memberId));
+        var member = await sender.Send(new MemberQuery(homeId, memberId));
 
         return Ok(member);
     }
@@ -69,7 +69,7 @@ public class MembersController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
     public async Task<ActionResult<Member>> PutMember(Guid homeId, Guid memberId, MemberProperties props)
     {
-        var member = await mediator.Send(new UpdateMemberCommand(homeId, memberId, props));
+        var member = await sender.Send(new UpdateMemberCommand(homeId, memberId, props));
 
         return Ok(member);
     }
@@ -85,7 +85,7 @@ public class MembersController(IMediator mediator) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
     public async Task<ActionResult<DeletionResult<Member>>> DeleteMember(Guid homeId, Guid memberId)
     {
-        var result = await mediator.Send(new DeleteMemberCommand(homeId, memberId));
+        var result = await sender.Send(new DeleteMemberCommand(homeId, memberId));
 
         return Ok(result);
     }
@@ -96,12 +96,78 @@ public class MembersController(IMediator mediator) : ControllerBase
     /// <param name="homeId">The home identifier.</param>
     /// <param name="memberId">the member identifier.</param>
     /// <returns>The activated member.</returns>
-    [HttpPut("{memberId:guid}/activate")]
-    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Put))]
+    [HttpPatch("{memberId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Patch))]
     public async Task<ActionResult<Member>> ActivateMember(Guid homeId, Guid memberId)
     {
-        var result = await mediator.Send(new ActivateMemberCommand(homeId, memberId));
+        var result = await sender.Send(new ActivateMemberCommand(homeId, memberId));
 
         return Ok(result);
+    }
+
+    /// <summary>
+    /// Invite a user to join a home as the specified member.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">The member identifier.</param>
+    /// <param name="props">The invitation properties.</param>
+    /// <returns>The created invitation.</returns>
+    [HttpPost("{memberId:guid}/invitations")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Post))]
+    public async Task<ActionResult<Invitation>> PostInvitation(Guid homeId, Guid memberId, InvitationProperties props)
+    {
+        var invitation = await sender.Send(new InviteExistingMemberCommand(homeId, memberId, props));
+
+        return CreatedAtAction(nameof(GetInvitation), new
+        {
+            homeId,
+            memberId,
+            invitationId = invitation.Id
+        }, invitation);
+    }
+
+    /// <summary>
+    /// Fetch a member's invitations
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">The member identifier.</param>
+    /// <returns>The invitation.</returns>
+    [HttpGet("{memberId:guid}/invitations")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.GetAll))]
+    public async Task<ActionResult<Invitation[]>> GetInvitations(Guid homeId, Guid memberId)
+    {
+        var invitations = await sender.Send(new MemberInvitationsQuery(homeId, memberId));
+
+        return Ok(invitations);
+    }
+
+    /// <summary>
+    /// Fetch a member invitation.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">The member identifier.</param>
+    /// <param name="invitationId">The invitation identifier.</param>
+    /// <returns>The invitation.</returns>
+    [HttpGet("{memberId:guid}/invitations/{invitationId:guid}")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Get))]
+    public async Task<ActionResult<Invitation>> GetInvitation(Guid homeId, Guid memberId, Guid invitationId)
+    {
+        var invitation = await sender.Send(new MemberInvitationQuery(homeId, memberId, invitationId));
+
+        return Ok(invitation);
+    }
+
+    /// <summary>
+    /// Cancel pending invitations for a member.
+    /// </summary>
+    /// <param name="homeId">The home identifier.</param>
+    /// <param name="memberId">The member identifier.</param>
+    [HttpDelete("{memberId:guid}/invitations")]
+    [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
+    public async Task<ActionResult> CancelInvitation(Guid homeId, Guid memberId)
+    {
+        await sender.Send(new CancelMemberInvitationsCommand(homeId, memberId));
+
+        return NoContent();
     }
 }

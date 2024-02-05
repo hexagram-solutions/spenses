@@ -1,0 +1,118 @@
+﻿@page "/accept-invitation"
+@using Spenses.App.Store.Invitations
+@using Spenses.Shared.Models.Invitations
+@using Spenses.App.Components.Identity
+@using Spenses.App.Infrastructure
+@using Spenses.Utilities.Security
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+<PageTitle>Accept invitation</PageTitle>
+
+@if (InvitationState.Value.InvitationRequesting)
+{
+    <MudStack>
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle"
+                     Width="100px"
+                     Height="40px"/>
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle"
+                     Width="100px"
+                     Height="40px"/>
+    </MudStack>
+}
+else if (Invitation is null)
+{
+    <InvitationNotFound/>
+}
+else
+{
+    <MudStack>
+        <MudText Typo="Typo.h5">
+            You've been invited to join <b>@Invitation.Home.Name</b>!
+        </MudText>
+        <MudText Typo="Typo.caption">Invited by <b>@Invitation.CreatedBy.DisplayName</b></MudText>
+
+        <AuthorizeView>
+            <Authorized>
+                <MudStack Row>
+                    @if (!string.Equals(Invitation!.Email,
+                             CurrentAuthenticationState?.User.GetEmail(),
+                             StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        <MudAlert Severity="Severity.Error">
+                            The email address that received this invitation does not match your Spenses account.
+                            <MudLink Href="@Routes.Me.Settings">Change your email address</MudLink> or contact
+                            <b>@Invitation.CreatedBy.DisplayName</b> to receive a new invitation.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <div>
+                            <LoadingButton Variant="Variant.Filled"
+                                           Color="Color.Primary"
+                                           OnClick="SendAcceptInvitation"
+                                           Loading="InvitationState.Value.InvitationResponding">
+                                Join @Invitation.Home.Name
+                            </LoadingButton>
+                        </div>
+                        <div>
+                            <LoadingButton Variant="Variant.Filled"
+                                           Color="Color.Default"
+                                           OnClick="DeclineInvitation"
+                                           Loading="InvitationState.Value.InvitationResponding">
+                                Decline
+                            </LoadingButton>
+                        </div>
+                    }
+                </MudStack>
+            </Authorized>
+            <NotAuthorized>
+                <MudDivider/>
+                <div>
+                    <MudLink Href="@Routes.Identity.Login(Routes.Homes.Dashboard(Invitation.Home.Id))">
+                        Already have an account? Log in.
+                    </MudLink>
+                </div>
+                <MudDivider/>
+                <MudStack>
+                    <SignUpForm InvitationToken="@InvitationToken" />
+                </MudStack>
+            </NotAuthorized>
+        </AuthorizeView>
+
+    </MudStack>
+}
+
+
+@code {
+    [SupplyParameterFromQuery] public string InvitationToken { get; set; } = string.Empty;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
+
+    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+
+    [Inject] private IState<InvitationState> InvitationState { get; set; } = null!;
+
+    private Invitation? Invitation => InvitationState.Value.Invitation;
+
+    private AuthenticationState? CurrentAuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        CurrentAuthenticationState = await AuthenticationState;
+
+        Dispatcher.Dispatch(new InvitationRequestedAction(InvitationToken));
+    }
+
+    private void SendAcceptInvitation()
+    {
+        Dispatcher.Dispatch(new InvitationAcceptedAction(Invitation!.Id));
+    }
+
+    private void DeclineInvitation()
+    {
+        Dispatcher.Dispatch(new InvitationDeclinedAction(Invitation!.Id));
+    }
+}

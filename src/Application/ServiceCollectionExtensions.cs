@@ -3,7 +3,8 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Application.Behaviors;
 using Spenses.Application.Features.Homes.Requests;
-using Spenses.Application.Features.Homes.Validators;
+using Spenses.Application.Features.Identity.Validators;
+using Spenses.Application.Services.Invitations;
 using Spenses.Shared.Validators.Identity;
 
 namespace Spenses.Application;
@@ -29,10 +30,10 @@ public static class ServiceCollectionExtensions
             cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehaviour<,>));
         });
 
-        services.AddValidatorsFromAssemblyContaining<CreateHomeCommandValidator>();
-
-        //TODO: Update when all validators are moved
+        services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
         services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+
+        services.AddTransient<InvitationTokenProvider>();
 
         return services;
     }

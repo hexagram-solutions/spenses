@@ -7,11 +7,9 @@ using Spenses.Shared.Models.ExpenseCategories;
 
 namespace Spenses.App.Components.ExpenseCategories;
 
-public partial class ExpenseCategoriesTable
+public partial class ExpenseCategoriesPanel
 {
-    [Parameter]
-    [EditorRequired]
-    public Guid HomeId { get; set; }
+    [CascadingParameter] public Guid? CurrentHomeId { get; set; }
 
     [Inject]
     private IState<ExpenseCategoriesState> ExpenseCategoriesState { get; set; } = null!;
@@ -42,7 +40,7 @@ public partial class ExpenseCategoriesTable
     {
         base.OnInitialized();
 
-        Dispatcher.Dispatch(new ExpenseCategoriesRequestedAction(HomeId));
+        Dispatcher.Dispatch(new ExpenseCategoriesRequestedAction(CurrentHomeId.GetValueOrDefault()));
 
         SubscribeToAction<ExpenseCategoryCreatedAction>(_ => CreateDialog?.Close());
         SubscribeToAction<ExpenseCategoryUpdatedAction>(_ => EditDialog?.Close());

@@ -8,6 +8,7 @@ public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequ
     public ResetPasswordRequestValidator()
     {
         RuleFor(x => x.Email)
+            .NotEmpty()
             .EmailAddress();
 
         RuleFor(x => x.ResetCode)

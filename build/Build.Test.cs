@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Hexagrams.Extensions.Common;
 using Hexagrams.Nuke.Components;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
@@ -45,15 +46,22 @@ partial class Build
                 .SetApplicationArguments($"views --connection \"{SqlServerConnectionString}\""));
         });
 
+    IEnumerable<Project> IntegrationTestProjects => Solution.GetAllProjects("*.IntegrationTests");
+
     Target IntegrationTestSetup => t => t
         .DependsOn(MigrateDatabase)
         .Requires(() => SqlServerConnectionString)
         .Requires(() => IntegrationTestDefaultUserPassword)
         .Executes(() =>
         {
-            DotNet("user-secrets " +
-                $"set DefaultUserPassword {IntegrationTestDefaultUserPassword} " +
-                $"--project {RelationalSetupTool}");
+            var projectsToConfigure = IntegrationTestProjects.Concat(RelationalSetupTool.Yield());
+
+            foreach (var project in projectsToConfigure)
+            {
+                DotNet("user-secrets " +
+                    $"set Spenses:Test:DefaultUserPassword {IntegrationTestDefaultUserPassword} " +
+                    $"--project {project}");
+            }
 
             DotNetRun(s => s
                 .SetProjectFile(RelationalSetupTool)
@@ -68,14 +76,12 @@ partial class Build
         .Produces(this.FromComponent<IReportCoverage>().CoverageReportDirectory / "*.xml")
         .Executes(() =>
         {
-            var integrationTestProjects = Solution.GetAllProjects("*.IntegrationTests");
-
             DotNetTest(s => s
                 .Apply(this.FromComponent<ITest>().TestSettingsBase)
                 .Apply(TestSettings)
                 .SetVerbosity(DotNetVerbosity.minimal)
                 .SetProcessEnvironmentVariable("Spenses:SqlServer:ConnectionString", SqlServerConnectionString)
-                .CombineWith(integrationTestProjects, (x, v) => x
+                .CombineWith(IntegrationTestProjects, (x, v) => x
                     .Apply(this.FromComponent<ITest>().TestProjectSettingsBase, v)),
                 completeOnFailure: true);
         });

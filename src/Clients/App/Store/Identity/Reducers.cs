@@ -11,13 +11,13 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceLoginSucceededAction(IdentityState state, LoginSucceededAction _)
+    public static IdentityState ReduceLoginSucceeded(IdentityState state, LoginSucceededAction _)
     {
         return state with { LoginRequesting = false, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceLoginFailedAction(IdentityState state, LoginFailedAction action)
+    public static IdentityState ReduceLoginFailed(IdentityState state, LoginFailedAction action)
     {
         return state with { LoginRequesting = false, Errors = [action.Error] };
     }
@@ -29,13 +29,13 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceRegistrationSucceededAction(IdentityState state, RegistrationSucceededAction _)
+    public static IdentityState ReduceRegistrationSucceeded(IdentityState state, RegistrationSucceededAction _)
     {
         return state with { RegistrationRequesting = false, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceRegistrationFailedAction(IdentityState state, RegistrationFailedAction action)
+    public static IdentityState ReduceRegistrationFailed(IdentityState state, RegistrationFailedAction action)
     {
         return state with { RegistrationRequesting = false, Errors = action.Errors };
     }
@@ -48,14 +48,14 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceEmailVerificationSucceededAction(IdentityState state,
+    public static IdentityState ReduceEmailVerificationSucceeded(IdentityState state,
         EmailVerificationSucceededAction _)
     {
         return state with { EmailVerificationRequesting = false, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceEmailVerificationFailedAction(IdentityState state,
+    public static IdentityState ReduceEmailVerificationFailed(IdentityState state,
         EmailVerificationFailedAction action)
     {
         return state with { EmailVerificationRequesting = false };
@@ -69,14 +69,14 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceResendVerificationEmailSucceededAction(IdentityState state,
+    public static IdentityState ReduceResendVerificationEmailSucceeded(IdentityState state,
         ResendVerificationEmailSucceededAction _)
     {
         return state with { ResendVerificationEmailRequesting = false, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceResendVerificationEmailFailedAction(IdentityState state,
+    public static IdentityState ReduceResendVerificationEmailFailed(IdentityState state,
         ResendVerificationEmailFailedAction action)
     {
         return state with { ResendVerificationEmailRequesting = false, Errors = [] };
@@ -89,13 +89,13 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceLogoutSucceededAction(IdentityState state, LogoutSucceededAction _)
+    public static IdentityState ReduceLogoutSucceeded(IdentityState state, LogoutSucceededAction _)
     {
         return state with { LogoutRequesting = false, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceLogoutFailedAction(IdentityState state, LogoutFailedAction action)
+    public static IdentityState ReduceLogoutFailed(IdentityState state, LogoutFailedAction action)
     {
         return state with { LogoutRequesting = false, Errors = [] };
     }
@@ -107,14 +107,14 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceForgotPasswordSucceededAction(IdentityState state,
+    public static IdentityState ReduceForgotPasswordSucceeded(IdentityState state,
         ForgotPasswordSucceededAction _)
     {
         return state with { ForgotPasswordRequesting = false };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceForgotPasswordFailedAction(IdentityState state, ForgotPasswordFailedAction _)
+    public static IdentityState ReduceForgotPasswordFailed(IdentityState state, ForgotPasswordFailedAction _)
     {
         return state with { ForgotPasswordRequesting = false };
     }
@@ -126,13 +126,13 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceResetPasswordSucceededAction(IdentityState state, ResetPasswordSucceededAction _)
+    public static IdentityState ReduceResetPasswordSucceeded(IdentityState state, ResetPasswordSucceededAction _)
     {
         return state with { ResetPasswordRequesting = false, Errors = [] };
     }
 
     [ReducerMethod]
-    public static IdentityState ReduceResetPasswordFailedAction(IdentityState state, ResetPasswordFailedAction action)
+    public static IdentityState ReduceResetPasswordFailed(IdentityState state, ResetPasswordFailedAction action)
     {
         return state with { ResetPasswordRequesting = false, Errors = action.Errors };
     }

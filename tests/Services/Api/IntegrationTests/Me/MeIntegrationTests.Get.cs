@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Me;
-using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api.IntegrationTests.Me;
 
@@ -13,15 +12,15 @@ public partial class MeIntegrationTests
     {
         var response = await _meApi.GetMe();
 
-        var currentUserService = fixture.WebApplicationFactory.Services.GetRequiredService<ICurrentUserService>();
         var userManager = fixture.WebApplicationFactory.Services.GetRequiredService<UserManager<ApplicationUser>>();
 
-        var applicationUser = await userManager.GetUserAsync(currentUserService.CurrentUser!);
+        var applicationUser = await userManager.FindByEmailAsync(response.Content!.Email);
 
         response.Content!.Should().BeEquivalentTo(
             new CurrentUser
             {
-                Email = applicationUser!.Email!,
+                Id = applicationUser!.Id,
+                Email = applicationUser.Email!,
                 EmailVerified = applicationUser.EmailConfirmed,
                 DisplayName = applicationUser.DisplayName
             },

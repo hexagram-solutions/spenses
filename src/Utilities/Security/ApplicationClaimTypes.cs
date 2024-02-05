@@ -10,4 +10,6 @@ public static class ApplicationClaimTypes
     public const string EmailVerified = JwtClaimTypes.EmailVerified;
 
     public const string Identifier = ClaimTypes.NameIdentifier;
+
+    public const string DisplayName = JwtClaimTypes.Name;
 }

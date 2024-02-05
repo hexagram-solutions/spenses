@@ -4,7 +4,7 @@ namespace Spenses.Utilities.Security;
 
 public static class ClaimsPrincipalExtensions
 {
-    private static bool IsAuthenticated(this ClaimsPrincipal user)
+    public static bool IsAuthenticated(this ClaimsPrincipal user)
     {
         return user.Identity?.IsAuthenticated == true;
     }
@@ -25,5 +25,12 @@ public static class ClaimsPrincipalExtensions
     public static string GetEmail(this ClaimsPrincipal user)
     {
         return user.FindFirst(ApplicationClaimTypes.Email)!.Value;
+    }
+
+    public static string GetDisplayName(this ClaimsPrincipal user)
+    {
+        user.EnsureAuthenticated();
+
+        return user.FindFirst(ApplicationClaimTypes.DisplayName)!.Value;
     }
 }

@@ -1,34 +1,37 @@
-﻿@using Spenses.App.Components.Identity
-@using Spenses.App.Components.Me
+﻿@using Spenses.App.Store.Homes
 @using Spenses.Utilities.Security
-@inherits LayoutComponentBase
+@using Spenses.App.Components.Me
+@using Spenses.App.Components.Identity
+@inherits Fluxor.Blazor.Web.Components.FluxorLayout
 @layout BaseLayout
 
 <AuthorizeView Policy="@AuthorizationConstants.RequireVerifiedEmail">
     <Authorized>
         <MudLayout>
-            <MudAppBar Elevation="1">
-                <MudIconButton Icon="@Icons.Material.Filled.Menu"
-                               Color="Color.Inherit"
-                               Edge="Edge.Start"
-                               OnClick="@(_ => DrawerToggle())"/>
-                <MudText Typo="Typo.h5"
-                         Class="ml-3">
-                    Spenses
-                </MudText>
-                <MudSpacer/>
-                <LoginDisplay/>
-            </MudAppBar>
-            <MudDrawer @bind-Open="_drawerOpen"
-                       ClipMode="DrawerClipMode.Always"
-                       Elevation="2">
-                <NavMenu/>
-            </MudDrawer>
-            <MudMainContent>
-                <MudContainer MaxWidth="MaxWidth.ExtraLarge">
-                    @Body
-                </MudContainer>
-            </MudMainContent>
+            <CascadingValue Value="CurrentHomeId">
+                <MudAppBar Elevation="1">
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                                   Color="Color.Inherit"
+                                   Edge="Edge.Start"
+                                   OnClick="@(_ => DrawerToggle())"/>
+                    <MudText Typo="Typo.h5"
+                             Class="ml-3">
+                        Spenses
+                    </MudText>
+                    <MudSpacer/>
+                    <LoginDisplay/>
+                </MudAppBar>
+                <MudDrawer @bind-Open="_drawerOpen"
+                           ClipMode="DrawerClipMode.Always"
+                           Elevation="2">
+                    <NavMenu/>
+                </MudDrawer>
+                <MudMainContent Class="pt-4">
+                    <MudContainer MaxWidth="MaxWidth.ExtraLarge">
+                        @Body
+                    </MudContainer>
+                </MudMainContent>
+            </CascadingValue>
         </MudLayout>
     </Authorized>
     <NotAuthorized>
@@ -37,6 +40,22 @@
 </AuthorizeView>
 
 @code {
+
+    [CascadingParameter] private RouteData RouteData { get; set; } = null!;
+
+    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+
+    public Guid? CurrentHomeId => RouteData.RouteValues.TryGetValue("homeId", out var homeIdValue)
+        ? Guid.Parse(homeIdValue!.ToString()!)
+        : null;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Dispatcher.Dispatch(new HomesRequestedAction());
+    }
+
     bool _drawerOpen = true;
 
     void DrawerToggle()

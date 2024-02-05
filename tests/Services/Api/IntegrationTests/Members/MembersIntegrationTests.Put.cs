@@ -29,7 +29,7 @@ public partial class MembersIntegrationTests
             opts.ExcludingNestedObjects()
                 .ExcludingMissingMembers());
 
-        updatedMember.IsActive.Should().BeTrue();
+        updatedMember.Status.Should().Be(MemberStatus.Active);
 
         var fetchedMember = (await _members.GetMember(home.Id, member.Id)).Content;
         fetchedMember.Should().BeEquivalentTo(updatedMember);

@@ -10,7 +10,16 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Reset_password_updates_user_password()
     {
-        var verifiedUser = fixture.VerifiedUser;
+        var registerRequest = new RegisterRequest
+        {
+            Email = "hmccringleberry@psu.edu",
+            Password = new Faker().Internet.Password(),
+            DisplayName = "Hingle McCringleberry"
+        };
+
+        var registerResponse = await fixture.Register(registerRequest, true);
+
+        var verifiedUser = registerResponse.Content!;
 
         await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = verifiedUser.Email });
 
@@ -34,6 +43,8 @@ public partial class IdentityIntegrationTests
         });
 
         loginResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        await fixture.DeleteUser(registerRequest.Email);
     }
 
     [Fact]

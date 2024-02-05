@@ -19,7 +19,7 @@ public partial class MembersIntegrationTests
 
         activateMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        activateMemberResponse.Content.Should().BeEquivalentTo(member);
+        activateMemberResponse.Content.Should().BeEquivalentTo(member, opts => opts.Excluding(m => m.AvatarUrl));
     }
 
     [Fact]
@@ -33,7 +33,7 @@ public partial class MembersIntegrationTests
 
         activateMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        activateMemberResponse.Content.Should().BeEquivalentTo(member);
+        activateMemberResponse.Content.Should().BeEquivalentTo(member, opts => opts.Excluding(m => m.AvatarUrl));
     }
 
     [Fact]

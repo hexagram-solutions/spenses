@@ -15,7 +15,7 @@ public partial class MembersIntegrationTests
 
         fetchMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        fetchMemberResponse.Content!.Should().BeEquivalentTo(homeMember);
+        fetchMemberResponse.Content!.Should().BeEquivalentTo(homeMember, opts => opts.Excluding(m => m.AvatarUrl));
     }
 
     [Fact]

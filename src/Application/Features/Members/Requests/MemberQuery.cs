@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -24,9 +23,9 @@ public class MemberQueryHandler(ApplicationDbContext db, IMapper mapper)
         var (_, memberId) = request;
 
         var member = await db.Members
-            .ProjectTo<Member>(mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken);
+                .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken)
+            ?? throw new ResourceNotFoundException(memberId);
 
-        return member ?? throw new ResourceNotFoundException(memberId);
+        return mapper.Map<Member>(member);
     }
 }
