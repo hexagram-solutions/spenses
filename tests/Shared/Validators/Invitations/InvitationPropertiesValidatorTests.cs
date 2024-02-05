@@ -16,7 +16,7 @@ public class InvitationPropertiesValidatorTests
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Email);
 
-        _validator.TestValidate(model with { Email = "foobar"})
+        _validator.TestValidate(model with { Email = "foobar" })
             .ShouldHaveValidationErrorFor(x => x.Email);
 
         _validator.TestValidate(model with { Email = "george@vandelayindustries.com" })

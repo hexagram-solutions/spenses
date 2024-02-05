@@ -28,7 +28,7 @@ public class InvitationQueryHandler(
             .ProjectTo<Invitation>(mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(i => i.Id == invitationData!.InvitationId, cancellationToken);
 
-        if (invitation is not { Status: InvitationStatus.Pending})
+        if (invitation is not { Status: InvitationStatus.Pending })
             throw new ResourceNotFoundException(token);
 
         return invitation;

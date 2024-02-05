@@ -34,7 +34,8 @@ public partial class MeIntegrationTests
 
         await identityFixture.Login(new LoginRequest
         {
-            Email = registerRequest.Email, Password = registerRequest.Password
+            Email = registerRequest.Email,
+            Password = registerRequest.Password
         });
 
         var meApi = RestService.For<IMeApi>(identityFixture.CreateClient());
