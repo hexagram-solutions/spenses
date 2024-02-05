@@ -8,6 +8,7 @@ public class ChangeEmailRequestValidator : AbstractValidator<ChangeEmailRequest>
     public ChangeEmailRequestValidator()
     {
         RuleFor(x => x.NewEmail)
+            .NotEmpty()
             .EmailAddress();
     }
 }

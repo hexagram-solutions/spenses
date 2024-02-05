@@ -8,6 +8,7 @@ public class InvitationPropertiesValidator : AbstractValidator<InvitationPropert
     public InvitationPropertiesValidator()
     {
         RuleFor(x => x.Email)
+            .NotEmpty()
             .EmailAddress();
     }
 }

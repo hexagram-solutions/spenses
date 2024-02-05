@@ -8,6 +8,7 @@ public class ResendVerificationEmailRequestValidator : AbstractValidator<ResendV
     public ResendVerificationEmailRequestValidator()
     {
         RuleFor(x => x.Email)
+            .NotEmpty()
             .EmailAddress();
     }
 }

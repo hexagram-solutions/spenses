@@ -41,7 +41,7 @@ public class Effects(IIdentityApi identityApi, IInvitationsApi invitations)
         }
 
         dispatcher.Dispatch(new InvitationAcceptanceSucceededAction());
-        dispatcher.Dispatch(new GoAction(Routes.Homes.Dashboard(response.Content!.Home.Id)));
+        dispatcher.Dispatch(new GoAction(Routes.Homes.Dashboard(response.Content!.Home.Id), true));
     }
 
     [EffectMethod]
