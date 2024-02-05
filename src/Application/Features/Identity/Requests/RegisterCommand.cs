@@ -67,7 +67,7 @@ public class RegisterCommandHandler(
             // Only accept the invitation if it's pending, if it's been cancelled or already accepted, do nothing
             if (invitation is { Status: InvitationStatus.Pending })
             {
-                await sender.Send(new AcceptInvitationCommand(invitationData.InvitationId), cancellationToken);
+                await sender.Send(new AcceptInvitationCommand(invitationData.InvitationId, user.Id), cancellationToken);
             }
             else
             {

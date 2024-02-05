@@ -8,7 +8,6 @@
 
 <PageTitle>Accept invitation</PageTitle>
 
-@**@
 @if (InvitationState.Value.InvitationRequesting)
 {
     <MudStack>
@@ -75,7 +74,7 @@ else
                 </div>
                 <MudDivider/>
                 <MudStack>
-                    <SignUpForm InvitationToken="InvitationToken" />
+                    <SignUpForm InvitationToken="@InvitationToken" />
                 </MudStack>
             </NotAuthorized>
         </AuthorizeView>

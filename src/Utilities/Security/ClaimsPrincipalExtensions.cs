@@ -4,7 +4,7 @@ namespace Spenses.Utilities.Security;
 
 public static class ClaimsPrincipalExtensions
 {
-    private static bool IsAuthenticated(this ClaimsPrincipal user)
+    public static bool IsAuthenticated(this ClaimsPrincipal user)
     {
         return user.Identity?.IsAuthenticated == true;
     }

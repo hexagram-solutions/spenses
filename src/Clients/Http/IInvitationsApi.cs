@@ -5,9 +5,9 @@ namespace Spenses.Client.Http;
 
 public interface IInvitationsApi
 {
-    [Patch("/invitations")]
+    [Patch("/invitations/{invitationId}")]
     Task<IApiResponse<Invitation>> AcceptInvitation(Guid invitationId);
 
-    [Delete("/invitations")]
+    [Delete("/invitations/{invitationId}")]
     Task<IApiResponse> DeclineInvitation(Guid invitationId);
 }

@@ -1,3 +1,4 @@
+using System.Net;
 using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
 using Spenses.App.Infrastructure;
@@ -16,7 +17,9 @@ public class Effects(IIdentityApi identityApi, IInvitationsApi invitations)
         if (response.Error is not null)
         {
             dispatcher.Dispatch(new InvitationRequestFailedAction());
-            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
+
+            if (response.StatusCode is not HttpStatusCode.NotFound)
+                dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
         }

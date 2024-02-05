@@ -3,7 +3,7 @@ using Spenses.Shared.Models.Invitations;
 
 namespace Spenses.App.Store.Invitations;
 
-[FeatureState(Name = "Identity", CreateInitialStateMethodName = nameof(Initialize))]
+[FeatureState(Name = "Invitation", CreateInitialStateMethodName = nameof(Initialize))]
 public record InvitationState
 {
     public Invitation? Invitation { get; init; }
