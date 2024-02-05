@@ -35,6 +35,8 @@ public class InvitationsController(ISender sender) : ControllerBase
     [ApiConventionMethod(typeof(AuthorizedApiConventions), nameof(AuthorizedApiConventions.Delete))]
     public async Task<ActionResult> DeclineInvitation(Guid invitationId)
     {
-        throw new NotImplementedException();
+        await sender.Send(new DeclineInvitationCommand(invitationId));
+
+        return NoContent();
     }
 }

@@ -41,7 +41,7 @@ public class AcceptInvitationCommandHandler(
         if (authenticatedUser.IsAuthenticated() &&
             !string.Equals(invitation.Email, authenticatedUser.GetEmail(), StringComparison.InvariantCultureIgnoreCase))
         {
-            throw new ForbiddenException(); // todo: test this
+            throw new ForbiddenException();
         }
 
         var invitedUser = await db.Users

@@ -1,8 +1,5 @@
 using System.Net;
-using Bogus;
-using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Invitations;
-using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.IntegrationTests.Invitations;
 
@@ -27,7 +24,7 @@ public partial class InvitationsIntegrationTests
 
         // Accept the invitation
         var invitationResponse = await _invitations.AcceptInvitation(invitationId);
-        invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        invitationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         // User should now be a part of the home
         var userHomeResponse = await _homes.GetHome(home.Id);
@@ -38,7 +35,6 @@ public partial class InvitationsIntegrationTests
 
         await _members.DeleteMember(home.Id, memberId);
         await fixture.DeleteUser(email);
-        await fixture.LoginAsTestUser();
     }
 
     [Fact]
@@ -59,14 +55,13 @@ public partial class InvitationsIntegrationTests
 
         // Accept the invitation
         var invitationResponse = await _invitations.AcceptInvitation(invitationId);
-        invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        invitationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         invitationResponse = await _invitations.AcceptInvitation(invitationId);
-        invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+        invitationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         await _members.DeleteMember(home.Id, memberId);
         await fixture.DeleteUser(email);
-        await fixture.LoginAsTestUser();
     }
 
     [Fact]
@@ -88,7 +83,6 @@ public partial class InvitationsIntegrationTests
 
         await _members.DeleteMember(home.Id, memberId);
         await fixture.DeleteUser(email);
-        await fixture.LoginAsTestUser();
     }
 
     [Fact]
@@ -96,37 +90,23 @@ public partial class InvitationsIntegrationTests
     {
         var invitationResponse = await _invitations.AcceptInvitation(Guid.Empty);
 
-        invitationResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        invitationResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    private async Task<(Guid memberId, Guid invitationid)> CreateAndInviteMember(Guid homeId, string email)
+    [Fact]
+    public async Task Patch_invitation_for_other_email_address_yields_forbidden()
     {
-        var properties = new CreateMemberProperties
-        {
-            Name = "Quatro Quatro",
-            DefaultSplitPercentage = 0.0m,
-        };
+        var home = (await _homes.GetHomes()).Content!.First();
+        var email = "quatro.quatro@sjsu.edu";
 
-        var createdMember = (await _members.PostMember(homeId, properties)).Content!;
+        var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var createdInvitation = (await _members.PostMemberInvitation(
-                homeId, createdMember.Id, new InvitationProperties { Email = email }))
-            .Content!;
+        var invitationId = fixture.GetInvitationIdForEmail(email);
 
-        return (createdMember.Id, createdInvitation.Id);
-    }
+        var response = await _invitations.AcceptInvitation(invitationId);
 
-    private async Task RegisterAndLogIn(string email)
-    {
-        var registerRequest = new RegisterRequest
-        {
-            Email = email,
-            Password = new Faker().Internet.Password(),
-            DisplayName = "Quatro Quatro"
-        };
+        response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
-        await fixture.Register(registerRequest, true);
-
-        await fixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+        await _members.DeleteMember(home.Id, memberId);
     }
 }
