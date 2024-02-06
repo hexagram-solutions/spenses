@@ -1,6 +1,8 @@
 ﻿@page "/homes/{homeId:guid}/dashboard"
 @using Spenses.App.Store.Homes
 @using Spenses.App.Components.Homes
+@using MudBlazor.Extensions
+@using System.Globalization
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @layout MainLayout
@@ -11,11 +13,13 @@
     <div class="align-start d-flex">
         <MudText Typo="Typo.h4">Dashboard: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</MudText>
         <MudSpacer/>
-        <MudDateRangePicker @ref="DateRangePickerRef"
-                            @bind-DateRange="Period"
+        <MudDateRangePicker @ref="PeriodPickerRef"
+                            DateRange="Period"
+                            DateRangeChanged="OnPeriodChanged"
                             Label="Period"
                             Variant="Variant.Outlined"
-                            PickerVariant="PickerVariant.Dialog">
+                            PickerVariant="PickerVariant.Dialog"
+                            AutoClose>
             <PickerActions>
                 <MudButton Variant="Variant.Filled"
                            Color="Color.Primary"
@@ -27,6 +31,11 @@
                            OnClick="SetPeriodToThisMonth">
                     This month
                 </MudButton>
+                <MudSpacer/>
+                <MudButton Variant="Variant.Outlined"
+                           OnClick="@(() => PeriodPickerRef?.Close())">
+                    Close
+                </MudButton>
             </PickerActions>
         </MudDateRangePicker>
     </div>
@@ -36,7 +45,7 @@
         <BalanceBreakdownPanel @ref=BalanceBreakdownPanelRef
                                HomeId="HomesState.Value.CurrentHome.Id"
                                PeriodStart="PeriodStart"
-                               PeriodEnd="PeriodEnd"/>
+                               PeriodEnd="PeriodEnd" />
     }
 </MudStack>
 
@@ -48,23 +57,15 @@
 
     [Inject] private IDispatcher Dispatcher { get; set; } = null!;
 
-    private DateOnly PeriodStart { get; set; }
+    private DateRange Period { get; set; } = new();
 
-    private DateOnly PeriodEnd { get; set; }
+    private DateOnly PeriodStart => DateOnly.FromDateTime(Period.Start.GetValueOrDefault());
 
-    private DateRange Period
-    {
-        get => new(PeriodStart.ToDateTime(TimeOnly.MinValue), PeriodEnd.ToDateTime(TimeOnly.MinValue));
-        set
-        {
-            PeriodStart = DateOnly.FromDateTime(value.Start.GetValueOrDefault());
-            PeriodEnd = DateOnly.FromDateTime(value.End.GetValueOrDefault());
-        }
-    }
+    private DateOnly PeriodEnd => DateOnly.FromDateTime(Period.End.GetValueOrDefault());
 
     private BalanceBreakdownPanel? BalanceBreakdownPanelRef { get; set; }
 
-    private MudDateRangePicker? DateRangePickerRef { get; set; }
+    private MudDateRangePicker? PeriodPickerRef { get; set; }
 
     protected override void OnInitialized()
     {
@@ -75,32 +76,59 @@
 
         Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
 
-        SetPeriodToThisMonth();
+        Period = GetThisMonth();
     }
 
     private void SetPeriodToThisMonth()
     {
+        Period = GetThisMonth();
+
+        PeriodPickerRef!.PickerMonth = Period.Start.GetValueOrDefault().StartOfMonth(CultureInfo.CurrentCulture);
+
+        PeriodPickerRef.Close();
+    }
+
+    private static DateRange GetThisMonth()
+    {
         var today = DateTime.Today;
 
-        PeriodStart = new DateOnly(today.Year, today.Month, 1);
-        PeriodEnd = new DateOnly(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+        var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
+        var start = new DateOnly(today.Year, today.Month, 1).ToDateTime(TimeOnly.MinValue);
+        var end = new DateOnly(today.Year, today.Month, daysInMonth).ToDateTime(TimeOnly.MinValue);
 
-        DateRangePickerRef?.Close();
-        BalanceBreakdownPanelRef?.Refresh();
+        return new DateRange(start, end);
     }
 
     private void SetPeriodToLastMonth()
     {
+        Period = GetLastMonth();
+
+        PeriodPickerRef!.PickerMonth = Period.Start.GetValueOrDefault().StartOfMonth(CultureInfo.CurrentCulture);
+
+        PeriodPickerRef.Close();
+    }
+
+    private static DateRange GetLastMonth()
+    {
         var today = DateTime.Today;
 
-        var lastMonthStart = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
-        var lastMonthEnd = new DateOnly(lastMonthStart.Year, lastMonthStart.Month,
-            DateTime.DaysInMonth(lastMonthStart.Year, lastMonthStart.Month));
+        var start = new DateOnly(today.Year, today.Month, 1).AddMonths(-1).ToDateTime(TimeOnly.MinValue);
+        var daysInMonth = DateTime.DaysInMonth(start.Year, start.Month);
 
-        PeriodStart = lastMonthStart;
-        PeriodEnd = lastMonthEnd;
+        var end = new DateOnly(start.Year, start.Month, daysInMonth).ToDateTime(TimeOnly.MinValue);
 
-        DateRangePickerRef?.Close();
-        BalanceBreakdownPanelRef?.Refresh();
+        return new DateRange(start, end);
+    }
+
+    private void OnPeriodChanged(DateRange dateRange)
+    {
+        Period = dateRange;
+
+        if (BalanceBreakdownPanelRef is null)
+            return;
+
+        BalanceBreakdownPanelRef.PeriodStart = PeriodStart;
+        BalanceBreakdownPanelRef.PeriodEnd = PeriodEnd;
+        BalanceBreakdownPanelRef.Refresh();
     }
 }
