@@ -1,4 +1,4 @@
-﻿@using Spenses.App.Store.Homes
+﻿@using Spenses.App.Store.Dashboard
 @using Spenses.Shared.Models.Homes
 @using Spenses.App.Components.Members
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
@@ -7,7 +7,7 @@
     <MudStack>
         <MudText Typo="Typo.h5">Balance Breakdown</MudText>
         <div>
-            <LoadingOverlay Visible="HomesState.Value.BalanceBreakdownRequesting"/>
+            <LoadingOverlay Visible="DashboardState.Value.BalanceBreakdownRequesting"/>
             <MudExpansionPanels MultiExpansion="true">
                 @foreach (var balance in BalanceBreakdown?.MemberBalances ?? [])
                 {
@@ -45,26 +45,17 @@
 
     [Parameter] [EditorRequired] public Guid HomeId { get; set; }
 
-    [Parameter] [EditorRequired] public DateOnly PeriodStart { get; set; }
-
-    [Parameter] [EditorRequired] public DateOnly PeriodEnd { get; set; }
-
-    [Inject] private IState<HomesState> HomesState { get; set; } = null!;
+    [Inject] private IState<DashboardState> DashboardState { get; set; } = null!;
 
     [Inject] private IDispatcher Dispatcher { get; set; } = null!;
 
-    private BalanceBreakdown? BalanceBreakdown => HomesState.Value.BalanceBreakdown;
+    private BalanceBreakdown? BalanceBreakdown => DashboardState.Value.BalanceBreakdown;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        Refresh();
-    }
-
-    public void Refresh()
-    {
-        Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(HomeId, PeriodStart, PeriodEnd));
+        Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(HomeId));
     }
 
 }

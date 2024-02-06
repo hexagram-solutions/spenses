@@ -1,7 +1,8 @@
 ﻿@page "/homes/{homeId:guid}/dashboard"
-@using Spenses.App.Store.Homes
-@using Spenses.App.Components.Homes
 @using MudBlazor.Extensions
+@using Spenses.App.Store.Homes
+@using Spenses.App.Store.Dashboard
+@using Spenses.App.Components.Homes
 @using System.Globalization
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
@@ -16,6 +17,7 @@
         <MudDateRangePicker @ref="PeriodPickerRef"
                             DateRange="Period"
                             DateRangeChanged="OnPeriodChanged"
+                            PickerMonth="Period.Start.GetValueOrDefault().StartOfMonth(CultureInfo.CurrentCulture)"
                             Label="Period"
                             Variant="Variant.Outlined"
                             PickerVariant="PickerVariant.Dialog"
@@ -42,10 +44,7 @@
 
     @if (HomesState.Value.CurrentHome is not null)
     {
-        <BalanceBreakdownPanel @ref=BalanceBreakdownPanelRef
-                               HomeId="HomesState.Value.CurrentHome.Id"
-                               PeriodStart="PeriodStart"
-                               PeriodEnd="PeriodEnd" />
+        <BalanceBreakdownPanel HomeId="HomesState.Value.CurrentHome.Id"/>
     }
 </MudStack>
 
@@ -55,15 +54,13 @@
 
     [Inject] private IState<HomesState> HomesState { get; set; } = null!;
 
+    [Inject] private IState<DashboardState> DashboardState { get; set; } = null!;
+
     [Inject] private IDispatcher Dispatcher { get; set; } = null!;
 
-    private DateRange Period { get; set; } = new();
-
-    private DateOnly PeriodStart => DateOnly.FromDateTime(Period.Start.GetValueOrDefault());
-
-    private DateOnly PeriodEnd => DateOnly.FromDateTime(Period.End.GetValueOrDefault());
-
-    private BalanceBreakdownPanel? BalanceBreakdownPanelRef { get; set; }
+    private DateRange Period => new(
+        DashboardState.Value.PeriodStart.ToDateTime(TimeOnly.MinValue),
+        DashboardState.Value.PeriodEnd.ToDateTime(TimeOnly.MinValue));
 
     private MudDateRangePicker? PeriodPickerRef { get; set; }
 
@@ -75,60 +72,41 @@
             return;
 
         Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
-
-        Period = GetThisMonth();
     }
 
     private void SetPeriodToThisMonth()
     {
-        Period = GetThisMonth();
-
-        PeriodPickerRef!.PickerMonth = Period.Start.GetValueOrDefault().StartOfMonth(CultureInfo.CurrentCulture);
-
-        PeriodPickerRef.Close();
-    }
-
-    private static DateRange GetThisMonth()
-    {
         var today = DateTime.Today;
 
         var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
-        var start = new DateOnly(today.Year, today.Month, 1).ToDateTime(TimeOnly.MinValue);
-        var end = new DateOnly(today.Year, today.Month, daysInMonth).ToDateTime(TimeOnly.MinValue);
+        var start = new DateOnly(today.Year, today.Month, 1);
+        var end = new DateOnly(today.Year, today.Month, daysInMonth);
 
-        return new DateRange(start, end);
+        Dispatcher.Dispatch(new DashboardPeriodChangedAction(HomeId, start, end));
+
+        PeriodPickerRef?.Close();
     }
 
     private void SetPeriodToLastMonth()
     {
-        Period = GetLastMonth();
-
-        PeriodPickerRef!.PickerMonth = Period.Start.GetValueOrDefault().StartOfMonth(CultureInfo.CurrentCulture);
-
-        PeriodPickerRef.Close();
-    }
-
-    private static DateRange GetLastMonth()
-    {
         var today = DateTime.Today;
 
-        var start = new DateOnly(today.Year, today.Month, 1).AddMonths(-1).ToDateTime(TimeOnly.MinValue);
+        var start = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
         var daysInMonth = DateTime.DaysInMonth(start.Year, start.Month);
 
-        var end = new DateOnly(start.Year, start.Month, daysInMonth).ToDateTime(TimeOnly.MinValue);
+        var end = new DateOnly(start.Year, start.Month, daysInMonth);
 
-        return new DateRange(start, end);
+        Dispatcher.Dispatch(new DashboardPeriodChangedAction(HomeId, start, end));
+
+        PeriodPickerRef?.Close();
     }
 
     private void OnPeriodChanged(DateRange dateRange)
     {
-        Period = dateRange;
-
-        if (BalanceBreakdownPanelRef is null)
-            return;
-
-        BalanceBreakdownPanelRef.PeriodStart = PeriodStart;
-        BalanceBreakdownPanelRef.PeriodEnd = PeriodEnd;
-        BalanceBreakdownPanelRef.Refresh();
+        Dispatcher.Dispatch(new DashboardPeriodChangedAction(
+            HomeId,
+            DateOnly.FromDateTime(dateRange.Start.GetValueOrDefault()),
+            DateOnly.FromDateTime(dateRange.End.GetValueOrDefault())));
     }
+
 }

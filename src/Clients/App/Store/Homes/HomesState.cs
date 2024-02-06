@@ -15,8 +15,6 @@ public record HomesState
 
     public Home[] Homes { get; init; } = [];
 
-    public BalanceBreakdown? BalanceBreakdown { get; init; }
-
     public bool HomesRequesting { get; init; }
 
     public bool HomeRequesting { get; init; }
@@ -24,6 +22,4 @@ public record HomesState
     public bool HomeCreating { get; init; }
 
     public bool HomeUpdating { get; init; }
-
-    public bool BalanceBreakdownRequesting { get; init; }
 }

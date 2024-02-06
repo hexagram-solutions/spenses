@@ -83,23 +83,4 @@ public static class Reducers
     {
         return state with { HomeUpdating = false };
     }
-
-    [ReducerMethod]
-    public static HomesState ReduceBalanceBreakdownRequested(HomesState state, BalanceBreakdownRequestedAction _)
-    {
-        return state with { BalanceBreakdownRequesting = true };
-    }
-
-    [ReducerMethod]
-    public static HomesState ReduceBalanceBreakdownReceived(HomesState state, BalanceBreakdownReceivedAction action)
-    {
-        return state with { BalanceBreakdownRequesting = false, BalanceBreakdown = action.BalanceBreakdown };
-    }
-
-    [ReducerMethod]
-    public static HomesState ReduceBalanceBreakdownRequestFailed(HomesState state,
-        BalanceBreakdownRequestFailedAction _)
-    {
-        return state with { BalanceBreakdownRequesting = false };
-    }
 }
