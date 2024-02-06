@@ -24,13 +24,24 @@
                                     <MudTh>Total paid</MudTh>
                                     <MudTh>Balance owing</MudTh>
                                 </HeaderContent>
+                                <NoRecordsContent>
+                                    <MudText Typo="Typo.caption">
+                                        <i>No balances</i>
+                                    </MudText>
+                                </NoRecordsContent>
                                 <RowTemplate>
                                     <MudTd DataLabel="Owed member">
                                         <MemberNameDisplay Member="@context.OwedTo"/>
                                     </MudTd>
-                                    <MudTd DataLabel="Expenses">@context.TotalOwed</MudTd>
-                                    <MudTd DataLabel="Payments">@context.TotalPaid</MudTd>
-                                    <MudTd DataLabel="Balance owing">@context.BalanceOwing</MudTd>
+                                    <MudTd DataLabel="Expenses">
+                                        <samp>@context.TotalOwed</samp>
+                                    </MudTd>
+                                    <MudTd DataLabel="Payments">
+                                        <samp>@context.TotalPaid</samp>
+                                    </MudTd>
+                                    <MudTd DataLabel="Balance owing">
+                                        <samp>@context.BalanceOwing</samp>
+                                    </MudTd>
                                 </RowTemplate>
                             </MudTable>
                         </ChildContent>

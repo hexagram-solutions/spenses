@@ -36,9 +36,9 @@ public class BalanceBreakdownQueryHandler(ApplicationDbContext db, IMapper mappe
 
         var memberBalances = membersById.Values.Select(member =>
         {
-            // Get all the expense shares for expenses that the current member did *not* pay for
+            // Get all the expense shares for expenses that the current member did *not* pay for but should owe something
             var otherMemberExpenseShares = home.Expenses
-                .Where(e => e.PaidByMemberId != member.Id)
+                .Where(e => e.PaidByMemberId != member.Id && e.ExpenseShares.Any(es => es.OwedByMemberId == member.Id))
                 .SelectMany(e => e.ExpenseShares)
                 // Filter out expense shares for the current member because they can't owe themselves
                 .Where(e => e.OwedByMemberId != member.Id)
@@ -64,9 +64,6 @@ public class BalanceBreakdownQueryHandler(ApplicationDbContext db, IMapper mappe
                     BalanceOwing = totalOwedToOtherMember - totalPaidToOtherMember
                 });
             }
-
-            var totalOwingByMember = debts.Sum(d => d.BalanceOwing);
-            var totalPaidByMember = member.PaymentsPaid.Sum(e => e.Amount);
 
             return new MemberBalance
             {
