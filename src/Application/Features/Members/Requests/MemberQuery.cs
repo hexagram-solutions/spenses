@@ -26,6 +26,6 @@ public class MemberQueryHandler(ApplicationDbContext db, IMapper mapper)
                 .FirstOrDefaultAsync(h => h.Id == memberId, cancellationToken)
             ?? throw new ResourceNotFoundException(memberId);
 
-        return mapper.Map<Member>(member);
+        return mapper.Map<Member>(member)!;
     }
 }

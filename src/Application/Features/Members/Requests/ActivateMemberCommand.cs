@@ -37,6 +37,6 @@ public class ActivateMemberCommandHandler(ApplicationDbContext db, IMapper mappe
         var updatedMember = await db.Members
             .FirstAsync(x => x.Id == memberId, cancellationToken);
 
-        return mapper.Map<Member>(updatedMember);
+        return mapper.Map<Member>(updatedMember)!;
     }
 }

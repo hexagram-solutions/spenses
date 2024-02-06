@@ -46,6 +46,6 @@ public class UpdateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
 
         await db.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<Member>(memberToUpdate);
+        return mapper.Map<Member>(memberToUpdate)!;
     }
 }

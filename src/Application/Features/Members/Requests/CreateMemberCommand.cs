@@ -38,7 +38,7 @@ public class CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper,
                     "Total split percentage among home members cannot exceed 100%"));
         }
 
-        var member = mapper.Map<DbModels.Member>(props);
+        var member = mapper.Map<DbModels.Member>(props)!;
 
         member.Status = DbModels.MemberStatus.Active;
 
@@ -52,6 +52,6 @@ public class CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper,
                 new InvitationProperties { Email = member.ContactEmail! }), cancellationToken);
         }
 
-        return mapper.Map<Member>(member);
+        return mapper.Map<Member>(member)!;
     }
 }

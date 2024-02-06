@@ -38,7 +38,7 @@ public class DeleteMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
         {
             await db.SaveChangesAsync(cancellationToken);
 
-            return new DeletionResult<Member>(DeletionType.Deleted, mapper.Map<Member>(member));
+            return new DeletionResult<Member>(DeletionType.Deleted, mapper.Map<Member>(member)!);
         }
         catch (DbUpdateException ex)
             when (ex.Entries.SingleOrDefault(e => (e.Entity as DbModels.Member)?.Id == memberId) is not null)
@@ -57,7 +57,7 @@ public class DeleteMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
 
             await db.SaveChangesAsync(cancellationToken);
 
-            return new DeletionResult<Member>(DeletionType.Deactivated, mapper.Map<Member>(member));
+            return new DeletionResult<Member>(DeletionType.Deactivated, mapper.Map<Member>(member)!);
         }
     }
 }

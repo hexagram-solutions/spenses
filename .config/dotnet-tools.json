@@ -14,22 +14,10 @@
         "nuke"
       ]
     },
-    "hexagrams.oidccli": {
-      "version": "0.1.0",
-      "commands": [
-        "dotnet-oidccli"
-      ]
-    },
     "husky": {
       "version": "0.6.4",
       "commands": [
         "husky"
-      ]
-    },
-    "nswag.consolecore": {
-      "version": "14.0.2",
-      "commands": [
-        "nswag"
       ]
     }
   }

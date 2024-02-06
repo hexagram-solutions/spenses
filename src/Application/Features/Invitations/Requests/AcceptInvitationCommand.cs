@@ -31,7 +31,7 @@ public class AcceptInvitationCommandHandler(
             throw new ResourceNotFoundException(invitationId);
 
         if (invitation.Status == DbModels.InvitationStatus.Accepted)
-            return mapper.Map<Invitation>(invitation); // Nothing to do here
+            return mapper.Map<Invitation>(invitation)!; // Nothing to do here
 
         if (invitation.Status != DbModels.InvitationStatus.Pending)
             throw new ForbiddenException();

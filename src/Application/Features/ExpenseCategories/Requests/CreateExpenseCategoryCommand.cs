@@ -32,7 +32,7 @@ public class CreateExpenseCategoryCommandHandler(ApplicationDbContext db, IMappe
         if (home.ExpenseCategories.Any(m => m.Name == props.Name))
             throw new InvalidRequestException($"A category named {props.Name} already exists.");
 
-        var category = mapper.Map<DbModels.ExpenseCategory>(props);
+        var category = mapper.Map<DbModels.ExpenseCategory>(props)!;
 
         home.ExpenseCategories.Add(category);
 

@@ -37,7 +37,7 @@ public class CreatePaymentCommandHandler(ApplicationDbContext db, IMapper mapper
         if (home.Members.All(m => m.Id != props.PaidToMemberId))
             throw new InvalidRequestException($"Member {props.PaidToMemberId} is not a member of home {homeId}");
 
-        var payment = mapper.Map<DbModels.Payment>(props);
+        var payment = mapper.Map<DbModels.Payment>(props)!;
 
         payment.HomeId = homeId;
         payment.PaidByMemberId = props.PaidByMemberId;

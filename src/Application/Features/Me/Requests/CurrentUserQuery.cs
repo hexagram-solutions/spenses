@@ -23,6 +23,6 @@ public class CurrentUserQueryHandler(
         if (await userManager.GetUserAsync(principal) is not { } currentUser)
             throw new UnauthorizedException();
 
-        return mapper.Map<CurrentUser>(currentUser);
+        return mapper.Map<CurrentUser>(currentUser)!;
     }
 }

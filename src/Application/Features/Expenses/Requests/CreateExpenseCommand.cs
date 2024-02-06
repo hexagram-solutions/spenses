@@ -35,7 +35,7 @@ public class CreateExpenseCommandHandler(ApplicationDbContext db, IMapper mapper
         if (home.ExpenseCategories.All(ec => ec.Id != props.CategoryId))
             throw new InvalidRequestException($"Category {props.CategoryId} does not exist.");
 
-        var expense = mapper.Map<DbModels.Expense>(props);
+        var expense = mapper.Map<DbModels.Expense>(props)!;
 
         expense.HomeId = homeId;
         expense.PaidByMemberId = props.PaidByMemberId;
