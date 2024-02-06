@@ -5,26 +5,16 @@
 
 <MudPaper Class="pa-4">
     <MudStack>
-        <div class="align-start d-flex">
-            <MudText Typo="Typo.h5">Balance Breakdown</MudText>
-            <MudSpacer/>
-            <MudMenu Label="Select period"
-                     Variant="Variant.Filled"
-                     Color="Color.Primary"
-                     FullWidth="true"
-                     AnchorOrigin="Origin.BottomCenter"
-                     TransformOrigin="Origin.TopCenter">
-                <MudMenuItem>This month</MudMenuItem>
-                <MudMenuItem>Last month</MudMenuItem>
-                <MudMenuItem>Custom</MudMenuItem> @* TODO: open month picker in dialog mode*@
-            </MudMenu>
-        </div>
+        <LoadingOverlay Visible="HomesState.Value.BalanceBreakdownRequesting" />
+
+        <MudText Typo="Typo.h5">Balance Breakdown</MudText>
+
         <MudExpansionPanels MultiExpansion="true">
             @foreach (var balance in BalanceBreakdown?.MemberBalances ?? [])
             {
                 <MudExpansionPanel IsExpanded>
                     <TitleContent>
-                        <MemberNameDisplay Member="@balance.Member" />
+                        <MemberNameDisplay Member="@balance.Member"/>
                     </TitleContent>
                     <ChildContent>
                         <MudTable Items="balance.Debts"
@@ -37,7 +27,7 @@
                             </HeaderContent>
                             <RowTemplate>
                                 <MudTd DataLabel="Owed member">
-                                    <MemberNameDisplay Member="@context.OwedTo" />
+                                    <MemberNameDisplay Member="@context.OwedTo"/>
                                 </MudTd>
                                 <MudTd DataLabel="Expenses">@context.TotalOwed</MudTd>
                                 <MudTd DataLabel="Payments">@context.TotalPaid</MudTd>
@@ -52,17 +42,16 @@
 </MudPaper>
 
 @code {
+
+    [Parameter, EditorRequired] public Guid HomeId { get; set; }
+
+    [Parameter, EditorRequired] public DateOnly PeriodStart { get; set; }
+
+    [Parameter, EditorRequired] public DateOnly PeriodEnd { get; set; }
+
     [Inject] private IState<HomesState> HomesState { get; set; } = null!;
 
     [Inject] private IDispatcher Dispatcher { get; set; } = null!;
-
-    private Home Home => HomesState.Value.CurrentHome!;
-
-    private static readonly DateTime Today = DateTime.Today;
-
-    private DateOnly PeriodStart { get; } = new(Today.Year, Today.Month, 1);
-
-    private DateOnly PeriodEnd { get; } = new(Today.Year, Today.Month, DateTime.DaysInMonth(Today.Year, Today.Month));
 
     private BalanceBreakdown? BalanceBreakdown => HomesState.Value.BalanceBreakdown;
 
@@ -70,7 +59,12 @@
     {
         base.OnInitialized();
 
-        Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(Home.Id, PeriodStart, PeriodEnd));
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        Dispatcher.Dispatch(new BalanceBreakdownRequestedAction(HomeId, PeriodStart, PeriodEnd));
     }
 
 }

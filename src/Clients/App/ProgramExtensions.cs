@@ -28,6 +28,8 @@ internal static class ProgramExtensions
 
         builder.Services.AddFormValidation(config => config.AddFluentValidation(typeof(HomePropertiesValidator).Assembly));
 
+        builder.Services.AddLocalization();
+
         return builder;
     }
 

@@ -1,29 +1,70 @@
 ﻿@page "/homes/{homeId:guid}/dashboard"
-@using Spenses.App.Components.Homes
 @using Spenses.App.Store.Homes
+@using Spenses.App.Components.Homes
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @layout MainLayout
 
 <PageTitle>Dashboard: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</PageTitle>
 
-<MudText Typo="Typo.h3">Dashboard: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</MudText>
+<MudStack>
+    <div class="align-start d-flex">
+        <MudText Typo="Typo.h4">Dashboard: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</MudText>
+        <MudSpacer/>
+        <MudDateRangePicker @ref="DateRangePickerRef"
+                            @bind-DateRange="Period"
+                            Label="Period"
+                            Variant="Variant.Outlined"
+                            PickerVariant="PickerVariant.Dialog">
+            <PickerActions>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="SetPeriodToLastMonth">
+                    Last month
+                </MudButton>
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           OnClick="SetPeriodToThisMonth">
+                    This month
+                </MudButton>
+            </PickerActions>
+        </MudDateRangePicker>
+    </div>
 
-@if (HomesState.Value.CurrentHome is not null)
-{
-    <BalanceBreakdownWidget />
-}
+    @if (HomesState.Value.CurrentHome is not null)
+    {
+        <BalanceBreakdownPanel @ref=BalanceBreakdownPanelRef
+                               HomeId="HomesState.Value.CurrentHome.Id"
+                               PeriodStart="PeriodStart"
+                               PeriodEnd="PeriodEnd"/>
+    }
+</MudStack>
 
 @code {
 
-    [Parameter]
-    public Guid HomeId { get; set; }
+    [Parameter] public Guid HomeId { get; set; }
 
-    [Inject]
-    private IState<HomesState> HomesState { get; set; } = null!;
+    [Inject] private IState<HomesState> HomesState { get; set; } = null!;
 
-    [Inject]
-    private IDispatcher Dispatcher { get; set; } = null!;
+    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+
+    private DateOnly PeriodStart { get; set; }
+
+    private DateOnly PeriodEnd { get; set; }
+
+    private DateRange Period
+    {
+        get => new(PeriodStart.ToDateTime(TimeOnly.MinValue), PeriodEnd.ToDateTime(TimeOnly.MinValue));
+        set
+        {
+            PeriodStart = DateOnly.FromDateTime(value.Start.GetValueOrDefault());
+            PeriodEnd = DateOnly.FromDateTime(value.End.GetValueOrDefault());
+        }
+    }
+
+    private BalanceBreakdownPanel? BalanceBreakdownPanelRef { get; set; }
+
+    private MudDateRangePicker? DateRangePickerRef { get; set; }
 
     protected override void OnInitialized()
     {
@@ -33,5 +74,33 @@
             return;
 
         Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
+
+        SetPeriodToThisMonth();
+    }
+
+    private void SetPeriodToThisMonth()
+    {
+        var today = DateTime.Today;
+
+        PeriodStart = new DateOnly(today.Year, today.Month, 1);
+        PeriodEnd = new DateOnly(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+
+        DateRangePickerRef?.Close();
+        BalanceBreakdownPanelRef?.Refresh();
+    }
+
+    private void SetPeriodToLastMonth()
+    {
+        var today = DateTime.Today;
+
+        var lastMonthStart = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
+        var lastMonthEnd = new DateOnly(lastMonthStart.Year, lastMonthStart.Month,
+            DateTime.DaysInMonth(lastMonthStart.Year, lastMonthStart.Month));
+
+        PeriodStart = lastMonthStart;
+        PeriodEnd = lastMonthEnd;
+
+        DateRangePickerRef?.Close();
+        BalanceBreakdownPanelRef?.Refresh();
     }
 }
