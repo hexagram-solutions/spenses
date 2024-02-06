@@ -88,20 +88,4 @@ public class Effects(IHomesApi homes, IState<RoutingState> routingState)
 
         dispatcher.Dispatch(new HomeUpdateSucceededAction(response.Content!));
     }
-
-    [EffectMethod]
-    public async Task HandleBalanceBreakdownRequested(BalanceBreakdownRequestedAction action, IDispatcher dispatcher)
-    {
-        var response = await homes.GetBalanceBreakdown(action.HomeId, action.PeriodStart, action.PeriodEnd);
-
-        if (response.Error is not null)
-        {
-            dispatcher.Dispatch(new BalanceBreakdownRequestFailedAction());
-            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
-
-            return;
-        }
-
-        dispatcher.Dispatch(new BalanceBreakdownReceivedAction(response.Content!));
-    }
 }
