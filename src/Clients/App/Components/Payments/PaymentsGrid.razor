@@ -1,7 +1,4 @@
-﻿@using Spenses.App.Store.Payments
-@using Spenses.Client.Http
-@using Spenses.Shared.Models.Payments
-@using SortDirection = Spenses.Shared.Models.Common.SortDirection;
+﻿@using Spenses.Shared.Models.Payments
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <MudDataGrid @ref="DataGridRef"
@@ -10,28 +7,32 @@
              Virtualize
              SortMode="SortMode.Single"
              ServerData="GetServerData"
-             Height="calc(100vh - 16rem);"
+             Height="calc(100vh - 14rem);"
              CurrentPage="0"
-             RowsPerPage="200">
+             RowsPerPage="200"
+             Dense>
     <ToolBarContent>
-        <MudStack Row>
-            <MudButton Color="Color.Primary"
-                       Variant="Variant.Filled"
-                       StartIcon="@Icons.Material.Rounded.Add"
-                       OnClick="CreatePayment">
-                Create payment
-            </MudButton>
+        <MudStack Row
+                  AlignItems="AlignItems.Center">
+            <div>
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           StartIcon="@Icons.Material.Rounded.Add"
+                           OnClick="CreatePayment">
+                    Create payment
+                </MudButton>
+            </div>
 
             <MudDateRangePicker Label="Dates"
                                 DateRange="DateRangeValue"
                                 DateRangeChanged="OnDateFilterChanged"
-                                DateFormat="yyyy-MM-dd" />
+                                DateFormat="yyyy-MM-dd"/>
         </MudStack>
     </ToolBarContent>
     <Columns>
         <PropertyColumn Property="x => x.Date"
                         Title="Date"
-                        Format="yyyy-MM-dd" />
+                        Format="yyyy-MM-dd"/>
         <PropertyColumn Property="x => x.Amount"
                         Title="Amount">
             <CellTemplate>
@@ -39,10 +40,10 @@
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.PaidByMemberName"
-                        Title="Paid by" />
+                        Title="Paid by"/>
 
         <PropertyColumn Property="x => x.PaidToMemberName"
-                        Title="Paid to" />
+                        Title="Paid to"/>
         <PropertyColumn Property="x => x.Note"
                         Title="Note"
                         Sortable="false"/>
@@ -53,13 +54,13 @@
                     <MudIconButton Size="Size.Small"
                                    Color="Color.Tertiary"
                                    Icon="@Icons.Material.Rounded.Edit"
-                                   OnClick="@(args => OnEditClicked(args, context.Item.Id))" />
+                                   OnClick="@(args => OnEditClicked(args, context.Item.Id))"/>
                 </MudTooltip>
                 <MudTooltip Text="Delete">
                     <MudIconButton Size="Size.Small"
                                    Color="Color.Error"
                                    Icon="@Icons.Material.Rounded.Delete"
-                                   OnClick="@(args => OnDeleteClicked(args, context.Item))" />
+                                   OnClick="@(args => OnDeleteClicked(args, context.Item))"/>
                 </MudTooltip>
             </CellTemplate>
         </TemplateColumn>

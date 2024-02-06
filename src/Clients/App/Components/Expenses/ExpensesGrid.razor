@@ -1,7 +1,4 @@
-﻿@using SortDirection = Spenses.Shared.Models.Common.SortDirection;
-@using Spenses.App.Store.Expenses
-@using Spenses.Client.Http
-@using Spenses.Shared.Models.Expenses
+﻿@using Spenses.Shared.Models.Expenses
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <MudDataGrid @ref="DataGridRef"
@@ -10,17 +7,21 @@
              Virtualize
              SortMode="SortMode.Single"
              ServerData="GetServerData"
-             Height="calc(100vh - 16rem);"
+             Height="calc(100vh - 15rem);"
              CurrentPage="0"
-             RowsPerPage="200">
+             RowsPerPage="200"
+             Dense>
     <ToolBarContent>
-        <MudStack Row>
-            <MudButton Color="Color.Primary"
-                       Variant="Variant.Filled"
-                       StartIcon="@Icons.Material.Rounded.Add"
-                       OnClick="CreateExpense">
-                Create expense
-            </MudButton>
+        <MudStack Row
+                  AlignItems="AlignItems.Center">
+            <div>
+                <MudButton Color="Color.Primary"
+                           Variant="Variant.Filled"
+                           StartIcon="@Icons.Material.Rounded.Add"
+                           OnClick="CreateExpense">
+                    Create expense
+                </MudButton>
+            </div>
 
             <MudSelect T="Guid"
                        Label="Categories"
