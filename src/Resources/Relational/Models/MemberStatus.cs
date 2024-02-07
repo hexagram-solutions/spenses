@@ -4,5 +4,5 @@ public enum MemberStatus
 {
     Invited,
     Active,
-    Inactive,
+    Inactive
 }

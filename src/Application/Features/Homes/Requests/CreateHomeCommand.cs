@@ -27,6 +27,7 @@ public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, I
             Name = currentUser!.DisplayName,
             ContactEmail = currentUser.Email,
             DefaultSplitPercentage = 1m,
+            Status = DbModels.MemberStatus.Active,
             UserId = currentUser.Id
         });
 

@@ -2,13 +2,15 @@ using System.Net;
 using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Spenses.Shared.Models.Homes;
+using Spenses.Shared.Models.Members;
+using Spenses.Shared.Models.Users;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 
 public partial class HomesIntegrationTests
 {
     [Fact]
-    public async Task Post_creates_home()
+    public async Task Post_creates_home_with_default_member()
     {
         var properties = new HomeProperties
         {
@@ -24,7 +26,17 @@ public partial class HomesIntegrationTests
         var retrievedHome = (await _homes.GetHome(createdHome.Id)).Content!;
         retrievedHome.Should().BeEquivalentTo(createdHome);
 
-        retrievedHome.Members.Should().HaveCount(1);
+        var currentUser = fixture.VerifiedUser;
+
+        retrievedHome.Members.Single().Should().BeEquivalentTo(new Member
+        {
+            Name = currentUser.DisplayName,
+            ContactEmail = currentUser.Email,
+            AvatarUrl = currentUser.AvatarUrl,
+            DefaultSplitPercentage = 1m,
+            Status = MemberStatus.Active,
+            User = new User { Id = currentUser.Id, DisplayName = currentUser.DisplayName }
+        }, opts => opts.Excluding(m => m.Id));
 
         await _homes.DeleteHome(createdHome.Id);
     }
