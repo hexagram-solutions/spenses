@@ -1,7 +1,5 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Store.Me;
 using Spenses.Shared.Models.Me;
 
@@ -31,11 +29,8 @@ public partial class Profile
         SubscribeToAction<CurrentUserUpdateSucceededAction>(_ => UpdateSucceeded = true);
     }
 
-    private void UpdateInformation(EditContext editContext)
+    private void UpdateInformation()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new CurrentUserUpdatedAction(Properties));
     }
 }

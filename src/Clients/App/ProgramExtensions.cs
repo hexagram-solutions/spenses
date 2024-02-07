@@ -4,14 +4,12 @@ using Hexagrams.Extensions.Common.Http;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Morris.Blazor.Validation;
 using MudBlazor;
 using MudBlazor.Services;
 using Refit;
 using Spenses.App.Infrastructure.Authentication;
 using Spenses.Client.Http;
 using Spenses.Shared.Common;
-using Spenses.Shared.Validators.Homes;
 using Spenses.Shared.Validators.Identity;
 using Spenses.Utilities.Security;
 
@@ -27,9 +25,6 @@ internal static class ProgramExtensions
             {
                 config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
             });
-
-        builder.Services.AddFormValidation(config =>
-            config.AddFluentValidation(typeof(HomePropertiesValidator).Assembly));
 
         builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginRequestValidator));
 

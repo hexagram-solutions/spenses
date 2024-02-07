@@ -22,7 +22,9 @@
     </MudText>
 
     <EditForm Model="Request"
-              OnSubmit="ChangeEmail">
+              OnValidSubmit="ChangeEmail">
+
+        <FluentValidationValidator />
 
         <MudStack>
             <MudTextField @bind-Value="Request.NewEmail"

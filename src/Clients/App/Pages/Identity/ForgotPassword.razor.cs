@@ -1,7 +1,5 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
 
@@ -27,12 +25,9 @@ public partial class ForgotPassword
         SubscribeToAction<ForgotPasswordFailedAction>(_ => Succeeded = false);
     }
 
-    private void RequestPasswordReset(EditContext editContext)
+    private void RequestPasswordReset()
     {
         Succeeded = null;
-
-        if (!editContext.ValidateObjectTree())
-            return;
 
         Dispatcher.Dispatch(new ForgotPasswordRequestedAction(Request.Email));
     }

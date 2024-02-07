@@ -1,7 +1,5 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
 
@@ -20,11 +18,8 @@ public partial class SignUpForm
 
     private RegisterRequest RegisterRequest { get; } = new();
 
-    private void Register(EditContext editContext)
+    private void Register()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         if (!string.IsNullOrEmpty(InvitationToken))
             RegisterRequest.InvitationToken = InvitationToken;
 

@@ -1,7 +1,7 @@
 ﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <EditForm Model="Payment"
-          OnSubmit="Save">
+          OnValidSubmit="Save">
     <LoadingOverlay Visible="PaymentsState.Value.PaymentCreating"/>
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>

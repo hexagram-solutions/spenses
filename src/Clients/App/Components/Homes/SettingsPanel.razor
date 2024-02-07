@@ -11,7 +11,7 @@
         <LoadingOverlay Visible="HomesState.Value.HomeRequesting"/>
 
         <EditForm Model="Home"
-                  OnSubmit="Save">
+                  OnValidSubmit="Save">
 
             <MudStack>
                 <HomeForm Home="Home"/>
@@ -45,11 +45,8 @@
         Dispatcher.Dispatch(new HomeRequestedAction(CurrentHomeId.GetValueOrDefault()));
     }
 
-    private void Save(EditContext editContext)
+    private void Save()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new HomeUpdatedAction(CurrentHomeId.GetValueOrDefault(), Home!));
     }
 

@@ -32,21 +32,6 @@ public partial class MemberForm
 
     private bool IsTotalHomeSplitPercentageValid { get; set; }
 
-    private static object OnTransformModel(object model)
-    {
-        if (model is Member member)
-        {
-            return new MemberProperties
-            {
-                Name = member.Name,
-                ContactEmail = member.ContactEmail,
-                DefaultSplitPercentage = member.DefaultSplitPercentage
-            };
-        }
-
-        return model;
-    }
-
     protected override Task OnInitializedAsync()
     {
         CheckTotalSplitPercentage();

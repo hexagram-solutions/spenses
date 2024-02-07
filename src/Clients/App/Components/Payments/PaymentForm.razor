@@ -1,7 +1,7 @@
 ﻿@using Spenses.Shared.Validators.Payments
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<PaymentPropertiesValidator>())"/>
+<FluentValidationValidator />
 
 <MudGrid>
     <MudItem xs="6">

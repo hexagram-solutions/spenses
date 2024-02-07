@@ -11,9 +11,9 @@
     </MudText>
 
     <EditForm Model="Properties"
-              OnSubmit="UpdateInformation">
+              OnValidSubmit="UpdateInformation">
 
-        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<UserProfilePropertiesValidator>())"/>
+        <FluentValidationValidator />
 
         <MudTextField @bind-Value="Properties.DisplayName"
                       Label="Display name"

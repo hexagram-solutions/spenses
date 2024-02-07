@@ -2,8 +2,7 @@
 @using Spenses.Shared.Models.Members
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<MemberPropertiesValidator>())"
-          OnTransformModel="OnTransformModel"/>
+<FluentValidationValidator />
 
 <MudStack>
     <MudTextField @bind-Value="Member.Name"
@@ -48,5 +47,5 @@
                      AdornmentIcon="@Icons.Material.Rounded.Percent"
                      For="@(() => Member.DefaultSplitPercentage)"/>
 
-    <MemberSplitPercentageMessage @bind-IsValid="IsTotalHomeSplitPercentageValid"/>
+    <MemberSplitPercentageAlert @bind-IsValid="IsTotalHomeSplitPercentageValid"/>
 </MudStack>
