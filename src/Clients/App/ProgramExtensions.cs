@@ -1,3 +1,4 @@
+using FluentValidation;
 using Fluxor;
 using Hexagrams.Extensions.Common.Http;
 using Hexagrams.Extensions.Configuration;
@@ -11,6 +12,7 @@ using Spenses.App.Infrastructure.Authentication;
 using Spenses.Client.Http;
 using Spenses.Shared.Common;
 using Spenses.Shared.Validators.Homes;
+using Spenses.Shared.Validators.Identity;
 using Spenses.Utilities.Security;
 
 namespace Spenses.App;
@@ -28,6 +30,8 @@ internal static class ProgramExtensions
 
         builder.Services.AddFormValidation(config =>
             config.AddFluentValidation(typeof(HomePropertiesValidator).Assembly));
+
+        builder.Services.AddValidatorsFromAssemblyContaining(typeof(LoginRequestValidator));
 
         builder.Services.AddLocalization();
 

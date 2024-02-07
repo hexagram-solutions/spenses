@@ -34,11 +34,8 @@ public partial class Login
 
     private LoginRequest LoginRequest { get; } = new();
 
-    public void LogIn(EditContext editContext)
+    public void LogIn()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new LoginRequestedAction(LoginRequest, ReturnUrl));
     }
 }
