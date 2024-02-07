@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Me;
-using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api.IntegrationTests.Me;
 
