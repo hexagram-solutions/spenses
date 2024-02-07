@@ -12,7 +12,7 @@ using Spenses.Resources.Relational;
 namespace Spenses.Resources.Relational.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240123191331_Initial")]
+    [Migration("20240207164229_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -293,6 +293,11 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("AvatarUrl")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasMaxLength(4000)
@@ -533,6 +538,45 @@ namespace Spenses.Resources.Relational.Migrations
                     b.ToTable("Home");
                 });
 
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.Invitation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("CreatedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<Guid>("MemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ModifiedById")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("ModifiedById");
+
+                    b.ToTable("Invitation");
+                });
+
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Member", b =>
                 {
                     b.Property<Guid>("Id")
@@ -555,9 +599,6 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Property<Guid>("HomeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("datetime2");
 
@@ -568,6 +609,9 @@ namespace Spenses.Resources.Relational.Migrations
                         .IsRequired()
                         .HasMaxLength(4000)
                         .HasColumnType("nvarchar(4000)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -807,6 +851,33 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("ModifiedBy");
                 });
 
+            modelBuilder.Entity("Spenses.Resources.Relational.Models.Invitation", b =>
+                {
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "CreatedBy")
+                        .WithMany("CreatedInvitations")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.Member", "Member")
+                        .WithMany("Invitations")
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "ModifiedBy")
+                        .WithMany("ModifiedInvitations")
+                        .HasForeignKey("ModifiedById")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Member");
+
+                    b.Navigation("ModifiedBy");
+                });
+
             modelBuilder.Entity("Spenses.Resources.Relational.Models.Member", b =>
                 {
                     b.HasOne("Spenses.Resources.Relational.Models.ApplicationUser", "CreatedBy")
@@ -891,6 +962,8 @@ namespace Spenses.Resources.Relational.Migrations
 
                     b.Navigation("CreatedHomes");
 
+                    b.Navigation("CreatedInvitations");
+
                     b.Navigation("CreatedMembers");
 
                     b.Navigation("CreatedPayments");
@@ -900,6 +973,8 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("ModifiedExpenses");
 
                     b.Navigation("ModifiedHomes");
+
+                    b.Navigation("ModifiedInvitations");
 
                     b.Navigation("ModifiedMembers");
 
@@ -934,6 +1009,8 @@ namespace Spenses.Resources.Relational.Migrations
                     b.Navigation("ExpenseShares");
 
                     b.Navigation("ExpensesPaid");
+
+                    b.Navigation("Invitations");
 
                     b.Navigation("PaymentsPaid");
 
