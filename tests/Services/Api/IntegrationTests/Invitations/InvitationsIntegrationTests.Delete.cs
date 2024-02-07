@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft.EntityFrameworkCore;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Api.IntegrationTests.Invitations;
@@ -21,9 +22,12 @@ public partial class InvitationsIntegrationTests
 
         await fixture.ExecuteDbContextAction(async db =>
         {
-            var invitation = await db.Invitations.FindAsync(invitationId);
+            var invitation = await db.Invitations
+                .Include(i => i.Member)
+                .SingleAsync(i => i.Id == invitationId);
 
-            invitation!.Status.Should().Be(DbModels.InvitationStatus.Declined);
+            invitation.Status.Should().Be(DbModels.InvitationStatus.Declined);
+            invitation.Member.Status.Should().Be(DbModels.MemberStatus.Active);
         });
 
         await _members.DeleteMember(home.Id, memberId);

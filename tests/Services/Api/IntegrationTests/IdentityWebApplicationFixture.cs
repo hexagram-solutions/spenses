@@ -43,7 +43,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        VerifiedUser = (await RestService.For<IMeApi>(CreateClient()).GetMe()).Content!;
+        VerifiedUser = (await RestService.For<IMeApi>(CreateAuthenticatedClient()).GetMe()).Content!;
     }
 
     public async Task DisposeAsync()
@@ -60,7 +60,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         await action(db);
     }
 
-    public HttpClient CreateClient()
+    public HttpClient CreateAuthenticatedClient()
     {
         if (_isAuthenticated)
             return _authenticatedHttpClient;
@@ -68,6 +68,11 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
         LoginAsTestUser().Wait();
 
         return _authenticatedHttpClient;
+    }
+
+    public HttpClient CreateClient()
+    {
+        return WebApplicationFactory.CreateClient();
     }
 
     public async Task LoginAsTestUser()
@@ -102,7 +107,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
     {
         var (userId, code, _) = GetVerificationParametersForEmail(email);
 
-        var identityApi = RestService.For<IIdentityApi>(CreateClient());
+        var identityApi = RestService.For<IIdentityApi>(CreateAuthenticatedClient());
 
         return identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
     }
@@ -120,7 +125,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public async Task<IApiResponse> Logout()
     {
-        var identityApi = RestService.For<IIdentityApi>(CreateClient());
+        var identityApi = RestService.For<IIdentityApi>(CreateAuthenticatedClient());
 
         var response = await identityApi.Logout();
 
@@ -171,17 +176,22 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public Guid GetInvitationIdForEmail(string email)
     {
+        var token = GetInvitationTokenForEmail(email);
+
+        var tokenProvider = WebApplicationFactory.Services.GetRequiredService<InvitationTokenProvider>();
+
+        return tokenProvider.UnprotectInvitationData(token).InvitationId;
+    }
+
+    public string GetInvitationTokenForEmail(string email)
+    {
         var message = GetLastMessageForEmail(email);
 
         var invitationAcceptUri = GetLinkFromEmailMessage(message);
 
         var parameters = HttpUtility.ParseQueryString(invitationAcceptUri.Query);
 
-        var token = parameters["invitationToken"]!;
-
-        var tokenProvider = WebApplicationFactory.Services.GetRequiredService<InvitationTokenProvider>();
-
-        return tokenProvider.UnprotectInvitationData(token).InvitationId;
+        return parameters["invitationToken"]!;
     }
 
     private static Uri GetLinkFromEmailMessage(CapturedEmailMessage message)

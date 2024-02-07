@@ -7,7 +7,7 @@ namespace Spenses.Api.IntegrationTests.ExpenseCategories;
 public partial class ExpenseCategoriesIntegrationTests(IdentityWebApplicationFixture<Program> fixture)
 {
     private readonly IExpenseCategoriesApi _categories =
-        RestService.For<IExpenseCategoriesApi>(fixture.CreateClient());
+        RestService.For<IExpenseCategoriesApi>(fixture.CreateAuthenticatedClient());
 
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateClient());
+    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
 }

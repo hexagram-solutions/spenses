@@ -136,7 +136,7 @@ public partial class MembersIntegrationTests
         await _members.PostMemberInvitation(home.Id, createdMember.Id,
             new InvitationProperties { Email = createdMember.ContactEmail! });
 
-        var payments = RestService.For<IPaymentsApi>(fixture.CreateClient());
+        var payments = RestService.For<IPaymentsApi>(fixture.CreateAuthenticatedClient());
 
         var paymentResponse = await payments.PostPayment(home.Id, new PaymentProperties
         {

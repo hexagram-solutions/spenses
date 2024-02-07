@@ -1,5 +1,10 @@
 using System.Net;
+using Bogus;
+using Refit;
+using Spenses.Client.Http;
+using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Members;
+using Spenses.Shared.Models.Users;
 
 namespace Spenses.Api.IntegrationTests.Members;
 
@@ -89,6 +94,68 @@ public partial class MembersIntegrationTests
         invitationMessage.PlainTextMessage.Should().Contain("?invitationToken=");
 
         await _members.DeleteMember(home.Id, createdMember.Id);
+    }
+
+    [Fact]
+    public async Task Post_home_member_with_should_invite_set_sends_invitation_that_can_be_accepted_by_new_user()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        const string email = "quatro.quatro@sjsu.edu";
+
+        var properties = new CreateMemberProperties
+        {
+            Name = "Quatro Quatro",
+            DefaultSplitPercentage = 0.0000m,
+            ContactEmail = email,
+            ShouldInvite = true
+        };
+
+        var createdMemberResponse = await _members.PostMember(home.Id, properties);
+
+        createdMemberResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var createdMember = createdMemberResponse.Content!;
+
+        createdMember.Status.Should().Be(MemberStatus.Invited);
+
+        var invitationToken = fixture.GetInvitationTokenForEmail(email);
+
+        await fixture.Logout();
+
+        var registerRequest = new RegisterRequest
+        {
+            DisplayName = "Quatro Quatro",
+            Email = email,
+            Password = new Faker().Internet.Password(),
+            InvitationToken = invitationToken
+        };
+
+        var registrationResponse = await fixture.Register(registerRequest);
+
+        registrationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        await fixture.VerifyUser(email);
+
+        var loginResponse = await fixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+
+        loginResponse.Content!.Succeeded.Should().BeTrue();
+
+        var members = (await _members.GetMembers(home.Id)).Content!;
+
+        members.Should().ContainEquivalentOf(new Member
+        {
+            Id = createdMember.Id,
+            Name = properties.Name,
+            ContactEmail = email,
+            DefaultSplitPercentage = properties.DefaultSplitPercentage,
+            Status = MemberStatus.Active,
+            User = new User { DisplayName = registerRequest.DisplayName, Id = registrationResponse.Content!.Id }
+        }, opts => opts.Excluding(m => m.AvatarUrl));
+
+        await fixture.LoginAsTestUser();
+        await _members.DeleteMember(home.Id, createdMember.Id);
+        await fixture.DeleteUser(email);
     }
 
     [Fact]

@@ -36,9 +36,9 @@ public class AcceptInvitationCommandHandler(
         if (invitation.Status != DbModels.InvitationStatus.Pending)
             throw new ForbiddenException();
 
-        var authenticatedUser = currentUserService.CurrentUser!;
+        var authenticatedUser = currentUserService.CurrentUser;
 
-        if (authenticatedUser.IsAuthenticated() &&
+        if (authenticatedUser?.IsAuthenticated() == true &&
             !string.Equals(invitation.Email, authenticatedUser.GetEmail(), StringComparison.InvariantCultureIgnoreCase))
         {
             throw new ForbiddenException();

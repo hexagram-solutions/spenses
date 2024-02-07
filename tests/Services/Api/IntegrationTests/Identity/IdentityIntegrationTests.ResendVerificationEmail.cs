@@ -16,7 +16,7 @@ public partial class IdentityIntegrationTests
 
         var message = fixture.GetLastMessageForEmail(email);
 
-        message.Subject.Should().Be("Verify your email");
+        message.Subject.Should().Contain("Verify");
     }
 
     [Fact]

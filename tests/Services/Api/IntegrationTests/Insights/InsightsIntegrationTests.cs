@@ -8,10 +8,10 @@ namespace Spenses.Api.IntegrationTests.Insights;
 [Collection(IdentityWebApplicationCollection.CollectionName)]
 public class InsightsIntegrationTests(IdentityWebApplicationFixture<Program> fixture)
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateClient());
+    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
 
     private readonly IInsightsApi _insights =
-        RestService.For<IInsightsApi>(fixture.CreateClient());
+        RestService.For<IInsightsApi>(fixture.CreateAuthenticatedClient());
 
     [Theory]
     [InlineData(ExpenseDateGrouping.Month)]
