@@ -17,6 +17,7 @@ namespace Spenses.Resources.Relational.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DisplayName = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    AvatarUrl = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -231,7 +232,7 @@ namespace Spenses.Resources.Relational.Migrations
                     Name = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
                     ContactEmail = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
                     DefaultSplitPercentage = table.Column<decimal>(type: "decimal(5,4)", precision: 5, scale: 4, nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     HomeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -316,6 +317,42 @@ namespace Spenses.Resources.Relational.Migrations
                         principalTable: "Member",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Invitation",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    MemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ModifiedById = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Invitation", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Invitation_ApplicationUser_CreatedById",
+                        column: x => x.CreatedById,
+                        principalTable: "ApplicationUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invitation_ApplicationUser_ModifiedById",
+                        column: x => x.ModifiedById,
+                        principalTable: "ApplicationUser",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Invitation_Member_MemberId",
+                        column: x => x.MemberId,
+                        principalTable: "Member",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -519,6 +556,21 @@ namespace Spenses.Resources.Relational.Migrations
                 column: "ModifiedById");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Invitation_CreatedById",
+                table: "Invitation",
+                column: "CreatedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invitation_MemberId",
+                table: "Invitation",
+                column: "MemberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Invitation_ModifiedById",
+                table: "Invitation",
+                column: "ModifiedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Member_CreatedById",
                 table: "Member",
                 column: "CreatedById");
@@ -587,6 +639,9 @@ namespace Spenses.Resources.Relational.Migrations
 
             migrationBuilder.DropTable(
                 name: "ExpenseTag");
+
+            migrationBuilder.DropTable(
+                name: "Invitation");
 
             migrationBuilder.DropTable(
                 name: "Payment");
