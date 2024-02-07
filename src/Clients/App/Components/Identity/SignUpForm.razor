@@ -38,9 +38,9 @@
     }
 
     <EditForm Model="RegisterRequest"
-              OnSubmit="Register">
+              OnValidSubmit="Register">
 
-        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<RegisterRequestValidator>())"/>
+        <FluentValidationValidator/>
 
         <MudStack>
             <MudTextField @bind-Value="RegisterRequest.DisplayName"

@@ -2,7 +2,7 @@
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <EditForm Model="Home"
-          OnSubmit="Save">
+          OnValidSubmit="Save">
     <LoadingOverlay Visible="HomesState.Value.HomeCreating"/>
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>

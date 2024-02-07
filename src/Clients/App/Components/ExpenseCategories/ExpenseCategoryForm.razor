@@ -1,8 +1,7 @@
 ﻿@using Spenses.Shared.Models.ExpenseCategories
 @using Spenses.Shared.Validators.ExpenseCategories
 
-<Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<ExpenseCategoryPropertiesValidator>())"
-          OnTransformModel="OnTransformModel"/>
+<FluentValidationValidator />
 
 <MudTextField @bind-Value="Properties.Name"
               Label="Name"
@@ -20,18 +19,4 @@
 @code
 {
     [Parameter, EditorRequired] public ExpenseCategoryProperties Properties { get; set; } = null!;
-
-    private static object OnTransformModel(object model)
-    {
-        if (model is ExpenseCategory category)
-        {
-            return new ExpenseCategoryProperties
-            {
-                Name = category.Name,
-                Description = category.Description
-            };
-        }
-
-        return model;
-    }
 }

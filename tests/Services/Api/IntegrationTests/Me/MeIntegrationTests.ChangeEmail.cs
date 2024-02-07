@@ -16,11 +16,7 @@ public partial class MeIntegrationTests
     [Fact]
     public async Task Change_email_for_verified_user_changes_and_verifies_email()
     {
-        await using var identityFixture = new IdentityWebApplicationFixture<Program>();
-
-        await identityFixture.InitializeAsync();
-
-        var identityApi = RestService.For<IIdentityApi>(identityFixture.CreateClient());
+        var identityApi = RestService.For<IIdentityApi>(fixture.CreateClient());
 
         // Register a new user
         var registerRequest = new RegisterRequest
@@ -30,15 +26,15 @@ public partial class MeIntegrationTests
             Password = new Faker().Internet.Password()
         };
 
-        await identityFixture.Register(registerRequest, true);
+        await fixture.Register(registerRequest, true);
 
-        await identityFixture.Login(new LoginRequest
+        await fixture.Login(new LoginRequest
         {
             Email = registerRequest.Email,
             Password = registerRequest.Password
         });
 
-        var meApi = RestService.For<IMeApi>(identityFixture.CreateClient());
+        var meApi = RestService.For<IMeApi>(fixture.CreateClient());
 
         // Request the email change
         var expectedEmail = "quackadilly.blip2@auburn.edu";
@@ -47,7 +43,7 @@ public partial class MeIntegrationTests
 
         changeEmailResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var (userId, code, newEmail) = identityFixture.GetVerificationParametersForEmail(expectedEmail);
+        var (userId, code, newEmail) = fixture.GetVerificationParametersForEmail(expectedEmail);
 
         var verificationResponse = await identityApi.VerifyEmail(new VerifyEmailRequest(userId, code, newEmail));
 
@@ -67,6 +63,6 @@ public partial class MeIntegrationTests
         user.Email.Should().Be(expectedEmail);
         user.EmailConfirmed.Should().Be(true);
 
-        await identityFixture.DeleteUser(expectedEmail);
+        await fixture.DeleteUser(expectedEmail);
     }
 }

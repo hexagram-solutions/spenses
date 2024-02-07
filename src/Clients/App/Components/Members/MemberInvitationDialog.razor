@@ -2,13 +2,12 @@
 @using Spenses.App.Store.Members
 @using Spenses.App.Store.Homes
 @using Spenses.Shared.Models.Invitations
-@using Spenses.Shared.Validators.Invitations
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <EditForm Model="Invitation"
-          OnSubmit="Save">
+          OnValidSubmit="Save">
 
-    <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<InvitationPropertiesValidator>())"/>
+    <FluentValidationValidator />
 
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>
@@ -75,11 +74,8 @@
         Dialog.Cancel();
     }
 
-    private void Save(EditContext editContext)
+    private void Save()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new MemberInvitedAction(HomeId, Member.Id, Invitation));
     }
 }

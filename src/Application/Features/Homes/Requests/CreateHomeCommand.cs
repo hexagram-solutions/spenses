@@ -18,7 +18,7 @@ public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, I
 {
     public async Task<Home> Handle(CreateHomeCommand request, CancellationToken cancellationToken)
     {
-        var home = mapper.Map<DbModels.Home>(request.Props);
+        var home = mapper.Map<DbModels.Home>(request.Props)!;
 
         var currentUser = await userManager.GetUserAsync(currentUserService.CurrentUser!);
 
@@ -46,6 +46,6 @@ public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, I
             .ProjectTo<Home>(mapper.ConfigurationProvider)
             .SingleAsync(h => h.Id == entry.Entity.Id, cancellationToken);
 
-        return mapper.Map<Home>(createdHome);
+        return mapper.Map<Home>(createdHome)!;
     }
 }

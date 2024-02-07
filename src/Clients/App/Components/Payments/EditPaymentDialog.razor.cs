@@ -1,7 +1,5 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
 using MudBlazor;
 using Spenses.App.Store.Homes;
 using Spenses.App.Store.Payments;
@@ -52,11 +50,8 @@ public partial class EditPaymentDialog
         Dialog.Cancel();
     }
 
-    private void Save(EditContext editContext)
+    private void Save()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new PaymentUpdatedAction(Home.Id, PaymentId, Payment));
     }
 }

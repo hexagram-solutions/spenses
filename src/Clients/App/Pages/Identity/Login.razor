@@ -1,7 +1,6 @@
 ﻿@page "/login"
 @using Spenses.App.Infrastructure
 @using Spenses.Shared.Models.Identity
-@using Spenses.Shared.Validators.Identity
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Log in</PageTitle>
@@ -10,8 +9,8 @@
     <MudText Typo="Typo.h5">Log in</MudText>
 
     <EditForm Model="LoginRequest"
-              OnSubmit="LogIn">
-        <Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<LoginRequestValidator>())"/>
+              OnValidSubmit="LogIn">
+        <FluentValidationValidator />
 
         <MudStack>
             <MudTextField @bind-Value="LoginRequest.Email"

@@ -1,8 +1,7 @@
 ﻿@using Spenses.Shared.Models.Homes
 @using Spenses.Shared.Validators.Homes
 
-<Validate ValidationProperties="@(ValidationProperties.Set.FluentValidator<HomePropertiesValidator>())"
-          OnTransformModel="OnTransformModel"/>
+<FluentValidationValidator />
 
 <MudTextField @bind-Value="Home.Name"
               Label="Name"
@@ -18,18 +17,4 @@
 @code
 {
     [Parameter] public HomeProperties Home { get; set; } = null!;
-
-    private static object OnTransformModel(object model)
-    {
-        if (model is Home home)
-        {
-            return new HomeProperties
-            {
-                Name = home.Name,
-                Description = home.Description
-            };
-        }
-
-        return model;
-    }
 }

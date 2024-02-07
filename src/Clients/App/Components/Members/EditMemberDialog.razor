@@ -2,7 +2,7 @@
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <EditForm Model="Member"
-          OnSubmit="Save">
+          OnValidSubmit="Save">
     <LoadingOverlay Visible="MembersState.Value.MemberRequesting || MembersState.Value.MemberUpdating" />
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>

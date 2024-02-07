@@ -2,8 +2,6 @@ using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
@@ -34,11 +32,8 @@ public partial class Login
 
     private LoginRequest LoginRequest { get; } = new();
 
-    public void LogIn(EditContext editContext)
+    public void LogIn()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new LoginRequestedAction(LoginRequest, ReturnUrl));
     }
 }

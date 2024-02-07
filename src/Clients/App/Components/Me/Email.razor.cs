@@ -1,7 +1,5 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
 using MudBlazor;
 using Spenses.App.Store.Me;
 using Spenses.Shared.Models.Me;
@@ -46,11 +44,8 @@ public partial class Email
             await EmailTextFieldRef.FocusAsync();
     }
 
-    private void ChangeEmail(EditContext editContext)
+    private void ChangeEmail()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new ChangeEmailRequestedAction(Request));
     }
 }

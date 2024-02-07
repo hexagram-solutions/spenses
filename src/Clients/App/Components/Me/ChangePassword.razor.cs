@@ -1,7 +1,5 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Store.Me;
 using Spenses.Shared.Models.Me;
 
@@ -29,11 +27,8 @@ public partial class ChangePassword
         SubscribeToAction<ChangePasswordSucceededAction>(_ => Succeeded = true);
     }
 
-    private void SubmitChangePassword(EditContext editContext)
+    private void SubmitChangePassword()
     {
-        if (!editContext.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new ChangePasswordRequestedAction(Request));
     }
 }

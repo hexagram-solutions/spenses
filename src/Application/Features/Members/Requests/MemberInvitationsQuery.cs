@@ -29,6 +29,6 @@ public class MemberInvitationsQueryHandler(ApplicationDbContext db, IMapper mapp
         if (member is null)
             throw new ResourceNotFoundException(memberId);
 
-        return mapper.Map<Invitation[]>(member.Invitations.OrderBy(i => i.CreatedAt));
+        return mapper.Map<Invitation[]>(member.Invitations.OrderBy(i => i.CreatedAt))!;
     }
 }

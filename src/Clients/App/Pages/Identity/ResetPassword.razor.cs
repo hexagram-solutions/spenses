@@ -2,7 +2,6 @@ using Fluxor;
 using Fluxor.Blazor.Web.Middlewares.Routing;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Morris.Blazor.Validation.Extensions;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Identity;
 using Spenses.Shared.Models.Identity;
@@ -56,11 +55,8 @@ public partial class ResetPassword
         Dispatcher.Dispatch(new GoAction(Routes.Identity.Login()));
     }
 
-    private void UpdatePassword(EditContext context)
+    private void UpdatePassword()
     {
-        if (!context.ValidateObjectTree())
-            return;
-
         Dispatcher.Dispatch(new ResetPasswordRequestedAction(Request));
     }
 }
