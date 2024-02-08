@@ -1,5 +1,7 @@
 using System.Net;
 using Refit;
+using Spenses.Client.Http;
+using Spenses.Shared.Models.Expenses;
 using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.IntegrationTests.Members;
@@ -69,7 +71,11 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var memberId = home.Members.First().Id;
+        var expensesApi = RestService.For<IExpensesApi>(fixture.CreateAuthenticatedClient());
+
+        var expenses = await expensesApi.GetExpenses(home.Id, new FilteredExpensesQuery { Take = 1 });
+
+        var memberId = expenses.Content!.Items.First().PaidByMemberId;
 
         var member = (await _members.DeleteMember(home.Id, memberId)).Content!.Model;
 
