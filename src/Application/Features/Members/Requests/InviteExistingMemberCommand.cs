@@ -71,7 +71,7 @@ public class InviteExistingMemberCommandHandler(
 
         await SendInvitationEmail(props.Email, homeId, invitation, cancellationToken);
 
-        return mapper.Map<Invitation>(entry.Entity)!;
+        return mapper.Map<Invitation>(entry.Entity);
     }
 
     private async Task SendInvitationEmail(string email, Guid homeId, DbModels.Invitation invitation,

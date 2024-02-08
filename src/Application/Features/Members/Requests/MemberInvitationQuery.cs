@@ -32,6 +32,6 @@ public class MemberInvitationQueryHandler(ApplicationDbContext db, IMapper mappe
         if (invitation is null)
             throw new ResourceNotFoundException(invitationId);
 
-        return mapper.Map<Invitation>(invitation)!;
+        return mapper.Map<Invitation>(invitation);
     }
 }
