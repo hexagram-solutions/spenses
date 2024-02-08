@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Azure.Identity;
+using Hexagrams.Extensions.Common.Serialization;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -76,6 +77,7 @@ public static class ProgramExtensions
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new TrimmingJsonConverter());
             });
 
         builder.Services.AddRouting(opts =>
