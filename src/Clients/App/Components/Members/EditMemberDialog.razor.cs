@@ -1,6 +1,7 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Spenses.App.Components.Shared;
 using Spenses.App.Store.Homes;
 using Spenses.App.Store.Members;
 using Spenses.Shared.Models.Homes;
@@ -30,11 +31,14 @@ public partial class EditMemberDialog
 
     public Member Member { get; set; } = new();
 
+    private CustomValidations CustomValidationsRef { get; set; } = new();
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
         SubscribeToAction<MemberReceivedAction>(a => Member = a.Member);
+        SubscribeToAction<MemberUpdateFailedAction>(a => CustomValidationsRef.AddErrors(a.Errors));
 
         Dispatcher.Dispatch(new MemberRequestedAction(Home.Id, MemberId));
     }

@@ -37,7 +37,7 @@ public partial class MembersIntegrationTests
         {
             Name = "Grunky Peep",
             DefaultSplitPercentage = 0.0m,
-            ContactEmail = "grunky.peep@georgiasouthern.edu"
+            ContactEmail = _faker.Internet.Email()
         })).Content!;
 
         var deleteMemberResponse = await _members.DeleteMember(homeId, newMember.Id);
@@ -99,7 +99,7 @@ public partial class MembersIntegrationTests
             {
                 Name = "Grunky Peep",
                 DefaultSplitPercentage = 0.0m,
-                ContactEmail = "grunky.peep@georgiasouthern.edu"
+                ContactEmail = _faker.Internet.Email()
             })).Content!;
 
         await _members.PostMemberInvitation(homeId, createdMember.Id,
@@ -130,13 +130,13 @@ public partial class MembersIntegrationTests
             {
                 Name = "Grunky Peep",
                 DefaultSplitPercentage = 0.0m,
-                ContactEmail = "grunky.peep@georgiasouthern.edu"
+                ContactEmail = _faker.Internet.Email()
             })).Content!;
 
         await _members.PostMemberInvitation(home.Id, createdMember.Id,
             new InvitationProperties { Email = createdMember.ContactEmail! });
 
-        var payments = RestService.For<IPaymentsApi>(fixture.CreateClient());
+        var payments = RestService.For<IPaymentsApi>(fixture.CreateAuthenticatedClient());
 
         var paymentResponse = await payments.PostPayment(home.Id, new PaymentProperties
         {

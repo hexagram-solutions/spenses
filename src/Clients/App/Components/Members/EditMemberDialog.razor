@@ -4,12 +4,14 @@
 <EditForm Model="Member"
           OnValidSubmit="Save">
     <LoadingOverlay Visible="MembersState.Value.MemberRequesting || MembersState.Value.MemberUpdating" />
+    <CustomValidations @ref="CustomValidationsRef" />
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>
             Edit member
         </TitleContent>
         <DialogContent>
-            <MemberForm Member="Member" MemberId="MemberId"/>
+            <MemberForm Member="Member"
+                        MemberId="MemberId"/>
         </DialogContent>
         <DialogActions>
             <MudButton Color="Color.Default"

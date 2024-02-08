@@ -58,6 +58,6 @@ public class Effects(IIdentityApi identityApi, IInvitationsApi invitations)
         }
 
         dispatcher.Dispatch(new InvitationDeclinationSucceededAction());
-        dispatcher.Dispatch(new GoAction(Routes.Root));
+        dispatcher.Dispatch(new GoAction(Routes.Root, true));
     }
 }

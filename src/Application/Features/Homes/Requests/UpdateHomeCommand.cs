@@ -30,6 +30,6 @@ public class UpdateHomeCommandHandler(ApplicationDbContext db, IMapper mapper)
 
         await db.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<Home>(home)!;
+        return mapper.Map<Home>(home);
     }
 }

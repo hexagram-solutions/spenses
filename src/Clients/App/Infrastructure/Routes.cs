@@ -31,6 +31,9 @@ public static class Routes
             : $"/email-verification-required?email={Uri.EscapeDataString(email)}";
 
         public static string VerifyEmail => "/verify-email";
+
+        public static string AcceptInvitation(string invitationToken) =>
+            $"/accept-invitation?invitationToken={invitationToken}";
     }
 
     public static class Me

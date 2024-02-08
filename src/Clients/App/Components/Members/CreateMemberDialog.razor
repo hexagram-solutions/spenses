@@ -3,6 +3,7 @@
 <EditForm Model="Member"
           OnValidSubmit="Save">
     <LoadingOverlay Visible="MembersState.Value.MemberCreating" />
+    <CustomValidations @ref="CustomValidationsRef" />
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>
             New member

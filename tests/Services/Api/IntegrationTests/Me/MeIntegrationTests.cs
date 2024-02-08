@@ -6,7 +6,7 @@ namespace Spenses.Api.IntegrationTests.Me;
 [Collection(IdentityWebApplicationCollection.CollectionName)]
 public partial class MeIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
 {
-    private readonly IMeApi _meApi = RestService.For<IMeApi>(fixture.CreateClient());
+    private readonly IMeApi _meApi = RestService.For<IMeApi>(fixture.CreateAuthenticatedClient());
 
     public Task InitializeAsync()
     {

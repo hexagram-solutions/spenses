@@ -34,10 +34,11 @@ public class DeclineInvitationCommandHandler(ApplicationDbContext db, ICurrentUs
 
         if (!string.Equals(invitation.Email, authenticatedUser.GetEmail(), StringComparison.InvariantCultureIgnoreCase))
         {
-            throw new ForbiddenException(); // todo: test this
+            throw new ForbiddenException();
         }
 
         invitation.Status = DbModels.InvitationStatus.Declined;
+        invitation.Member.Status = DbModels.MemberStatus.Active;
 
         await db.SaveChangesAsync(cancellationToken);
     }

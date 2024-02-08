@@ -1,6 +1,7 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Spenses.App.Components.Shared;
 using Spenses.App.Store.Homes;
 using Spenses.App.Store.Members;
 using Spenses.Shared.Models.Homes;
@@ -25,6 +26,15 @@ public partial class CreateMemberDialog
     private Home Home => HomesState.Value.CurrentHome!;
 
     public CreateMemberProperties Member { get; set; } = new();
+
+    private CustomValidations CustomValidationsRef { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        SubscribeToAction<MemberCreationFailedAction>(a => CustomValidationsRef.AddErrors(a.Errors));
+    }
 
     private void Close()
     {

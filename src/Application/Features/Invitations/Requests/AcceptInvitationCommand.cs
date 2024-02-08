@@ -31,14 +31,14 @@ public class AcceptInvitationCommandHandler(
             throw new ResourceNotFoundException(invitationId);
 
         if (invitation.Status == DbModels.InvitationStatus.Accepted)
-            return mapper.Map<Invitation>(invitation)!; // Nothing to do here
+            return mapper.Map<Invitation>(invitation); // Nothing to do here
 
         if (invitation.Status != DbModels.InvitationStatus.Pending)
             throw new ForbiddenException();
 
-        var authenticatedUser = currentUserService.CurrentUser!;
+        var authenticatedUser = currentUserService.CurrentUser;
 
-        if (authenticatedUser.IsAuthenticated() &&
+        if (authenticatedUser?.IsAuthenticated() == true &&
             !string.Equals(invitation.Email, authenticatedUser.GetEmail(), StringComparison.InvariantCultureIgnoreCase))
         {
             throw new ForbiddenException();

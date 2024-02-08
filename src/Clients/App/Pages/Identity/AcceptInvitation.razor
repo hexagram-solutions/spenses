@@ -1,9 +1,9 @@
 ﻿@page "/accept-invitation"
+@using Spenses.Utilities.Security
 @using Spenses.App.Store.Invitations
 @using Spenses.Shared.Models.Invitations
 @using Spenses.App.Components.Identity
 @using Spenses.App.Infrastructure
-@using Spenses.Utilities.Security
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <PageTitle>Accept invitation</PageTitle>
@@ -68,13 +68,13 @@ else
             <NotAuthorized>
                 <MudDivider/>
                 <div>
-                    <MudLink Href="@Routes.Identity.Login(Routes.Homes.Dashboard(Invitation.Home.Id))">
+                    <MudLink Href="@Routes.Identity.Login(Routes.Identity.AcceptInvitation(InvitationToken))">
                         Already have an account? Log in.
                     </MudLink>
                 </div>
                 <MudDivider/>
                 <MudStack>
-                    <SignUpForm InvitationToken="@InvitationToken" />
+                    <SignUpForm InvitationToken="@InvitationToken"/>
                 </MudStack>
             </NotAuthorized>
         </AuthorizeView>
@@ -84,14 +84,18 @@ else
 
 
 @code {
-    [SupplyParameterFromQuery] public string InvitationToken { get; set; } = string.Empty;
+
+    [SupplyParameterFromQuery]
+    public string InvitationToken { get; set; } = string.Empty;
 
     [CascadingParameter]
     private Task<AuthenticationState> AuthenticationState { get; set; } = null!;
 
-    [Inject] private IDispatcher Dispatcher { get; set; } = null!;
+    [Inject]
+    private IDispatcher Dispatcher { get; set; } = null!;
 
-    [Inject] private IState<InvitationState> InvitationState { get; set; } = null!;
+    [Inject]
+    private IState<InvitationState> InvitationState { get; set; } = null!;
 
     private Invitation? Invitation => InvitationState.Value.Invitation;
 
@@ -115,4 +119,5 @@ else
     {
         Dispatcher.Dispatch(new InvitationDeclinedAction(Invitation!.Id));
     }
+
 }

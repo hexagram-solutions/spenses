@@ -3,7 +3,6 @@ using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
-using Spenses.Api.IntegrationTests.Identity;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;
@@ -16,7 +15,7 @@ public partial class MeIntegrationTests
     [Fact]
     public async Task Change_email_for_verified_user_changes_and_verifies_email()
     {
-        var identityApi = RestService.For<IIdentityApi>(fixture.CreateClient());
+        var identityApi = RestService.For<IIdentityApi>(fixture.CreateAuthenticatedClient());
 
         // Register a new user
         var registerRequest = new RegisterRequest
@@ -34,7 +33,7 @@ public partial class MeIntegrationTests
             Password = registerRequest.Password
         });
 
-        var meApi = RestService.For<IMeApi>(fixture.CreateClient());
+        var meApi = RestService.For<IMeApi>(fixture.CreateAuthenticatedClient());
 
         // Request the email change
         var expectedEmail = "quackadilly.blip2@auburn.edu";

@@ -1,8 +1,6 @@
 using System.Net;
-using Microsoft.EntityFrameworkCore;
 using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Members;
-using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Api.IntegrationTests.Members;
 

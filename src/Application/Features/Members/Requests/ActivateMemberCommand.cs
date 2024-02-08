@@ -1,5 +1,4 @@
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +36,6 @@ public class ActivateMemberCommandHandler(ApplicationDbContext db, IMapper mappe
         var updatedMember = await db.Members
             .FirstAsync(x => x.Id == memberId, cancellationToken);
 
-        return mapper.Map<Member>(updatedMember)!;
+        return mapper.Map<Member>(updatedMember);
     }
 }

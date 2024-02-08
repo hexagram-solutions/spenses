@@ -27,6 +27,6 @@ public class UpdateCurrentUserCommandHandler(
 
         await userManager.UpdateAsync(currentUser);
 
-        return mapper.Map<CurrentUser>(currentUser)!;
+        return mapper.Map<CurrentUser>(currentUser);
     }
 }

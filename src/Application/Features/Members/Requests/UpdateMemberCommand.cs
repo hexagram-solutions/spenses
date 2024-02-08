@@ -31,9 +31,21 @@ public class UpdateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
         var memberToUpdate = homeMembers
             .FirstOrDefault(h => h.Id == memberId) ?? throw new ResourceNotFoundException(memberId);
 
-        var otherMembersSplitPercentageTotal = homeMembers
+        var otherHomeMembers = homeMembers
             .Where(m => m.Id != memberId)
-            .Sum(m => m.DefaultSplitPercentage);
+            .ToList();
+
+        var duplicateContactEmail = !string.IsNullOrEmpty(props.ContactEmail) &&
+            otherHomeMembers.Any(m => string.Equals(m.ContactEmail?.ToLower(), props.ContactEmail.ToLower(),
+                StringComparison.OrdinalIgnoreCase));
+
+        if (duplicateContactEmail)
+        {
+            throw new InvalidRequestException(new ValidationFailure(nameof(MemberProperties.ContactEmail),
+                $"A member with the contact email \"{props.ContactEmail}\" already exists in this home."));
+        }
+
+        var otherMembersSplitPercentageTotal = otherHomeMembers.Sum(m => m.DefaultSplitPercentage);
 
         if (otherMembersSplitPercentageTotal + props.DefaultSplitPercentage > 1)
         {
@@ -46,6 +58,6 @@ public class UpdateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
 
         await db.SaveChangesAsync(cancellationToken);
 
-        return mapper.Map<Member>(memberToUpdate)!;
+        return mapper.Map<Member>(memberToUpdate);
     }
 }

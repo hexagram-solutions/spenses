@@ -1,6 +1,9 @@
 using System.Net;
-using Microsoft.AspNetCore.Mvc;
+using Bogus;
+using Refit;
+using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Members;
+using Spenses.Shared.Models.Users;
 
 namespace Spenses.Api.IntegrationTests.Members;
 
@@ -54,7 +57,7 @@ public partial class MembersIntegrationTests
         {
             Name = "Grunky Peep",
             DefaultSplitPercentage = 0.0m,
-            ContactEmail = "grunky.peep@georgiasouthern.edu"
+            ContactEmail = _faker.Internet.Email()
         });
 
         homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -65,7 +68,7 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        const string email = "quatro.quatro@sjsu.edu";
+        var email = _faker.Internet.Email();
 
         var properties = new CreateMemberProperties
         {
@@ -93,6 +96,68 @@ public partial class MembersIntegrationTests
     }
 
     [Fact]
+    public async Task Post_home_member_with_should_invite_set_sends_invitation_that_can_be_accepted_by_new_user()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var email = _faker.Internet.Email();
+
+        var properties = new CreateMemberProperties
+        {
+            Name = "Quatro Quatro",
+            DefaultSplitPercentage = 0.0000m,
+            ContactEmail = email,
+            ShouldInvite = true
+        };
+
+        var createdMemberResponse = await _members.PostMember(home.Id, properties);
+
+        createdMemberResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var createdMember = createdMemberResponse.Content!;
+
+        createdMember.Status.Should().Be(MemberStatus.Invited);
+
+        var invitationToken = fixture.GetInvitationTokenForEmail(email);
+
+        await fixture.Logout();
+
+        var registerRequest = new RegisterRequest
+        {
+            DisplayName = "Quatro Quatro",
+            Email = email,
+            Password = new Faker().Internet.Password(),
+            InvitationToken = invitationToken
+        };
+
+        var registrationResponse = await fixture.Register(registerRequest);
+
+        registrationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        await fixture.VerifyUser(email);
+
+        var loginResponse = await fixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+
+        loginResponse.Content!.Succeeded.Should().BeTrue();
+
+        var members = (await _members.GetMembers(home.Id)).Content!;
+
+        members.Should().ContainEquivalentOf(new Member
+        {
+            Id = createdMember.Id,
+            Name = properties.Name,
+            ContactEmail = email,
+            DefaultSplitPercentage = properties.DefaultSplitPercentage,
+            Status = MemberStatus.Active,
+            User = new User { DisplayName = registerRequest.DisplayName, Id = registrationResponse.Content!.Id }
+        }, opts => opts.Excluding(m => m.AvatarUrl));
+
+        await fixture.LoginAsTestUser();
+        await _members.DeleteMember(home.Id, createdMember.Id);
+        await fixture.DeleteUser(email);
+    }
+
+    [Fact]
     public async Task Post_home_member_with_should_invite_and_no_contact_email_yields_bad_request()
     {
         var home = (await _homes.GetHomes()).Content!.First();
@@ -102,6 +167,26 @@ public partial class MembersIntegrationTests
             Name = "Quatro Quatro",
             DefaultSplitPercentage = 0.0m,
             ShouldInvite = true
+        };
+
+        var response = await _members.PostMember(home.Id, properties);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        response.Should().HaveValidationErrorFor(x => x.ContactEmail);
+    }
+
+    [Fact]
+    public async Task Post_home_member_with_duplicate_contact_email_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+        var existingMember = (await _members.GetMembers(home.Id)).Content!.First();
+
+        var properties = new CreateMemberProperties
+        {
+            Name = "Quatro Quatro",
+            DefaultSplitPercentage = 0.0m,
+            ContactEmail = existingMember.ContactEmail,
         };
 
         var response = await _members.PostMember(home.Id, properties);

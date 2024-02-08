@@ -51,6 +51,8 @@ partial class Build : NukeBuild,
     readonly GitVersion GitVersion;
     GitVersion IHasVersioning.Versioning => GitVersion;
 
+    public bool RunFormatAnalyzers => IsLocalBuild;
+
     IEnumerable<AbsolutePath> IFormat.ExcludedFormatPaths => new[]
     {
         AbsolutePath.Create(RootDirectory.GetRelativePathTo(

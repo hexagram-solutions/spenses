@@ -79,6 +79,7 @@ public class RegisterCommandHandler(
 
         return new CurrentUser
         {
+            Id = user.Id,
             Email = user.Email!,
             DisplayName = user.DisplayName,
             EmailVerified = false

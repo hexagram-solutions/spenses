@@ -23,6 +23,7 @@ public partial class IdentityIntegrationTests
 
         var registeredUser = response.Content!;
 
+        registeredUser.Id.Should().NotBeEmpty();
         registeredUser.Email.Should().Be(request.Email);
         registeredUser.DisplayName.Should().Be(request.DisplayName);
         registeredUser.EmailVerified.Should().BeFalse();

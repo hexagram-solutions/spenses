@@ -24,6 +24,6 @@ public class MembersQueryHandler(ApplicationDbContext db, IMapper mapper)
             .OrderBy(m => m.Name)
             .ToListAsync(cancellationToken);
 
-        return members.Select(mapper.Map<Member>)!;
+        return members.Select(mapper.Map<Member>);
     }
 }

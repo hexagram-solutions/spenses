@@ -1,4 +1,7 @@
 using System.Net;
+using Refit;
+using Spenses.Client.Http;
+using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.Api.IntegrationTests.Members;
 
@@ -9,13 +12,20 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var member = home.Members.First();
+        // Get a member using expenses in the home to ensure we get a member with associations to deactivate
+        var expensesApi = RestService.For<IExpensesApi>(fixture.CreateAuthenticatedClient());
 
-        var deleteMemberResponse = await _members.DeleteMember(home.Id, member.Id);
+        var expenses = await expensesApi.GetExpenses(home.Id, new FilteredExpensesQuery { Take = 1 });
+
+        var memberId = expenses.Content!.Items.First().PaidByMemberId;
+
+        var member = (await _members.GetMember(home.Id, memberId)).Content!;
+
+        var deleteMemberResponse = await _members.DeleteMember(home.Id, memberId);
 
         deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var activateMemberResponse = await _members.ActivateMember(home.Id, member.Id);
+        var activateMemberResponse = await _members.ActivateMember(home.Id, memberId);
 
         activateMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
