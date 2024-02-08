@@ -94,8 +94,7 @@ partial class Build
     Target DeployWebApp => t => t
         .Description("Deploy the front-end web app to Azure Static Web Apps.")
         .DependsOn<IClean>()
-        .Requires(
-            () => AzureStaticWebAppsDeploymentToken)
+        .Requires(() => AzureStaticWebAppsDeploymentToken)
         .Executes(() =>
         {
             DotNetPublish(s => s
