@@ -29,6 +29,16 @@ public class CreateMemberCommandHandler(ApplicationDbContext db, IMapper mapper,
             .Include(h => h.Members)
             .FirstAsync(h => h.Id == homeId, cancellationToken);
 
+        var duplicateContactEmail = !string.IsNullOrEmpty(props.ContactEmail) &&
+            home.Members.Any(m => string.Equals(m.ContactEmail?.ToLower(), props.ContactEmail.ToLower(),
+                StringComparison.OrdinalIgnoreCase));
+
+        if (duplicateContactEmail)
+        {
+            throw new InvalidRequestException(new ValidationFailure(MemberErrors.DuplicateContactEmail,
+                "A member with the same contact email already exists in this home."));
+        }
+
         var otherMembersSplitPercentageTotal = home.Members.Sum(m => m.DefaultSplitPercentage);
 
         if (otherMembersSplitPercentageTotal + props.DefaultSplitPercentage > 1)

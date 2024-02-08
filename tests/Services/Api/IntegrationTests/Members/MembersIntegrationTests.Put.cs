@@ -1,4 +1,5 @@
 using System.Net;
+using Refit;
 using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.IntegrationTests.Members;
@@ -16,7 +17,7 @@ public partial class MembersIntegrationTests
         {
             Name = "Grunky Peep",
             DefaultSplitPercentage = 0.0m,
-            ContactEmail = "grunky.peep@georgiasouthern.edu"
+            ContactEmail = _faker.Internet.Email()
         };
 
         var updatedMemberResponse = await _members.PutMember(home.Id, member.Id, properties);
@@ -64,7 +65,7 @@ public partial class MembersIntegrationTests
     }
 
     [Fact]
-    public async Task Put_home_inactive_home_does_not_change_is_active_property()
+    public async Task Put_home_member_does_not_change_is_active_property_when_member_is_inactive()
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
@@ -81,5 +82,24 @@ public partial class MembersIntegrationTests
         updatedMember.Should().BeEquivalentTo(member);
 
         await _members.ActivateMember(home.Id, member.Id);
+    }
+
+    [Fact]
+    public async Task Put_home_member_with_duplicate_contact_email_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+
+        var member1 = home.Members[0];
+        var member2 = home.Members[1];
+
+        member2.ContactEmail = member1.ContactEmail;
+
+        var response = await _members.PutMember(home.Id, member2.Id, member2);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
+
+        problemDetails!.Errors.Should().ContainKey(MemberErrors.DuplicateContactEmail);
     }
 }

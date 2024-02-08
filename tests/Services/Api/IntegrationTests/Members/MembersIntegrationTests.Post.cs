@@ -1,7 +1,6 @@
 using System.Net;
 using Bogus;
 using Refit;
-using Spenses.Client.Http;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Members;
 using Spenses.Shared.Models.Users;
@@ -58,7 +57,7 @@ public partial class MembersIntegrationTests
         {
             Name = "Grunky Peep",
             DefaultSplitPercentage = 0.0m,
-            ContactEmail = "grunky.peep@georgiasouthern.edu"
+            ContactEmail = _faker.Internet.Email()
         });
 
         homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -69,7 +68,7 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        const string email = "quatro.quatro@sjsu.edu";
+        var email = _faker.Internet.Email();
 
         var properties = new CreateMemberProperties
         {
@@ -101,7 +100,7 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        const string email = "quatro.quatro@sjsu.edu";
+        var email = _faker.Internet.Email();
 
         var properties = new CreateMemberProperties
         {
@@ -175,5 +174,27 @@ public partial class MembersIntegrationTests
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         response.Should().HaveValidationErrorFor(x => x.ContactEmail);
+    }
+
+    [Fact]
+    public async Task Post_home_member_with_duplicate_contact_email_yields_bad_request()
+    {
+        var home = (await _homes.GetHomes()).Content!.First();
+        var existingMember = (await _members.GetMembers(home.Id)).Content!.First();
+
+        var properties = new CreateMemberProperties
+        {
+            Name = "Quatro Quatro",
+            DefaultSplitPercentage = 0.0m,
+            ContactEmail = existingMember.ContactEmail,
+        };
+
+        var response = await _members.PostMember(home.Id, properties);
+
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+        var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
+
+        problemDetails!.Errors.Should().ContainKey(MemberErrors.DuplicateContactEmail);
     }
 }
