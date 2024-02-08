@@ -41,8 +41,8 @@ public class UpdateMemberCommandHandler(ApplicationDbContext db, IMapper mapper)
 
         if (duplicateContactEmail)
         {
-            throw new InvalidRequestException(new ValidationFailure(MemberErrors.DuplicateContactEmail,
-                "A member with the same contact email already exists in this home."));
+            throw new InvalidRequestException(new ValidationFailure(nameof(MemberProperties.ContactEmail),
+                $"A member with the contact email \"{props.ContactEmail}\" already exists in this home."));
         }
 
         var otherMembersSplitPercentageTotal = otherHomeMembers.Sum(m => m.DefaultSplitPercentage);

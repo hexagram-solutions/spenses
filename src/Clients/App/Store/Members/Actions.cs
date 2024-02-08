@@ -1,3 +1,4 @@
+using FluentValidation.Results;
 using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Members;
@@ -20,13 +21,13 @@ public record MemberCreatedAction(Guid HomeId, CreateMemberProperties Props);
 
 public record MemberCreationSucceededAction(Member Member);
 
-public record MemberCreationFailedAction;
+public record MemberCreationFailedAction(Dictionary<string, string[]> Errors);
 
 public record MemberUpdatedAction(Guid HomeId, Guid MemberId, MemberProperties Props);
 
 public record MemberUpdateSucceededAction(Member Member);
 
-public record MemberUpdateFailedAction;
+public record MemberUpdateFailedAction(Dictionary<string, string[]> Errors);
 
 public record MemberDeletedAction(Guid HomeId, Guid MemberId);
 

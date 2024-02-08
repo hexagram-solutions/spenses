@@ -1,6 +1,7 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Spenses.App.Store.Homes;
+using Spenses.App.Store.Members;
 using Spenses.Shared.Models.Homes;
 using Spenses.Shared.Models.Members;
 
@@ -32,11 +33,11 @@ public partial class MemberForm
 
     private bool IsTotalHomeSplitPercentageValid { get; set; }
 
-    protected override Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        CheckTotalSplitPercentage();
+        base.OnInitialized();
 
-        return base.OnInitializedAsync();
+        CheckTotalSplitPercentage();
     }
 
     private void CheckTotalSplitPercentage()

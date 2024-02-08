@@ -1,6 +1,8 @@
 using Fluxor;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
+using Spenses.App.Infrastructure;
 using Spenses.App.Store.Homes;
 using Spenses.App.Store.Members;
 using Spenses.Shared.Models.Homes;
@@ -30,11 +32,14 @@ public partial class EditMemberDialog
 
     public Member Member { get; set; } = new();
 
+    private EditForm EditFormRef { get; set; } = new();
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
         SubscribeToAction<MemberReceivedAction>(a => Member = a.Member);
+        SubscribeToAction<MemberUpdateFailedAction>(a => EditFormRef.AddValidationErrors(a.Errors));
 
         Dispatcher.Dispatch(new MemberRequestedAction(Home.Id, MemberId));
     }

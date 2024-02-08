@@ -45,38 +45,38 @@ public static class Reducers
     [ReducerMethod]
     public static MembersState ReduceMemberCreated(MembersState state, MemberCreatedAction _)
     {
-        return state with { MemberCreating = true };
+        return state with { MemberCreating = true, Errors = [] };
     }
 
     [ReducerMethod]
     public static MembersState ReduceMemberCreationSucceeded(MembersState state,
         MemberCreationSucceededAction action)
     {
-        return state with { MemberCreating = false, CurrentMember = action.Member };
+        return state with { MemberCreating = false, CurrentMember = action.Member, Errors = [] };
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberCreationFailed(MembersState state, MemberCreationFailedAction _)
+    public static MembersState ReduceMemberCreationFailed(MembersState state, MemberCreationFailedAction action)
     {
-        return state with { MemberCreating = false };
+        return state with { MemberCreating = false, Errors = action.Errors };
     }
 
     [ReducerMethod]
     public static MembersState ReduceMemberUpdated(MembersState state, MemberUpdatedAction _)
     {
-        return state with { MemberUpdating = true };
+        return state with { MemberUpdating = true, Errors = [] };
     }
 
     [ReducerMethod]
     public static MembersState ReduceMemberUpdateSucceeded(MembersState state, MemberUpdateSucceededAction action)
     {
-        return state with { MemberUpdating = false, CurrentMember = action.Member };
+        return state with { MemberUpdating = false, CurrentMember = action.Member, Errors = [] };
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberUpdateFailed(MembersState state, MemberUpdateFailedAction _)
+    public static MembersState ReduceMemberUpdateFailed(MembersState state, MemberUpdateFailedAction action)
     {
-        return state with { MemberUpdating = false };
+        return state with { MemberUpdating = false, Errors = action.Errors };
     }
 
     [ReducerMethod]

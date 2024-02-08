@@ -1,15 +1,17 @@
 ﻿@using Spenses.App.Infrastructure
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
-<EditForm Model="Member"
+<EditForm @ref="EditFormRef"
+          Model="Member"
           OnValidSubmit="Save">
-    <LoadingOverlay Visible="MembersState.Value.MemberRequesting || MembersState.Value.MemberUpdating" />
+    <LoadingOverlay Visible="MembersState.Value.MemberRequesting || MembersState.Value.MemberUpdating"/>
     <MudDialog DefaultFocus="DefaultFocus.FirstChild">
         <TitleContent>
             Edit member
         </TitleContent>
         <DialogContent>
-            <MemberForm Member="Member" MemberId="MemberId"/>
+            <MemberForm Member="Member"
+                        MemberId="MemberId"/>
         </DialogContent>
         <DialogActions>
             <MudButton Color="Color.Default"

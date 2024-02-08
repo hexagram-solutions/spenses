@@ -1,5 +1,6 @@
 using Fluxor;
 using MudBlazor;
+using Refit;
 using Spenses.App.Infrastructure;
 using Spenses.App.Store.Shared;
 using Spenses.Client.Http;
@@ -45,9 +46,17 @@ public class Effects(IMembersApi members, ISnackbar snackbar)
     {
         var response = await members.PostMember(action.HomeId, action.Props);
 
-        if (response.Error is not null)
+        if (response.Error is not null &&
+            await response.Error.GetContentAsAsync<ProblemDetails>() is { } problemDetails)
         {
-            dispatcher.Dispatch(new MemberCreationFailedAction());
+            dispatcher.Dispatch(new MemberCreationFailedAction(problemDetails.Errors ?? []));
+
+            return;
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            dispatcher.Dispatch(new MemberCreationFailedAction([]));
             dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;
@@ -62,9 +71,17 @@ public class Effects(IMembersApi members, ISnackbar snackbar)
     {
         var response = await members.PutMember(action.HomeId, action.MemberId, action.Props);
 
-        if (response.Error is not null)
+        if (response.Error is not null &&
+            await response.Error.GetContentAsAsync<ProblemDetails>() is { } problemDetails)
         {
-            dispatcher.Dispatch(new MemberUpdateFailedAction());
+            dispatcher.Dispatch(new MemberUpdateFailedAction(problemDetails.Errors ?? []));
+
+            return;
+        }
+
+        if (!response.IsSuccessStatusCode)
+        {
+            dispatcher.Dispatch(new MemberUpdateFailedAction([]));
             dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
 
             return;

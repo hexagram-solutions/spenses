@@ -193,8 +193,6 @@ public partial class MembersIntegrationTests
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
-        var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
-
-        problemDetails!.Errors.Should().ContainKey(MemberErrors.DuplicateContactEmail);
+        response.Should().HaveValidationErrorFor(x => x.ContactEmail);
     }
 }

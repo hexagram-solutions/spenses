@@ -1,3 +1,4 @@
+using FluentValidation.Results;
 using Fluxor;
 using Spenses.Shared.Models.Members;
 
@@ -14,6 +15,8 @@ public record MembersState
     public Member? CurrentMember { get; init; }
 
     public Member[] Members { get; init; } = [];
+
+    public Dictionary<string, string[]> Errors { get; set; } = [];
 
     public bool MembersRequesting { get; init; }
 
