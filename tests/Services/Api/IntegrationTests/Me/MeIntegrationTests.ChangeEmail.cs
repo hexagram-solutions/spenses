@@ -25,9 +25,9 @@ public partial class MeIntegrationTests
             Password = new Faker().Internet.Password()
         };
 
-        await identityFixture.Register(registerRequest, true);
+        await fixture.Register(registerRequest, true);
 
-        await identityFixture.Login(new LoginRequest
+        await fixture.Login(new LoginRequest
         {
             Email = registerRequest.Email,
             Password = registerRequest.Password
@@ -42,7 +42,7 @@ public partial class MeIntegrationTests
 
         changeEmailResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var (userId, code, newEmail) = identityFixture.GetVerificationParametersForEmail(expectedEmail);
+        var (userId, code, newEmail) = fixture.GetVerificationParametersForEmail(expectedEmail);
 
         var verificationResponse = await identityApi.VerifyEmail(new VerifyEmailRequest(userId, code, newEmail));
 
@@ -62,6 +62,6 @@ public partial class MeIntegrationTests
         user.Email.Should().Be(expectedEmail);
         user.EmailConfirmed.Should().Be(true);
 
-        await identityFixture.DeleteUser(expectedEmail);
+        await fixture.DeleteUser(expectedEmail);
     }
 }
