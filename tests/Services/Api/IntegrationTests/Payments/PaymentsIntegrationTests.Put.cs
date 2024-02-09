@@ -10,9 +10,8 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
+        var payment = (await _payments.GetPayments(home.Id, DefaultPaymentsQuery with
         {
-            Skip = 0,
             Take = 100
         })).Content!.Items.First();
 
@@ -46,9 +45,8 @@ public partial class PaymentsIntegrationTests
 
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
+        var payment = (await _payments.GetPayments(home.Id, DefaultPaymentsQuery with
         {
-            Skip = 0,
             Take = 100
         })).Content!.Items.First();
 
@@ -71,9 +69,8 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
+        var payment = (await _payments.GetPayments(home.Id, DefaultPaymentsQuery with
         {
-            Skip = 0,
             Take = 100
         })).Content!.Items.First();
 
@@ -96,7 +93,7 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var paymentId = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery())).Content!.Items.First().Id;
+        var paymentId = (await _payments.GetPayments(home.Id, DefaultPaymentsQuery)).Content!.Items.First().Id;
 
         var properties = new PaymentProperties
         {

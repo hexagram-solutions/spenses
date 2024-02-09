@@ -2,6 +2,7 @@ using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using Spenses.App.Components.Shared;
 using Spenses.App.Store.Payments;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Payments;
@@ -11,11 +12,23 @@ namespace Spenses.App.Components.Payments;
 
 public partial class PaymentsGrid
 {
+    public PaymentsGrid()
+    {
+        var today = DateTime.Today;
+
+        var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
+
+        Query = new FilteredPaymentsQuery
+        {
+            OrderBy = nameof(PaymentDigest.Date),
+            SortDirection = SortDirection.Desc,
+            MinDate = new DateOnly(today.Year, today.Month, 1),
+            MaxDate = new DateOnly(today.Year, today.Month, daysInMonth)
+        };
+    }
+
     [Parameter]
     public Guid HomeId { get; init; }
-
-    [Inject]
-    private IState<PaymentsState> PaymentsState { get; init; } = null!;
 
     [Inject]
     private IDispatcher Dispatcher { get; init; } = null!;
@@ -27,26 +40,28 @@ public partial class PaymentsGrid
     private IPaymentsApi PaymentsApi { get; init; } = null!;
 
     private MudDataGrid<PaymentDigest> DataGridRef { get; set; } = new();
+
     private IDialogReference? CreateDialog { get; set; }
+
     private IDialogReference? EditDialog { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        SubscribeToAction<PaymentCreationSucceededAction>(async _ =>
+        this.SubscribeToAsyncAction<PaymentCreationSucceededAction>(_ =>
         {
             CreateDialog?.Close();
-            await DataGridRef.ReloadServerData();
+            return DataGridRef.ReloadServerData();
         });
 
-        SubscribeToAction<PaymentUpdateSucceededAction>(async _ =>
+        this.SubscribeToAsyncAction<PaymentUpdateSucceededAction>(_ =>
         {
             EditDialog?.Close();
-            await DataGridRef.ReloadServerData();
+            return DataGridRef.ReloadServerData();
         });
 
-        SubscribeToAction<PaymentDeletionSucceededAction>(async _ => { await DataGridRef.ReloadServerData(); });
+        this.SubscribeToAsyncAction<PaymentDeletionSucceededAction>(_ => DataGridRef.ReloadServerData());
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -84,48 +99,22 @@ public partial class PaymentsGrid
         Dispatcher.Dispatch(new PaymentDeletedAction(HomeId, payment.Id));
     }
 
-    private FilteredPaymentsQuery Query { get; set; } = new()
+    private FilteredPaymentsQuery Query { get; }
+
+    private DateRange Period => new(
+        new DateTime(Query.MinDate, TimeOnly.MinValue),
+        new DateTime(Query.MaxDate, TimeOnly.MinValue));
+
+    private Task OnPeriodFilterChanged(DateRange range)
     {
-        OrderBy = nameof(PaymentDigest.Date),
-        SortDirection = SortDirection.Desc
-    };
-
-    private DateRange? DateRangeValue
-    {
-        get
-        {
-            if (!Query.MinDate.HasValue && !Query.MaxDate.HasValue)
-                return null;
-
-            var today = DateOnly.FromDateTime(DateTime.Today);
-
-            return new DateRange(
-                new DateTime(Query.MinDate.GetValueOrDefault(today), TimeOnly.MinValue),
-                new DateTime(Query.MaxDate.GetValueOrDefault(today), TimeOnly.MinValue));
-        }
-    }
-
-    private Task OnDateFilterChanged(DateRange? range)
-    {
-        if (range is null)
-        {
-            Query.MinDate = null;
-            Query.MaxDate = null;
-
-            return Task.CompletedTask;
-        }
-
-        Query.MinDate = range.Start.HasValue ? DateOnly.FromDateTime(range.Start.GetValueOrDefault()) : null;
-        Query.MaxDate = range.End.HasValue ? DateOnly.FromDateTime(range.End.GetValueOrDefault()) : null;
+        Query.MinDate = DateOnly.FromDateTime(range.Start.GetValueOrDefault());
+        Query.MaxDate = DateOnly.FromDateTime(range.End.GetValueOrDefault());
 
         return DataGridRef.ReloadServerData();
     }
 
     private async Task<GridData<PaymentDigest>> GetServerData(GridState<PaymentDigest> state)
     {
-        Query.Skip = state.PageSize * state.Page;
-        Query.Take = state.PageSize;
-
         var sortDefinition = state.SortDefinitions.SingleOrDefault();
 
         if (sortDefinition is not null)

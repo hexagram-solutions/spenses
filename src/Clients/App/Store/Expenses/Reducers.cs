@@ -5,24 +5,6 @@ namespace Spenses.App.Store.Expenses;
 public static class Reducers
 {
     [ReducerMethod]
-    public static ExpensesState ReduceExpensesRequested(ExpensesState state, ExpensesRequestedAction _)
-    {
-        return state with { ExpensesRequesting = true };
-    }
-
-    [ReducerMethod]
-    public static ExpensesState ReduceExpensesReceived(ExpensesState state, ExpensesReceivedAction action)
-    {
-        return state with { ExpensesRequesting = false, Expenses = action.Expenses };
-    }
-
-    [ReducerMethod]
-    public static ExpensesState ReduceExpensesRequestFailed(ExpensesState state, ExpensesRequestFailedAction _)
-    {
-        return state with { ExpensesRequesting = false };
-    }
-
-    [ReducerMethod]
     public static ExpensesState ReduceExpenseRequested(ExpensesState state, ExpenseRequestedAction _)
     {
         return state with { ExpenseRequesting = true };

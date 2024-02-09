@@ -11,12 +11,12 @@ public class FilteredExpensesQueryValidator : AbstractValidator<FilteredExpenses
         Include(new PagedQueryValidator<ExpenseDigest>());
 
         RuleFor(x => x.MinDate)
-            .LessThanOrEqualTo(x => x.MaxDate)
-            .When(x => x.MaxDate.HasValue);
+            .NotEmpty()
+            .LessThanOrEqualTo(x => x.MaxDate);
 
         RuleFor(x => x.MaxDate)
-            .GreaterThanOrEqualTo(x => x.MinDate)
-            .When(x => x.MinDate.HasValue);
+            .NotEmpty()
+            .GreaterThanOrEqualTo(x => x.MinDate);
 
         RuleFor(x => x.Tags)
             .Must(x =>

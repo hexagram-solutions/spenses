@@ -1,9 +1,7 @@
 ﻿@page "/homes/{homeId:guid}/dashboard"
-@using MudBlazor.Extensions
 @using Spenses.App.Store.Homes
 @using Spenses.App.Store.Dashboard
 @using Spenses.App.Components.Homes
-@using System.Globalization
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 @layout MainLayout
@@ -14,32 +12,9 @@
     <div class="align-start d-flex">
         <MudText Typo="Typo.h4">Dashboard: @(HomesState.Value.CurrentHome?.Name ?? "Loading...")</MudText>
         <MudSpacer/>
-        <MudDateRangePicker @ref="PeriodPickerRef"
-                            DateRange="Period"
-                            DateRangeChanged="OnPeriodChanged"
-                            PickerMonth="Period.Start.GetValueOrDefault().StartOfMonth(CultureInfo.CurrentCulture)"
-                            Label="Period"
-                            Variant="Variant.Outlined"
-                            PickerVariant="PickerVariant.Dialog"
-                            AutoClose>
-            <PickerActions>
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           OnClick="SetPeriodToLastMonth">
-                    Last month
-                </MudButton>
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           OnClick="SetPeriodToThisMonth">
-                    This month
-                </MudButton>
-                <MudSpacer/>
-                <MudButton Variant="Variant.Outlined"
-                           OnClick="@(() => PeriodPickerRef?.Close())">
-                    Close
-                </MudButton>
-            </PickerActions>
-        </MudDateRangePicker>
+        <DateRangeFilterPicker Label="Period"
+                               DateRange="Period"
+                               DateRangeChanged="OnPeriodChanged"/>
     </div>
 
     @if (HomesState.Value.CurrentHome is not null)
@@ -62,8 +37,6 @@
         DashboardState.Value.PeriodStart.ToDateTime(TimeOnly.MinValue),
         DashboardState.Value.PeriodEnd.ToDateTime(TimeOnly.MinValue));
 
-    private MudDateRangePicker? PeriodPickerRef { get; set; }
-
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -72,33 +45,6 @@
             return;
 
         Dispatcher.Dispatch(new HomeRequestedAction(HomeId));
-    }
-
-    private void SetPeriodToThisMonth()
-    {
-        var today = DateTime.Today;
-
-        var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
-        var start = new DateOnly(today.Year, today.Month, 1);
-        var end = new DateOnly(today.Year, today.Month, daysInMonth);
-
-        Dispatcher.Dispatch(new DashboardPeriodChangedAction(HomeId, start, end));
-
-        PeriodPickerRef?.Close();
-    }
-
-    private void SetPeriodToLastMonth()
-    {
-        var today = DateTime.Today;
-
-        var start = new DateOnly(today.Year, today.Month, 1).AddMonths(-1);
-        var daysInMonth = DateTime.DaysInMonth(start.Year, start.Month);
-
-        var end = new DateOnly(start.Year, start.Month, daysInMonth);
-
-        Dispatcher.Dispatch(new DashboardPeriodChangedAction(HomeId, start, end));
-
-        PeriodPickerRef?.Close();
     }
 
     private void OnPeriodChanged(DateRange dateRange)

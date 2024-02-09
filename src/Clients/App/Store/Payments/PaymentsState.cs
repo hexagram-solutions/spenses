@@ -1,5 +1,4 @@
 using Fluxor;
-using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Payments;
 
 namespace Spenses.App.Store.Payments;
@@ -13,8 +12,6 @@ public record PaymentsState
     }
 
     public Payment? CurrentPayment { get; init; }
-
-    public PagedResult<PaymentDigest> Payments { get; init; } = new(0, []);
 
     public bool PaymentsRequesting { get; init; }
 

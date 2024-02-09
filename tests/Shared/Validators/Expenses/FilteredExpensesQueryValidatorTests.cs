@@ -10,6 +10,18 @@ public class FilteredExpensesQueryValidatorTests : PagedQueryValidatorTests<Expe
     private readonly FilteredExpensesQueryValidator _validator = new();
 
     [Fact]
+    public void Min_date_is_required()
+    {
+        var model = new FilteredExpensesQuery();
+
+        _validator.TestValidate(model)
+            .ShouldHaveValidationErrorFor(x => x.MinDate);
+
+        _validator.TestValidate(model with { MinDate = DateOnly.MinValue })
+            .ShouldHaveValidationErrorFor(x => x.MinDate);
+    }
+
+    [Fact]
     public void Min_date_must_be_less_than_or_equal_to_max_date()
     {
         var today = DateOnly.FromDateTime(DateTime.Today);
@@ -18,6 +30,18 @@ public class FilteredExpensesQueryValidatorTests : PagedQueryValidatorTests<Expe
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.MinDate);
+    }
+
+    [Fact]
+    public void Max_date_is_required()
+    {
+        var model = new FilteredExpensesQuery();
+
+        _validator.TestValidate(model)
+            .ShouldHaveValidationErrorFor(x => x.MaxDate);
+
+        _validator.TestValidate(model with { MaxDate = DateOnly.MinValue })
+            .ShouldHaveValidationErrorFor(x => x.MaxDate);
     }
 
     [Fact]

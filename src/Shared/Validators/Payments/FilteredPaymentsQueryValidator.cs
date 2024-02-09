@@ -11,11 +11,11 @@ public class FilteredPaymentsQueryValidator : AbstractValidator<FilteredPayments
         Include(new PagedQueryValidator<PaymentDigest>());
 
         RuleFor(x => x.MinDate)
-            .LessThanOrEqualTo(x => x.MaxDate)
-            .When(x => x.MaxDate.HasValue);
+            .NotEmpty()
+            .LessThanOrEqualTo(x => x.MaxDate);
 
         RuleFor(x => x.MaxDate)
-            .GreaterThanOrEqualTo(x => x.MinDate)
-            .When(x => x.MinDate.HasValue);
+            .NotEmpty()
+            .GreaterThanOrEqualTo(x => x.MinDate);
     }
 }

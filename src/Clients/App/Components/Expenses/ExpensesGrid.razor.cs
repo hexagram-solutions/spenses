@@ -2,6 +2,7 @@ using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using Spenses.App.Components.Shared;
 using Spenses.App.Store.Expenses;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Expenses;
@@ -11,6 +12,21 @@ namespace Spenses.App.Components.Expenses;
 
 public partial class ExpensesGrid
 {
+    public ExpensesGrid()
+    {
+        var today = DateTime.Today;
+
+        var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
+
+        Query = new FilteredExpensesQuery
+        {
+            OrderBy = nameof(ExpenseDigest.Date),
+            SortDirection = SortDirection.Desc,
+            MinDate = new DateOnly(today.Year, today.Month, 1),
+            MaxDate = new DateOnly(today.Year, today.Month, daysInMonth)
+        };
+    }
+
     [Parameter]
     public Guid HomeId { get; init; }
 
@@ -36,22 +52,19 @@ public partial class ExpensesGrid
     {
         base.OnInitialized();
 
-        SubscribeToAction<ExpenseCreationSucceededAction>(async _ =>
+        this.SubscribeToAsyncAction<ExpenseCreationSucceededAction>(_ =>
         {
             CreateDialog?.Close();
-            await DataGridRef.ReloadServerData();
+            return DataGridRef.ReloadServerData();
         });
 
-        SubscribeToAction<ExpenseUpdateSucceededAction>(async _ =>
+        this.SubscribeToAsyncAction<ExpenseUpdateSucceededAction>(_ =>
         {
             EditDialog?.Close();
-            await DataGridRef.ReloadServerData();
+            return DataGridRef.ReloadServerData();
         });
 
-        SubscribeToAction<ExpenseDeletionSucceededAction>(async _ =>
-        {
-            await DataGridRef.ReloadServerData();
-        });
+        this.SubscribeToAsyncAction<ExpenseDeletionSucceededAction>(_ => DataGridRef.ReloadServerData());
 
         Dispatcher.Dispatch(new ExpenseFiltersRequestedAction(HomeId));
     }
@@ -91,11 +104,7 @@ public partial class ExpensesGrid
         Dispatcher.Dispatch(new ExpenseDeletedAction(HomeId, expense.Id));
     }
 
-    private FilteredExpensesQuery Query { get; set; } = new()
-    {
-        OrderBy = nameof(ExpenseDigest.Date),
-        SortDirection = SortDirection.Desc
-    };
+    private FilteredExpensesQuery Query { get; }
 
     private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
     {
@@ -111,42 +120,20 @@ public partial class ExpensesGrid
         return DataGridRef.ReloadServerData();
     }
 
-    private DateRange? DateRangeValue
+    private DateRange Period => new(
+        new DateTime(Query.MinDate, TimeOnly.MinValue),
+        new DateTime(Query.MaxDate, TimeOnly.MinValue));
+
+    private Task OnPeriodFilterChanged(DateRange range)
     {
-        get
-        {
-            if (!Query.MinDate.HasValue && !Query.MaxDate.HasValue)
-                return null;
-
-            var today = DateOnly.FromDateTime(DateTime.Today);
-
-            return new DateRange(
-                new DateTime(Query.MinDate.GetValueOrDefault(today), TimeOnly.MinValue),
-                new DateTime(Query.MaxDate.GetValueOrDefault(today), TimeOnly.MinValue));
-        }
-    }
-
-    private Task OnDateFilterChanged(DateRange? range)
-    {
-        if (range is null)
-        {
-            Query.MinDate = null;
-            Query.MaxDate = null;
-
-            return Task.CompletedTask;
-        }
-
-        Query.MinDate = range.Start.HasValue ? DateOnly.FromDateTime(range.Start.GetValueOrDefault()) : null;
-        Query.MaxDate = range.End.HasValue ? DateOnly.FromDateTime(range.End.GetValueOrDefault()) : null;
+        Query.MinDate = DateOnly.FromDateTime(range.Start.GetValueOrDefault());
+        Query.MaxDate = DateOnly.FromDateTime(range.End.GetValueOrDefault());
 
         return DataGridRef.ReloadServerData();
     }
 
     private async Task<GridData<ExpenseDigest>> GetServerData(GridState<ExpenseDigest> state)
     {
-        Query.Skip = state.PageSize * state.Page;
-        Query.Take = state.PageSize;
-
         var sortDefinition = state.SortDefinitions.SingleOrDefault();
 
         if (sortDefinition is not null)
