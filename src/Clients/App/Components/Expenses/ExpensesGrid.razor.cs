@@ -106,7 +106,7 @@ public partial class ExpensesGrid
 
     private FilteredExpensesQuery Query { get; }
 
-private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
+    private Task OnCategoryFilter(IEnumerable<Guid> categoryIds)
     {
         Query.Categories = categoryIds;
 

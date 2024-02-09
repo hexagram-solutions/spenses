@@ -61,13 +61,23 @@
                         Title="Date"
                         Format="yyyy-MM-dd"/>
         <PropertyColumn Property="x => x.Amount"
-                        Title="Amount">
+                        Title="Amount"
+                        AggregateDefinition="_amountAggregation">
             <CellTemplate>
                 <samp>@($"{context.Item.Amount:C}")</samp>
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.PaidByMemberName"
-                        Title="Paid by"/>
+                        Title="Paid by" />
+        <PropertyColumn Property="x => x.Note"
+                        Title="Note"
+                        Sortable="false">
+            <CellTemplate>
+                <div style="width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                    @context.Item.Note
+                </div>
+            </CellTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="x => x.CategoryName"
                         Title="Category"/>
         <TemplateColumn Title="Tags"
@@ -101,3 +111,14 @@
         </TemplateColumn>
     </Columns>
 </MudDataGrid>
+
+@code {
+    AggregateDefinition<ExpenseDigest> _amountAggregation = new()
+    {
+        Type = AggregateType.Custom,
+        CustomAggregate = items =>
+        {
+            return items.Sum(e => e.Amount).ToString("C");
+        }
+    };
+}

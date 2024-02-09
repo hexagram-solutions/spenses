@@ -17,7 +17,7 @@ public abstract class PagedQueryValidatorTests<TModel> where TModel : class
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Skip);
 
-        _validator.TestValidate(model with {Skip = 0})
+        _validator.TestValidate(model with { Skip = 0 })
             .ShouldNotHaveValidationErrorFor(x => x.Skip);
 
         _validator.TestValidate(model with { Skip = null })
