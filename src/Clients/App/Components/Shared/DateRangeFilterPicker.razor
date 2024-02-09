@@ -2,12 +2,11 @@
 @using System.Globalization
 
 <MudDateRangePicker @ref="PeriodPickerRef"
-                    DateRange="Period"
-                    DateRangeChanged="OnPeriodChanged"
-                    PickerMonth="Period.Start.GetValueOrDefault().StartOfMonth(CultureInfo.CurrentCulture)"
-                    StartMonth="DateTime.Today.AddMonths(-1)"
-                    Label="Label"
-                    Variant="Variant"
+                    DateRange="DateRange"
+                    DateRangeChanged="DateRangeChanged"
+                    StartMonth="DateRange.Start.GetValueOrDefault().AddMonths(-1)"
+                    Label="@Label"
+                    Variant="@Variant"
                     PickerVariant="PickerVariant.Dialog"
                     AutoClose>
     <PickerActions>
@@ -39,10 +38,10 @@
 
     [Parameter]
     [EditorRequired]
-    public DateRange Period { get; set; } = new();
+    public DateRange DateRange { get; set; } = new();
 
     [Parameter]
-    public EventCallback<DateRange> OnPeriodChanged { get; set; }
+    public EventCallback<DateRange> DateRangeChanged { get; set; }
 
     private MudDateRangePicker PeriodPickerRef { get; set; } = new();
 
@@ -54,7 +53,7 @@
         var start = new DateOnly(today.Year, today.Month, 1);
         var end = new DateOnly(today.Year, today.Month, daysInMonth);
 
-        Period = new DateRange(
+        DateRange = new DateRange(
             start.ToDateTime(TimeOnly.MinValue),
             end.ToDateTime(TimeOnly.MinValue));
 
@@ -70,7 +69,7 @@
 
         var end = new DateOnly(start.Year, start.Month, daysInMonth);
 
-        Period = new DateRange(
+        DateRange = new DateRange(
             start.ToDateTime(TimeOnly.MinValue),
             end.ToDateTime(TimeOnly.MinValue));
 
