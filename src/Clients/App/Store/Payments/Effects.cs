@@ -8,22 +8,6 @@ namespace Spenses.App.Store.Payments;
 public class Effects(IPaymentsApi payments)
 {
     [EffectMethod]
-    public async Task HandlePaymentsRequested(PaymentsRequestedAction action, IDispatcher dispatcher)
-    {
-        var response = await payments.GetPayments(action.HomeId, action.Query);
-
-        if (response.Error is not null)
-        {
-            dispatcher.Dispatch(new PaymentsRequestFailedAction());
-            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
-
-            return;
-        }
-
-        dispatcher.Dispatch(new PaymentsReceivedAction(response.Content!));
-    }
-
-    [EffectMethod]
     public async Task HandlePaymentRequested(PaymentRequestedAction action, IDispatcher dispatcher)
     {
         var response = await payments.GetPayment(action.HomeId, action.PaymentId);

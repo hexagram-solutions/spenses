@@ -1,5 +1,4 @@
 using Fluxor;
-using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.App.Store.Expenses;
@@ -14,11 +13,7 @@ public record ExpensesState
 
     public Expense? CurrentExpense { get; init; }
 
-    public PagedResult<ExpenseDigest> Expenses { get; init; } = new(0, []);
-
     public ExpenseFilters ExpenseFilters { get; init; } = new();
-
-    public bool ExpensesRequesting { get; init; }
 
     public bool ExpenseRequesting { get; init; }
 

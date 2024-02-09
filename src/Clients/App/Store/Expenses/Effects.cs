@@ -8,22 +8,6 @@ namespace Spenses.App.Store.Expenses;
 public class Effects(IExpensesApi expenses)
 {
     [EffectMethod]
-    public async Task HandleExpensesRequested(ExpensesRequestedAction action, IDispatcher dispatcher)
-    {
-        var response = await expenses.GetExpenses(action.HomeId, action.Query);
-
-        if (response.Error is not null)
-        {
-            dispatcher.Dispatch(new ExpensesRequestFailedAction());
-            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
-
-            return;
-        }
-
-        dispatcher.Dispatch(new ExpensesReceivedAction(response.Content!));
-    }
-
-    [EffectMethod]
     public async Task HandleExpenseRequested(ExpenseRequestedAction action, IDispatcher dispatcher)
     {
         var response = await expenses.GetExpense(action.HomeId, action.ExpenseId);

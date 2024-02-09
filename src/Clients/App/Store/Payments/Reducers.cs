@@ -4,23 +4,6 @@ namespace Spenses.App.Store.Payments;
 
 public static class Reducers
 {
-    [ReducerMethod]
-    public static PaymentsState ReducePaymentsRequested(PaymentsState state, PaymentsRequestedAction _)
-    {
-        return state with { PaymentsRequesting = true };
-    }
-
-    [ReducerMethod]
-    public static PaymentsState ReducePaymentsReceived(PaymentsState state, PaymentsReceivedAction action)
-    {
-        return state with { PaymentsRequesting = false, Payments = action.Payments };
-    }
-
-    [ReducerMethod]
-    public static PaymentsState ReducePaymentsRequestFailed(PaymentsState state, PaymentsRequestFailedAction action)
-    {
-        return state with { PaymentsRequesting = false };
-    }
 
     [ReducerMethod]
     public static PaymentsState ReducePaymentRequested(PaymentsState state, PaymentRequestedAction _)

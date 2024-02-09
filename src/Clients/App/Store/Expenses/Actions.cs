@@ -1,13 +1,6 @@
-using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.App.Store.Expenses;
-
-public record ExpensesRequestedAction(Guid HomeId, FilteredExpensesQuery Query);
-
-public record ExpensesReceivedAction(PagedResult<ExpenseDigest> Expenses);
-
-public record ExpensesRequestFailedAction;
 
 public record ExpenseRequestedAction(Guid HomeId, Guid ExpenseId);
 

@@ -1,13 +1,6 @@
-using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Payments;
 
 namespace Spenses.App.Store.Payments;
-
-public record PaymentsRequestedAction(Guid HomeId, FilteredPaymentsQuery Query);
-
-public record PaymentsReceivedAction(PagedResult<PaymentDigest> Payments);
-
-public record PaymentsRequestFailedAction;
 
 public record PaymentRequestedAction(Guid HomeId, Guid PaymentId);
 
