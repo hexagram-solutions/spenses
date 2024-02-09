@@ -12,7 +12,6 @@ public partial class PaymentsIntegrationTests
 
         var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
         {
-            Skip = 0,
             Take = 100
         })).Content!.Items.First();
 
@@ -48,7 +47,6 @@ public partial class PaymentsIntegrationTests
 
         var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
         {
-            Skip = 0,
             Take = 100
         })).Content!.Items.First();
 
@@ -73,7 +71,6 @@ public partial class PaymentsIntegrationTests
 
         var payment = (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery
         {
-            Skip = 0,
             Take = 100
         })).Content!.Items.First();
 

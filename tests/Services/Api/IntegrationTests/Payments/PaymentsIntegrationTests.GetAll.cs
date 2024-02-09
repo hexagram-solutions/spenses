@@ -32,7 +32,6 @@ public partial class PaymentsIntegrationTests
         var filteredPayments = (await _payments.GetPayments(home.Id,
             new FilteredPaymentsQuery
             {
-                Skip = 0,
                 Take = 100,
                 MinDate = minDateFilterValue,
                 MaxDate = maxDateFilterValue
@@ -52,7 +51,6 @@ public partial class PaymentsIntegrationTests
 
         var query = new FilteredPaymentsQuery
         {
-            Skip = 0,
             Take = 25,
             OrderBy = nameof(PaymentDigest.Amount),
             SortDirection = SortDirection.Asc

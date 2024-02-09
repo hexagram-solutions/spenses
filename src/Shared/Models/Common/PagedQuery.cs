@@ -6,15 +6,11 @@ namespace Spenses.Shared.Models.Common;
 public record PagedQuery<TResult>
 {
     [Description("The results page number")]
-    [DefaultValue(0)]
-    [Required]
-    public int Skip { get; set; }
+    public int? Skip { get; set; }
 
     [Description("The number of results per page")]
-    [DefaultValue(25)]
     [Range(1, 200)]
-    [Required]
-    public int Take { get; set; } = 25;
+    public int? Take { get; set; }
 
     [Description("The property to order results by")]
     public string? OrderBy { get; set; }

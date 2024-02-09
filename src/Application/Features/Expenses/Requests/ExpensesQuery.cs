@@ -52,9 +52,13 @@ public class ExpensesQueryHandler(ApplicationDbContext db, IMapper mapper)
 
         var totalCount = await query.CountAsync(cancellationToken);
 
+        if (request.Skip.HasValue)
+            query = query.Skip(request.Skip.Value);
+
+        if (request.Take.HasValue)
+            query = query.Take(request.Take.Value);
+
         var items = await query
-            .Skip(request.Skip)
-            .Take(request.Take)
             .ToListAsync(cancellationToken);
 
         return new PagedResult<ExpenseDigest>(totalCount, items);

@@ -22,7 +22,6 @@ public partial class ExpensesIntegrationTests
 
         var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 25
         })).Content!.Items;
 
@@ -64,7 +63,6 @@ public partial class ExpensesIntegrationTests
 
         var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 25,
             Tags = tags
         })).Content!.Items;
@@ -86,7 +84,6 @@ public partial class ExpensesIntegrationTests
 
         var unfilteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 100
         })).Content!.Items.ToList();
 
@@ -98,7 +95,6 @@ public partial class ExpensesIntegrationTests
 
         var filteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 100,
             MinDate = minDateFilterValue,
             MaxDate = maxDateFilterValue
@@ -118,7 +114,6 @@ public partial class ExpensesIntegrationTests
 
         var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 100
         })).Content!.Items;
 
@@ -126,7 +121,6 @@ public partial class ExpensesIntegrationTests
 
         var filteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 100,
             Categories = new[] { expense.CategoryId.GetValueOrDefault() }
         })).Content!.Items.ToList();
@@ -145,7 +139,6 @@ public partial class ExpensesIntegrationTests
 
         var query = new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 25,
             OrderBy = nameof(ExpenseDigest.Amount),
             SortDirection = SortDirection.Asc
@@ -170,7 +163,6 @@ public partial class ExpensesIntegrationTests
 
         var query = new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 25,
             OrderBy = nameof(ExpenseDigest.Date),
             SortDirection = SortDirection.Desc,

@@ -123,9 +123,6 @@ public partial class PaymentsGrid
 
     private async Task<GridData<PaymentDigest>> GetServerData(GridState<PaymentDigest> state)
     {
-        Query.Skip = state.PageSize * state.Page;
-        Query.Take = state.PageSize;
-
         var sortDefinition = state.SortDefinitions.SingleOrDefault();
 
         if (sortDefinition is not null)

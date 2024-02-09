@@ -144,9 +144,6 @@ public partial class ExpensesGrid
 
     private async Task<GridData<ExpenseDigest>> GetServerData(GridState<ExpenseDigest> state)
     {
-        Query.Skip = state.PageSize * state.Page;
-        Query.Take = state.PageSize;
-
         var sortDefinition = state.SortDefinitions.SingleOrDefault();
 
         if (sortDefinition is not null)

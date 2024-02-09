@@ -10,14 +10,22 @@ public abstract class PagedQueryValidatorTests<TModel> where TModel : class
     private readonly PagedQueryValidator<TModel> _validator = new();
 
     [Fact]
-    public void Page_number_must_be_greater_than_0()
+    public void Page_number_must_be_greater_than_0_when_set()
     {
-        _validator.TestValidate(new PagedQuery<TModel> { Skip = -1 })
+        var model = new PagedQuery<TModel> { Skip = -1 };
+
+        _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Skip);
+
+        _validator.TestValidate(model with {Skip = 0})
+            .ShouldNotHaveValidationErrorFor(x => x.Skip);
+
+        _validator.TestValidate(model with { Skip = null })
+            .ShouldNotHaveValidationErrorFor(x => x.Skip);
     }
 
     [Fact]
-    public void Page_size_must_be_in_valid_range()
+    public void Page_size_must_be_in_valid_range_when_set()
     {
         var model = new PagedQuery<TModel> { Take = 0 };
 
@@ -26,6 +34,12 @@ public abstract class PagedQueryValidatorTests<TModel> where TModel : class
 
         _validator.TestValidate(model with { Take = 201 })
             .ShouldHaveValidationErrorFor(x => x.Take);
+
+        _validator.TestValidate(model with { Take = 200 })
+            .ShouldNotHaveValidationErrorFor(x => x.Take);
+
+        _validator.TestValidate(model with { Take = null })
+            .ShouldNotHaveValidationErrorFor(x => x.Take);
     }
 
     [Fact]

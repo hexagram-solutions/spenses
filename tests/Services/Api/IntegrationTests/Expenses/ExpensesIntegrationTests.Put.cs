@@ -14,7 +14,6 @@ public partial class ExpensesIntegrationTests
 
         var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 10
         })).Content!.Items.First();
 
@@ -51,7 +50,6 @@ public partial class ExpensesIntegrationTests
 
         var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
         {
-            Skip = 0,
             Take = 10
         })).Content!.Items.First();
 
