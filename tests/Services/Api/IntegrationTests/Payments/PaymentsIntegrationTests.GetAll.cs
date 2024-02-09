@@ -9,7 +9,7 @@ public partial class PaymentsIntegrationTests
     [Fact]
     public async Task Get_payments_with_invalid_identifiers_yields_not_found()
     {
-        var homeNotFoundResult = await _payments.GetPayments(Guid.NewGuid(), new FilteredPaymentsQuery());
+        var homeNotFoundResult = await _payments.GetPayments(Guid.NewGuid(), DefaultPaymentsQuery);
 
         homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -19,28 +19,15 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var unfilteredPayments =
-            (await _payments.GetPayments(home.Id, new FilteredPaymentsQuery { Skip = 0, Take = 100 })).Content!
-            .Items.ToList();
+        var query = DefaultPaymentsQuery;
 
-        var earliestPaymentDate = unfilteredPayments.MinBy(x => x.Date)!.Date;
-        var latestPaymentDate = unfilteredPayments.MaxBy(x => x.Date)!.Date;
-
-        var minDateFilterValue = earliestPaymentDate.AddDays(1);
-        var maxDateFilterValue = latestPaymentDate.AddDays(-1);
-
-        var filteredPayments = (await _payments.GetPayments(home.Id,
-            new FilteredPaymentsQuery
-            {
-                Take = 100,
-                MinDate = minDateFilterValue,
-                MaxDate = maxDateFilterValue
-            })).Content!.Items;
+        var filteredPayments = (await _payments.GetPayments(home.Id, query)).Content!.Items;
 
         filteredPayments.Should().AllSatisfy(e =>
         {
-            e.Date.Should().BeOnOrAfter(minDateFilterValue)
-                .And.BeOnOrBefore(maxDateFilterValue);
+            e.Date.Should()
+                .BeOnOrAfter(query.MinDate)
+                .And.BeOnOrBefore(query.MaxDate);
         });
     }
 
@@ -49,7 +36,7 @@ public partial class PaymentsIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var query = new FilteredPaymentsQuery
+        var query = DefaultPaymentsQuery with
         {
             Take = 25,
             OrderBy = nameof(PaymentDigest.Amount),

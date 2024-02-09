@@ -10,7 +10,7 @@ public partial class ExpensesIntegrationTests
     [Fact]
     public async Task Get_expenses_with_invalid_identifiers_yields_not_found()
     {
-        var homeNotFoundResult = await _expenses.GetExpenses(Guid.NewGuid(), new FilteredExpensesQuery());
+        var homeNotFoundResult = await _expenses.GetExpenses(Guid.NewGuid(), DefaultExpensesQuery);
 
         homeNotFoundResult.Error!.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
@@ -20,7 +20,7 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        var expenses = (await _expenses.GetExpenses(home.Id, DefaultExpensesQuery with
         {
             Take = 25
         })).Content!.Items;
@@ -61,7 +61,7 @@ public partial class ExpensesIntegrationTests
             PaidByMemberId = home.Members.First().Id
         })).Content!;
 
-        var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        var expenses = (await _expenses.GetExpenses(home.Id, DefaultExpensesQuery with
         {
             Take = 25,
             Tags = tags
@@ -82,28 +82,15 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var unfilteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
-        {
-            Take = 100
-        })).Content!.Items.ToList();
+        var query = DefaultExpensesQuery;
 
-        var earliestExpenseDate = unfilteredExpenses.MinBy(x => x.Date)!.Date;
-        var latestExpenseDate = unfilteredExpenses.MaxBy(x => x.Date)!.Date;
-
-        var minDateFilterValue = earliestExpenseDate.AddDays(1);
-        var maxDateFilterValue = latestExpenseDate.AddDays(-1);
-
-        var filteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
-        {
-            Take = 100,
-            MinDate = minDateFilterValue,
-            MaxDate = maxDateFilterValue
-        })).Content!.Items;
+        var filteredExpenses = (await _expenses.GetExpenses(home.Id, query)).Content!.Items;
 
         filteredExpenses.Should().AllSatisfy(e =>
         {
-            e.Date.Should().BeOnOrAfter(minDateFilterValue)
-                .And.BeOnOrBefore(maxDateFilterValue);
+            e.Date.Should()
+                .BeOnOrAfter(query.MinDate)
+                .And.BeOnOrBefore(query.MaxDate);
         });
     }
 
@@ -112,14 +99,14 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var expenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        var expenses = (await _expenses.GetExpenses(home.Id, DefaultExpensesQuery with
         {
             Take = 100
         })).Content!.Items;
 
         var expense = expenses.First(e => e.CategoryId != null);
 
-        var filteredExpenses = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        var filteredExpenses = (await _expenses.GetExpenses(home.Id, DefaultExpensesQuery with
         {
             Take = 100,
             Categories = new[] { expense.CategoryId.GetValueOrDefault() }
@@ -137,7 +124,7 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var query = new FilteredExpensesQuery
+        var query = DefaultExpensesQuery with
         {
             Take = 25,
             OrderBy = nameof(ExpenseDigest.Amount),
@@ -161,7 +148,7 @@ public partial class ExpensesIntegrationTests
 
         var filters = (await _expenses.GetExpenseFilters(home.Id)).Content!;
 
-        var query = new FilteredExpensesQuery
+        var query = DefaultExpensesQuery with
         {
             Take = 25,
             OrderBy = nameof(ExpenseDigest.Date),

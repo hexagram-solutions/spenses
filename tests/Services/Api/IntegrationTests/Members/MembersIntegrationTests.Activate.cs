@@ -15,7 +15,12 @@ public partial class MembersIntegrationTests
         // Get a member using expenses in the home to ensure we get a member with associations to deactivate
         var expensesApi = RestService.For<IExpensesApi>(fixture.CreateAuthenticatedClient());
 
-        var expenses = await expensesApi.GetExpenses(home.Id, new FilteredExpensesQuery { Take = 1 });
+        var expenses = await expensesApi.GetExpenses(home.Id, new FilteredExpensesQuery
+        {
+            Take = 1,
+            MinDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-1)),
+            MaxDate = DateOnly.FromDateTime(DateTime.Today.AddYears(1))
+        });
 
         var memberId = expenses.Content!.Items.First().PaidByMemberId;
 

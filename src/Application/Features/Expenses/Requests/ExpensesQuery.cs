@@ -32,13 +32,7 @@ public class ExpensesQueryHandler(ApplicationDbContext db, IMapper mapper)
             ? query.OrderBy([request.OrderBy!.ToUpperCamelCase()], request.SortDirection!.Value, true)
             : query.OrderBy([nameof(ExpenseDigest.Date)], SortDirection.Desc, true);
 
-        query = request.MinDate.HasValue
-            ? query.Where(e => e.Date >= request.MinDate)
-            : query;
-
-        query = request.MaxDate.HasValue
-            ? query.Where(e => e.Date <= request.MaxDate)
-            : query;
+        query = query.Where(e => e.Date >= request.MinDate && e.Date <= request.MaxDate);
 
         if (request.Tags?.Any() == true)
         {

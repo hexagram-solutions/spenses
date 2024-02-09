@@ -12,7 +12,7 @@ public partial class ExpensesIntegrationTests
 
         var category = (await _expenseCategories.GetExpenseCategories(home.Id)).Content!.First();
 
-        var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        var expense = (await _expenses.GetExpenses(home.Id, DefaultExpensesQuery with
         {
             Take = 10
         })).Content!.Items.First();
@@ -48,7 +48,7 @@ public partial class ExpensesIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var expense = (await _expenses.GetExpenses(home.Id, new FilteredExpensesQuery
+        var expense = (await _expenses.GetExpenses(home.Id, DefaultExpensesQuery with
         {
             Take = 10
         })).Content!.Items.First();
@@ -74,7 +74,7 @@ public partial class ExpensesIntegrationTests
 
         var category = (await _expenseCategories.GetExpenseCategories(homeId)).Content!.First();
 
-        var expenseId = (await _expenses.GetExpenses(homeId, new FilteredExpensesQuery())).Content!.Items.First().Id;
+        var expenseId = (await _expenses.GetExpenses(homeId, DefaultExpensesQuery)).Content!.Items.First().Id;
 
         var properties = new ExpenseProperties
         {

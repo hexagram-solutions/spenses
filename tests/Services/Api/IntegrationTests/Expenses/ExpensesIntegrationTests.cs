@@ -1,5 +1,7 @@
 using Refit;
 using Spenses.Client.Http;
+using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.Api.IntegrationTests.Expenses;
 
@@ -22,5 +24,23 @@ public partial class ExpensesIntegrationTests(IdentityWebApplicationFixture<Prog
     public Task DisposeAsync()
     {
         return Task.CompletedTask;
+    }
+
+    private FilteredExpensesQuery DefaultExpensesQuery
+    {
+        get
+        {
+            var today = DateTime.Today;
+
+            var daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
+
+            return new FilteredExpensesQuery
+            {
+                OrderBy = nameof(ExpenseDigest.Date),
+                SortDirection = SortDirection.Desc,
+                MinDate = new DateOnly(today.Year, today.Month, 1),
+                MaxDate = new DateOnly(today.Year, today.Month, daysInMonth)
+            };
+        }
     }
 }
