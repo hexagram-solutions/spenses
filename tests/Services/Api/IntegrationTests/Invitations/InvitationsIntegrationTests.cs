@@ -8,7 +8,7 @@ using Spenses.Shared.Models.Members;
 namespace Spenses.Api.IntegrationTests.Invitations;
 
 [Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class InvitationsIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class InvitationsIntegrationTests(IdentityWebApplicationFixture fixture) : IAsyncLifetime
 {
     private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
     private readonly IMembersApi _members = RestService.For<IMembersApi>(fixture.CreateAuthenticatedClient());

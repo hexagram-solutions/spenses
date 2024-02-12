@@ -6,7 +6,7 @@ using Spenses.Shared.Models.Expenses;
 namespace Spenses.Api.IntegrationTests.Expenses;
 
 [Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class ExpensesIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class ExpensesIntegrationTests(IdentityWebApplicationFixture fixture) : IAsyncLifetime
 {
     private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
 

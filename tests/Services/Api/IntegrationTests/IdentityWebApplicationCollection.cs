@@ -1,7 +1,7 @@
 namespace Spenses.Api.IntegrationTests;
 
 [CollectionDefinition(CollectionName, DisableParallelization = true)]
-public class IdentityWebApplicationCollection : ICollectionFixture<IdentityWebApplicationFixture<Program>>
+public class IdentityWebApplicationCollection : ICollectionFixture<IdentityWebApplicationFixture>
 {
     public const string CollectionName = "Identity Web Application";
 

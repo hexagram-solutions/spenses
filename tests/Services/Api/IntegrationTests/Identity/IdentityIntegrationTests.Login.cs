@@ -16,7 +16,7 @@ public partial class IdentityIntegrationTests
             DisplayName = "DONKEY TEETH"
         };
 
-        await fixture.Register(registerRequest);
+        var resp = await fixture.Register(registerRequest);
 
         var (userId, code, _) = fixture.GetVerificationParametersForEmail(registerRequest.Email);
 

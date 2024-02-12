@@ -5,7 +5,7 @@ using Spenses.Client.Http;
 namespace Spenses.Api.IntegrationTests.Members;
 
 [Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class MembersIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class MembersIntegrationTests(IdentityWebApplicationFixture fixture) : IAsyncLifetime
 {
     private readonly Faker _faker = new();
 

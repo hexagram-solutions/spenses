@@ -4,7 +4,7 @@ using Spenses.Client.Http;
 namespace Spenses.Api.IntegrationTests.ExpenseCategories;
 
 [Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class ExpenseCategoriesIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class ExpenseCategoriesIntegrationTests(IdentityWebApplicationFixture fixture) : IAsyncLifetime
 {
     private readonly IExpenseCategoriesApi _categories =
         RestService.For<IExpenseCategoriesApi>(fixture.CreateAuthenticatedClient());

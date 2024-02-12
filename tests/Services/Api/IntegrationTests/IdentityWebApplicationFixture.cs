@@ -3,6 +3,7 @@ using System.Web;
 using FluentAssertions.Extensions;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
@@ -17,8 +18,7 @@ using Spenses.Shared.Models.Me;
 
 namespace Spenses.Api.IntegrationTests;
 
-public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
-    where TStartup : class
+public class IdentityWebApplicationFixture : IAsyncLifetime
 {
     private readonly HttpClient _authenticatedHttpClient;
 
@@ -26,7 +26,7 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
 
     public IdentityWebApplicationFixture()
     {
-        WebApplicationFactory = new IdentityWebApplicationFactory<TStartup>();
+        WebApplicationFactory = new IdentityWebApplicationFactory();
 
         _authenticatedHttpClient = WebApplicationFactory.CreateClient();
 
@@ -37,12 +37,18 @@ public class IdentityWebApplicationFixture<TStartup> : IAsyncLifetime
                 ctx.Subject.Should().BeCloseTo(ctx.Expectation, 100.Milliseconds())).WhenTypeIs<DateTime>());
     }
 
-    public IdentityWebApplicationFactory<TStartup> WebApplicationFactory { get; }
+    public IdentityWebApplicationFactory WebApplicationFactory { get; }
 
     public CurrentUser VerifiedUser { get; private set; } = null!;
 
     public async Task InitializeAsync()
     {
+        await WebApplicationFactory.InitializeAsync();
+
+        var db = WebApplicationFactory.Services.GetRequiredService<ApplicationDbContext>();
+
+        await db.Database.MigrateAsync();
+
         VerifiedUser = (await RestService.For<IMeApi>(CreateAuthenticatedClient()).GetMe()).Content!;
     }
 
