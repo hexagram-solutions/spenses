@@ -1,7 +1,5 @@
 using System.Net;
 using FluentAssertions.Execution;
-using Microsoft.Extensions.DependencyInjection;
-using Spenses.Resources.Relational;
 using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Api.IntegrationTests.Homes;
@@ -21,20 +19,24 @@ public partial class HomesIntegrationTests
     {
         async Task<Guid> SetUp()
         {
-            await using var scope = fixture.WebApplicationFactory.Services.CreateAsyncScope();
+            Guid? homeId = null;
 
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            var homeEntry = await db.Homes.AddAsync(new DbModels.Home
+            await ExecuteDbContextAction(async db =>
             {
-                Name = "foo",
-                CreatedById = Guid.Parse("00000000-0000-0000-0000-000000000001"), // todo: need this to be a constant or option somewhere
-                ModifiedById = Guid.Parse("00000000-0000-0000-0000-000000000001")
+                var homeEntry = await db.Homes.AddAsync(new DbModels.Home
+                {
+                    Name = "foo",
+                    CreatedById = Guid.Parse("00000000-0000-0000-0000-000000000001"), // todo: need this to be a constant or option somewhere
+                    ModifiedById = Guid.Parse("00000000-0000-0000-0000-000000000001")
+                });
+
+                await db.SaveChangesAsync();
+
+                homeId = homeEntry.Entity.Id;
             });
 
-            await db.SaveChangesAsync();
+            return homeId.GetValueOrDefault();
 
-            return homeEntry.Entity.Id;
         }
 
         using (new AssertionScope())
@@ -50,15 +52,14 @@ public partial class HomesIntegrationTests
 
         async Task TearDown(Guid homeId)
         {
-            await using var scope = fixture.WebApplicationFactory.Services.CreateAsyncScope();
+            await ExecuteDbContextAction(async db =>
+            {
+                var home = await db.Homes.FindAsync(homeId);
 
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                db.Homes.Remove(home!);
 
-            var home = await db.Homes.FindAsync(homeId);
-
-            db.Homes.Remove(home!);
-
-            await db.SaveChangesAsync();
+                await db.SaveChangesAsync();
+            });
         }
     }
 }

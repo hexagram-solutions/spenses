@@ -1,12 +1,9 @@
 using System.CommandLine;
-using Hexagrams.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
-using Spenses.Shared.Common;
 using Spenses.Tools.Setup;
 using Spenses.Tools.Setup.SeedData;
 using Spenses.Utilities.Security.Services;

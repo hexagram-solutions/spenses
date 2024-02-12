@@ -28,7 +28,7 @@ public partial class HomesIntegrationTests
         var retrievedHome = (await _homes.GetHome(createdHome.Id)).Content!;
         retrievedHome.Should().BeEquivalentTo(createdHome);
 
-        var currentUser = (await RestService.For<IMeApi>(fixture.CreateAuthenticatedClient()).GetMe()).Content!;
+        var currentUser = (await GetApiClient<IMeApi>().GetMe()).Content!;
 
         retrievedHome.Members.Single().Should().BeEquivalentTo(new Member
         {

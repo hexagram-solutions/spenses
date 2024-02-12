@@ -45,7 +45,9 @@ public class IdentityWebApplicationFixture : IAsyncLifetime
     {
         await WebApplicationFactory.InitializeAsync();
 
-        //VerifiedUser = (await RestService.For<IMeApi>(CreateAuthenticatedClient()).GetMe()).Content!;
+        var db = WebApplicationFactory.Services.GetRequiredService<ApplicationDbContext>();
+
+        await db.Database.MigrateAsync();
     }
 
     public async Task DisposeAsync()

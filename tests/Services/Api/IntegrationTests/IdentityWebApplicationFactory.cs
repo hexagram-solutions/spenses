@@ -4,12 +4,10 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Spenses.Api.Infrastructure;
 using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Resources.Communication;
 using Spenses.Resources.Relational;
 using Spenses.Shared.Common;
-using Spenses.Tools.Setup;
 using Spenses.Utilities.Security.Services;
 using Testcontainers.MsSql;
 
@@ -45,7 +43,6 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>, IAs
 
             services.AddSingleton<UserContextProvider>();
 
-            services.AddSingleton<SystemUserContext>();
             services.AddTransient(sp => sp.GetRequiredService<UserContextProvider>().GetContext());
 
             services.AddSingleton<CapturingEmailClient>();

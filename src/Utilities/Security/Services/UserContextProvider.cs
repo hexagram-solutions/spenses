@@ -21,4 +21,3 @@ public class UserContextProvider
         public ClaimsPrincipal CurrentUser => new();
     }
 }
-

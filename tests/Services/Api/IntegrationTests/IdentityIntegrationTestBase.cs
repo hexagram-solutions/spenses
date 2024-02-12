@@ -3,12 +3,14 @@ using System.Text.RegularExpressions;
 using System.Web;
 using Bogus;
 using Hexagrams.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Respawn;
+using Spenses.Api.Infrastructure;
 using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Application.Services.Invitations;
 using Spenses.Client.Http;
@@ -55,6 +57,13 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
         return Task.CompletedTask;
     }
 
+    protected TClient GetApiClient<TClient>(bool authenticated = true)
+    {
+        return authenticated
+            ? RestService.For<TClient>(CreateAuthenticatedClient())
+            : RestService.For<TClient>(_webApplicationFixture.CreateClient());
+    }
+
     private async Task ResetDatabase()
     {
         await using var scope = _services.CreateAsyncScope();
@@ -62,11 +71,9 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
         var services = scope.ServiceProvider;
 
         var userContextProvider = services.GetRequiredService<UserContextProvider>();
-        userContextProvider.SetContext(services.GetRequiredService<SystemUserContext>());
+        userContextProvider.SetContext(new SystemUserContext(services.GetRequiredService<IConfiguration>()));
 
         var db = services.GetRequiredService<ApplicationDbContext>();
-
-        await db.Database.MigrateAsync();
 
         var connectionString = db.Database.GetConnectionString()!;
 
@@ -80,7 +87,7 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
         var seeder = services.GetRequiredService<DataSeeder>();
         await seeder.SeedDatabase();
 
-        userContextProvider.SetContext(services.GetRequiredService<IUserContext>());
+        userContextProvider.SetContext(new HttpUserContext(services.GetRequiredService<IHttpContextAccessor>()));
     }
 
     public async Task ExecuteDbContextAction(Func<ApplicationDbContext, Task> action)
