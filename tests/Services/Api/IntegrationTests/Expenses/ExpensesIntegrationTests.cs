@@ -1,29 +1,20 @@
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.Api.IntegrationTests.Expenses;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class ExpensesIntegrationTests(IdentityWebApplicationFixture fixture) : IAsyncLifetime
+public partial class ExpensesIntegrationTests : IdentityIntegrationTestBase
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
+    private readonly IHomesApi _homes;
+    private readonly IExpensesApi _expenses;
+    private readonly IExpenseCategoriesApi _expenseCategories;
 
-    private readonly IExpensesApi _expenses = RestService.For<IExpensesApi>(fixture.CreateAuthenticatedClient(),
-        new RefitSettings { CollectionFormat = CollectionFormat.Multi });
-
-    private readonly IExpenseCategoriesApi _expenseCategories = RestService.For<IExpenseCategoriesApi>(fixture.CreateAuthenticatedClient(),
-        new RefitSettings { CollectionFormat = CollectionFormat.Multi });
-
-    public async Task InitializeAsync()
+    public ExpensesIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
     {
-        await fixture.LoginAsTestUser();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
+        _homes = CreateApiClient<IHomesApi>();
+        _expenses = CreateApiClient<IExpensesApi>();
+        _expenseCategories = CreateApiClient<IExpenseCategoriesApi>();
     }
 
     private FilteredExpensesQuery DefaultExpensesQuery

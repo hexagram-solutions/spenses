@@ -85,7 +85,7 @@ public partial class MembersIntegrationTests
 
         createdMember.Status.Should().Be(MemberStatus.Invited);
 
-        var invitationMessage = fixture.GetLastMessageForEmail(email);
+        var invitationMessage = GetLastMessageForEmail(email);
 
         invitationMessage.RecipientAddress.Should().Be(email);
         invitationMessage.Subject.Should().Contain(home.Name);
@@ -117,25 +117,25 @@ public partial class MembersIntegrationTests
 
         createdMember.Status.Should().Be(MemberStatus.Invited);
 
-        var invitationToken = fixture.GetInvitationTokenForEmail(email);
+        var invitationToken = GetInvitationTokenForEmail(email);
 
-        await fixture.Logout();
+        await Logout();
 
         var registerRequest = new RegisterRequest
         {
             DisplayName = "Quatro Quatro",
             Email = email,
-            Password = new Faker().Internet.Password(),
+            Password = _faker.Internet.Password(),
             InvitationToken = invitationToken
         };
 
-        var registrationResponse = await fixture.Register(registerRequest);
+        var registrationResponse = await Register(registerRequest);
 
         registrationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await fixture.VerifyUser(email);
+        await VerifyUser(email);
 
-        var loginResponse = await fixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+        var loginResponse = await Login(new LoginRequest { Email = email, Password = registerRequest.Password });
 
         loginResponse.Content!.Succeeded.Should().BeTrue();
 
@@ -151,9 +151,9 @@ public partial class MembersIntegrationTests
             User = new User { DisplayName = registerRequest.DisplayName, Id = registrationResponse.Content!.Id }
         }, opts => opts.Excluding(m => m.AvatarUrl));
 
-        await fixture.LoginAsTestUser();
+        await LoginAsTestUser();
         await _members.DeleteMember(home.Id, createdMember.Id);
-        await fixture.DeleteUser(email);
+        await DeleteUser(email);
     }
 
     [Fact]

@@ -5,22 +5,15 @@ using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Api.IntegrationTests.Payments;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class PaymentsIntegrationTests(IdentityWebApplicationFixture fixture) : IAsyncLifetime
+public partial class PaymentsIntegrationTests : IdentityIntegrationTestBase
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
+    private readonly IHomesApi _homes;
+    private readonly IPaymentsApi _payments;
 
-    private readonly IPaymentsApi _payments =
-        RestService.For<IPaymentsApi>(fixture.CreateAuthenticatedClient());
-
-    public Task InitializeAsync()
+    public PaymentsIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
     {
-        return Task.CompletedTask;
-    }
-
-    public async Task DisposeAsync()
-    {
-        await fixture.LoginAsTestUser();
+        _homes = CreateApiClient<IHomesApi>();
+        _payments = CreateApiClient<IPaymentsApi>();
     }
 
     private FilteredPaymentsQuery DefaultPaymentsQuery

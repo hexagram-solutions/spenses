@@ -1,5 +1,4 @@
 using System.Net;
-using Bogus;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.IntegrationTests.Identity;
@@ -12,17 +11,15 @@ public partial class IdentityIntegrationTests
         var registerRequest = new RegisterRequest
         {
             DisplayName = "Quatro Quatro",
-            Email = "quatro.quatro@sjsu.edu",
-            Password = new Faker().Internet.Password()
+            Email = _faker.Internet.Email(),
+            Password = _faker.Internet.Password()
         };
 
-        await fixture.Register(registerRequest);
+        await Register(registerRequest);
 
-        var response = await fixture.VerifyUser(registerRequest.Email);
+        var response = await VerifyUser(registerRequest.Email);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        await fixture.DeleteUser(registerRequest.Email);
     }
 
     [Fact]

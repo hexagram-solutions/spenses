@@ -1,7 +1,5 @@
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
-using Bogus;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +26,6 @@ namespace Spenses.Api.IntegrationTests;
 public abstract class IdentityIntegrationTestBase : IAsyncLifetime
 {
     private readonly IdentityWebApplicationFixture _webApplicationFixture;
-    private readonly IServiceProvider _services;
     private readonly HttpClient _authenticatedHttpClient;
 
     private bool _isAuthenticated;
@@ -36,18 +33,20 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
     protected IdentityIntegrationTestBase(IdentityWebApplicationFixture fixture)
     {
         _webApplicationFixture = fixture;
-        _services = fixture.WebApplicationFactory.Services;
+        _authenticatedHttpClient = _webApplicationFixture.WebApplicationFactory.CreateClient();
 
-        _authenticatedHttpClient = _webApplicationFixture.CreateClient();
+        Services = fixture.WebApplicationFactory.Services;
     }
 
     public CurrentUser VerifiedUser { get; private set; } = null!;
+
+    protected IServiceProvider Services { get; }
 
     public async Task InitializeAsync()
     {
         await ResetDatabase();
 
-        VerifiedUser = (await RestService.For<IMeApi>(CreateAuthenticatedClient()).GetMe()).Content!;
+        VerifiedUser = (await CreateApiClient<IMeApi>().GetMe()).Content!;
 
         await LoginAsTestUser();
     }
@@ -57,16 +56,18 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
         return Task.CompletedTask;
     }
 
-    protected TClient GetApiClient<TClient>(bool authenticated = true)
+    protected TClient CreateApiClient<TClient>(bool authenticated = true)
     {
+        var settings = new RefitSettings { CollectionFormat = CollectionFormat.Multi };
+
         return authenticated
-            ? RestService.For<TClient>(CreateAuthenticatedClient())
-            : RestService.For<TClient>(_webApplicationFixture.CreateClient());
+            ? RestService.For<TClient>(CreateAuthenticatedClient(), settings)
+            : RestService.For<TClient>(_webApplicationFixture.WebApplicationFactory.CreateClient(), settings);
     }
 
     private async Task ResetDatabase()
     {
-        await using var scope = _services.CreateAsyncScope();
+        await using var scope = Services.CreateAsyncScope();
 
         var services = scope.ServiceProvider;
 
@@ -92,7 +93,7 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
 
     public async Task ExecuteDbContextAction(Func<ApplicationDbContext, Task> action)
     {
-        await using var scope = _services.CreateAsyncScope();
+        await using var scope = Services.CreateAsyncScope();
 
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
@@ -111,12 +112,12 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
 
     public HttpClient CreateClient()
     {
-        return _webApplicationFixture.CreateClient();
+        return _webApplicationFixture.WebApplicationFactory.CreateClient();
     }
 
     public async Task LoginAsTestUser()
     {
-        var config = _services.GetRequiredService<IConfiguration>();
+        var config = Services.GetRequiredService<IConfiguration>();
 
         var email = config.Require(ConfigConstants.SpensesTestIntegrationTestUserEmail);
         var password = config.Require(ConfigConstants.SpensesTestDefaultUserPassword);
@@ -126,7 +127,7 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
 
     public async Task<IApiResponse<CurrentUser>> Register(RegisterRequest request, bool verify = false)
     {
-        var identityApi = RestService.For<IIdentityApi>(CreateClient());
+        var identityApi = CreateApiClient<IIdentityApi>(false);
 
         var response = await identityApi.Register(request);
 
@@ -146,14 +147,14 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
     {
         var (userId, code, _) = GetVerificationParametersForEmail(email);
 
-        var identityApi = RestService.For<IIdentityApi>(CreateAuthenticatedClient());
+        var identityApi = CreateApiClient<IIdentityApi>();
 
         return identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
     }
 
     public async Task<IApiResponse<LoginResult>> Login(LoginRequest loginRequest)
     {
-        var identityApi = RestService.For<IIdentityApi>(_authenticatedHttpClient);
+        var identityApi = CreateApiClient<IIdentityApi>();
 
         var response = await identityApi.Login(loginRequest);
 
@@ -164,7 +165,7 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
 
     public async Task<IApiResponse> Logout()
     {
-        var identityApi = RestService.For<IIdentityApi>(CreateAuthenticatedClient());
+        var identityApi = CreateApiClient<IIdentityApi>();
 
         var response = await identityApi.Logout();
 
@@ -175,7 +176,7 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
 
     public async Task DeleteUser(string email)
     {
-        var userManager = _services.GetRequiredService<UserManager<ApplicationUser>>();
+        var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
 
         if (await userManager.FindByEmailAsync(email) is not { } user)
             return;
@@ -185,7 +186,7 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
 
     public CapturedEmailMessage GetLastMessageForEmail(string email)
     {
-        var emailClient = _services.GetRequiredService<CapturingEmailClient>();
+        var emailClient = Services.GetRequiredService<CapturingEmailClient>();
 
         return emailClient.EmailMessages
             .Last(e => e.RecipientAddress == email);
@@ -217,7 +218,7 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
     {
         var token = GetInvitationTokenForEmail(email);
 
-        var tokenProvider = _services.GetRequiredService<InvitationTokenProvider>();
+        var tokenProvider = Services.GetRequiredService<InvitationTokenProvider>();
 
         return tokenProvider.UnprotectInvitationData(token).InvitationId;
     }
@@ -242,63 +243,5 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
             .Single();
 
         return new Uri(verificationAnchorValue);
-    }
-}
-
-public class IntegrationTestClass1 : IdentityIntegrationTestBase
-{
-    private readonly IIdentityApi _identityApi;
-
-    public IntegrationTestClass1(IdentityWebApplicationFixture fixture)
-        : base(fixture)
-    {
-        _identityApi = RestService.For<IIdentityApi>(CreateClient());
-    }
-
-    [Fact]
-    public async Task Login_with_valid_credentials_yields_success()
-    {
-        var faker = new Faker();
-
-        var registerRequest = new RegisterRequest
-        {
-            Email = faker.Internet.Email(),
-            Password = faker.Internet.Password(),
-            DisplayName = "DONKEY TEETH"
-        };
-
-        var resp = await Register(registerRequest);
-
-        var (userId, code, _) = GetVerificationParametersForEmail(registerRequest.Email);
-
-        await _identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
-
-        var response = await Login(new LoginRequest
-        {
-            Email = registerRequest.Email,
-            Password = registerRequest.Password
-        });
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        response.Content!.Succeeded.Should().BeTrue();
-    }
-}
-
-public class HomeIntegrationTests2 : IdentityIntegrationTestBase
-{
-    private readonly IHomesApi _homesApi;
-
-    public HomeIntegrationTests2(IdentityWebApplicationFixture fixture) : base(fixture)
-    {
-        _homesApi = RestService.For<IHomesApi>(CreateAuthenticatedClient());
-    }
-
-    [Fact]
-    public async Task Get_homes()
-    {
-        var response = await _homesApi.GetHomes();
-
-        response.Content.Should().NotBeEmpty();
     }
 }

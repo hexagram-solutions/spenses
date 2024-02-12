@@ -71,7 +71,7 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var expensesApi = RestService.For<IExpensesApi>(fixture.CreateAuthenticatedClient());
+        var expensesApi = CreateApiClient<IExpensesApi>();
 
         var expenses = await expensesApi.GetExpenses(home.Id, new FilteredExpensesQuery
         {

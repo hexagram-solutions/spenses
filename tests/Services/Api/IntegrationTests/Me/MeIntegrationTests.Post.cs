@@ -16,7 +16,7 @@ public partial class MeIntegrationTests
 
         var response = await _meApi.UpdateMe(props);
 
-        var userManager = fixture.WebApplicationFactory.Services.GetRequiredService<UserManager<ApplicationUser>>();
+        var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
 
         var applicationUser = await userManager.FindByEmailAsync(response.Content!.Email);
 

@@ -13,7 +13,7 @@ public partial class InvitationsIntegrationTests
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = GetInvitationIdForEmail(email);
 
         // Register and log in as a new user who will accept the invitation
         await RegisterAndLogIn(email);
@@ -34,7 +34,7 @@ public partial class InvitationsIntegrationTests
         memberInvitationsResponse.Content!.Single().Status.Should().Be(InvitationStatus.Accepted);
 
         await _members.DeleteMember(home.Id, memberId);
-        await fixture.DeleteUser(email);
+        await DeleteUser(email);
     }
 
     [Fact]
@@ -44,7 +44,7 @@ public partial class InvitationsIntegrationTests
         var email = "quatro.quatro@sjsu.edu";
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = GetInvitationIdForEmail(email);
 
         // Register and log in as a new user who will accept the invitation
         await RegisterAndLogIn(email);
@@ -61,7 +61,7 @@ public partial class InvitationsIntegrationTests
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
         await _members.DeleteMember(home.Id, memberId);
-        await fixture.DeleteUser(email);
+        await DeleteUser(email);
     }
 
     [Fact]
@@ -74,7 +74,7 @@ public partial class InvitationsIntegrationTests
 
         await _members.CancelMemberInvitations(home.Id, memberId);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = GetInvitationIdForEmail(email);
 
         await RegisterAndLogIn(email);
 
@@ -82,7 +82,7 @@ public partial class InvitationsIntegrationTests
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
         await _members.DeleteMember(home.Id, memberId);
-        await fixture.DeleteUser(email);
+        await DeleteUser(email);
     }
 
     [Fact]
@@ -101,7 +101,7 @@ public partial class InvitationsIntegrationTests
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = GetInvitationIdForEmail(email);
 
         var response = await _invitations.AcceptInvitation(invitationId);
 

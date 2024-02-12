@@ -36,7 +36,7 @@ public partial class MembersIntegrationTests
         invitation.Email.Should().Be(email);
         invitation.Status.Should().Be(InvitationStatus.Pending);
 
-        var invitationMessage = fixture.GetLastMessageForEmail(email);
+        var invitationMessage = GetLastMessageForEmail(email);
 
         invitationMessage.RecipientAddress.Should().Be(email);
         invitationMessage.Subject.Should().Contain(home.Name);

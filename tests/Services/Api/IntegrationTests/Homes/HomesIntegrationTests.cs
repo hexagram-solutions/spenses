@@ -10,7 +10,7 @@ public partial class HomesIntegrationTests : IdentityIntegrationTestBase
     public HomesIntegrationTests(IdentityWebApplicationFixture fixture)
         : base(fixture)
     {
-        _homes = GetApiClient<IHomesApi>();
-        _expenseCategories = GetApiClient<IExpenseCategoriesApi>();
+        _homes = CreateApiClient<IHomesApi>();
+        _expenseCategories = CreateApiClient<IExpenseCategoriesApi>();
     }
 }

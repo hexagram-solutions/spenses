@@ -3,21 +3,14 @@ using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.ExpenseCategories;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class ExpenseCategoriesIntegrationTests(IdentityWebApplicationFixture fixture) : IAsyncLifetime
+public partial class ExpenseCategoriesIntegrationTests : IdentityIntegrationTestBase
 {
-    private readonly IExpenseCategoriesApi _categories =
-        RestService.For<IExpenseCategoriesApi>(fixture.CreateAuthenticatedClient());
+    private readonly IExpenseCategoriesApi _categories;
+    private readonly IHomesApi _homes;
 
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
-
-    public async Task InitializeAsync()
+    public ExpenseCategoriesIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
     {
-        await fixture.LoginAsTestUser();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
+        _categories = CreateApiClient<IExpenseCategoriesApi>();
+        _homes = CreateApiClient<IHomesApi>();
     }
 }

@@ -32,10 +32,7 @@ public class AuditableEntitySaveChangesInterceptor(IUserContext userContext) : S
         var currentUser = userContext.CurrentUser;
 
         if (currentUser.Identity?.IsAuthenticated != true)
-        {
-            throw new InvalidOperationException(
-                "Current user is not authenticated, and cannot be associated with any entities.");
-        }
+            return;
 
         var utcNow = DateTime.UtcNow;
 

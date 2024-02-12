@@ -1,5 +1,4 @@
 using Bogus;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Invitations;
@@ -7,21 +6,17 @@ using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.IntegrationTests.Invitations;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class InvitationsIntegrationTests(IdentityWebApplicationFixture fixture) : IAsyncLifetime
+public partial class InvitationsIntegrationTests : IdentityIntegrationTestBase
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
-    private readonly IMembersApi _members = RestService.For<IMembersApi>(fixture.CreateAuthenticatedClient());
-    private readonly IInvitationsApi _invitations = RestService.For<IInvitationsApi>(fixture.CreateAuthenticatedClient());
+    private readonly IHomesApi _homes;
+    private readonly IMembersApi _members;
+    private readonly IInvitationsApi _invitations;
 
-    public async Task InitializeAsync()
+    public InvitationsIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
     {
-        await fixture.LoginAsTestUser();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
+        _homes = CreateApiClient<IHomesApi>();
+        _members = CreateApiClient<IMembersApi>();
+        _invitations = CreateApiClient<IInvitationsApi>();
     }
 
     private async Task<(Guid memberId, Guid invitationid)> CreateAndInviteMember(Guid homeId, string email)
@@ -50,8 +45,8 @@ public partial class InvitationsIntegrationTests(IdentityWebApplicationFixture f
             DisplayName = "Quatro Quatro"
         };
 
-        await fixture.Register(registerRequest, true);
+        await Register(registerRequest, true);
 
-        await fixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+        await Login(new LoginRequest { Email = email, Password = registerRequest.Password });
     }
 }

@@ -15,7 +15,7 @@ public partial class MeIntegrationTests
     [Fact]
     public async Task Change_email_for_verified_user_changes_and_verifies_email()
     {
-        var identityApi = RestService.For<IIdentityApi>(fixture.CreateAuthenticatedClient());
+        var identityApi = CreateApiClient<IIdentityApi>();
 
         // Register a new user
         var registerRequest = new RegisterRequest
@@ -25,15 +25,15 @@ public partial class MeIntegrationTests
             Password = new Faker().Internet.Password()
         };
 
-        await fixture.Register(registerRequest, true);
+        await Register(registerRequest, true);
 
-        await fixture.Login(new LoginRequest
+        await Login(new LoginRequest
         {
             Email = registerRequest.Email,
             Password = registerRequest.Password
         });
 
-        var meApi = RestService.For<IMeApi>(fixture.CreateAuthenticatedClient());
+        var meApi = CreateApiClient<IMeApi>();
 
         // Request the email change
         var expectedEmail = "quackadilly.blip2@auburn.edu";
@@ -42,7 +42,7 @@ public partial class MeIntegrationTests
 
         changeEmailResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var (userId, code, newEmail) = fixture.GetVerificationParametersForEmail(expectedEmail);
+        var (userId, code, newEmail) = GetVerificationParametersForEmail(expectedEmail);
 
         var verificationResponse = await identityApi.VerifyEmail(new VerifyEmailRequest(userId, code, newEmail));
 
@@ -54,7 +54,7 @@ public partial class MeIntegrationTests
         meResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
 
         // Verify that the user's email was changed in the database
-        var userManager = fixture.WebApplicationFactory.Services.GetRequiredService<UserManager<ApplicationUser>>();
+        var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
 
         var user = await userManager.FindByIdAsync(userId);
 
@@ -62,6 +62,6 @@ public partial class MeIntegrationTests
         user.Email.Should().Be(expectedEmail);
         user.EmailConfirmed.Should().Be(true);
 
-        await fixture.DeleteUser(expectedEmail);
+        await DeleteUser(expectedEmail);
     }
 }

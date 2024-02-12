@@ -10,17 +10,17 @@ public partial class InvitationsIntegrationTests
     public async Task Delete_invitation_declines_invitation()
     {
         var home = (await _homes.GetHomes()).Content!.First();
-        var email = fixture.VerifiedUser.Email;
+        var email = VerifiedUser.Email;
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = GetInvitationIdForEmail(email);
 
         var invitationResponse = await _invitations.DeclineInvitation(invitationId);
 
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-        await fixture.ExecuteDbContextAction(async db =>
+        await ExecuteDbContextAction(async db =>
         {
             var invitation = await db.Invitations
                 .Include(i => i.Member)
@@ -49,7 +49,7 @@ public partial class InvitationsIntegrationTests
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = GetInvitationIdForEmail(email);
 
         await RegisterAndLogIn(email);
 
@@ -60,18 +60,18 @@ public partial class InvitationsIntegrationTests
         invitationDeclinedResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
 
         await _members.DeleteMember(home.Id, memberId);
-        await fixture.DeleteUser(email);
+        await DeleteUser(email);
     }
 
     [Fact]
     public async Task Delete_invitation_that_has_already_been_declined_yields_success()
     {
         var home = (await _homes.GetHomes()).Content!.First();
-        var email = fixture.VerifiedUser.Email;
+        var email = VerifiedUser.Email;
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = GetInvitationIdForEmail(email);
 
         var invitationResponse = await _invitations.DeclineInvitation(invitationId);
 
@@ -92,7 +92,7 @@ public partial class InvitationsIntegrationTests
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = GetInvitationIdForEmail(email);
 
         var response = await _invitations.DeclineInvitation(invitationId);
 

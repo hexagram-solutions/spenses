@@ -1,5 +1,4 @@
 using System.Net;
-using Bogus;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.IntegrationTests.Identity;
@@ -11,18 +10,14 @@ public partial class IdentityIntegrationTests
     {
         var registerRequest = new RegisterRequest
         {
-            Email = "donkey.teeth@boisestate.edu",
-            Password = new Faker().Internet.Password(),
+            Email = _faker.Internet.Email(),
+            Password = _faker.Internet.Password(),
             DisplayName = "DONKEY TEETH"
         };
 
-        await fixture.Register(registerRequest);
+        await Register(registerRequest, true);
 
-        var (userId, code, _) = fixture.GetVerificationParametersForEmail(registerRequest.Email);
-
-        await _identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
-
-        var response = await fixture.Login(new LoginRequest
+        var response = await Login(new LoginRequest
         {
             Email = registerRequest.Email,
             Password = registerRequest.Password
@@ -31,8 +26,6 @@ public partial class IdentityIntegrationTests
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         response.Content!.Succeeded.Should().BeTrue();
-
-        await fixture.DeleteUser(registerRequest.Email);
     }
 
     [Fact]
@@ -40,7 +33,7 @@ public partial class IdentityIntegrationTests
     {
         var response = await _identityApi.Login(new LoginRequest
         {
-            Email = fixture.VerifiedUser.Email,
+            Email = VerifiedUser.Email,
             Password = "foo"
         });
 
@@ -56,14 +49,14 @@ public partial class IdentityIntegrationTests
     {
         var registerRequest = new RegisterRequest
         {
-            Email = "donkey.teeth@boisestate.edu",
-            Password = new Faker().Internet.Password(),
+            Email = _faker.Internet.Email(),
+            Password = _faker.Internet.Password(),
             DisplayName = "DONKEY TEETH"
         };
 
-        await fixture.Register(registerRequest);
+        await Register(registerRequest);
 
-        var response = await fixture.Login(new LoginRequest
+        var response = await Login(new LoginRequest
         {
             Email = registerRequest.Email,
             Password = registerRequest.Password
@@ -75,7 +68,5 @@ public partial class IdentityIntegrationTests
 
         errorContent!.Succeeded.Should().BeFalse();
         errorContent.IsNotAllowed.Should().BeTrue();
-
-        await fixture.DeleteUser(registerRequest.Email);
     }
 }

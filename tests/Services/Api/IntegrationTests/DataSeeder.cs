@@ -9,16 +9,16 @@ public class DataSeeder(ApplicationDbContext db, IEnumerable<ISeedDataTask> task
 {
     public async Task SeedDatabase()
     {
-        logger.LogInformation("Seeding database...");
+        logger.LogDebug("Seeding database...");
 
         foreach (var seedDataTask in tasks.OrderBy(t => t.Order))
         {
-            logger.LogInformation("Executing seed task: {TaskName}", seedDataTask.GetType().Name);
+            logger.LogDebug("Executing seed task: {TaskName}", seedDataTask.GetType().Name);
 
             await seedDataTask.SeedData(db);
         }
 
-        logger.LogInformation("Database seeded.");
+        logger.LogDebug("Database seeded.");
     }
 }
 
