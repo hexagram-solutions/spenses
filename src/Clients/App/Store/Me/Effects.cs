@@ -96,7 +96,7 @@ public class Effects(IMeApi me)
             return;
         }
 
-        if (problemDetails!.Errors.ContainsKey(IdentityErrors.Password.PasswordTooShort))
+        if (problemDetails.Errors.ContainsKey(IdentityErrors.Password.PasswordTooShort))
         {
             dispatcher.Dispatch(new ChangePasswordFailedAction([IdentityErrors.Password.PasswordTooShort]));
 

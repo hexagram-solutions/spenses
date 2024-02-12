@@ -47,7 +47,7 @@
 
     private void Save()
     {
-        Dispatcher.Dispatch(new HomeUpdatedAction(CurrentHomeId.GetValueOrDefault(), Home!));
+        Dispatcher.Dispatch(new HomeUpdatedAction(CurrentHomeId.GetValueOrDefault(), Home));
     }
 
 }

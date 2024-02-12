@@ -29,7 +29,7 @@ public class InviteExistingMemberCommandHandler(
     ApplicationDbContext db,
     IMapper mapper,
     IEmailClient emailClient,
-    ICurrentUserService currentUserService,
+    IUserContext userContext,
     IOptions<IdentityEmailOptions> emailOptions,
     InvitationTokenProvider tokenProvider)
     : IRequestHandler<InviteExistingMemberCommand, Invitation>
@@ -85,7 +85,7 @@ public class InviteExistingMemberCommandHandler(
         var acceptInvitationUrl = new Uri(new Uri(emailOptions.Value.WebApplicationBaseUrl), acceptInvitationPath);
 
         var home = await db.Homes.FirstAsync(h => h.Id == homeId, cancellationToken);
-        var currentUser = currentUserService.CurrentUser!;
+        var currentUser = userContext.CurrentUser;
 
         var invitingUserName = currentUser.GetDisplayName();
         var invitingUserEmail = currentUser.GetEmail();

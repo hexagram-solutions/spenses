@@ -10,7 +10,7 @@ namespace Spenses.Application.Features.Invitations.Requests;
 
 public record DeclineInvitationCommand(Guid InvitationId) : IRequest;
 
-public class DeclineInvitationCommandHandler(ApplicationDbContext db, ICurrentUserService currentUserService)
+public class DeclineInvitationCommandHandler(ApplicationDbContext db, IUserContext userContext)
     : IRequestHandler<DeclineInvitationCommand>
 {
     public async Task Handle(DeclineInvitationCommand request, CancellationToken cancellationToken)
@@ -30,7 +30,7 @@ public class DeclineInvitationCommandHandler(ApplicationDbContext db, ICurrentUs
         if (invitation.Status != DbModels.InvitationStatus.Pending)
             throw new ForbiddenException();
 
-        var authenticatedUser = currentUserService.CurrentUser!;
+        var authenticatedUser = userContext.CurrentUser;
 
         if (!string.Equals(invitation.Email, authenticatedUser.GetEmail(), StringComparison.InvariantCultureIgnoreCase))
         {

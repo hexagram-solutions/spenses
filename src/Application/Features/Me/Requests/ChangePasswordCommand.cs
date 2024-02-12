@@ -10,12 +10,12 @@ namespace Spenses.Application.Features.Me.Requests;
 
 public record ChangePasswordCommand(ChangePasswordRequest Request) : IRequest;
 
-public class ChangePasswordCommandHandler(UserManager<ApplicationUser> userManager, ICurrentUserService currentUser)
+public class ChangePasswordCommandHandler(UserManager<ApplicationUser> userManager, IUserContext userContext)
     : IRequestHandler<ChangePasswordCommand>
 {
     public async Task Handle(ChangePasswordCommand request, CancellationToken cancellationToken)
     {
-        if (await userManager.GetUserAsync(currentUser.CurrentUser!) is not { } user)
+        if (await userManager.GetUserAsync(userContext.CurrentUser) is not { } user)
             throw new UnauthorizedException();
 
         var (currentPassword, newPassword) = request.Request;

@@ -4,27 +4,32 @@ using System.Web;
 using Bogus;
 using Hexagrams.Extensions.Configuration;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
+using Respawn;
 using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Application.Services.Invitations;
 using Spenses.Client.Http;
+using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Common;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Me;
+using Spenses.Tools.Setup;
+using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api.IntegrationTests;
 
 [Collection(IdentityWebApplicationCollection.CollectionName)]
 public abstract class IdentityIntegrationTestBase : IAsyncLifetime
 {
+    private readonly IdentityWebApplicationFixture _webApplicationFixture;
+    private readonly IServiceProvider _services;
     private readonly HttpClient _authenticatedHttpClient;
 
     private bool _isAuthenticated;
-    private readonly IdentityWebApplicationFixture _webApplicationFixture;
-    private readonly IServiceProvider _services;
 
     protected IdentityIntegrationTestBase(IdentityWebApplicationFixture fixture)
     {
@@ -34,16 +39,57 @@ public abstract class IdentityIntegrationTestBase : IAsyncLifetime
         _authenticatedHttpClient = _webApplicationFixture.CreateClient();
     }
 
+    public CurrentUser VerifiedUser { get; private set; } = null!;
+
     public async Task InitializeAsync()
     {
-        // reset db
-        //throw new NotImplementedException();
+        await ResetDatabase();
+
+        VerifiedUser = (await RestService.For<IMeApi>(CreateAuthenticatedClient()).GetMe()).Content!;
+
+        await LoginAsTestUser();
     }
 
     public Task DisposeAsync()
     {
         return Task.CompletedTask;
-        //throw new NotImplementedException();
+    }
+
+    private async Task ResetDatabase()
+    {
+        await using var scope = _services.CreateAsyncScope();
+
+        var services = scope.ServiceProvider;
+
+        var userContextProvider = services.GetRequiredService<UserContextProvider>();
+        userContextProvider.SetContext(services.GetRequiredService<SystemUserContext>());
+
+        var db = services.GetRequiredService<ApplicationDbContext>();
+
+        await db.Database.MigrateAsync();
+
+        var connectionString = db.Database.GetConnectionString()!;
+
+        var respawner = await Respawner.CreateAsync(connectionString, new RespawnerOptions
+        {
+            CheckTemporalTables = true
+        });
+
+        await respawner.ResetAsync(connectionString);
+
+        var seeder = services.GetRequiredService<DataSeeder>();
+        await seeder.SeedDatabase();
+
+        userContextProvider.SetContext(services.GetRequiredService<IUserContext>());
+    }
+
+    public async Task ExecuteDbContextAction(Func<ApplicationDbContext, Task> action)
+    {
+        await using var scope = _services.CreateAsyncScope();
+
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+        await action(db);
     }
 
     public HttpClient CreateAuthenticatedClient()
@@ -229,49 +275,23 @@ public class IntegrationTestClass1 : IdentityIntegrationTestBase
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         response.Content!.Succeeded.Should().BeTrue();
-
-        //await DeleteUser(registerRequest.Email);
     }
 }
 
-public class IntegrationTestClass2 : IdentityIntegrationTestBase
+public class HomeIntegrationTests2 : IdentityIntegrationTestBase
 {
-    private readonly IIdentityApi _identityApi;
+    private readonly IHomesApi _homesApi;
 
-    public IntegrationTestClass2(IdentityWebApplicationFixture fixture)
-        : base(fixture)
+    public HomeIntegrationTests2(IdentityWebApplicationFixture fixture) : base(fixture)
     {
-        _identityApi = RestService.For<IIdentityApi>(CreateClient());
+        _homesApi = RestService.For<IHomesApi>(CreateAuthenticatedClient());
     }
 
     [Fact]
-    public async Task Login_with_valid_credentials_yields_success()
+    public async Task Get_homes()
     {
-        var faker = new Faker();
+        var response = await _homesApi.GetHomes();
 
-        var registerRequest = new RegisterRequest
-        {
-            Email = faker.Internet.Email(),
-            Password = faker.Internet.Password(),
-            DisplayName = "DONKEY TEETH"
-        };
-
-        var resp = await Register(registerRequest);
-
-        var (userId, code, _) = GetVerificationParametersForEmail(registerRequest.Email);
-
-        await _identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
-
-        var response = await Login(new LoginRequest
-        {
-            Email = registerRequest.Email,
-            Password = registerRequest.Password
-        });
-
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        response.Content!.Succeeded.Should().BeTrue();
-
-        //await DeleteUser(registerRequest.Email);
+        response.Content.Should().NotBeEmpty();
     }
 }

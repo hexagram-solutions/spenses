@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace Spenses.Utilities.Security.Services;
 
-public interface ICurrentUserService
+public interface IUserContext
 {
-    ClaimsPrincipal? CurrentUser { get; }
+    ClaimsPrincipal CurrentUser { get; }
 }

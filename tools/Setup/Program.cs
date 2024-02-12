@@ -1,9 +1,12 @@
 using System.CommandLine;
+using Hexagrams.Extensions.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Client;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Models;
+using Spenses.Shared.Common;
 using Spenses.Tools.Setup;
 using Spenses.Tools.Setup.SeedData;
 using Spenses.Utilities.Security.Services;
@@ -21,7 +24,7 @@ var services = new ServiceCollection()
     .AddTransient<IConfiguration>(_ => config)
     .AddTransient<DbSetupCommand>()
     .AddTransient<DbContextOptionsFactory>()
-    .AddTransient<ICurrentUserService, SystemCurrentUserService>()
+    .AddTransient<IUserContext, SystemUserContext>()
     .Scan(scan => scan
         .FromAssemblyOf<ISeedDataTask>()
         .AddClasses(classes => classes.AssignableTo<ISeedDataTask>())

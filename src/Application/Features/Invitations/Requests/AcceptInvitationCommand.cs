@@ -15,7 +15,7 @@ public record AcceptInvitationCommand(Guid InvitationId, Guid InvitedUserId) : I
 
 public class AcceptInvitationCommandHandler(
     ApplicationDbContext db,
-    ICurrentUserService currentUserService,
+    IUserContext userContext,
     IMapper mapper)
     : IRequestHandler<AcceptInvitationCommand, Invitation>
 {
@@ -36,9 +36,9 @@ public class AcceptInvitationCommandHandler(
         if (invitation.Status != DbModels.InvitationStatus.Pending)
             throw new ForbiddenException();
 
-        var authenticatedUser = currentUserService.CurrentUser;
+        var authenticatedUser = userContext.CurrentUser;
 
-        if (authenticatedUser?.IsAuthenticated() == true &&
+        if (authenticatedUser.IsAuthenticated() &&
             !string.Equals(invitation.Email, authenticatedUser.GetEmail(), StringComparison.InvariantCultureIgnoreCase))
         {
             throw new ForbiddenException();

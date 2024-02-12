@@ -8,13 +8,13 @@ namespace Spenses.Application.Tests.Features.Homes.Requests;
 
 public class InMemoryDbContextFactory : IDbContextFactory
 {
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserContext _userContext;
 
     private readonly SqliteConnection _connection;
 
-    public InMemoryDbContextFactory(ICurrentUserService currentUserService)
+    public InMemoryDbContextFactory(IUserContext userContext)
     {
-        _currentUserService = currentUserService;
+        _userContext = userContext;
 
         _connection = new SqliteConnection("Data Source=:memory:");
         _connection.Open();
@@ -27,7 +27,7 @@ public class InMemoryDbContextFactory : IDbContextFactory
             .Options;
 
         var db = new ApplicationDbContext(dbOptions,
-            new AuditableEntitySaveChangesInterceptor(_currentUserService));
+            new AuditableEntitySaveChangesInterceptor(_userContext));
 
         db.Database.EnsureCreated();
 

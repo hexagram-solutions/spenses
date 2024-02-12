@@ -4,10 +4,13 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Spenses.Api.Infrastructure;
 using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Resources.Communication;
 using Spenses.Resources.Relational;
 using Spenses.Shared.Common;
+using Spenses.Tools.Setup;
+using Spenses.Utilities.Security.Services;
 using Testcontainers.MsSql;
 
 namespace Spenses.Api.IntegrationTests;
@@ -37,14 +40,20 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>, IAs
 
         builder.ConfigureTestServices(services =>
         {
-            AddTestDbContext(services);
+            AddTestDbContext(services)
+                .AddDataSeeder();
+
+            services.AddSingleton<UserContextProvider>();
+
+            services.AddSingleton<SystemUserContext>();
+            services.AddTransient(sp => sp.GetRequiredService<UserContextProvider>().GetContext());
 
             services.AddSingleton<CapturingEmailClient>();
             services.AddTransient<IEmailClient>(sp => sp.GetRequiredService<CapturingEmailClient>());
         });
     }
 
-    private void AddTestDbContext(IServiceCollection services)
+    private IServiceCollection AddTestDbContext(IServiceCollection services)
     {
         var descriptorType =
             typeof(DbContextOptions<ApplicationDbContext>);
@@ -57,5 +66,7 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>, IAs
 
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(_dbContainer.GetConnectionString()));
+
+        return services;
     }
 }

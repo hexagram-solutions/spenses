@@ -20,7 +20,7 @@ public class BalanceBreakdownQueryHandlerTests : IAsyncDisposable
 
     public BalanceBreakdownQueryHandlerTests()
     {
-        var fakeCurrentUserService = A.Fake<ICurrentUserService>();
+        var fakeCurrentUserService = A.Fake<IUserContext>();
 
         A.CallTo(() => fakeCurrentUserService.CurrentUser).Returns(new ClaimsPrincipal(new ClaimsIdentity(new[]
         {

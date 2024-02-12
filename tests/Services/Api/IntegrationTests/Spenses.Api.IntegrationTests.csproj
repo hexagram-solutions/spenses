@@ -45,6 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Clients\Http\Spenses.Client.Http.csproj" />
     <ProjectReference Include="..\..\..\..\src\Services\Api\Spenses.Api.csproj" />
+    <ProjectReference Include="..\..\..\..\tools\Setup\Spenses.Tools.Setup.csproj" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ namespace Spenses.Application.Features.Homes.Requests;
 
 public record CreateHomeCommand(HomeProperties Props) : IRequest<Home>;
 
-public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, ICurrentUserService currentUserService,
+public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, IUserContext userContext,
     UserManager<DbModels.ApplicationUser> userManager)
     : IRequestHandler<CreateHomeCommand, Home>
 {
@@ -20,7 +20,7 @@ public class CreateHomeCommandHandler(ApplicationDbContext db, IMapper mapper, I
     {
         var home = mapper.Map<DbModels.Home>(request.Props);
 
-        var currentUser = await userManager.GetUserAsync(currentUserService.CurrentUser!);
+        var currentUser = await userManager.GetUserAsync(userContext.CurrentUser);
 
         home.Members.Add(new DbModels.Member
         {

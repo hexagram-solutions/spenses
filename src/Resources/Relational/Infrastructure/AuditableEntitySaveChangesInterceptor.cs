@@ -7,7 +7,7 @@ using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Resources.Relational.Infrastructure;
 
-public class AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUserService) : SaveChangesInterceptor
+public class AuditableEntitySaveChangesInterceptor(IUserContext userContext) : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
@@ -29,10 +29,13 @@ public class AuditableEntitySaveChangesInterceptor(ICurrentUserService currentUs
         if (context is null)
             return;
 
-        var currentUser = currentUserService.CurrentUser;
+        var currentUser = userContext.CurrentUser;
 
-        if (currentUser?.Identity?.IsAuthenticated != true)
-            return;
+        if (currentUser.Identity?.IsAuthenticated != true)
+        {
+            throw new InvalidOperationException(
+                "Current user is not authenticated, and cannot be associated with any entities.");
+        }
 
         var utcNow = DateTime.UtcNow;
 
