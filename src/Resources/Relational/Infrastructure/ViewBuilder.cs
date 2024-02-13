@@ -8,14 +8,14 @@ namespace Spenses.Resources.Relational.Infrastructure;
 
 public static class ViewBuilder
 {
-    public static void UpdateViews(this DbContext context)
+    public static async Task UpdateViews(this DbContext db)
     {
-        var connection = context.Database.GetDbConnection();
+        var connection = db.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
-            connection.Open();
+            await connection.OpenAsync();
 
-        var keylessTypes = context.Model.GetEntityTypes()
+        var keylessTypes = db.Model.GetEntityTypes()
             .Where(et => !et.GetDeclaredKeys().Any())
             .Select(et => et.ClrType);
 
@@ -33,7 +33,7 @@ public static class ViewBuilder
             if (string.IsNullOrEmpty(existing) ||
                 !string.Equals(existing, definition, StringComparison.OrdinalIgnoreCase))
             {
-                connection.SetViewDefinition(viewName, definition);
+                await db.SetViewDefinition(viewName, definition);
             }
         }
     }
@@ -62,16 +62,11 @@ public static class ViewBuilder
         return index < 0 ? null : definition[(index + 4)..];
     }
 
-    private static void SetViewDefinition(this IDbConnection connection, string viewName, string definition)
+    private static async Task SetViewDefinition(this DbContext db, string viewName, string definition)
     {
-        using var command = connection.CreateCommand();
+        var sql = $"CREATE OR ALTER VIEW {EscapeIdentifier(viewName)} AS {definition}";
 
-        command.CommandType = CommandType.Text;
-
-        command.CommandText =
-            $"CREATE OR ALTER VIEW {EscapeIdentifier(viewName)} AS {definition}";
-
-        command.ExecuteNonQuery();
+        await db.Database.ExecuteSqlRawAsync(sql);
     }
 
     public static string BuildViewDefinition(Type type)
