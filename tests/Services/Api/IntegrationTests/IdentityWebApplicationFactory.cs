@@ -62,7 +62,8 @@ public class IdentityWebApplicationFactory : WebApplicationFactory<Program>, IAs
             services.Remove(descriptor);
 
         services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(_dbContainer.GetConnectionString()));
+            options.UseSqlServer(_dbContainer.GetConnectionString(),
+                sqlOpts => sqlOpts.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
         return services;
     }
