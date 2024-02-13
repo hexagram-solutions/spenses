@@ -10,7 +10,7 @@ public partial class InvitationsIntegrationTests
     public async Task Delete_invitation_declines_invitation()
     {
         var home = (await _homes.GetHomes()).Content!.First();
-        var email = AuthFixture.VerifiedUser.Email;
+        var email = AuthFixture.CurrentUser.Email;
 
         await CreateAndInviteMember(home.Id, email);
 
@@ -62,7 +62,7 @@ public partial class InvitationsIntegrationTests
     public async Task Delete_invitation_that_has_already_been_declined_yields_success()
     {
         var home = (await _homes.GetHomes()).Content!.First();
-        var email = AuthFixture.VerifiedUser.Email;
+        var email = AuthFixture.CurrentUser.Email;
 
         await CreateAndInviteMember(home.Id, email);
 

@@ -19,7 +19,7 @@ public class VerifyEmailCommandHandler(
     {
         var (userId, code, newEmail) = request.Request;
 
-        if (await userManager.FindByIdAsync(userId) is not { } user)
+        if (await userManager.FindByIdAsync(userId.ToString()) is not { } user)
             throw new UnauthorizedException();
 
         try

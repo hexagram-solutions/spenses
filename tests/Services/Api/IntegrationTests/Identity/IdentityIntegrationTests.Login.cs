@@ -33,7 +33,7 @@ public partial class IdentityIntegrationTests
     {
         var response = await _identityApi.Login(new LoginRequest
         {
-            Email = AuthFixture.VerifiedUser.Email,
+            Email = AuthFixture.CurrentUser.Email,
             Password = "foo"
         });
 

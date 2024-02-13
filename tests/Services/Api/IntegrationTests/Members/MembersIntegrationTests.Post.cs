@@ -124,15 +124,16 @@ public partial class MembersIntegrationTests
             InvitationToken = invitationToken
         };
 
-        var registrationResponse = await AuthFixture.Register(registerRequest);
+        var registrationResponse = await AuthFixture.Register(registerRequest, true);
 
         registrationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await AuthFixture.VerifyUser(email);
-
-        var loginResponse = await AuthFixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+        var loginResponse = await AuthFixture.Login(
+            new LoginRequest { Email = email, Password = registerRequest.Password });
 
         loginResponse.Content!.Succeeded.Should().BeTrue();
+
+        var resp = await _members.GetMembers(home.Id);
 
         var members = (await _members.GetMembers(home.Id)).Content!;
 

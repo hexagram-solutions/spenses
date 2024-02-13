@@ -10,7 +10,7 @@ namespace Spenses.App.Pages.Identity;
 public partial class VerifyEmail
 {
     [SupplyParameterFromQuery]
-    private string? UserId { get; set; }
+    private Guid? UserId { get; set; }
 
     [SupplyParameterFromQuery]
     private string? Code { get; set; }
@@ -27,14 +27,15 @@ public partial class VerifyEmail
     {
         await base.OnInitializedAsync();
 
-        if (UserId is null || Code is null)
+        if (!UserId.HasValue || Code is null)
         {
             Dispatcher.Dispatch(new GoAction(Routes.Root));
 
             return;
         }
 
-        Dispatcher.Dispatch(new EmailVerificationRequestedAction(new VerifyEmailRequest(UserId, Code, NewEmail)));
+        Dispatcher.Dispatch(new EmailVerificationRequestedAction(
+            new VerifyEmailRequest(UserId.GetValueOrDefault(), Code, NewEmail)));
 
         SubscribeToAction<EmailVerificationFailedAction>(_ => Succeeded = false);
 

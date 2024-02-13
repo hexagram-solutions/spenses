@@ -11,19 +11,19 @@ public class VerifyEmailRequestValidatorTests
     [Fact]
     public void User_id_is_required()
     {
-        var model = new VerifyEmailRequest(string.Empty, "foo");
+        var model = new VerifyEmailRequest(Guid.Empty, "foo");
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.UserId);
 
-        _validator.TestValidate(model with { UserId = "bar" })
+        _validator.TestValidate(model with { UserId = Guid.NewGuid() })
             .ShouldNotHaveValidationErrorFor(x => x.UserId);
     }
 
     [Fact]
     public void Code_is_required()
     {
-        var model = new VerifyEmailRequest("foo", string.Empty);
+        var model = new VerifyEmailRequest(Guid.NewGuid(), string.Empty);
 
         _validator.TestValidate(model)
             .ShouldHaveValidationErrorFor(x => x.Code);
@@ -35,7 +35,7 @@ public class VerifyEmailRequestValidatorTests
     [Fact]
     public void New_email_must_be_valid_when_not_empty()
     {
-        var model = new VerifyEmailRequest("foo", "bar");
+        var model = new VerifyEmailRequest(Guid.NewGuid(), "bar");
 
         _validator.TestValidate(model)
             .ShouldNotHaveValidationErrorFor(x => x.NewEmail);

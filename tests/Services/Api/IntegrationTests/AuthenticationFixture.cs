@@ -31,7 +31,7 @@ public partial class AuthenticationFixture
 
     public IServiceProvider Services { get; }
 
-    public CurrentUser VerifiedUser { get; private set; } = null!;
+    public CurrentUser CurrentUser { get; private set; } = null!;
 
     public HttpClient CreateAuthenticatedClient()
     {
@@ -69,18 +69,14 @@ public partial class AuthenticationFixture
 
     public async Task<IApiResponse<CurrentUser>> Register(RegisterRequest request, bool verify = false)
     {
-        var identityApi = CreateApiClient<IIdentityApi>();
+        var identityApi = RestService.For<IIdentityApi>(_authenticatedHttpClient);
 
         var response = await identityApi.Register(request);
 
         if (!verify)
             return response;
 
-        var currentUser = response.Content!;
-
-        await VerifyUser(currentUser.Email);
-
-        currentUser.EmailVerified = true;
+        await VerifyUser(request.Email);
 
         return response;
     }
@@ -89,7 +85,7 @@ public partial class AuthenticationFixture
     {
         var (userId, code, _) = GetVerificationParametersForEmail(email);
 
-        var identityApi = CreateApiClient<IIdentityApi>();
+        var identityApi = RestService.For<IIdentityApi>(_authenticatedHttpClient);
 
         return identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
     }
@@ -102,12 +98,16 @@ public partial class AuthenticationFixture
 
         _isAuthenticated = response.IsSuccessStatusCode;
 
+        var meApi = RestService.For<IMeApi>(_authenticatedHttpClient);
+
+        CurrentUser = (await meApi.GetMe()).Content!;
+
         return response;
     }
 
     public async Task<IApiResponse> Logout()
     {
-        var identityApi = CreateApiClient<IIdentityApi>();
+        var identityApi = RestService.For<IIdentityApi>(_authenticatedHttpClient);
 
         var response = await identityApi.Logout();
 
@@ -124,7 +124,7 @@ public partial class AuthenticationFixture
             .Last(e => e.RecipientAddress == email);
     }
 
-    public (string userId, string code, string? newEmail) GetVerificationParametersForEmail(string email)
+    public (Guid userId, string code, string? newEmail) GetVerificationParametersForEmail(string email)
     {
         var message = GetLastMessageForEmail(email);
 
@@ -132,7 +132,7 @@ public partial class AuthenticationFixture
 
         var parameters = HttpUtility.ParseQueryString(confirmationUri.Query);
 
-        return (parameters["userId"]!, parameters["code"]!, parameters["newEmail"]);
+        return (Guid.Parse(parameters["userId"]!), parameters["code"]!, parameters["newEmail"]);
     }
 
     public (string email, string code) GetPasswordResetParametersForEmail(string email)

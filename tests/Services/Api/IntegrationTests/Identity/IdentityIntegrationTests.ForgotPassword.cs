@@ -8,7 +8,7 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Forgot_password_sends_reset_email_for_verified_user()
     {
-        var verifiedEmail = AuthFixture.VerifiedUser.Email;
+        var verifiedEmail = AuthFixture.CurrentUser.Email;
 
         var response = await _identityApi.ForgotPassword(
             new ForgotPasswordRequest { Email = verifiedEmail });

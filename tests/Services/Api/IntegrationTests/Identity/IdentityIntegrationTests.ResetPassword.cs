@@ -64,7 +64,7 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Reset_password_with_email_as_password_yields_identity_error()
     {
-        var verifiedUser = AuthFixture.VerifiedUser;
+        var verifiedUser = AuthFixture.CurrentUser;
 
         await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = verifiedUser.Email });
 
@@ -89,7 +89,7 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Reset_password_with_invalid_code_yields_identity_error()
     {
-        var verifiedUser = AuthFixture.VerifiedUser;
+        var verifiedUser = AuthFixture.CurrentUser;
 
         var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest
         {

@@ -25,7 +25,7 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Verify_email_with_invalid_parameters_yields_bad_request()
     {
-        var response = await _identityApi.VerifyEmail(new VerifyEmailRequest("foo", "bar", "baz"));
+        var response = await _identityApi.VerifyEmail(new VerifyEmailRequest(Guid.Empty, "bar", "baz"));
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
