@@ -9,10 +9,11 @@ namespace Spenses.Api.IntegrationTests.Invitations;
 public partial class InvitationsIntegrationTests : IdentityIntegrationTestBase
 {
     private readonly IHomesApi _homes;
-    private readonly IMembersApi _members;
     private readonly IInvitationsApi _invitations;
+    private readonly IMembersApi _members;
 
-    public InvitationsIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
+    public InvitationsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+        : base(databaseFixture, authFixture)
     {
         _homes = CreateApiClient<IHomesApi>();
         _members = CreateApiClient<IMembersApi>();
@@ -21,11 +22,7 @@ public partial class InvitationsIntegrationTests : IdentityIntegrationTestBase
 
     private async Task<(Guid memberId, Guid invitationid)> CreateAndInviteMember(Guid homeId, string email)
     {
-        var properties = new CreateMemberProperties
-        {
-            Name = "Quatro Quatro",
-            DefaultSplitPercentage = 0.0m,
-        };
+        var properties = new CreateMemberProperties { Name = "Quatro Quatro", DefaultSplitPercentage = 0.0m };
 
         var createdMember = (await _members.PostMember(homeId, properties)).Content!;
 

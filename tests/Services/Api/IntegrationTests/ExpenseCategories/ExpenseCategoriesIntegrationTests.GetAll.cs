@@ -7,6 +7,8 @@ public partial class ExpenseCategoriesIntegrationTests
     [Fact]
     public async Task Get_expense_categories_yields_categories_in_order()
     {
+        var resp = await _homes.GetHomes();
+
         var homeId = (await _homes.GetHomes()).Content!.First().Id;
 
         var expenseCategories = (await _categories.GetExpenseCategories(homeId)).Content!;

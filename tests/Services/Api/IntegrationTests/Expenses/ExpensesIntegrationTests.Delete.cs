@@ -9,6 +9,8 @@ public partial class ExpensesIntegrationTests
     {
         var homeId = (await _homes.GetHomes()).Content!.First().Id;
 
+        var resp = await _expenses.GetExpenses(homeId, DefaultExpensesQuery);
+
         var expenseId = (await _expenses.GetExpenses(homeId, DefaultExpensesQuery)).Content!.Items.First().Id;
 
         var homeNotFoundResult = await _expenses.DeleteExpense(Guid.NewGuid(), expenseId);

@@ -10,7 +10,8 @@ public partial class MembersIntegrationTests : IdentityIntegrationTestBase
     private readonly IHomesApi _homes;
     private readonly IMembersApi _members;
 
-    public MembersIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
+    public MembersIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+        : base(databaseFixture, authFixture)
     {
         _homes = CreateApiClient<IHomesApi>();
         _members = CreateApiClient<IMembersApi>();

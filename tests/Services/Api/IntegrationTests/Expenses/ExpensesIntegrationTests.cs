@@ -10,7 +10,8 @@ public partial class ExpensesIntegrationTests : IdentityIntegrationTestBase
     private readonly IExpensesApi _expenses;
     private readonly IExpenseCategoriesApi _expenseCategories;
 
-    public ExpensesIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
+    public ExpensesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+        : base(databaseFixture, authFixture)
     {
         _homes = CreateApiClient<IHomesApi>();
         _expenses = CreateApiClient<IExpensesApi>();

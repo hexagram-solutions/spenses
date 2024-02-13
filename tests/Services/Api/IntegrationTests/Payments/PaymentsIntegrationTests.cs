@@ -10,7 +10,8 @@ public partial class PaymentsIntegrationTests : IdentityIntegrationTestBase
     private readonly IHomesApi _homes;
     private readonly IPaymentsApi _payments;
 
-    public PaymentsIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
+    public PaymentsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+        : base(databaseFixture, authFixture)
     {
         _homes = CreateApiClient<IHomesApi>();
         _payments = CreateApiClient<IPaymentsApi>();

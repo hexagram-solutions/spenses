@@ -9,7 +9,8 @@ public class InsightsIntegrationTests : IdentityIntegrationTestBase
     private readonly IHomesApi _homes;
     private readonly IInsightsApi _insights;
 
-    public InsightsIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
+    public InsightsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+        : base(databaseFixture, authFixture)
     {
         _homes = CreateApiClient<IHomesApi>();
         _insights = CreateApiClient<IInsightsApi>();

@@ -9,7 +9,8 @@ public partial class IdentityIntegrationTests : IdentityIntegrationTestBase
 
     private readonly IIdentityApi _identityApi;
 
-    public IdentityIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
+    public IdentityIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+        : base(databaseFixture, authFixture)
     {
         _identityApi = CreateApiClient<IIdentityApi>();
     }

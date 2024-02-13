@@ -1,247 +1,117 @@
-using System.Text.RegularExpressions;
-using System.Web;
-using Hexagrams.Extensions.Configuration;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Refit;
-using Respawn;
-using Spenses.Api.Infrastructure;
 using Spenses.Api.IntegrationTests.Identity.Services;
-using Spenses.Application.Services.Invitations;
-using Spenses.Client.Http;
 using Spenses.Resources.Relational;
-using Spenses.Resources.Relational.Models;
-using Spenses.Shared.Common;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Me;
-using Spenses.Tools.Setup;
-using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Api.IntegrationTests;
 
 [Collection(IdentityWebApplicationCollection.CollectionName)]
-public abstract class IdentityIntegrationTestBase : IAsyncLifetime
+public abstract class IdentityIntegrationTestBase :
+    IAsyncLifetime,
+    IClassFixture<DatabaseFixture>,
+    IClassFixture<AuthenticationFixture>
 {
-    private readonly IdentityWebApplicationFixture _webApplicationFixture;
-    private readonly HttpClient _authenticatedHttpClient;
+    private readonly DatabaseFixture _databaseFixture;
+    private readonly AuthenticationFixture _authFixture;
 
-    private bool _isAuthenticated;
-
-    protected IdentityIntegrationTestBase(IdentityWebApplicationFixture fixture)
+    protected IdentityIntegrationTestBase(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
     {
-        _webApplicationFixture = fixture;
-        _authenticatedHttpClient = _webApplicationFixture.WebApplicationFactory.CreateClient();
-
-        Services = fixture.WebApplicationFactory.Services;
+        _databaseFixture = databaseFixture;
+        _authFixture = authFixture;
     }
 
     public CurrentUser VerifiedUser { get; private set; } = null!;
 
-    protected IServiceProvider Services { get; }
+    // todo: stinky
+    public IServiceProvider Services => _authFixture.Services; 
 
-    public async Task InitializeAsync()
+    public virtual async Task InitializeAsync()
     {
-        await ResetDatabase();
+        await _databaseFixture.ResetDatabase();
 
-        VerifiedUser = (await CreateApiClient<IMeApi>().GetMe()).Content!;
+        await _authFixture.LoginAsTestUser();
 
-        await LoginAsTestUser();
+        VerifiedUser = _authFixture.VerifiedUser;
     }
 
-    public Task DisposeAsync()
+    public virtual Task DisposeAsync()
     {
         return Task.CompletedTask;
     }
 
-    protected TClient CreateApiClient<TClient>(bool authenticated = true)
+    public Task ExecuteDbContextAction(Func<ApplicationDbContext, Task> action)
     {
-        var settings = new RefitSettings { CollectionFormat = CollectionFormat.Multi };
-
-        return authenticated
-            ? RestService.For<TClient>(CreateAuthenticatedClient(), settings)
-            : RestService.For<TClient>(_webApplicationFixture.WebApplicationFactory.CreateClient(), settings);
-    }
-
-    private async Task ResetDatabase()
-    {
-        await using var scope = Services.CreateAsyncScope();
-
-        var services = scope.ServiceProvider;
-
-        var userContextProvider = services.GetRequiredService<UserContextProvider>();
-        userContextProvider.SetContext(new SystemUserContext(services.GetRequiredService<IConfiguration>()));
-
-        var db = services.GetRequiredService<ApplicationDbContext>();
-
-        var connectionString = db.Database.GetConnectionString()!;
-
-        var respawner = await Respawner.CreateAsync(connectionString, new RespawnerOptions
-        {
-            CheckTemporalTables = true
-        });
-
-        await respawner.ResetAsync(connectionString);
-
-        var seeder = services.GetRequiredService<DataSeeder>();
-        await seeder.SeedDatabase();
-
-        userContextProvider.SetContext(new HttpUserContext(services.GetRequiredService<IHttpContextAccessor>()));
-    }
-
-    public async Task ExecuteDbContextAction(Func<ApplicationDbContext, Task> action)
-    {
-        await using var scope = Services.CreateAsyncScope();
-
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        await action(db);
+        return _databaseFixture.ExecuteDbContextAction(action);
     }
 
     public HttpClient CreateAuthenticatedClient()
     {
-        if (_isAuthenticated)
-            return _authenticatedHttpClient;
-
-        LoginAsTestUser().Wait();
-
-        return _authenticatedHttpClient;
+        return _authFixture.CreateAuthenticatedClient();
     }
 
     public HttpClient CreateClient()
     {
-        return _webApplicationFixture.WebApplicationFactory.CreateClient();
+        return _authFixture.CreateClient();
     }
 
-    public async Task LoginAsTestUser()
+    protected TClient CreateApiClient<TClient>(bool authenticated = true)
     {
-        var config = Services.GetRequiredService<IConfiguration>();
-
-        var email = config.Require(ConfigConstants.SpensesTestIntegrationTestUserEmail);
-        var password = config.Require(ConfigConstants.SpensesTestDefaultUserPassword);
-
-        await Login(new LoginRequest { Email = email, Password = password });
+        return _authFixture.CreateApiClient<TClient>(authenticated);
     }
 
-    public async Task<IApiResponse<CurrentUser>> Register(RegisterRequest request, bool verify = false)
+    public Task LoginAsTestUser()
     {
-        var identityApi = CreateApiClient<IIdentityApi>(false);
+        return _authFixture.LoginAsTestUser();
+    }
 
-        var response = await identityApi.Register(request);
-
-        if (!verify)
-            return response;
-
-        var currentUser = response.Content!;
-
-        await VerifyUser(currentUser.Email);
-
-        currentUser.EmailVerified = true;
-
-        return response;
+    public Task<IApiResponse<CurrentUser>> Register(RegisterRequest request, bool verify = false)
+    {
+        return _authFixture.Register(request, verify);
     }
 
     public Task<IApiResponse> VerifyUser(string email)
     {
-        var (userId, code, _) = GetVerificationParametersForEmail(email);
-
-        var identityApi = CreateApiClient<IIdentityApi>();
-
-        return identityApi.VerifyEmail(new VerifyEmailRequest(userId, code));
+        return _authFixture.VerifyUser(email);
     }
 
-    public async Task<IApiResponse<LoginResult>> Login(LoginRequest loginRequest)
+    public Task<IApiResponse<LoginResult>> Login(LoginRequest loginRequest)
     {
-        var identityApi = CreateApiClient<IIdentityApi>();
-
-        var response = await identityApi.Login(loginRequest);
-
-        _isAuthenticated = response.IsSuccessStatusCode;
-
-        return response;
+        return _authFixture.Login(loginRequest);
     }
 
-    public async Task<IApiResponse> Logout()
+    public Task<IApiResponse> Logout()
     {
-        var identityApi = CreateApiClient<IIdentityApi>();
-
-        var response = await identityApi.Logout();
-
-        _isAuthenticated = !response.IsSuccessStatusCode;
-
-        return response;
+        return _authFixture.Logout();
     }
 
-    public async Task DeleteUser(string email)
+    public Task DeleteUser(string email)
     {
-        var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
-
-        if (await userManager.FindByEmailAsync(email) is not { } user)
-            return;
-
-        await userManager.DeleteAsync(user);
+        return _authFixture.DeleteUser(email);
     }
 
     public CapturedEmailMessage GetLastMessageForEmail(string email)
     {
-        var emailClient = Services.GetRequiredService<CapturingEmailClient>();
-
-        return emailClient.EmailMessages
-            .Last(e => e.RecipientAddress == email);
+        return _authFixture.GetLastMessageForEmail(email);
     }
 
     public (string userId, string code, string? newEmail) GetVerificationParametersForEmail(string email)
     {
-        var message = GetLastMessageForEmail(email);
-
-        var confirmationUri = GetLinkFromEmailMessage(message);
-
-        var parameters = HttpUtility.ParseQueryString(confirmationUri.Query);
-
-        return (parameters["userId"]!, parameters["code"]!, parameters["newEmail"]);
+        return _authFixture.GetVerificationParametersForEmail(email);
     }
 
     public (string email, string code) GetPasswordResetParametersForEmail(string email)
     {
-        var message = GetLastMessageForEmail(email);
-
-        var confirmationUri = GetLinkFromEmailMessage(message);
-
-        var parameters = HttpUtility.ParseQueryString(confirmationUri.Query);
-
-        return (parameters["email"]!, parameters["code"]!);
+        return _authFixture.GetPasswordResetParametersForEmail(email);
     }
 
     public Guid GetInvitationIdForEmail(string email)
     {
-        var token = GetInvitationTokenForEmail(email);
-
-        var tokenProvider = Services.GetRequiredService<InvitationTokenProvider>();
-
-        return tokenProvider.UnprotectInvitationData(token).InvitationId;
+        return _authFixture.GetInvitationIdForEmail(email);
     }
 
     public string GetInvitationTokenForEmail(string email)
     {
-        var message = GetLastMessageForEmail(email);
-
-        var invitationAcceptUri = GetLinkFromEmailMessage(message);
-
-        var parameters = HttpUtility.ParseQueryString(invitationAcceptUri.Query);
-
-        return parameters["invitationToken"]!;
-    }
-
-    private static Uri GetLinkFromEmailMessage(CapturedEmailMessage message)
-    {
-        var regex = new Regex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase);
-
-        var verificationAnchorValue = regex.Matches(message.HtmlMessage)
-            .Select(m => m.Groups["href"].Value)
-            .Single();
-
-        return new Uri(verificationAnchorValue);
+        return _authFixture.GetInvitationTokenForEmail(email);
     }
 }

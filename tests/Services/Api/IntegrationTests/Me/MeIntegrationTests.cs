@@ -6,7 +6,8 @@ public partial class MeIntegrationTests : IdentityIntegrationTestBase
 {
     private readonly IMeApi _meApi;
 
-    public MeIntegrationTests(IdentityWebApplicationFixture fixture) : base(fixture)
+    public MeIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+        : base(databaseFixture, authFixture)
     {
         _meApi = CreateApiClient<IMeApi>();
     }
