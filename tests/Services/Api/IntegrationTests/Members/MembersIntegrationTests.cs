@@ -1,24 +1,21 @@
 using Bogus;
-using Refit;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Members;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class MembersIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class MembersIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
     private readonly Faker _faker = new();
 
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
-    private readonly IMembersApi _members = RestService.For<IMembersApi>(fixture.CreateAuthenticatedClient());
+    private IHomesApi _homes = null!;
+    private IMembersApi _members = null!;
 
-    public Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
-        return Task.CompletedTask;
-    }
+        await base.InitializeAsync();
 
-    public async Task DisposeAsync()
-    {
-        await fixture.LoginAsTestUser();
+        _homes = CreateApiClient<IHomesApi>();
+        _members = CreateApiClient<IMembersApi>();
     }
 }

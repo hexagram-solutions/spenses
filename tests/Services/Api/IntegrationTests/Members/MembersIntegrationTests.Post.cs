@@ -1,5 +1,4 @@
 using System.Net;
-using Bogus;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Members;
 using Spenses.Shared.Models.Users;
@@ -35,8 +34,6 @@ public partial class MembersIntegrationTests
         var members = (await _members.GetMembers(home.Id)).Content;
         members.Should().ContainEquivalentOf(createdMember,
             opts => opts.Excluding(u => u.AvatarUrl));
-
-        await _members.DeleteMember(home.Id, createdMember.Id);
     }
 
     [Fact]
@@ -85,13 +82,11 @@ public partial class MembersIntegrationTests
 
         createdMember.Status.Should().Be(MemberStatus.Invited);
 
-        var invitationMessage = fixture.GetLastMessageForEmail(email);
+        var invitationMessage = AuthFixture.GetLastMessageForEmail(email);
 
         invitationMessage.RecipientAddress.Should().Be(email);
         invitationMessage.Subject.Should().Contain(home.Name);
         invitationMessage.PlainTextMessage.Should().Contain("?invitationToken=");
-
-        await _members.DeleteMember(home.Id, createdMember.Id);
     }
 
     [Fact]
@@ -117,27 +112,28 @@ public partial class MembersIntegrationTests
 
         createdMember.Status.Should().Be(MemberStatus.Invited);
 
-        var invitationToken = fixture.GetInvitationTokenForEmail(email);
+        var invitationToken = AuthFixture.GetInvitationTokenForEmail(email);
 
-        await fixture.Logout();
+        await AuthFixture.Logout();
 
         var registerRequest = new RegisterRequest
         {
             DisplayName = "Quatro Quatro",
             Email = email,
-            Password = new Faker().Internet.Password(),
+            Password = _faker.Internet.Password(),
             InvitationToken = invitationToken
         };
 
-        var registrationResponse = await fixture.Register(registerRequest);
+        var registrationResponse = await AuthFixture.Register(registerRequest, true);
 
         registrationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await fixture.VerifyUser(email);
-
-        var loginResponse = await fixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+        var loginResponse = await AuthFixture.Login(
+            new LoginRequest { Email = email, Password = registerRequest.Password });
 
         loginResponse.Content!.Succeeded.Should().BeTrue();
+
+        var resp = await _members.GetMembers(home.Id);
 
         var members = (await _members.GetMembers(home.Id)).Content!;
 
@@ -150,10 +146,6 @@ public partial class MembersIntegrationTests
             Status = MemberStatus.Active,
             User = new User { DisplayName = registerRequest.DisplayName, Id = registrationResponse.Content!.Id }
         }, opts => opts.Excluding(m => m.AvatarUrl));
-
-        await fixture.LoginAsTestUser();
-        await _members.DeleteMember(home.Id, createdMember.Id);
-        await fixture.DeleteUser(email);
     }
 
     [Fact]

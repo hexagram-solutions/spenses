@@ -20,15 +20,15 @@ public class DbSetupCommand : RootCommand
     private readonly DbContextOptionsFactory _dbContextOptionsFactory;
     private readonly ILogger<DbSetupCommand> _logger;
     private readonly IEnumerable<ISeedDataTask> _seedDataTasks;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IUserContext _userContext;
 
     public DbSetupCommand(DbContextOptionsFactory dbContextOptionsFactory, ILogger<DbSetupCommand> logger,
-        IEnumerable<ISeedDataTask> seedDataTasks, ICurrentUserService currentUserService)
+        IEnumerable<ISeedDataTask> seedDataTasks, IUserContext userContext)
         : base("Perform database setup tasks")
     {
         _logger = logger;
         _seedDataTasks = seedDataTasks;
-        _currentUserService = currentUserService;
+        _userContext = userContext;
         _dbContextOptionsFactory = dbContextOptionsFactory;
 
         Add(GetSeedDatabaseCommand());
@@ -171,7 +171,7 @@ public class DbSetupCommand : RootCommand
 
         _logger.LogInformation("Rebuilding views... ");
 
-        db.UpdateViews();
+        await db.UpdateViews();
 
         _logger.LogInformation("Done rebuilding views.");
     }
@@ -179,7 +179,7 @@ public class DbSetupCommand : RootCommand
     private ApplicationDbContext CreateDbContext(string? connection)
     {
         return new ApplicationDbContext(_dbContextOptionsFactory.Create(connection),
-            new AuditableEntitySaveChangesInterceptor(_currentUserService));
+            new AuditableEntitySaveChangesInterceptor(_userContext));
     }
 
     private static bool Confirm(string prompt)

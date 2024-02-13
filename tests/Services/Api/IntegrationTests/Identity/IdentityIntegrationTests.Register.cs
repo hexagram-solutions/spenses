@@ -1,5 +1,4 @@
 using System.Net;
-using Bogus;
 using Refit;
 using Spenses.Shared.Models.Identity;
 
@@ -12,12 +11,12 @@ public partial class IdentityIntegrationTests
     {
         var request = new RegisterRequest
         {
-            Email = "hmccringleberry@psu.edu",
-            Password = new Faker().Internet.Password(),
+            Email = _faker.Internet.Email(),
+            Password = _faker.Internet.Password(),
             DisplayName = "Hingle McCringleberry"
         };
 
-        var response = await fixture.Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -27,21 +26,21 @@ public partial class IdentityIntegrationTests
         registeredUser.Email.Should().Be(request.Email);
         registeredUser.DisplayName.Should().Be(request.DisplayName);
         registeredUser.EmailVerified.Should().BeFalse();
-
-        await fixture.DeleteUser(registeredUser.Email);
     }
 
     [Fact]
     public async Task Register_with_email_as_password_yields_identity_error()
     {
+        var email = _faker.Internet.Email();
+
         var request = new RegisterRequest
         {
-            Email = "hmccringleberry@psu.edu",
-            Password = "hmccringleberry@psu.edu",
+            Email = email,
+            Password = email,
             DisplayName = "Hingle McCringleberry"
         };
 
-        var response = await fixture.Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -55,12 +54,12 @@ public partial class IdentityIntegrationTests
     {
         var request = new RegisterRequest
         {
-            Email = "hmccringleberry@psu.edu",
+            Email = _faker.Internet.Email(),
             Password = "1234567890",
             DisplayName = "Hingle McCringleberry"
         };
 
-        var response = await fixture.Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -75,20 +74,18 @@ public partial class IdentityIntegrationTests
         var request = new RegisterRequest
         {
             Email = "hmccringleberry@psu.edu",
-            Password = new Faker().Internet.Password(),
+            Password = _faker.Internet.Password(),
             DisplayName = "Hingle McCringleberry"
         };
 
-        await fixture.Register(request);
-        var response = await fixture.Register(request);
+        await AuthFixture.Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
         var problemDetails = await response.Error!.GetContentAsAsync<ProblemDetails>();
 
         problemDetails!.Errors.Should().ContainKey(IdentityErrors.Register.DuplicateUserName);
-
-        await fixture.DeleteUser(request.Email);
     }
 
     [Fact]
@@ -101,7 +98,7 @@ public partial class IdentityIntegrationTests
             DisplayName = string.Empty
         };
 
-        var response = await fixture.Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 

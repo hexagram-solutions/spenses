@@ -29,6 +29,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="ReportGenerator" Version="5.2.1" />
+    <PackageReference Include="Respawn" Version="6.2.1" />
+    <PackageReference Include="Testcontainers.MsSql" Version="3.7.0" />
     <PackageReference Include="xunit" Version="2.6.6" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -43,6 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Clients\Http\Spenses.Client.Http.csproj" />
     <ProjectReference Include="..\..\..\..\src\Services\Api\Spenses.Api.csproj" />
+    <ProjectReference Include="..\..\..\..\tools\Setup\Spenses.Tools.Setup.csproj" />
   </ItemGroup>
 
 </Project>

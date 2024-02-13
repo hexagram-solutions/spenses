@@ -13,7 +13,7 @@ public partial class InvitationsIntegrationTests
 
         var (memberId, _) = await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = AuthFixture.GetInvitationIdForEmail(email);
 
         // Register and log in as a new user who will accept the invitation
         await RegisterAndLogIn(email);
@@ -32,9 +32,6 @@ public partial class InvitationsIntegrationTests
 
         var memberInvitationsResponse = await _members.GetMemberInvitations(home.Id, memberId);
         memberInvitationsResponse.Content!.Single().Status.Should().Be(InvitationStatus.Accepted);
-
-        await _members.DeleteMember(home.Id, memberId);
-        await fixture.DeleteUser(email);
     }
 
     [Fact]
@@ -43,8 +40,8 @@ public partial class InvitationsIntegrationTests
         var home = (await _homes.GetHomes()).Content!.First();
         var email = "quatro.quatro@sjsu.edu";
 
-        var (memberId, _) = await CreateAndInviteMember(home.Id, email);
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        await CreateAndInviteMember(home.Id, email);
+        var invitationId = AuthFixture.GetInvitationIdForEmail(email);
 
         // Register and log in as a new user who will accept the invitation
         await RegisterAndLogIn(email);
@@ -59,9 +56,6 @@ public partial class InvitationsIntegrationTests
 
         invitationResponse = await _invitations.AcceptInvitation(invitationId);
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        await _members.DeleteMember(home.Id, memberId);
-        await fixture.DeleteUser(email);
     }
 
     [Fact]
@@ -74,15 +68,12 @@ public partial class InvitationsIntegrationTests
 
         await _members.CancelMemberInvitations(home.Id, memberId);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = AuthFixture.GetInvitationIdForEmail(email);
 
         await RegisterAndLogIn(email);
 
         var invitationResponse = await _invitations.AcceptInvitation(invitationId);
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-
-        await _members.DeleteMember(home.Id, memberId);
-        await fixture.DeleteUser(email);
     }
 
     [Fact]
@@ -99,14 +90,12 @@ public partial class InvitationsIntegrationTests
         var home = (await _homes.GetHomes()).Content!.First();
         var email = "quatro.quatro@sjsu.edu";
 
-        var (memberId, _) = await CreateAndInviteMember(home.Id, email);
+        await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = fixture.GetInvitationIdForEmail(email);
+        var invitationId = AuthFixture.GetInvitationIdForEmail(email);
 
         var response = await _invitations.AcceptInvitation(invitationId);
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-
-        await _members.DeleteMember(home.Id, memberId);
     }
 }

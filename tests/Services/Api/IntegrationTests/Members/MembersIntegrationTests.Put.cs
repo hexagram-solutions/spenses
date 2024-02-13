@@ -1,5 +1,4 @@
 using System.Net;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Expenses;
 using Spenses.Shared.Models.Members;
@@ -71,7 +70,7 @@ public partial class MembersIntegrationTests
     {
         var home = (await _homes.GetHomes()).Content!.First();
 
-        var expensesApi = RestService.For<IExpensesApi>(fixture.CreateAuthenticatedClient());
+        var expensesApi = CreateApiClient<IExpensesApi>();
 
         var expenses = await expensesApi.GetExpenses(home.Id, new FilteredExpensesQuery
         {

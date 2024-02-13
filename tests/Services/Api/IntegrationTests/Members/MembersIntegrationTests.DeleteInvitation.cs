@@ -31,8 +31,6 @@ public partial class MembersIntegrationTests
 
         var cancelledInvitationResponse = await _members.GetMemberInvitation(home.Id, createdMember.Id, invitation.Id);
         cancelledInvitationResponse.Content!.Status.Should().Be(InvitationStatus.Cancelled);
-
-        await _members.DeleteMember(home.Id, createdMember.Id);
     }
 
     [Fact]

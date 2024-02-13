@@ -1,5 +1,4 @@
 using System.Net;
-using Bogus;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.IntegrationTests.Identity;
@@ -12,23 +11,21 @@ public partial class IdentityIntegrationTests
         var registerRequest = new RegisterRequest
         {
             DisplayName = "Quatro Quatro",
-            Email = "quatro.quatro@sjsu.edu",
-            Password = new Faker().Internet.Password()
+            Email = _faker.Internet.Email(),
+            Password = _faker.Internet.Password()
         };
 
-        await fixture.Register(registerRequest);
+        await AuthFixture.Register(registerRequest);
 
-        var response = await fixture.VerifyUser(registerRequest.Email);
+        var response = await AuthFixture.VerifyUser(registerRequest.Email);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        await fixture.DeleteUser(registerRequest.Email);
     }
 
     [Fact]
     public async Task Verify_email_with_invalid_parameters_yields_bad_request()
     {
-        var response = await _identityApi.VerifyEmail(new VerifyEmailRequest("foo", "bar", "baz"));
+        var response = await _identityApi.VerifyEmail(new VerifyEmailRequest(Guid.Empty, "bar", "baz"));
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }

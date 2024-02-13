@@ -1,8 +1,7 @@
 using System.Net;
-using FluentAssertions.Execution;
-using Microsoft.Extensions.DependencyInjection;
-using Spenses.Resources.Relational;
-using DbModels = Spenses.Resources.Relational.Models;
+using Bogus;
+using Spenses.Shared.Models.Homes;
+using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 
@@ -19,46 +18,25 @@ public partial class HomesIntegrationTests
     [Fact]
     public async Task Get_home_where_current_user_is_not_a_member_returns_unauthorized()
     {
-        async Task<Guid> SetUp()
+        var createdHomeResponse = await _homes.PostHome(
+            new HomeProperties { Name = "Our House", Description = "Is in the middle of our street" });
+
+        var registerRequest = new RegisterRequest
         {
-            await using var scope = fixture.WebApplicationFactory.Services.CreateAsyncScope();
+            DisplayName = "Cartoons Plural",
+            Email = "cartoons.plural@vt.edu",
+            Password = new Faker().Internet.Password()
+        };
 
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            var homeEntry = await db.Homes.AddAsync(new DbModels.Home
-            {
-                Name = "foo",
-                CreatedById = Guid.Parse("00000000-0000-0000-0000-000000000001"), // todo: need this to be a constant or option somewhere
-                ModifiedById = Guid.Parse("00000000-0000-0000-0000-000000000001")
-            });
-
-            await db.SaveChangesAsync();
-
-            return homeEntry.Entity.Id;
-        }
-
-        using (new AssertionScope())
+        await AuthFixture.Register(registerRequest, true);
+        await AuthFixture.Login(new LoginRequest
         {
-            var homeId = await SetUp();
+            Email = registerRequest.Email,
+            Password = registerRequest.Password
+        });
 
-            var homeResponse = await _homes.GetHome(homeId);
+        var homeResponse = await _homes.GetHome(createdHomeResponse.Content!.Id);
 
-            homeResponse.Error!.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-
-            await TearDown(homeId);
-        }
-
-        async Task TearDown(Guid homeId)
-        {
-            await using var scope = fixture.WebApplicationFactory.Services.CreateAsyncScope();
-
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            var home = await db.Homes.FindAsync(homeId);
-
-            db.Homes.Remove(home!);
-
-            await db.SaveChangesAsync();
-        }
+        homeResponse.Error!.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 }

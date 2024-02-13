@@ -7,12 +7,12 @@ using Spenses.Utilities.Security.Services;
 
 namespace Spenses.Tools.Setup;
 
-public class SystemCurrentUserService(IConfiguration config) : ICurrentUserService
+public class SystemUserContext(IConfiguration config) : IUserContext
 {
     public ClaimsPrincipal CurrentUser => new(new ClaimsIdentity(
     [
         new Claim(ApplicationClaimTypes.Identifier, config.Require(ConfigConstants.SpensesTestSystemUserId)),
         new Claim(ApplicationClaimTypes.Email, "system@spenses.money"),
         new Claim(ApplicationClaimTypes.EmailVerified, true.ToString())
-    ], nameof(SystemCurrentUserService)));
+    ], nameof(SystemUserContext)));
 }

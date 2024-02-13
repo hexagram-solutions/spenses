@@ -1,7 +1,6 @@
 using System.Net;
 using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Homes;
 using Spenses.Shared.Models.Members;
@@ -28,7 +27,7 @@ public partial class HomesIntegrationTests
         var retrievedHome = (await _homes.GetHome(createdHome.Id)).Content!;
         retrievedHome.Should().BeEquivalentTo(createdHome);
 
-        var currentUser = (await RestService.For<IMeApi>(fixture.CreateAuthenticatedClient()).GetMe()).Content!;
+        var currentUser = (await CreateApiClient<IMeApi>().GetMe()).Content!;
 
         retrievedHome.Members.Single().Should().BeEquivalentTo(new Member
         {

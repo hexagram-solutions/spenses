@@ -11,12 +11,12 @@ namespace Spenses.Application.Features.Homes.Requests;
 
 public record HomesQuery : IRequest<IEnumerable<Home>>;
 
-public class HomesQueryHandler(ApplicationDbContext db, IMapper mapper, ICurrentUserService currentUserService)
+public class HomesQueryHandler(ApplicationDbContext db, IMapper mapper, IUserContext userContext)
     : IRequestHandler<HomesQuery, IEnumerable<Home>>
 {
     public async Task<IEnumerable<Home>> Handle(HomesQuery request, CancellationToken cancellationToken)
     {
-        var currentUserId = currentUserService.CurrentUser!.GetId();
+        var currentUserId = userContext.CurrentUser.GetId();
 
         var homes = await db.Homes
             .Where(h => h.Members.Select(m => m.UserId).Contains(currentUserId))

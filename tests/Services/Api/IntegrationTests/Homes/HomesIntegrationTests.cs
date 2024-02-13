@@ -1,22 +1,18 @@
-using Refit;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class HomesIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class HomesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
-    private readonly IExpenseCategoriesApi _expenseCategories =
-        RestService.For<IExpenseCategoriesApi>(fixture.CreateAuthenticatedClient());
+    private IHomesApi _homes = null!;
+    private IExpenseCategoriesApi _expenseCategories = null!;
 
-    public async Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
-        await fixture.LoginAsTestUser();
-    }
+        await base.InitializeAsync();
 
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
+        _homes = CreateApiClient<IHomesApi>();
+        _expenseCategories = CreateApiClient<IExpenseCategoriesApi>();
     }
 }

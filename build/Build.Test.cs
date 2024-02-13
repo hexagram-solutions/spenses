@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Hexagrams.Extensions.Common;
 using Hexagrams.Nuke.Components;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
@@ -10,7 +9,6 @@ using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.EntityFramework;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tools.EntityFramework.EntityFrameworkTasks;
-
 
 partial class Build
 {
@@ -49,12 +47,10 @@ partial class Build
     IEnumerable<Project> IntegrationTestProjects => Solution.GetAllProjects("*.IntegrationTests");
 
     Target IntegrationTestSetup => t => t
-        .DependsOn(MigrateDatabase)
-        .Requires(() => SqlServerConnectionString)
         .Requires(() => IntegrationTestDefaultUserPassword)
         .Executes(() =>
         {
-            var projectsToConfigure = IntegrationTestProjects.Concat(RelationalSetupTool.Yield());
+            var projectsToConfigure = IntegrationTestProjects;
 
             foreach (var project in projectsToConfigure)
             {
@@ -62,16 +58,11 @@ partial class Build
                     $"set Spenses:Test:DefaultUserPassword {IntegrationTestDefaultUserPassword} " +
                     $"--project {project}");
             }
-
-            DotNetRun(s => s
-                .SetProjectFile(RelationalSetupTool)
-                .SetApplicationArguments($"seed --connection \"{SqlServerConnectionString}\""));
         });
 
     Target IntegrationTest => t => t
         .DependsOn<IRestore>()
         .DependsOn(IntegrationTestSetup)
-        .Requires(() => SqlServerConnectionString)
         .Produces(this.FromComponent<IReportCoverage>().CoverageReportDirectory / "*.trx")
         .Produces(this.FromComponent<IReportCoverage>().CoverageReportDirectory / "*.xml")
         .Executes(() =>
@@ -80,7 +71,6 @@ partial class Build
                 .Apply(this.FromComponent<ITest>().TestSettingsBase)
                 .Apply(TestSettings)
                 .SetVerbosity(DotNetVerbosity.minimal)
-                .SetProcessEnvironmentVariable("Spenses:SqlServer:ConnectionString", SqlServerConnectionString)
                 .CombineWith(IntegrationTestProjects, (x, v) => x
                     .Apply(this.FromComponent<ITest>().TestProjectSettingsBase, v)),
                 completeOnFailure: true);

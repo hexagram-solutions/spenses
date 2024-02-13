@@ -21,7 +21,7 @@ var services = new ServiceCollection()
     .AddTransient<IConfiguration>(_ => config)
     .AddTransient<DbSetupCommand>()
     .AddTransient<DbContextOptionsFactory>()
-    .AddTransient<ICurrentUserService, SystemCurrentUserService>()
+    .AddTransient<IUserContext, SystemUserContext>()
     .Scan(scan => scan
         .FromAssemblyOf<ISeedDataTask>()
         .AddClasses(classes => classes.AssignableTo<ISeedDataTask>())

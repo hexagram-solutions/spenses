@@ -1,26 +1,21 @@
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Api.IntegrationTests.Payments;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class PaymentsIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class PaymentsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
+    private IHomesApi _homes = null!;
+    private IPaymentsApi _payments = null!;
 
-    private readonly IPaymentsApi _payments =
-        RestService.For<IPaymentsApi>(fixture.CreateAuthenticatedClient());
-
-    public Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
-        return Task.CompletedTask;
-    }
+        await base.InitializeAsync();
 
-    public async Task DisposeAsync()
-    {
-        await fixture.LoginAsTestUser();
+        _homes = CreateApiClient<IHomesApi>();
+        _payments = CreateApiClient<IPaymentsApi>();
     }
 
     private FilteredPaymentsQuery DefaultPaymentsQuery

@@ -216,7 +216,7 @@ public static class ProgramExtensions
     {
         builder.Services.AddAuthorizationBuilder();
         builder.Services.AddHttpContextAccessor();
-        builder.Services.AddTransient<ICurrentUserService, HttpContextCurrentUserService>();
+        builder.Services.AddTransient<IUserContext, HttpUserContext>();
         builder.Services.AddTransient<ICurrentUserAuthorizationService, CurrentUserAuthorizationService>();
 
         builder.Services.Scan(scan => scan

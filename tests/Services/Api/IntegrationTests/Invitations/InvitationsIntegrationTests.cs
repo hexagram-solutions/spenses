@@ -1,5 +1,4 @@
 using Bogus;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Invitations;
@@ -7,30 +6,25 @@ using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.IntegrationTests.Invitations;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class InvitationsIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class InvitationsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
-    private readonly IMembersApi _members = RestService.For<IMembersApi>(fixture.CreateAuthenticatedClient());
-    private readonly IInvitationsApi _invitations = RestService.For<IInvitationsApi>(fixture.CreateAuthenticatedClient());
+    private IHomesApi _homes = null!;
+    private IInvitationsApi _invitations = null!;
+    private IMembersApi _members = null!;
 
-    public async Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
-        await fixture.LoginAsTestUser();
-    }
+        await base.InitializeAsync();
 
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
+        _homes = CreateApiClient<IHomesApi>();
+        _members = CreateApiClient<IMembersApi>();
+        _invitations = CreateApiClient<IInvitationsApi>();
     }
 
     private async Task<(Guid memberId, Guid invitationid)> CreateAndInviteMember(Guid homeId, string email)
     {
-        var properties = new CreateMemberProperties
-        {
-            Name = "Quatro Quatro",
-            DefaultSplitPercentage = 0.0m,
-        };
+        var properties = new CreateMemberProperties { Name = "Quatro Quatro", DefaultSplitPercentage = 0.0m };
 
         var createdMember = (await _members.PostMember(homeId, properties)).Content!;
 
@@ -50,8 +44,8 @@ public partial class InvitationsIntegrationTests(IdentityWebApplicationFixture<P
             DisplayName = "Quatro Quatro"
         };
 
-        await fixture.Register(registerRequest, true);
+        await AuthFixture.Register(registerRequest, true);
 
-        await fixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+        await AuthFixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
     }
 }

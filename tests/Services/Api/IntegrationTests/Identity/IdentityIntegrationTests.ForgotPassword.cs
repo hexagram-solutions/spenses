@@ -1,5 +1,4 @@
 using System.Net;
-using Bogus;
 using Spenses.Shared.Models.Identity;
 
 namespace Spenses.Api.IntegrationTests.Identity;
@@ -9,14 +8,16 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Forgot_password_sends_reset_email_for_verified_user()
     {
+        var verifiedEmail = AuthFixture.CurrentUser.Email;
+
         var response = await _identityApi.ForgotPassword(
-            new ForgotPasswordRequest { Email = fixture.VerifiedUser.Email });
+            new ForgotPasswordRequest { Email = verifiedEmail });
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var (email, _) = fixture.GetPasswordResetParametersForEmail(fixture.VerifiedUser.Email);
+        var (email, _) = AuthFixture.GetPasswordResetParametersForEmail(verifiedEmail);
 
-        email.Should().Be(fixture.VerifiedUser.Email);
+        email.Should().Be(verifiedEmail);
     }
 
     [Fact]
@@ -25,17 +26,15 @@ public partial class IdentityIntegrationTests
         var registerRequest = new RegisterRequest
         {
             DisplayName = "Quatro Quatro",
-            Email = "quatro.quatro@sjsu.edu",
-            Password = new Faker().Internet.Password()
+            Email = _faker.Internet.Email(),
+            Password = _faker.Internet.Password()
         };
 
-        await fixture.Register(registerRequest);
+        await AuthFixture.Register(registerRequest);
 
         var response = await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = registerRequest.Email });
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        await fixture.DeleteUser(registerRequest.Email);
     }
 
     [Fact]

@@ -13,13 +13,13 @@ namespace Spenses.Application.Features.Me.Requests;
 
 public record ChangeEmailCommand(ChangeEmailRequest Request) : IRequest;
 
-public class ChangeEmailCommandHandler(UserManager<ApplicationUser> userManager, ICurrentUserService currentUser,
+public class ChangeEmailCommandHandler(UserManager<ApplicationUser> userManager, IUserContext userContext,
     IEmailSender<ApplicationUser> emailSender, IOptions<IdentityEmailOptions> emailOptions)
     : IRequestHandler<ChangeEmailCommand>
 {
     public async Task Handle(ChangeEmailCommand request, CancellationToken cancellationToken)
     {
-        var principal = currentUser.CurrentUser!;
+        var principal = userContext.CurrentUser;
 
         if (await userManager.GetUserAsync(principal) is not { } user)
             throw new UnauthorizedException();

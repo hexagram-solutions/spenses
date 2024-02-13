@@ -8,14 +8,14 @@ namespace Spenses.Resources.Relational.Infrastructure;
 
 public static class ViewBuilder
 {
-    public static void UpdateViews(this DbContext context)
+    public static async Task UpdateViews(this DbContext db)
     {
-        var connection = context.Database.GetDbConnection();
+        var connection = db.Database.GetDbConnection();
 
         if (connection.State != ConnectionState.Open)
-            connection.Open();
+            await connection.OpenAsync();
 
-        var keylessTypes = context.Model.GetEntityTypes()
+        var keylessTypes = db.Model.GetEntityTypes()
             .Where(et => !et.GetDeclaredKeys().Any())
             .Select(et => et.ClrType);
 
@@ -33,7 +33,7 @@ public static class ViewBuilder
             if (string.IsNullOrEmpty(existing) ||
                 !string.Equals(existing, definition, StringComparison.OrdinalIgnoreCase))
             {
-                connection.SetViewDefinition(viewName, definition);
+                await db.SetViewDefinition(viewName, definition);
             }
         }
     }
@@ -62,32 +62,22 @@ public static class ViewBuilder
         return index < 0 ? null : definition[(index + 4)..];
     }
 
-    private static void SetViewDefinition(this IDbConnection connection, string viewName, string definition)
+    private static async Task SetViewDefinition(this DbContext db, string viewName, string definition)
     {
-        using var command = connection.CreateCommand();
+        var sql = $"CREATE OR ALTER VIEW {EscapeIdentifier(viewName)} AS {definition}";
 
-        command.CommandType = CommandType.Text;
-
-        command.CommandText =
-            $"CREATE OR ALTER VIEW {EscapeIdentifier(viewName)} AS {definition}";
-
-        command.ExecuteNonQuery();
+        await db.Database.ExecuteSqlRawAsync(sql);
     }
 
     public static string BuildViewDefinition(Type type)
     {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
+        ArgumentNullException.ThrowIfNull(type);
 
         var tableAliases = new HashSet<string>();
 
-        var baseTable = type.GetCustomAttribute<BaseTableAttribute>();
-
-        if (baseTable == null)
-        {
-            throw new InvalidOperationException(
+        var baseTable = type.GetCustomAttribute<BaseTableAttribute>()
+            ?? throw new InvalidOperationException(
                 $"The type {type.FullName} must have a {nameof(BaseTableAttribute)} to be used as a view.");
-        }
 
         if (string.IsNullOrEmpty(baseTable.TableName))
         {
@@ -210,8 +200,7 @@ public static class ViewBuilder
 
     private static string EscapeIdentifier(string identifier)
     {
-        if (identifier == null)
-            throw new ArgumentNullException(nameof(identifier));
+        ArgumentNullException.ThrowIfNull(identifier);
 
         if (identifier.Length == 0)
             throw new ArgumentException("The identifier can not be an empty string.", nameof(identifier));

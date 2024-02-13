@@ -1,30 +1,15 @@
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.Api.IntegrationTests.Expenses;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class ExpensesIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class ExpensesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
-
-    private readonly IExpensesApi _expenses = RestService.For<IExpensesApi>(fixture.CreateAuthenticatedClient(),
-        new RefitSettings { CollectionFormat = CollectionFormat.Multi });
-
-    private readonly IExpenseCategoriesApi _expenseCategories = RestService.For<IExpenseCategoriesApi>(fixture.CreateAuthenticatedClient(),
-        new RefitSettings { CollectionFormat = CollectionFormat.Multi });
-
-    public async Task InitializeAsync()
-    {
-        await fixture.LoginAsTestUser();
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
-    }
+    private IExpenseCategoriesApi _expenseCategories = null!;
+    private IExpensesApi _expenses = null!;
+    private IHomesApi _homes = null!;
 
     private FilteredExpensesQuery DefaultExpensesQuery
     {
@@ -42,5 +27,14 @@ public partial class ExpensesIntegrationTests(IdentityWebApplicationFixture<Prog
                 MaxDate = new DateOnly(today.Year, today.Month, daysInMonth)
             };
         }
+    }
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+
+        _homes = CreateApiClient<IHomesApi>();
+        _expenses = CreateApiClient<IExpensesApi>();
+        _expenseCategories = CreateApiClient<IExpenseCategoriesApi>();
     }
 }

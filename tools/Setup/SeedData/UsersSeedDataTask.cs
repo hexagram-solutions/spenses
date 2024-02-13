@@ -40,6 +40,9 @@ public class UsersSeedDataTask(
         var defaultPassword = configuration.Require(ConfigConstants.SpensesTestDefaultUserPassword,
             $"A value for {ConfigConstants.SpensesTestDefaultUserPassword} must be set in user secrets.");
 
+        // Disable password validation for test users.
+        userManager.PasswordValidators.Clear();
+
         await AddUser(systemUserId, "system@spenses.money", "System User");
         await AddUser(testUserId, testUserEmail, "Grunky Peep");
         await AddUser(Guid.NewGuid(), "ericsondergard+spensesuser@fastmail.com", "esond");

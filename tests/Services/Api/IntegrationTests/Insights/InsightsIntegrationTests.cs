@@ -1,26 +1,21 @@
 using System.Net;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Insights;
 
 namespace Spenses.Api.IntegrationTests.Insights;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public class InsightsIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public class InsightsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes = RestService.For<IHomesApi>(fixture.CreateAuthenticatedClient());
+    private IHomesApi _homes = null!;
+    private IInsightsApi _insights = null!;
 
-    private readonly IInsightsApi _insights =
-        RestService.For<IInsightsApi>(fixture.CreateAuthenticatedClient());
-
-    public async Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
-        await fixture.LoginAsTestUser();
-    }
+        await base.InitializeAsync();
 
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
+        _homes = CreateApiClient<IHomesApi>();
+        _insights = CreateApiClient<IInsightsApi>();
     }
 
     [Theory]

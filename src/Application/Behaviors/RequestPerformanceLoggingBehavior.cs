@@ -10,7 +10,7 @@ using Spenses.Utilities.Security.Services;
 namespace Spenses.Application.Behaviors;
 
 public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TRequest> logger,
-    ICurrentUserService currentUserService, IConfiguration configuration)
+    IUserContext userContext, IConfiguration configuration)
     : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
 {
     private readonly int _longRunningRequestThreshold =
@@ -33,9 +33,9 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TReq
 
         var requestName = typeof(TRequest).Name;
 
-        var currentUser = currentUserService.CurrentUser;
+        var currentUser = userContext.CurrentUser;
 
-        if (currentUser?.Identity?.IsAuthenticated == false)
+        if (currentUser.Identity?.IsAuthenticated == false)
         {
             logger.LogWarning(
                 "Request {Name} took {ElapsedMilliseconds}ms to complete (threshold: {Threshold})",
@@ -44,7 +44,7 @@ public class RequestPerformanceLoggingBehavior<TRequest, TResponse>(ILogger<TReq
             return response;
         }
 
-        var userId = currentUser!.GetId();
+        var userId = currentUser.GetId();
 
         logger.LogWarning(
             "Request {Name} took {ElapsedMilliseconds}ms to complete for user {@UserId} (threshold: {Threshold})",

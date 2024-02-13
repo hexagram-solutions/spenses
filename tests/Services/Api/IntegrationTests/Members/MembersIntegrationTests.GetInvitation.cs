@@ -32,7 +32,5 @@ public partial class MembersIntegrationTests
         response = await _members.GetMemberInvitation(homeId, member.Id, invitationResponse.Content!.Id);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         response.Content.Should().BeEquivalentTo(invitationProperties);
-
-        await _members.DeleteMember(homeId, member.Id);
     }
 }

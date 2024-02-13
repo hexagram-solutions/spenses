@@ -1,20 +1,16 @@
-using Refit;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Me;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class MeIntegrationTests(IdentityWebApplicationFixture<Program> fixture) : IAsyncLifetime
+public partial class MeIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IMeApi _meApi = RestService.For<IMeApi>(fixture.CreateAuthenticatedClient());
+    private IMeApi _meApi = null!;
 
-    public Task InitializeAsync()
+    public override async Task InitializeAsync()
     {
-        return Task.CompletedTask;
-    }
+        await base.InitializeAsync();
 
-    public async Task DisposeAsync()
-    {
-        await fixture.LoginAsTestUser();
+        _meApi = CreateApiClient<IMeApi>();
     }
 }

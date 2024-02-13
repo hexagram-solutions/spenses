@@ -1,6 +1,5 @@
 using System.Net;
 using Microsoft.EntityFrameworkCore;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Invitations;
@@ -110,7 +109,7 @@ public partial class MembersIntegrationTests
         deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         deleteMemberResponse.Content!.Type.Should().Be(DeletionType.Deleted);
 
-        await fixture.ExecuteDbContextAction(async db =>
+        await DatabaseFixture.ExecuteDbContextAction(async db =>
         {
             var invitations = await db.Invitations
                 .Where(i => i.MemberId == createdMember.Id)
@@ -136,7 +135,7 @@ public partial class MembersIntegrationTests
         await _members.PostMemberInvitation(home.Id, createdMember.Id,
             new InvitationProperties { Email = createdMember.ContactEmail! });
 
-        var payments = RestService.For<IPaymentsApi>(fixture.CreateAuthenticatedClient());
+        var payments = CreateApiClient<IPaymentsApi>();
 
         var paymentResponse = await payments.PostPayment(home.Id, new PaymentProperties
         {
@@ -151,7 +150,7 @@ public partial class MembersIntegrationTests
         deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         deleteMemberResponse.Content!.Type.Should().Be(DeletionType.Deactivated);
 
-        await fixture.ExecuteDbContextAction(async db =>
+        await DatabaseFixture.ExecuteDbContextAction(async db =>
         {
             var invitation = await db.Invitations
                 .SingleAsync(i => i.MemberId == createdMember.Id);

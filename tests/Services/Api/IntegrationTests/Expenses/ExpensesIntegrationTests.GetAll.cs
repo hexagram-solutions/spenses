@@ -56,7 +56,7 @@ public partial class ExpensesIntegrationTests
             Note = "Foo",
             Amount = 1234.56m,
             Date = DateOnly.FromDateTime(DateTime.UtcNow),
-            Tags = tags.ToList(),
+            Tags = [.. tags],
             CategoryId = category.Id,
             PaidByMemberId = home.Members.First().Id
         })).Content!;
@@ -150,9 +150,6 @@ public partial class ExpensesIntegrationTests
 
         var query = DefaultExpensesQuery with
         {
-            Take = 25,
-            OrderBy = nameof(ExpenseDigest.Date),
-            SortDirection = SortDirection.Desc,
             Tags = filters.Tags.First().Yield(),
             Categories = filters.Categories.First().Id.Yield()
         };

@@ -1,5 +1,4 @@
 using System.Net;
-using Bogus;
 using Refit;
 using Spenses.Shared.Models.Identity;
 
@@ -13,19 +12,19 @@ public partial class IdentityIntegrationTests
         var registerRequest = new RegisterRequest
         {
             Email = "hmccringleberry@psu.edu",
-            Password = new Faker().Internet.Password(),
+            Password = _faker.Internet.Password(),
             DisplayName = "Hingle McCringleberry"
         };
 
-        var registerResponse = await fixture.Register(registerRequest, true);
+        var registerResponse = await AuthFixture.Register(registerRequest, true);
 
         var verifiedUser = registerResponse.Content!;
 
         await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = verifiedUser.Email });
 
-        var (email, code) = fixture.GetPasswordResetParametersForEmail(verifiedUser.Email);
+        var (email, code) = AuthFixture.GetPasswordResetParametersForEmail(verifiedUser.Email);
 
-        var newPassword = new Faker().Internet.Password();
+        var newPassword = _faker.Internet.Password();
 
         var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest
         {
@@ -43,8 +42,6 @@ public partial class IdentityIntegrationTests
         });
 
         loginResponse.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        await fixture.DeleteUser(registerRequest.Email);
     }
 
     [Fact]
@@ -67,11 +64,11 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Reset_password_with_email_as_password_yields_identity_error()
     {
-        var verifiedUser = fixture.VerifiedUser;
+        var verifiedUser = AuthFixture.CurrentUser;
 
         await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = verifiedUser.Email });
 
-        var (email, code) = fixture.GetPasswordResetParametersForEmail(verifiedUser.Email);
+        var (email, code) = AuthFixture.GetPasswordResetParametersForEmail(verifiedUser.Email);
 
         var newPassword = verifiedUser.Email;
 
@@ -92,13 +89,13 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Reset_password_with_invalid_code_yields_identity_error()
     {
-        var verifiedUser = fixture.VerifiedUser;
+        var verifiedUser = AuthFixture.CurrentUser;
 
         var resetResponse = await _identityApi.ResetPassword(new ResetPasswordRequest
         {
             Email = verifiedUser.Email,
             ResetCode = "foo",
-            NewPassword = new Faker().Internet.Password(),
+            NewPassword = _faker.Internet.Password(),
         });
 
         resetResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -115,7 +112,7 @@ public partial class IdentityIntegrationTests
         {
             Email = "quatro.quatro@sjsu.edu",
             ResetCode = "foo",
-            NewPassword = new Faker().Internet.Password()
+            NewPassword = _faker.Internet.Password()
         });
 
         resetResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);

@@ -1,11 +1,19 @@
-using Refit;
+using Bogus;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Identity;
 
-[Collection(IdentityWebApplicationCollection.CollectionName)]
-public partial class IdentityIntegrationTests(IdentityWebApplicationFixture<Program> fixture)
+public partial class IdentityIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IIdentityApi _identityApi =
-        RestService.For<IIdentityApi>(fixture.CreateAuthenticatedClient());
+    private readonly Faker _faker = new();
+
+    private IIdentityApi _identityApi = null!;
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+
+        _identityApi = CreateApiClient<IIdentityApi>();
+    }
 }
