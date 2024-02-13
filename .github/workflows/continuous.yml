@@ -25,15 +25,6 @@ jobs:
     name: "🚦 Build & Test (Ubuntu 🐧)"
     runs-on: ubuntu-latest
 
-    services:
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          SA_PASSWORD: Hunter2!
-          ACCEPT_EULA: "Y"
-        ports:
-          - 1433:1433
-
     steps:
       - uses: actions/checkout@v4
         with:
@@ -55,8 +46,6 @@ jobs:
       - name: "Build and test"
         id: build-test
         run: ./build.cmd test integration-test
-        env:
-          NUKE_SQL_SERVER_CONNECTION_STRING: "Server=localhost,1433;Initial Catalog=Spenses;User ID=sa;Password=Hunter2!;Encrypt=False;"
 
       - name: "Publish test result artifact"
         uses: actions/upload-artifact@v4
