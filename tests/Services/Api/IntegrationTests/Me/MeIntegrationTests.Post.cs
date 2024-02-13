@@ -1,6 +1,5 @@
 using System.Net;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using Refit;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Me;
@@ -16,9 +15,12 @@ public partial class MeIntegrationTests
 
         var response = await _meApi.UpdateMe(props);
 
-        var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
+        var applicationUser = new ApplicationUser();
 
-        var applicationUser = await userManager.FindByEmailAsync(response.Content!.Email);
+        await DatabaseFixture.ExecuteDbContextAction(async db =>
+        {
+            applicationUser = await db.Users.SingleAsync(u => u.Email == response.Content!.Email);
+        });
 
         response.Content!.Should().BeEquivalentTo(
             new CurrentUser

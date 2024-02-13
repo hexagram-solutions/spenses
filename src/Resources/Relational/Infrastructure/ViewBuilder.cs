@@ -71,18 +71,13 @@ public static class ViewBuilder
 
     public static string BuildViewDefinition(Type type)
     {
-        if (type == null)
-            throw new ArgumentNullException(nameof(type));
+        ArgumentNullException.ThrowIfNull(type);
 
         var tableAliases = new HashSet<string>();
 
-        var baseTable = type.GetCustomAttribute<BaseTableAttribute>();
-
-        if (baseTable == null)
-        {
-            throw new InvalidOperationException(
+        var baseTable = type.GetCustomAttribute<BaseTableAttribute>()
+            ?? throw new InvalidOperationException(
                 $"The type {type.FullName} must have a {nameof(BaseTableAttribute)} to be used as a view.");
-        }
 
         if (string.IsNullOrEmpty(baseTable.TableName))
         {
@@ -205,8 +200,7 @@ public static class ViewBuilder
 
     private static string EscapeIdentifier(string identifier)
     {
-        if (identifier == null)
-            throw new ArgumentNullException(nameof(identifier));
+        ArgumentNullException.ThrowIfNull(identifier);
 
         if (identifier.Length == 0)
             throw new ArgumentException("The identifier can not be an empty string.", nameof(identifier));

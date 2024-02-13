@@ -8,14 +8,16 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Forgot_password_sends_reset_email_for_verified_user()
     {
+        var verifiedEmail = AuthFixture.VerifiedUser.Email;
+
         var response = await _identityApi.ForgotPassword(
-            new ForgotPasswordRequest { Email = VerifiedUser.Email });
+            new ForgotPasswordRequest { Email = verifiedEmail });
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var (email, _) = GetPasswordResetParametersForEmail(VerifiedUser.Email);
+        var (email, _) = AuthFixture.GetPasswordResetParametersForEmail(verifiedEmail);
 
-        email.Should().Be(VerifiedUser.Email);
+        email.Should().Be(verifiedEmail);
     }
 
     [Fact]
@@ -28,7 +30,7 @@ public partial class IdentityIntegrationTests
             Password = _faker.Internet.Password()
         };
 
-        await Register(registerRequest);
+        await AuthFixture.Register(registerRequest);
 
         var response = await _identityApi.ForgotPassword(new ForgotPasswordRequest { Email = registerRequest.Email });
 

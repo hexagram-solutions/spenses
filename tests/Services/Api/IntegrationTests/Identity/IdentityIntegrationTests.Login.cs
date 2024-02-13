@@ -15,9 +15,9 @@ public partial class IdentityIntegrationTests
             DisplayName = "DONKEY TEETH"
         };
 
-        await Register(registerRequest, true);
+        await AuthFixture.Register(registerRequest, true);
 
-        var response = await Login(new LoginRequest
+        var response = await AuthFixture.Login(new LoginRequest
         {
             Email = registerRequest.Email,
             Password = registerRequest.Password
@@ -33,7 +33,7 @@ public partial class IdentityIntegrationTests
     {
         var response = await _identityApi.Login(new LoginRequest
         {
-            Email = VerifiedUser.Email,
+            Email = AuthFixture.VerifiedUser.Email,
             Password = "foo"
         });
 
@@ -54,9 +54,9 @@ public partial class IdentityIntegrationTests
             DisplayName = "DONKEY TEETH"
         };
 
-        await Register(registerRequest);
+        await AuthFixture.Register(registerRequest);
 
-        var response = await Login(new LoginRequest
+        var response = await AuthFixture.Login(new LoginRequest
         {
             Email = registerRequest.Email,
             Password = registerRequest.Password

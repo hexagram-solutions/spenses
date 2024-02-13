@@ -34,8 +34,6 @@ public partial class MembersIntegrationTests
         var members = (await _members.GetMembers(home.Id)).Content;
         members.Should().ContainEquivalentOf(createdMember,
             opts => opts.Excluding(u => u.AvatarUrl));
-
-        await _members.DeleteMember(home.Id, createdMember.Id);
     }
 
     [Fact]
@@ -84,13 +82,11 @@ public partial class MembersIntegrationTests
 
         createdMember.Status.Should().Be(MemberStatus.Invited);
 
-        var invitationMessage = GetLastMessageForEmail(email);
+        var invitationMessage = AuthFixture.GetLastMessageForEmail(email);
 
         invitationMessage.RecipientAddress.Should().Be(email);
         invitationMessage.Subject.Should().Contain(home.Name);
         invitationMessage.PlainTextMessage.Should().Contain("?invitationToken=");
-
-        await _members.DeleteMember(home.Id, createdMember.Id);
     }
 
     [Fact]
@@ -116,9 +112,9 @@ public partial class MembersIntegrationTests
 
         createdMember.Status.Should().Be(MemberStatus.Invited);
 
-        var invitationToken = GetInvitationTokenForEmail(email);
+        var invitationToken = AuthFixture.GetInvitationTokenForEmail(email);
 
-        await Logout();
+        await AuthFixture.Logout();
 
         var registerRequest = new RegisterRequest
         {
@@ -128,13 +124,13 @@ public partial class MembersIntegrationTests
             InvitationToken = invitationToken
         };
 
-        var registrationResponse = await Register(registerRequest);
+        var registrationResponse = await AuthFixture.Register(registerRequest);
 
         registrationResponse.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        await VerifyUser(email);
+        await AuthFixture.VerifyUser(email);
 
-        var loginResponse = await Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+        var loginResponse = await AuthFixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
 
         loginResponse.Content!.Succeeded.Should().BeTrue();
 
@@ -149,10 +145,6 @@ public partial class MembersIntegrationTests
             Status = MemberStatus.Active,
             User = new User { DisplayName = registerRequest.DisplayName, Id = registrationResponse.Content!.Id }
         }, opts => opts.Excluding(m => m.AvatarUrl));
-
-        await LoginAsTestUser();
-        await _members.DeleteMember(home.Id, createdMember.Id);
-        await DeleteUser(email);
     }
 
     [Fact]

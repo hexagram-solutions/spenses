@@ -21,7 +21,7 @@ public partial class HomesIntegrationTests
         {
             Guid? homeId = null;
 
-            await ExecuteDbContextAction(async db =>
+            await DatabaseFixture.ExecuteDbContextAction(async db =>
             {
                 var homeEntry = await db.Homes.AddAsync(new DbModels.Home
                 {
@@ -52,7 +52,7 @@ public partial class HomesIntegrationTests
 
         async Task TearDown(Guid homeId)
         {
-            await ExecuteDbContextAction(async db =>
+            await DatabaseFixture.ExecuteDbContextAction(async db =>
             {
                 var home = await db.Homes.FindAsync(homeId);
 

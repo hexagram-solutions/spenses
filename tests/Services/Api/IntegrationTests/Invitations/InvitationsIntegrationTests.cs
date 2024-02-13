@@ -44,8 +44,8 @@ public partial class InvitationsIntegrationTests(DatabaseFixture databaseFixture
             DisplayName = "Quatro Quatro"
         };
 
-        await Register(registerRequest, true);
+        await AuthFixture.Register(registerRequest, true);
 
-        await Login(new LoginRequest { Email = email, Password = registerRequest.Password });
+        await AuthFixture.Login(new LoginRequest { Email = email, Password = registerRequest.Password });
     }
 }

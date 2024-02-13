@@ -8,13 +8,13 @@ public partial class IdentityIntegrationTests
     [Fact]
     public async Task Resend_verification_email_sends_email_to_user()
     {
-        var email = VerifiedUser.Email;
+        var email = AuthFixture.VerifiedUser.Email;
 
         var response = await _identityApi.ResendVerificationEmail(new ResendVerificationEmailRequest(email));
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        var message = GetLastMessageForEmail(email);
+        var message = AuthFixture.GetLastMessageForEmail(email);
 
         message.Subject.Should().Contain("Verify");
     }

@@ -1,14 +1,12 @@
 using System.Text.RegularExpressions;
 using System.Web;
 using Hexagrams.Extensions.Configuration;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Spenses.Api.IntegrationTests.Identity.Services;
 using Spenses.Application.Services.Invitations;
 using Spenses.Client.Http;
-using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Common;
 using Spenses.Shared.Models.Identity;
 using Spenses.Shared.Models.Me;
@@ -16,7 +14,7 @@ using Spenses.Shared.Models.Me;
 namespace Spenses.Api.IntegrationTests;
 
 [Collection(IdentityWebApplicationCollection.CollectionName)]
-public class AuthenticationFixture
+public partial class AuthenticationFixture
 {
     private readonly IdentityWebApplicationFixture _appFixture;
     private readonly HttpClient _authenticatedHttpClient;
@@ -118,16 +116,6 @@ public class AuthenticationFixture
         return response;
     }
 
-    public async Task DeleteUser(string email)
-    {
-        var userManager = Services.GetRequiredService<UserManager<ApplicationUser>>();
-
-        if (await userManager.FindByEmailAsync(email) is not { } user)
-            return;
-
-        await userManager.DeleteAsync(user);
-    }
-
     public CapturedEmailMessage GetLastMessageForEmail(string email)
     {
         var emailClient = Services.GetRequiredService<CapturingEmailClient>();
@@ -180,7 +168,7 @@ public class AuthenticationFixture
 
     private static Uri GetLinkFromEmailMessage(CapturedEmailMessage message)
     {
-        var regex = new Regex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase);
+        var regex = LinkRegex();
 
         var verificationAnchorValue = regex.Matches(message.HtmlMessage)
             .Select(m => m.Groups["href"].Value)
@@ -188,4 +176,7 @@ public class AuthenticationFixture
 
         return new Uri(verificationAnchorValue);
     }
+
+    [GeneratedRegex("<a [^>]*href=(?:'(?<href>.*?)')|(?:\"(?<href>.*?)\")", RegexOptions.IgnoreCase, "en-CA")]
+    private static partial Regex LinkRegex();
 }

@@ -10,17 +10,17 @@ public partial class InvitationsIntegrationTests
     public async Task Delete_invitation_declines_invitation()
     {
         var home = (await _homes.GetHomes()).Content!.First();
-        var email = VerifiedUser.Email;
+        var email = AuthFixture.VerifiedUser.Email;
 
-        var (memberId, _) = await CreateAndInviteMember(home.Id, email);
+        await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = GetInvitationIdForEmail(email);
+        var invitationId = AuthFixture.GetInvitationIdForEmail(email);
 
         var invitationResponse = await _invitations.DeclineInvitation(invitationId);
 
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-        await ExecuteDbContextAction(async db =>
+        await DatabaseFixture.ExecuteDbContextAction(async db =>
         {
             var invitation = await db.Invitations
                 .Include(i => i.Member)
@@ -29,8 +29,6 @@ public partial class InvitationsIntegrationTests
             invitation.Status.Should().Be(DbModels.InvitationStatus.Declined);
             invitation.Member.Status.Should().Be(DbModels.MemberStatus.Active);
         });
-
-        await _members.DeleteMember(home.Id, memberId);
     }
 
     [Fact]
@@ -47,9 +45,9 @@ public partial class InvitationsIntegrationTests
         var home = (await _homes.GetHomes()).Content!.First();
         var email = "quatro.quatro@sjsu.edu";
 
-        var (memberId, _) = await CreateAndInviteMember(home.Id, email);
+        await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = GetInvitationIdForEmail(email);
+        var invitationId = AuthFixture.GetInvitationIdForEmail(email);
 
         await RegisterAndLogIn(email);
 
@@ -58,20 +56,17 @@ public partial class InvitationsIntegrationTests
 
         var invitationDeclinedResponse = await _invitations.DeclineInvitation(invitationId);
         invitationDeclinedResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-
-        await _members.DeleteMember(home.Id, memberId);
-        await DeleteUser(email);
     }
 
     [Fact]
     public async Task Delete_invitation_that_has_already_been_declined_yields_success()
     {
         var home = (await _homes.GetHomes()).Content!.First();
-        var email = VerifiedUser.Email;
+        var email = AuthFixture.VerifiedUser.Email;
 
-        var (memberId, _) = await CreateAndInviteMember(home.Id, email);
+        await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = GetInvitationIdForEmail(email);
+        var invitationId = AuthFixture.GetInvitationIdForEmail(email);
 
         var invitationResponse = await _invitations.DeclineInvitation(invitationId);
 
@@ -80,8 +75,6 @@ public partial class InvitationsIntegrationTests
         invitationResponse = await _invitations.DeclineInvitation(invitationId);
 
         invitationResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
-
-        await _members.DeleteMember(home.Id, memberId);
     }
 
     [Fact]
@@ -90,14 +83,12 @@ public partial class InvitationsIntegrationTests
         var home = (await _homes.GetHomes()).Content!.First();
         var email = "quatro.quatro@sjsu.edu";
 
-        var (memberId, _) = await CreateAndInviteMember(home.Id, email);
+        await CreateAndInviteMember(home.Id, email);
 
-        var invitationId = GetInvitationIdForEmail(email);
+        var invitationId = AuthFixture.GetInvitationIdForEmail(email);
 
         var response = await _invitations.DeclineInvitation(invitationId);
 
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
-
-        await _members.DeleteMember(home.Id, memberId);
     }
 }

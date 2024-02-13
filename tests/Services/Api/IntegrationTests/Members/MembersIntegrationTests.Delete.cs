@@ -109,7 +109,7 @@ public partial class MembersIntegrationTests
         deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         deleteMemberResponse.Content!.Type.Should().Be(DeletionType.Deleted);
 
-        await ExecuteDbContextAction(async db =>
+        await DatabaseFixture.ExecuteDbContextAction(async db =>
         {
             var invitations = await db.Invitations
                 .Where(i => i.MemberId == createdMember.Id)
@@ -150,7 +150,7 @@ public partial class MembersIntegrationTests
         deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         deleteMemberResponse.Content!.Type.Should().Be(DeletionType.Deactivated);
 
-        await ExecuteDbContextAction(async db =>
+        await DatabaseFixture.ExecuteDbContextAction(async db =>
         {
             var invitation = await db.Invitations
                 .SingleAsync(i => i.MemberId == createdMember.Id);

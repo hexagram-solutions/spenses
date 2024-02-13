@@ -9,8 +9,7 @@ public sealed class DefaultSortOrderAttribute : Attribute
 
     public DefaultSortOrderAttribute(params string[] properties)
     {
-        if (properties == null)
-            throw new ArgumentNullException(nameof(properties));
+        ArgumentNullException.ThrowIfNull(properties);
 
         Paths = properties.Select(p => p.Split('.')).ToArray();
     }

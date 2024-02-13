@@ -16,7 +16,7 @@ public partial class IdentityIntegrationTests
             DisplayName = "Hingle McCringleberry"
         };
 
-        var response = await Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -40,7 +40,7 @@ public partial class IdentityIntegrationTests
             DisplayName = "Hingle McCringleberry"
         };
 
-        var response = await Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -59,7 +59,7 @@ public partial class IdentityIntegrationTests
             DisplayName = "Hingle McCringleberry"
         };
 
-        var response = await Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -78,8 +78,8 @@ public partial class IdentityIntegrationTests
             DisplayName = "Hingle McCringleberry"
         };
 
-        await Register(request);
-        var response = await Register(request);
+        await AuthFixture.Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
@@ -98,7 +98,7 @@ public partial class IdentityIntegrationTests
             DisplayName = string.Empty
         };
 
-        var response = await Register(request);
+        var response = await AuthFixture.Register(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
 
