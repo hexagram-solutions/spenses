@@ -5,8 +5,8 @@ namespace Spenses.Api.IntegrationTests.Homes;
 public partial class HomesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
     : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private IExpenseCategoriesApi _expenseCategories = null!;
     private IHomesApi _homes = null!;
+    private IExpenseCategoriesApi _expenseCategories = null!;
 
     public override async Task InitializeAsync()
     {
