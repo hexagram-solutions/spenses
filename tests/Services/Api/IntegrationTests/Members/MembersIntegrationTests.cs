@@ -3,16 +3,18 @@ using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Members;
 
-public partial class MembersIntegrationTests : IdentityIntegrationTestBase
+public partial class MembersIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
     private readonly Faker _faker = new();
 
-    private readonly IHomesApi _homes;
-    private readonly IMembersApi _members;
+    private IHomesApi _homes = null!;
+    private IMembersApi _members = null!;
 
-    public MembersIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
-        : base(databaseFixture, authFixture)
+    public override async Task InitializeAsync()
     {
+        await base.InitializeAsync();
+
         _homes = CreateApiClient<IHomesApi>();
         _members = CreateApiClient<IMembersApi>();
     }

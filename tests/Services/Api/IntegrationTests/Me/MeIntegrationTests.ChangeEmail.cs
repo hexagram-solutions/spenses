@@ -2,7 +2,6 @@ using System.Net;
 using Bogus;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Resources.Relational.Models;
 using Spenses.Shared.Models.Identity;

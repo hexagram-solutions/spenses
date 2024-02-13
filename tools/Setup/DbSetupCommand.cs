@@ -171,7 +171,7 @@ public class DbSetupCommand : RootCommand
 
         _logger.LogInformation("Rebuilding views... ");
 
-        db.UpdateViews();
+        await db.UpdateViews();
 
         _logger.LogInformation("Done rebuilding views.");
     }

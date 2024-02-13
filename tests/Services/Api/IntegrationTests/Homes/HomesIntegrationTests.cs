@@ -2,14 +2,16 @@ using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Homes;
 
-public partial class HomesIntegrationTests : IdentityIntegrationTestBase
+public partial class HomesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes;
-    private readonly IExpenseCategoriesApi _expenseCategories;
+    private IExpenseCategoriesApi _expenseCategories = null!;
+    private IHomesApi _homes = null!;
 
-    public HomesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
-        : base(databaseFixture, authFixture)
+    public override async Task InitializeAsync()
     {
+        await base.InitializeAsync();
+
         _homes = CreateApiClient<IHomesApi>();
         _expenseCategories = CreateApiClient<IExpenseCategoriesApi>();
     }

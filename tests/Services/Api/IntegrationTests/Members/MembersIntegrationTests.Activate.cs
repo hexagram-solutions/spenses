@@ -1,5 +1,4 @@
 using System.Net;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Expenses;
 

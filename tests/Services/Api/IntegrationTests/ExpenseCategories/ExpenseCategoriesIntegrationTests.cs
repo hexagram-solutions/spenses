@@ -1,19 +1,14 @@
-using FluentAssertions.Common;
 using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.ExpenseCategories;
 
-// the base class will get created once for every test because it is not a class fixture, it has to do setup (constructor)
-// and teardown (dispose) for each test
-public partial class ExpenseCategoriesIntegrationTests : IdentityIntegrationTestBase
+public partial class ExpenseCategoriesIntegrationTests(
+    DatabaseFixture databaseFixture,
+    AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private IExpenseCategoriesApi _categories;
-    private IHomesApi _homes;
-
-    public ExpenseCategoriesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
-        : base(databaseFixture, authFixture)
-    {
-    }
+    private IExpenseCategoriesApi _categories = null!;
+    private IHomesApi _homes = null!;
 
     public override async Task InitializeAsync()
     {

@@ -4,19 +4,12 @@ using Spenses.Shared.Models.Expenses;
 
 namespace Spenses.Api.IntegrationTests.Expenses;
 
-public partial class ExpensesIntegrationTests : IdentityIntegrationTestBase
+public partial class ExpensesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes;
-    private readonly IExpensesApi _expenses;
-    private readonly IExpenseCategoriesApi _expenseCategories;
-
-    public ExpensesIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
-        : base(databaseFixture, authFixture)
-    {
-        _homes = CreateApiClient<IHomesApi>();
-        _expenses = CreateApiClient<IExpensesApi>();
-        _expenseCategories = CreateApiClient<IExpenseCategoriesApi>();
-    }
+    private IExpenseCategoriesApi _expenseCategories = null!;
+    private IExpensesApi _expenses = null!;
+    private IHomesApi _homes = null!;
 
     private FilteredExpensesQuery DefaultExpensesQuery
     {
@@ -34,5 +27,14 @@ public partial class ExpensesIntegrationTests : IdentityIntegrationTestBase
                 MaxDate = new DateOnly(today.Year, today.Month, daysInMonth)
             };
         }
+    }
+
+    public override async Task InitializeAsync()
+    {
+        await base.InitializeAsync();
+
+        _homes = CreateApiClient<IHomesApi>();
+        _expenses = CreateApiClient<IExpensesApi>();
+        _expenseCategories = CreateApiClient<IExpenseCategoriesApi>();
     }
 }

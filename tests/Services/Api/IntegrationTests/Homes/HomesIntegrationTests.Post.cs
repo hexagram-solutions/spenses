@@ -1,7 +1,6 @@
 using System.Net;
 using Hexagrams.Extensions.Common.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Homes;
 using Spenses.Shared.Models.Members;

@@ -3,15 +3,17 @@ using Spenses.Client.Http;
 
 namespace Spenses.Api.IntegrationTests.Identity;
 
-public partial class IdentityIntegrationTests : IdentityIntegrationTestBase
+public partial class IdentityIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
     private readonly Faker _faker = new();
 
-    private readonly IIdentityApi _identityApi;
+    private IIdentityApi _identityApi = null!;
 
-    public IdentityIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
-        : base(databaseFixture, authFixture)
+    public override async Task InitializeAsync()
     {
+        await base.InitializeAsync();
+
         _identityApi = CreateApiClient<IIdentityApi>();
     }
 }

@@ -1,6 +1,5 @@
 using System.Net;
 using Microsoft.EntityFrameworkCore;
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Invitations;

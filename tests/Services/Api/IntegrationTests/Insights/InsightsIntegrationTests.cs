@@ -4,14 +4,16 @@ using Spenses.Shared.Models.Insights;
 
 namespace Spenses.Api.IntegrationTests.Insights;
 
-public class InsightsIntegrationTests : IdentityIntegrationTestBase
+public class InsightsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes;
-    private readonly IInsightsApi _insights;
+    private IHomesApi _homes = null!;
+    private IInsightsApi _insights = null!;
 
-    public InsightsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
-        : base(databaseFixture, authFixture)
+    public override async Task InitializeAsync()
     {
+        await base.InitializeAsync();
+
         _homes = CreateApiClient<IHomesApi>();
         _insights = CreateApiClient<IInsightsApi>();
     }

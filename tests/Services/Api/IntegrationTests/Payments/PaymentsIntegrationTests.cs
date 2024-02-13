@@ -1,18 +1,19 @@
-using Refit;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Common;
 using Spenses.Shared.Models.Payments;
 
 namespace Spenses.Api.IntegrationTests.Payments;
 
-public partial class PaymentsIntegrationTests : IdentityIntegrationTestBase
+public partial class PaymentsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes;
-    private readonly IPaymentsApi _payments;
+    private IHomesApi _homes = null!;
+    private IPaymentsApi _payments = null!;
 
-    public PaymentsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
-        : base(databaseFixture, authFixture)
+    public override async Task InitializeAsync()
     {
+        await base.InitializeAsync();
+
         _homes = CreateApiClient<IHomesApi>();
         _payments = CreateApiClient<IPaymentsApi>();
     }

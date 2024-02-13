@@ -6,15 +6,17 @@ using Spenses.Shared.Models.Members;
 
 namespace Spenses.Api.IntegrationTests.Invitations;
 
-public partial class InvitationsIntegrationTests : IdentityIntegrationTestBase
+public partial class InvitationsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
+    : IdentityIntegrationTestBase(databaseFixture, authFixture)
 {
-    private readonly IHomesApi _homes;
-    private readonly IInvitationsApi _invitations;
-    private readonly IMembersApi _members;
+    private IHomesApi _homes = null!;
+    private IInvitationsApi _invitations = null!;
+    private IMembersApi _members = null!;
 
-    public InvitationsIntegrationTests(DatabaseFixture databaseFixture, AuthenticationFixture authFixture)
-        : base(databaseFixture, authFixture)
+    public override async Task InitializeAsync()
     {
+        await base.InitializeAsync();
+
         _homes = CreateApiClient<IHomesApi>();
         _members = CreateApiClient<IMembersApi>();
         _invitations = CreateApiClient<IInvitationsApi>();

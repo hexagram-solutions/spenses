@@ -2,6 +2,7 @@ using FluentAssertions.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Spenses.Resources.Relational;
+using Spenses.Resources.Relational.Infrastructure;
 
 namespace Spenses.Api.IntegrationTests;
 
@@ -27,6 +28,7 @@ public class IdentityWebApplicationFixture : IAsyncLifetime
         var db = WebApplicationFactory.Services.GetRequiredService<ApplicationDbContext>();
 
         await db.Database.MigrateAsync();
+        await db.UpdateViews();
     }
 
     public async Task DisposeAsync()
