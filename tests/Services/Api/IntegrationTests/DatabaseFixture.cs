@@ -14,6 +14,8 @@ namespace Spenses.Api.IntegrationTests;
 [Collection(IdentityWebApplicationCollection.CollectionName)]
 public class DatabaseFixture(IdentityWebApplicationFixture appFixture)
 {
+    private Respawner? _respawner;
+
     public async Task ResetDatabase()
     {
         await using var scope = appFixture.WebApplicationFactory.Services.CreateAsyncScope();
@@ -29,12 +31,12 @@ public class DatabaseFixture(IdentityWebApplicationFixture appFixture)
 
         var connectionString = db.Database.GetConnectionString()!;
 
-        var respawner = await Respawner.CreateAsync(connectionString, new RespawnerOptions
+        _respawner ??= await Respawner.CreateAsync(connectionString, new RespawnerOptions
         {
             CheckTemporalTables = true
         });
 
-        await respawner.ResetAsync(connectionString);
+        await _respawner.ResetAsync(connectionString);
 
         // Re-seed the database
         var seeder = services.GetRequiredService<DataSeeder>();
