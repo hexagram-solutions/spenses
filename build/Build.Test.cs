@@ -1,14 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using Hexagrams.Nuke.Components;
 using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.Coverlet;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.EntityFramework;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using static Nuke.Common.Tools.EntityFramework.EntityFrameworkTasks;
 
 partial class Build
 {
@@ -18,31 +15,6 @@ partial class Build
 
     public Configure<DotNetTestSettings> TestSettings => s => s
         .SetExcludeByFile("\\\"*.Generated.cs,**/Resources/Relational/**.cs\\\"");
-
-    Target RestoreTools => t => t
-        .Executes(() =>
-        {
-            DotNetToolRestore(s => s);
-        });
-
-    Project RelationalSetupTool => Solution.GetAllProjects("Spenses.Tools.Setup").Single();
-
-    Target MigrateDatabase => t => t
-        .Description("Migrate the SQL Server database to the latest version.")
-        .DependsOn(RestoreTools)
-        .Requires(() => SqlServerConnectionString)
-        .Executes(() =>
-        {
-            var dbContextProject = Solution.GetAllProjects("Spenses.Resources.Relational").Single();
-
-            EntityFrameworkDatabaseUpdate(s => s
-                .SetProject(dbContextProject)
-                .SetConnection(SqlServerConnectionString));
-
-            DotNetRun(s => s
-                .SetProjectFile(RelationalSetupTool)
-                .SetApplicationArguments($"views --connection \"{SqlServerConnectionString}\""));
-        });
 
     IEnumerable<Project> IntegrationTestProjects => Solution.GetAllProjects("*.IntegrationTests");
 

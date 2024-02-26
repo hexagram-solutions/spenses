@@ -4,7 +4,9 @@ using Nuke.Common;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Tools.EntityFramework;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+using static Nuke.Common.Tools.EntityFramework.EntityFrameworkTasks;
 
 // ReSharper disable InconsistentNaming
 
@@ -20,6 +22,12 @@ partial class Build
 
     Project WebProject => Solution.GetAllProjects("Spenses.App").Single();
 
+    Target RestoreTools => t => t
+        .Executes(() =>
+        {
+            DotNetToolRestore(s => s);
+        });
+
     Target Publish => t => t
         .Description("Publish deployment artifacts.")
         .Executes(() =>
@@ -30,6 +38,24 @@ partial class Build
                 .SetVersion(GitVersion.NuGetVersionV2)
                 .AddProperty("PublishProfile", "DefaultContainer")
                 .AddProperty("ContainerImageTags", GitVersion.NuGetVersionV2));
+        });
+    Project RelationalSetupTool => Solution.GetAllProjects("Spenses.Tools.Setup").Single();
+
+    Target MigrateDatabase => t => t
+        .Description("Migrate the SQL Server database to the latest version.")
+        .DependsOn(RestoreTools)
+        .Requires(() => SqlServerConnectionString)
+        .Executes(() =>
+        {
+            var dbContextProject = Solution.GetAllProjects("Spenses.Resources.Relational").Single();
+
+            EntityFrameworkDatabaseUpdate(s => s
+                .SetProject(dbContextProject)
+                .SetConnection(SqlServerConnectionString));
+
+            DotNetRun(s => s
+                .SetProjectFile(RelationalSetupTool)
+                .SetApplicationArguments($"views --connection \"{SqlServerConnectionString}\""));
         });
 
     Target AzureLogin => t => t
