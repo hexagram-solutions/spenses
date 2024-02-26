@@ -1,10 +1,7 @@
 using System.CommandLine;
-using System.Data.Common;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.SqlServer.Management.Common;
-using Microsoft.SqlServer.Management.Smo;
+using Respawn;
 using Spenses.Resources.Relational;
 using Spenses.Resources.Relational.Infrastructure;
 using Spenses.Tools.Setup.SeedData;
@@ -71,14 +68,29 @@ public class DbSetupCommand : RootCommand
 
         resetDatabaseCommand.SetHandler(async (connection, force, shouldSeed) =>
         {
-            if (!await DropDatabase(connection, force))
+            await using var dbContext = CreateDbContext(connection);
+            await using var dbConnection = dbContext.Database.GetDbConnection();
+
+            if (!force && !Confirm($"Really reset '{dbConnection.DataSource}/{dbConnection.Database}'?"))
                 return;
 
-            await MigrateDatabase(connection);
-            await RebuildViews(connection);
+            await dbConnection.OpenAsync();
+
+            _logger.LogWarning("Resetting tables...");
+
+            var respawner = await Respawner.CreateAsync(dbConnection, new RespawnerOptions
+            {
+                CheckTemporalTables = true,
+                TablesToIgnore = ["__EFMigrationsHistory"]
+            });
+
+            await respawner.ResetAsync(dbConnection);
+
+            await MigrateDatabase(dbConnection.ConnectionString);
+            await RebuildViews(dbConnection.ConnectionString);
 
             if (shouldSeed)
-                await SeedDatabase(connection);
+                await SeedDatabase(dbConnection.ConnectionString);
 
             _logger.LogInformation("Done resetting database!");
         }, ConnectionOption, forceOption, seedOption);
@@ -103,55 +115,6 @@ public class DbSetupCommand : RootCommand
         }
 
         _logger.LogInformation("Database seeded.");
-    }
-
-    public async Task<bool> DropDatabase(string connection, bool force)
-    {
-        await using var dbContext = CreateDbContext(connection);
-        await using var dbConnection = dbContext.Database.GetDbConnection();
-
-        if (!force && !Confirm($"Really drop '{dbConnection.DataSource}/{dbConnection.Database}'?"))
-            return false;
-
-        var db = GetSqlServerDatabase(dbConnection);
-
-        _logger.LogWarning("Dropping tables...");
-
-        var sql = string.Empty;
-
-        foreach (Table? table in db.Tables)
-        {
-            sql = table!.ForeignKeys.Cast<ForeignKey?>().Aggregate(sql,
-                (current, fk) => $"ALTER TABLE [{table.Name}] DROP CONSTRAINT [{fk!.Name}];\n" + current);
-
-            sql += $"DROP TABLE [{table.Name}];\n";
-        }
-        db.ExecuteNonQuery(sql);
-
-        _logger.LogWarning("Dropping views...");
-
-        foreach (var view in db.Views.Cast<View>().Where(v => !v.IsSystemObject))
-        {
-            db.ExecuteNonQuery($"DROP VIEW [{view!.Name}]");
-        }
-
-        _logger.LogWarning("Dropping sequences...");
-
-        foreach (var sequence in db.Sequences.Cast<Sequence>())
-        {
-            db.ExecuteNonQuery($"DROP SEQUENCE [{sequence!.Name}]");
-        }
-
-        return true;
-    }
-
-    private static Database GetSqlServerDatabase(DbConnection dbConnection)
-    {
-        var server = new Server(new ServerConnection((SqlConnection) dbConnection));
-
-        server.Refresh();
-
-        return server.Databases[dbConnection.Database];
     }
 
     private async Task MigrateDatabase(string connection)
