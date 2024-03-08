@@ -8,6 +8,7 @@
              SortMode="SortMode.Single"
              ServerData="GetServerData"
              Height="calc(100vh - 15rem);"
+             GroupExpanded
              Dense
              FixedFooter>
     <ToolBarContent>
@@ -69,7 +70,8 @@
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.PaidByMemberName"
-                        Title="Paid by" />
+                        Title="Paid by"
+                        Groupable />
         <PropertyColumn Property="x => x.Note"
                         Title="Note"
                         Sortable="false">
@@ -80,7 +82,8 @@
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.CategoryName"
-                        Title="Category"/>
+                        Title="Category"
+                        Groupable="true" />
         <TemplateColumn Title="Tags"
                         Sortable="false">
             <CellTemplate>

@@ -11,7 +11,7 @@ public partial class ExpensesIntegrationTests(DatabaseFixture databaseFixture, A
     private IExpensesApi _expenses = null!;
     private IHomesApi _homes = null!;
 
-    private FilteredExpensesQuery DefaultExpensesQuery
+    private static FilteredExpensesQuery DefaultExpensesQuery
     {
         get
         {
