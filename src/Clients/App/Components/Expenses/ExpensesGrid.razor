@@ -1,4 +1,5 @@
 ﻿@using Spenses.Shared.Models.Expenses
+@using MudBlazor.Extensions
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <MudDataGrid @ref="DataGridRef"
@@ -27,7 +28,9 @@
                        Label="Categories"
                        SelectedValues="Query.Categories"
                        SelectedValuesChanged="OnCategoryFilter"
+                       AnchorOrigin="Origin.BottomCenter"
                        MultiSelection
+                       Margin="Margin.Dense"
                        Disabled="ExpensesState.Value.ExpenseFiltersRequesting">
                 @foreach (var category in ExpensesState.Value.ExpenseFilters.Categories)
                 {
@@ -43,6 +46,8 @@
                        SelectedValues="Query.Tags"
                        SelectedValuesChanged="OnTagFilter"
                        MultiSelection
+                       Margin="Margin.Dense"
+                       AnchorOrigin="Origin.BottomCenter"
                        Disabled="ExpensesState.Value.ExpenseFiltersRequesting">
                 @foreach (var tag in ExpensesState.Value.ExpenseFilters.Tags)
                 {
@@ -60,8 +65,16 @@
     </ToolBarContent>
     <Columns>
         <PropertyColumn Property="x => x.Date"
+                        T="ExpenseDigest"
+                        TProperty="DateOnly"
                         Title="Date"
-                        Format="yyyy-MM-dd"/>
+                        Format="yyyy-MM-dd"
+                        Groupable="true"
+                        GroupBy="GroupByMonth">
+            <GroupTemplate>
+                <span style="font-weight:bold">@($"{context.Grouping.Key:yyyy-MM-dd}")</span>
+            </GroupTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="x => x.Amount"
                         Title="Amount"
                         AggregateDefinition="_amountAggregation">
@@ -70,8 +83,7 @@
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.PaidByMemberName"
-                        Title="Paid by"
-                        Groupable />
+                        Title="Paid by"/>
         <PropertyColumn Property="x => x.Note"
                         Title="Note"
                         Sortable="false">
