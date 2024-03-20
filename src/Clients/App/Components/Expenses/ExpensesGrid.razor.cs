@@ -120,7 +120,7 @@ public partial class ExpensesGrid
         return DataGridRef.ReloadServerData();
     }
 
-    private object GroupByMonth(ExpenseDigest expenseDigest)
+    private object GroupByDate(ExpenseDigest expenseDigest)
     {
         return new DateOnly(expenseDigest.Date.Year, expenseDigest.Date.Month, 1);
     }

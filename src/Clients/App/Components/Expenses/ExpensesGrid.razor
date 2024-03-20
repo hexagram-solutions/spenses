@@ -14,7 +14,8 @@
              FixedFooter>
     <ToolBarContent>
         <MudStack Row
-                  AlignItems="AlignItems.Center">
+                  AlignItems="AlignItems.Center"
+                  Class="ml-n3">
             <div>
                 <MudButton Color="Color.Primary"
                            Variant="Variant.Filled"
@@ -26,6 +27,7 @@
 
             <MudSelect T="Guid"
                        Label="Categories"
+                       Variant="Variant.Outlined"
                        SelectedValues="Query.Categories"
                        SelectedValuesChanged="OnCategoryFilter"
                        AnchorOrigin="Origin.BottomCenter"
@@ -43,6 +45,7 @@
 
             <MudSelect T="string"
                        Label="Tags"
+                       Variant="Variant.Outlined"
                        SelectedValues="Query.Tags"
                        SelectedValuesChanged="OnTagFilter"
                        MultiSelection
@@ -70,20 +73,25 @@
                         Title="Date"
                         Format="yyyy-MM-dd"
                         Groupable="true"
-                        GroupBy="GroupByMonth">
+                        GroupBy="GroupByDate"
+                        FooterClassFunc="FooterClassFunc">
             <GroupTemplate>
-                <span style="font-weight:bold">@($"{context.Grouping.Key:yyyy-MM-dd}")</span>
+                <span style="font-weight:bold">@($"{context.Grouping.Key:yyyy-MM}")</span>
             </GroupTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.Amount"
                         Title="Amount"
-                        AggregateDefinition="_amountAggregation">
+                        Filterable="true"
+                        AggregateDefinition="_amountAggregation"
+                        FooterClass="border-t-2 mud-border-primary mt-n2"
+                        FooterStyle="font-family: monospace;">
             <CellTemplate>
                 <samp>@($"{context.Item.Amount:C}")</samp>
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.PaidByMemberName"
-                        Title="Paid by"/>
+                        Title="Paid by"
+                        Groupable="true"/>
         <PropertyColumn Property="x => x.Note"
                         Title="Note"
                         Sortable="false">
@@ -95,7 +103,7 @@
         </PropertyColumn>
         <PropertyColumn Property="x => x.CategoryName"
                         Title="Category"
-                        Groupable="true" />
+                        Groupable="true"/>
         <TemplateColumn Title="Tags"
                         Sortable="false">
             <CellTemplate>
@@ -143,4 +151,10 @@
             return items.Sum(e => e.Amount).ToString("C");
         }
     };
+
+    private string FooterClassFunc(ExpenseDigest arg)
+    {
+        return "border-double border-t-2 mud-border-primary";
+    }
+
 }
