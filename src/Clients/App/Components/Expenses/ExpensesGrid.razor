@@ -1,4 +1,5 @@
 ﻿@using Spenses.Shared.Models.Expenses
+@using MudBlazor.Extensions
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <MudDataGrid @ref="DataGridRef"
@@ -8,10 +9,13 @@
              SortMode="SortMode.Single"
              ServerData="GetServerData"
              Height="calc(100vh - 15rem);"
-             Dense>
+             GroupExpanded
+             Dense
+             FixedFooter>
     <ToolBarContent>
         <MudStack Row
-                  AlignItems="AlignItems.Center">
+                  AlignItems="AlignItems.Center"
+                  Class="ml-n3">
             <div>
                 <MudButton Color="Color.Primary"
                            Variant="Variant.Filled"
@@ -23,9 +27,12 @@
 
             <MudSelect T="Guid"
                        Label="Categories"
+                       Variant="Variant.Outlined"
                        SelectedValues="Query.Categories"
                        SelectedValuesChanged="OnCategoryFilter"
+                       AnchorOrigin="Origin.BottomCenter"
                        MultiSelection
+                       Margin="Margin.Dense"
                        Disabled="ExpensesState.Value.ExpenseFiltersRequesting">
                 @foreach (var category in ExpensesState.Value.ExpenseFilters.Categories)
                 {
@@ -38,9 +45,12 @@
 
             <MudSelect T="string"
                        Label="Tags"
+                       Variant="Variant.Outlined"
                        SelectedValues="Query.Tags"
                        SelectedValuesChanged="OnTagFilter"
                        MultiSelection
+                       Margin="Margin.Dense"
+                       AnchorOrigin="Origin.BottomCenter"
                        Disabled="ExpensesState.Value.ExpenseFiltersRequesting">
                 @foreach (var tag in ExpensesState.Value.ExpenseFilters.Tags)
                 {
@@ -58,31 +68,51 @@
     </ToolBarContent>
     <Columns>
         <PropertyColumn Property="x => x.Date"
+                        T="ExpenseDigest"
+                        TProperty="DateOnly"
                         Title="Date"
-                        Format="yyyy-MM-dd"/>
+                        Format="yyyy-MM-dd"
+                        Groupable="true"
+                        GroupBy="GroupByDate"
+                        FooterClassFunc="FooterClassFunc">
+            <GroupTemplate>
+                <span style="font-weight:bold">@($"{context.Grouping.Key:yyyy-MM}")</span>
+            </GroupTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="x => x.Amount"
                         Title="Amount"
-                        AggregateDefinition="_amountAggregation">
+                        Filterable="true"
+                        AggregateDefinition="_amountAggregation"
+                        FooterClass="border-t-2 mud-border-primary mt-n2"
+                        FooterStyle="font-family: monospace;">
             <CellTemplate>
                 <samp>@($"{context.Item.Amount:C}")</samp>
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.PaidByMemberName"
-                        Title="Paid by" />
+                        Title="Paid by"
+                        Groupable="true"/>
         <PropertyColumn Property="x => x.Note"
                         Title="Note"
                         Sortable="false">
             <CellTemplate>
-                <div style="width: 200px; overflow: hidden; text-overflow: ellipsis;">
+                <div style="width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     @context.Item.Note
                 </div>
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.CategoryName"
-                        Title="Category"/>
+                        Title="Category"
+                        Groupable="true"/>
         <TemplateColumn Title="Tags"
                         Sortable="false">
             <CellTemplate>
+                @if (context.Item.Tags is null)
+                {
+                    <div class="mud-text-secondary pl-2">
+                        <em>No tags</em>
+                    </div>
+                }
                 @foreach (var tag in context.Item.Tags?.Split(' ').OrderBy(x => x) ?? Enumerable.Empty<string>())
                 {
                     <MudChip Size="Size.Small"
@@ -121,4 +151,10 @@
             return items.Sum(e => e.Amount).ToString("C");
         }
     };
+
+    private string FooterClassFunc(ExpenseDigest arg)
+    {
+        return "border-double border-t-2 mud-border-primary";
+    }
+
 }

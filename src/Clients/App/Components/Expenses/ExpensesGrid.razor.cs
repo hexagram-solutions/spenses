@@ -120,6 +120,11 @@ public partial class ExpensesGrid
         return DataGridRef.ReloadServerData();
     }
 
+    private object GroupByDate(ExpenseDigest expenseDigest)
+    {
+        return new DateOnly(expenseDigest.Date.Year, expenseDigest.Date.Month, 1);
+    }
+
     private DateRange Period => new(
         new DateTime(Query.MinDate, TimeOnly.MinValue),
         new DateTime(Query.MaxDate, TimeOnly.MinValue));
