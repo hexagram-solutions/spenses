@@ -7,7 +7,8 @@
 
 <MudGrid>
     <MudItem xs="6">
-        <MudNumericField @bind-Value="Expense.Amount"
+        <MudNumericField @ref="AmountFieldRef"
+                         @bind-Value="Expense.Amount"
                          T="decimal"
                          Label="Amount"
                          HelperText="The expense amount"
@@ -15,6 +16,7 @@
                          Min="0.00m"
                          Max="999999.99m"
                          Required
+                         AutoFocus
                          For="@(() => Expense.Amount)"
                          Adornment="Adornment.Start"
                          AdornmentIcon="@Icons.Material.Rounded.AttachMoney"/>

@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices.JavaScript;
 using Fluxor;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Spenses.App.Store.ExpenseCategories;
 using Spenses.App.Store.Expenses;
 using Spenses.App.Store.Homes;
@@ -34,6 +35,8 @@ public partial class ExpenseForm
 
     private IEnumerable<string> AvailableTags => ExpensesState.Value.ExpenseFilters.Tags;
 
+    private MudNumericField<decimal> AmountFieldRef { get; set; } = new();
+
     private DateTime? DateValue
     {
         // Return null if the date isn't set yet. Workaround for making the start month of the date picker work
@@ -58,9 +61,14 @@ public partial class ExpenseForm
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        base.OnInitializedAsync();
 
         Dispatcher.Dispatch(new ExpenseCategoriesRequestedAction(Home.Id));
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await AmountFieldRef.SelectAsync();
     }
 
     private Task<IEnumerable<string>> SearchTags(string value)
