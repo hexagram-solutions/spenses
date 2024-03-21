@@ -2,6 +2,7 @@
 @using Spenses.Utilities.Security
 @using Spenses.App.Components.Me
 @using Spenses.App.Components.Identity
+@using Spenses.App.Infrastructure
 @inherits Fluxor.Blazor.Web.Components.FluxorLayout
 @layout BaseLayout
 
@@ -14,10 +15,12 @@
                                    Color="Color.Inherit"
                                    Edge="Edge.Start"
                                    OnClick="@(_ => DrawerToggle())"/>
-                    <MudText Typo="Typo.h5"
-                             Class="ml-3">
-                        Spenses
-                    </MudText>
+                    <MudButton Href="@(CurrentHomeId.HasValue ? Routes.Homes.Dashboard(CurrentHomeId.Value) : Routes.Root)"
+                               Variant="Variant.Text">
+                        <MudText Typo="Typo.h5">
+                            Spenses
+                        </MudText>
+                    </MudButton>
                     <MudSpacer/>
                     <LoginDisplay/>
                 </MudAppBar>
