@@ -36,7 +36,9 @@ public partial class ExpenseForm
 
     private DateTime? DateValue
     {
-        get => Expense.Date.ToDateTime(TimeOnly.MinValue);
+        // Return null if the date isn't set yet. Workaround for making the start month of the date picker work
+        // properly.
+        get => Expense.Date == DateOnly.MinValue ? null : Expense.Date.ToDateTime(TimeOnly.MinValue);
         set
         {
             if (value.HasValue)

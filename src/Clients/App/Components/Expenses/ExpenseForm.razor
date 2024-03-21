@@ -1,4 +1,6 @@
 ﻿@using Spenses.Shared.Validators.Expenses
+@using MudBlazor.Extensions
+@using System.Globalization
 @inherits Fluxor.Blazor.Web.Components.FluxorComponent
 
 <FluentValidationValidator/>
@@ -9,7 +11,6 @@
                          T="decimal"
                          Label="Amount"
                          HelperText="The expense amount"
-                         Format="N2"
                          Step="1m"
                          Min="0.00m"
                          Max="999999.99m"
@@ -22,7 +23,11 @@
         <MudDatePicker @bind-Date="DateValue"
                        Label="Date"
                        HelperText="The date the expense was paid"
+                       DisplayMonths="2"
+                       PickerMonth="DateTime.Now.AddMonths(-1).StartOfMonth(CultureInfo.CurrentCulture)"
+                       Placeholder="Select date"
                        AutoClose
+                       Editable
                        Required/>
     </MudItem>
     <MudItem xs="6">

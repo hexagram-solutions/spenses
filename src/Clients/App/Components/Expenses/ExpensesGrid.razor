@@ -71,10 +71,8 @@
                         T="ExpenseDigest"
                         TProperty="DateOnly"
                         Title="Date"
-                        Format="yyyy-MM-dd"
                         Groupable="true"
-                        GroupBy="GroupByDate"
-                        FooterClassFunc="FooterClassFunc">
+                        GroupBy="GroupByDate">
             <GroupTemplate>
                 <span style="font-weight:bold">@($"{context.Grouping.Key:yyyy-MM}")</span>
             </GroupTemplate>
@@ -151,10 +149,4 @@
             return items.Sum(e => e.Amount).ToString("C");
         }
     };
-
-    private string FooterClassFunc(ExpenseDigest arg)
-    {
-        return "border-double border-t-2 mud-border-primary";
-    }
-
 }
