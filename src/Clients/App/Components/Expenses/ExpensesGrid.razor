@@ -26,25 +26,25 @@
             </div>
 
             <MudSelect T="Guid"
-                       Label="Categories"
+                       Label="Filter by category"
                        Variant="Variant.Outlined"
                        SelectedValues="Query.Categories"
                        SelectedValuesChanged="OnCategoryFilter"
                        AnchorOrigin="Origin.BottomCenter"
                        MultiSelection
+                       MultiSelectionTextFunc="GetCategoryFilterSelectedText"
                        Margin="Margin.Dense"
                        Disabled="ExpensesState.Value.ExpenseFiltersRequesting">
                 @foreach (var category in ExpensesState.Value.ExpenseFilters.Categories)
                 {
-                    <MudSelectItem T="Guid"
-                                   Value="@category.Id">
+                    <MudSelectItem Value="@category.Id">
                         @category.Name
                     </MudSelectItem>
                 }
             </MudSelect>
 
             <MudSelect T="string"
-                       Label="Tags"
+                       Label="Filter by tag"
                        Variant="Variant.Outlined"
                        SelectedValues="Query.Tags"
                        SelectedValuesChanged="OnTagFilter"
@@ -71,10 +71,8 @@
                         T="ExpenseDigest"
                         TProperty="DateOnly"
                         Title="Date"
-                        Format="yyyy-MM-dd"
                         Groupable="true"
-                        GroupBy="GroupByDate"
-                        FooterClassFunc="FooterClassFunc">
+                        GroupBy="GroupByDate">
             <GroupTemplate>
                 <span style="font-weight:bold">@($"{context.Grouping.Key:yyyy-MM}")</span>
             </GroupTemplate>
@@ -152,9 +150,12 @@
         }
     };
 
-    private string FooterClassFunc(ExpenseDigest arg)
+    private string GetCategoryFilterSelectedText(List<string> idValues)
     {
-        return "border-double border-t-2 mud-border-primary";
-    }
+        var ids = idValues.Select(Guid.Parse);
 
+        var selectedCategories = ExpensesState.Value.ExpenseFilters.Categories.Where(c => ids.Contains(c.Id));
+
+        return string.Join(", ", selectedCategories.Select(c => c.Name));
+    }
 }
