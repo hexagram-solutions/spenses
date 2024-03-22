@@ -2,6 +2,7 @@ using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using Spenses.App.Store.Me;
 using Spenses.App.Store.Members;
 using Spenses.Shared.Models.Members;
 
@@ -18,6 +19,9 @@ public partial class MembersTable
 
     [Inject]
     private IState<MembersState> MembersState { get; set; } = null!;
+
+    [Inject]
+    private IState<MeState> MeState { get; set; } = null!;
 
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
@@ -75,7 +79,7 @@ public partial class MembersTable
         Dispatcher.Dispatch(new MemberActivatedAction(CurrentHomeId.GetValueOrDefault(), memberId));
     }
 
-    private async Task SendInvitation(MouseEventArgs _, Member member)
+    private async Task OnSendInvitationClicked(MouseEventArgs _, Member member)
     {
         var parameters = new DialogParameters<MemberInvitationDialog>
         {

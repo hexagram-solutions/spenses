@@ -14,34 +14,34 @@
         @foreach (var home in HomesState.Value.Homes)
         {
             <MudNavGroup Expanded="@(CurrentHomeId.GetValueOrDefault() == home.Id)"
-                         Icon="@Icons.Material.Filled.Home"
+                         Icon="@Icons.Material.Rounded.Home"
                          Title="@home.Name">
                 <MudNavLink Href="@(Routes.Homes.Dashboard(home.Id))"
                             Match="NavLinkMatch.All"
-                            Icon="@Icons.Material.Filled.Dashboard">
+                            Icon="@Icons.Material.Rounded.Dashboard">
                     Dashboard
                 </MudNavLink>
                 <MudNavLink Href="@(Routes.Homes.Expenses(home.Id))"
                             Match="NavLinkMatch.All"
-                            Icon="@Icons.Material.Filled.ReceiptLong"
+                            Icon="@Icons.Material.Rounded.ReceiptLong"
                             ForceLoad="false">
                     Expenses
                 </MudNavLink>
                 <MudNavLink Href="@(Routes.Homes.Payments(home.Id))"
                             Match="NavLinkMatch.All"
-                            Icon="@Icons.Material.Filled.CreditCard"
+                            Icon="@Icons.Material.Rounded.CreditCard"
                             ForceLoad="false">
                     Payments
                 </MudNavLink>
                 <MudNavLink Href="@(Routes.Homes.Insights(home.Id))"
                             Match="NavLinkMatch.All"
-                            Icon="@Icons.Material.Filled.Lightbulb"
+                            Icon="@Icons.Material.Rounded.Lightbulb"
                             ForceLoad="false">
                     Insights
                 </MudNavLink>
                 <MudNavLink Href="@(Routes.Homes.Settings(home.Id))"
                             Match="NavLinkMatch.All"
-                            Icon="@Icons.Material.Filled.Settings"
+                            Icon="@Icons.Material.Rounded.Settings"
                             ForceLoad="false">
                     Settings
                 </MudNavLink>

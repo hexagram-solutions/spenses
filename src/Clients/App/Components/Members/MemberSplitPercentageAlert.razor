@@ -1,13 +1,13 @@
 ﻿@if (IsValid)
 {
-    <MudAlert Severity="Severity.Success" Icon="@Icons.Material.Filled.Check" >
+    <MudAlert Severity="Severity.Success" Icon="@Icons.Material.Rounded.Check" >
         The total default split percentages among members of this home is 100%.
     </MudAlert>
 }
 else
 {
     <MudAlert Severity="Severity.Warning"
-              Icon="@Icons.Material.Filled.Warning">
+              Icon="@Icons.Material.Rounded.Warning">
         <MudText>
             <b>The total default split percentages among active members of this home is not 100%.</b>
         </MudText>
