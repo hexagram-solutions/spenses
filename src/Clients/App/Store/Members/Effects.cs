@@ -1,13 +1,19 @@
 using Fluxor;
+using Fluxor.Blazor.Web.Middlewares.Routing;
 using MudBlazor;
 using Refit;
 using Spenses.App.Infrastructure;
+using Spenses.App.Store.Me;
 using Spenses.App.Store.Shared;
 using Spenses.Client.Http;
 
 namespace Spenses.App.Store.Members;
 
-public class Effects(IMembersApi members, ISnackbar snackbar)
+public class Effects(
+    IMembersApi members,
+    IState<MeState> meState,
+    IState<MembersState> membersState,
+    ISnackbar snackbar)
 {
     [EffectMethod]
     public async Task HandleMembersRequested(MembersRequestedAction action, IDispatcher dispatcher)
@@ -49,7 +55,7 @@ public class Effects(IMembersApi members, ISnackbar snackbar)
         if (response.Error is not null &&
             await response.Error.GetContentAsAsync<ProblemDetails>() is { } problemDetails)
         {
-            dispatcher.Dispatch(new MemberCreationFailedAction(problemDetails.Errors ?? []));
+            dispatcher.Dispatch(new MemberCreationFailedAction(problemDetails.Errors));
 
             return;
         }
@@ -74,7 +80,7 @@ public class Effects(IMembersApi members, ISnackbar snackbar)
         if (response.Error is not null &&
             await response.Error.GetContentAsAsync<ProblemDetails>() is { } problemDetails)
         {
-            dispatcher.Dispatch(new MemberUpdateFailedAction(problemDetails.Errors ?? []));
+            dispatcher.Dispatch(new MemberUpdateFailedAction(problemDetails.Errors));
 
             return;
         }
@@ -172,5 +178,27 @@ public class Effects(IMembersApi members, ISnackbar snackbar)
         snackbar.Add("Invitation cancelled.", Severity.Info);
 
         return Task.CompletedTask;
+    }
+
+    [EffectMethod]
+    public async Task HandleLeaveHomeRequested(LeaveHomeRequestedAction action, IDispatcher dispatcher)
+    {
+        var currentUserId = meState.Value.CurrentUser?.Id;
+
+        var currentUserMember = membersState.Value.Members.Single(m => m.User?.Id == currentUserId);
+
+        var response = await members.DeleteMember(action.HomeId, currentUserMember.Id);
+
+        if (response.Error is not null)
+        {
+            dispatcher.Dispatch(new LeaveHomeFailedAction());
+            dispatcher.Dispatch(new ApplicationErrorAction(response.Error.ToApplicationError()));
+
+            return;
+        }
+
+        dispatcher.Dispatch(new LeaveHomeSucceededAction(response.Content!));
+
+        dispatcher.Dispatch(new GoAction(Routes.Root, true));
     }
 }

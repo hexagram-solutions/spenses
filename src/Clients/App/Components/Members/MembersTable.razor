@@ -39,17 +39,17 @@
             @if (context.Status is MemberStatus.Active && context.User is null)
             {
                 <MudTooltip Text="Invite">
-                    <MudIconButton Icon="@Icons.Material.Filled.Send"
+                    <MudIconButton Icon="@Icons.Material.Rounded.Send"
                                    Color="Color.Info"
                                    Size="Size.Small"
-                                   OnClick="@(args => SendInvitation(args, context))" />
+                                   OnClick="@(args => OnSendInvitationClicked(args, context))" />
                 </MudTooltip>
             }
 
             @if (context.Status is MemberStatus.Invited)
             {
                 <MudTooltip Text="Cancel invitation">
-                    <MudIconButton Icon="@Icons.Material.Filled.CancelScheduleSend"
+                    <MudIconButton Icon="@Icons.Material.Rounded.CancelScheduleSend"
                                    Color="Color.Warning"
                                    Size="Size.Small"
                                    OnClick="@(args => CancelInvitation(args, context))" />
@@ -58,20 +58,31 @@
 
             @if (context.Status is MemberStatus.Active or MemberStatus.Invited)
             {
-
                 <MudTooltip Text="Edit">
                     <EditIconButton OnClick="@(args => OnEditClicked(args, context.Id))"/>
                 </MudTooltip>
 
-                <MudTooltip Text="Remove">
-                    <RemoveIconButton OnClick="@(args => OnRemoveClicked(args, context))"/>
-                </MudTooltip>
+                @if (context.User?.Id == MeState.Value.CurrentUser?.Id)
+                {
+                    <MudTooltip Text="Leave">
+                        <MudIconButton Icon="@Icons.Material.Rounded.ExitToApp"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       OnClick="@(args => OnLeaveHomeClicked(args))" />
+                    </MudTooltip>
+                }
+                else
+                {
+                    <MudTooltip Text="Remove">
+                        <RemoveIconButton OnClick="@(args => OnRemoveClicked(args, context))"/>
+                    </MudTooltip>
+                }
             }
             else
             {
                 <MudTooltip Text="Reactivate"
                             Inline>
-                    <MudIconButton Icon="@Icons.Material.Filled.Refresh"
+                    <MudIconButton Icon="@Icons.Material.Rounded.Refresh"
                                    Color="Color.Primary"
                                    Size="Size.Small"
                                    OnClick="@(args => OnReactivateClicked(args, context.Id))"/>
