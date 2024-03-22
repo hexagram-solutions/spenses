@@ -2,6 +2,7 @@ using Fluxor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
+using Spenses.App.Store.Me;
 using Spenses.App.Store.Members;
 using Spenses.Shared.Models.Members;
 
@@ -18,6 +19,9 @@ public partial class MembersTable
 
     [Inject]
     private IState<MembersState> MembersState { get; set; } = null!;
+
+    [Inject]
+    private IState<MeState> MeState { get; set; } = null!;
 
     [Inject]
     private IDispatcher Dispatcher { get; set; } = null!;
@@ -59,8 +63,8 @@ public partial class MembersTable
         var confirmed = await DialogService.ShowMessageBox(
             $"Are you sure you want to remove {member.Name} from this home?",
             "If this member has no expenses or payments associated with them, they be permanently removed from " +
-            "this home. Otherwise, the member will be be deactivated with any existing payments or expenses " +
-            "remaining associated with the member.",
+            "this home. Otherwise, the member will be be deactivated and any existing payments or expenses " +
+            "will remain associated with the member.",
             yesText: "Remove member",
             cancelText: "Close");
 
@@ -70,12 +74,28 @@ public partial class MembersTable
         Dispatcher.Dispatch(new MemberDeletedAction(CurrentHomeId.GetValueOrDefault(), member.Id));
     }
 
+    private async Task OnLeaveHomeClicked(MouseEventArgs _)
+    {
+        var confirmed = await DialogService.ShowMessageBox(
+            "Are you sure you want to leave this home?",
+            "If there are no expenses or payments associated with you in this home, you will be permanently removed " +
+            "from this home. Otherwise, your membership will be be deactivated and any existing payments or expenses " +
+            "will remain associated with you.",
+            yesText: "Leave home",
+            cancelText: "Close");
+
+        if (confirmed != true)
+            return;
+
+        Dispatcher.Dispatch(new LeaveHomeRequestedAction(CurrentHomeId.GetValueOrDefault()));
+    }
+
     private void OnReactivateClicked(MouseEventArgs _, Guid memberId)
     {
         Dispatcher.Dispatch(new MemberActivatedAction(CurrentHomeId.GetValueOrDefault(), memberId));
     }
 
-    private async Task SendInvitation(MouseEventArgs _, Member member)
+    private async Task OnSendInvitationClicked(MouseEventArgs _, Member member)
     {
         var parameters = new DialogParameters<MemberInvitationDialog>
         {

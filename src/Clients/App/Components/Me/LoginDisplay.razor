@@ -39,11 +39,11 @@
                 </MudStack>
             </ActivatorContent>
             <ChildContent>
-                <MudMenuItem Icon="@Icons.Material.Filled.Settings"
+                <MudMenuItem Icon="@Icons.Material.Rounded.Settings"
                              OnClick="@(() => Dispatcher.Dispatch(new GoAction(Routes.Me.Settings)))">
                     Settings
                 </MudMenuItem>
-                <MudMenuItem Icon="@Icons.Material.Filled.Logout"
+                <MudMenuItem Icon="@Icons.Material.Rounded.Logout"
                              Disabled="IdentityState.Value.LogoutRequesting"
                              OnClick="LogOut">
                     Log out

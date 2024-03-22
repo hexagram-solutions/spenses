@@ -51,3 +51,9 @@ public record MemberInvitationsCancelledAction(Guid HomeId, Guid MemberId);
 public record MemberInvitationsCancellationSucceededAction(Guid MemberId);
 
 public record MemberInvitationsCancellationFailedAction;
+
+public record LeaveHomeRequestedAction(Guid HomeId);
+
+public record LeaveHomeSucceededAction(DeletionResult<Member> Result);
+
+public record LeaveHomeFailedAction;

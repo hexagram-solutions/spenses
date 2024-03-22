@@ -2,10 +2,10 @@ using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Spenses.Client.Http;
 using Spenses.Shared.Models.Common;
+using Spenses.Shared.Models.Homes;
 using Spenses.Shared.Models.Invitations;
 using Spenses.Shared.Models.Members;
 using Spenses.Shared.Models.Payments;
-using InvitationStatus = Spenses.Resources.Relational.Models.InvitationStatus;
 
 namespace Spenses.Api.IntegrationTests.Members;
 
@@ -85,7 +85,7 @@ public partial class MembersIntegrationTests
         var homeMembers = (await _homes.GetHome(home.Id)).Content!.Members;
         homeMembers.Should().Contain(x => x.Id == deactivatedMember.Id && x.Status == MemberStatus.Inactive);
 
-        await _members.ActivateMember(home.Id, member.Id);
+        //await _members.ActivateMember(home.Id, member.Id);
     }
 
     [Fact]
@@ -137,7 +137,7 @@ public partial class MembersIntegrationTests
 
         var payments = CreateApiClient<IPaymentsApi>();
 
-        var paymentResponse = await payments.PostPayment(home.Id, new PaymentProperties
+        await payments.PostPayment(home.Id, new PaymentProperties
         {
             Amount = 1.00m,
             Date = DateOnly.FromDateTime(DateTime.Today),
@@ -155,10 +155,29 @@ public partial class MembersIntegrationTests
             var invitation = await db.Invitations
                 .SingleAsync(i => i.MemberId == createdMember.Id);
 
-            invitation.Status.Should().Be(InvitationStatus.Cancelled);
+            invitation.Status.Should().Be(Resources.Relational.Models.InvitationStatus.Cancelled);
         });
+    }
 
-        await payments.DeletePayment(home.Id, paymentResponse.Content!.Id);
-        await _members.DeleteMember(home.Id, createdMember.Id);
+    [Fact]
+    public async Task Delete_current_user_member_removes_membership()
+    {
+        var home = (await _homes.PostHome(new HomeProperties { Name = "On the Range" })).Content!;
+
+        var homeMembers = await _members.GetMembers(home.Id);
+
+        // There should only be one member in this home that is associated with the current user.
+        var homeMember = homeMembers.Content!.Single();
+
+        var deleteMemberResponse = await _members.DeleteMember(home.Id, homeMember.Id);
+
+        deleteMemberResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        deleteMemberResponse.Content!.Type.Should().Be(DeletionType.Deleted);
+
+        var leftHomeResponse = await _homes.GetHome(home.Id);
+        leftHomeResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+        var currentUserHomes = await _homes.GetHomes();
+        currentUserHomes.Content!.Should().NotContain(h => h.Id == home.Id);
     }
 }

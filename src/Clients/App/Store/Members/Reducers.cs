@@ -86,13 +86,13 @@ public static class Reducers
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberDeleteSucceeded(MembersState state, MemberDeletionSucceededAction _)
+    public static MembersState ReduceMemberDeletionSucceeded(MembersState state, MemberDeletionSucceededAction _)
     {
         return state with { MemberDeleting = false };
     }
 
     [ReducerMethod]
-    public static MembersState ReduceMemberDeleteFailed(MembersState state, MemberDeletionFailedAction _)
+    public static MembersState ReduceMemberDeletionFailed(MembersState state, MemberDeletionFailedAction _)
     {
         return state with { MemberDeleting = false };
     }
@@ -164,5 +164,23 @@ public static class Reducers
         MemberInvitationsCancellationFailedAction _)
     {
         return state with { MemberInvitationsCancelling = false };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceLeaveHomeRequested(MembersState state, LeaveHomeRequestedAction _)
+    {
+        return state with { MemberDeleting = true };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceLeaveHomeSucceeded(MembersState state, LeaveHomeSucceededAction _)
+    {
+        return state with { MemberDeleting = false };
+    }
+
+    [ReducerMethod]
+    public static MembersState ReduceLeaveHomeFailed(MembersState state, LeaveHomeFailedAction _)
+    {
+        return state with { MemberDeleting = false };
     }
 }

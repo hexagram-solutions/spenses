@@ -6,6 +6,7 @@ using Spenses.Resources.Relational;
 using Spenses.Shared.Models.Homes;
 using Spenses.Utilities.Security;
 using Spenses.Utilities.Security.Services;
+using DbModels = Spenses.Resources.Relational.Models;
 
 namespace Spenses.Application.Features.Homes.Requests;
 
@@ -19,7 +20,7 @@ public class HomesQueryHandler(ApplicationDbContext db, IMapper mapper, IUserCon
         var currentUserId = userContext.CurrentUser.GetId();
 
         var homes = await db.Homes
-            .Where(h => h.Members.Select(m => m.UserId).Contains(currentUserId))
+            .Where(h => h.Members.Any(m => m.Status == DbModels.MemberStatus.Active && m.UserId == currentUserId))
             .ProjectTo<Home>(mapper.ConfigurationProvider)
             .OrderBy(h => h.Name)
             .ToListAsync(cancellationToken);
